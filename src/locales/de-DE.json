@@ -1,0 +1,31 @@
+{
+  "common": {
+    "loading": "Lädt…",
+    "cancel": "Abbrechen",
+    "search": "Suchen"
+  },
+  "settings": {
+    "general": {
+      "title": "Allgemeine Einstellungen",
+      "language": { "label": "Sprache", "change": "Ändern" },
+      "timezone": { "label": "Zeitzone", "adjust": "Anpassen", "currentTime": "Aktuelle Uhrzeit" },
+      "theme": { "label": "Oberflächendesign", "light": "Hell", "dark": "Dunkel", "system": "System" },
+      "syncSaving": "Speichern…",
+      "syncSaved": "Gespeichert",
+      "syncError": "Speichern fehlgeschlagen"
+    }
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "teacherTools": "Tools",
+    "history": "Verlauf",
+    "settings": "Einstellungen"
+  },
+  "history": {
+    "justNow": "Gerade eben",
+    "minutesAgo": "vor {{count}} Min.",
+    "hoursAgo": "vor {{count}} Std.",
+    "daysAgo": "vor {{count}} Tg."
+  }
+}
+

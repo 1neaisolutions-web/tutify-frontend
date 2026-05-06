@@ -1,0 +1,235 @@
+import type { AIGrowthModulePageVisual } from '../types'
+
+const tieredGreen = (): AIGrowthModulePageVisual => ({
+  sidebarStyle: 'tiered',
+  headerGradient: 'from-green-600 via-emerald-600 to-teal-600',
+  heroSubtitleClass: 'text-green-100',
+  heroShowEarnedPoints: false,
+  heroShowImpactRow: false,
+  heroShowBookmarkShare: false,
+  tieredSidebarActive: 'bg-green-100 border-2 border-green-500 text-green-900',
+  tieredSidebarCompleted: 'bg-gray-50 border border-gray-200 text-gray-700 hover:bg-gray-100',
+  tieredSidebarIdle: 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50',
+  tieredSidebarCheckComplete: 'text-green-600',
+  sidebarProgressFill: 'bg-green-600',
+  engagementSidebarActive: '',
+  engagementSidebarIdle: '',
+  engagementNumCompleted: '',
+  engagementNumActive: '',
+  engagementNumIdle: '',
+  engagementTitleActive: '',
+  lessonTypeIconClass: 'text-green-600',
+  pointsPill: 'bg-green-100 text-green-700',
+  videoOverlayGradient: 'from-green-600 to-emerald-600',
+  videoPlayUseTranslucent: false,
+  videoPlayIconClass: 'text-green-600',
+  showLessonHeaderShare: true,
+  keyPointsPanel: 'bg-green-50 rounded-lg p-6 border border-green-200',
+  keyPointsCheck: 'text-green-600',
+  transcriptPanel: 'bg-white rounded-lg p-6 border border-gray-200',
+  readingArticleWrap: 'bg-white rounded-lg p-8 border border-gray-200',
+  readingTakeawaysPanel: 'bg-green-50 rounded-lg p-6 border border-green-200',
+  readingTakeawaysIcon: 'text-green-600',
+  interactiveStepsPanel: 'bg-green-50 rounded-lg p-6 border border-green-200',
+  interactiveStepNumber: 'bg-green-600 text-white',
+  templateSectionsCard: 'bg-white rounded-lg p-6 border border-gray-200',
+  templateSectionNumber: 'bg-green-100 text-green-700',
+  templateDownloadCard: 'p-4 bg-green-50 border-2 border-green-200 rounded-lg hover:bg-green-100',
+  templateDownloadIcon: 'text-green-600',
+  markCompleteButton: 'bg-green-600 hover:bg-green-700',
+  completionPanel: 'border-2 border-green-300 bg-gradient-to-br from-green-50 to-emerald-50',
+  completionIconBg: 'bg-green-600',
+  completionCta: 'bg-green-600 hover:bg-green-700',
+  completedLessonBadge: 'bg-green-100 text-green-700',
+  lessonNavigation: 'inline-only',
+  footerCompleteButton: 'bg-green-600 hover:bg-green-700',
+  blockHeadingClass: 'text-sm font-semibold text-gray-900 mb-3',
+})
+
+const tieredIndigo = (): AIGrowthModulePageVisual => ({
+  ...tieredGreen(),
+  headerGradient: 'from-indigo-600 via-blue-600 to-cyan-600',
+  heroSubtitleClass: 'text-indigo-100',
+  tieredSidebarActive: 'bg-indigo-100 border-2 border-indigo-500 text-indigo-900',
+  tieredSidebarCheckComplete: 'text-indigo-600',
+  sidebarProgressFill: 'bg-indigo-600',
+  lessonTypeIconClass: 'text-indigo-600',
+  pointsPill: 'bg-indigo-100 text-indigo-700',
+  videoOverlayGradient: 'from-indigo-600 to-blue-600',
+  videoPlayIconClass: 'text-indigo-600',
+  showLessonHeaderShare: false,
+  keyPointsPanel: 'bg-indigo-50 rounded-lg p-6 border border-indigo-200',
+  keyPointsCheck: 'text-indigo-600',
+  readingTakeawaysPanel: 'bg-indigo-50 rounded-lg p-6 border border-indigo-200',
+  readingTakeawaysIcon: 'text-indigo-600',
+  interactiveStepNumber: 'bg-indigo-600 text-white',
+  templateSectionNumber: 'bg-indigo-100 text-indigo-700',
+  templateDownloadCard: 'p-4 bg-indigo-50 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100',
+  templateDownloadIcon: 'text-indigo-600',
+  markCompleteButton: 'bg-indigo-600 hover:bg-indigo-700',
+  completionCta: 'bg-indigo-600 hover:bg-indigo-700',
+  footerCompleteButton: 'bg-indigo-600 hover:bg-indigo-700',
+  blockHeadingClass: 'text-sm font-semibold text-gray-900 mb-3',
+})
+
+type NavStyle = AIGrowthModulePageVisual['lessonNavigation']
+
+function engagementBase(
+  o: {
+    headerGradient: string
+    heroSubtitleClass: string
+    engagementSidebarActive: string
+    engagementNumActive: string
+    engagementTitleActive: string
+    sidebarProgressFill: string
+    footerCompleteButton: string
+    heroShowBookmarkShare: boolean
+    lessonNavigation: NavStyle
+  }
+): AIGrowthModulePageVisual {
+  return {
+    sidebarStyle: 'engagement',
+    headerGradient: o.headerGradient,
+    heroSubtitleClass: o.heroSubtitleClass,
+    heroShowEarnedPoints: true,
+    heroShowImpactRow: true,
+    heroShowBookmarkShare: o.heroShowBookmarkShare,
+    tieredSidebarActive: '',
+    tieredSidebarCompleted: '',
+    tieredSidebarIdle: '',
+    tieredSidebarCheckComplete: 'text-green-600',
+    sidebarProgressFill: o.sidebarProgressFill,
+    engagementSidebarActive: o.engagementSidebarActive,
+    engagementSidebarIdle: 'border-2 border-transparent hover:bg-gray-50',
+    engagementNumCompleted: 'bg-green-100 text-green-600',
+    engagementNumActive: o.engagementNumActive,
+    engagementNumIdle: 'bg-gray-100 text-gray-400',
+    engagementTitleActive: o.engagementTitleActive,
+    lessonTypeIconClass: 'text-gray-600',
+    pointsPill: 'bg-gray-100 text-gray-800',
+    videoOverlayGradient: 'from-gray-900 to-gray-800',
+    videoPlayUseTranslucent: true,
+    videoPlayIconClass: 'text-white',
+    showLessonHeaderShare: false,
+    keyPointsPanel: 'bg-blue-50 rounded-xl p-6 border border-blue-200',
+    keyPointsCheck: 'text-blue-600',
+    transcriptPanel: 'bg-gray-50 rounded-xl p-6 border border-gray-200',
+    readingArticleWrap: '',
+    readingTakeawaysPanel: 'bg-purple-50 rounded-xl p-6 border border-purple-200',
+    readingTakeawaysIcon: 'text-purple-600',
+    interactiveStepsPanel: 'bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-6 border border-amber-200',
+    interactiveStepNumber: 'bg-amber-600 text-white',
+    templateSectionsCard: 'bg-white rounded-lg p-6 border border-gray-200',
+    templateSectionNumber: 'bg-amber-100 text-amber-700',
+    templateDownloadCard: 'p-4 bg-amber-50 border-2 border-amber-200 rounded-lg hover:bg-amber-100',
+    templateDownloadIcon: 'text-amber-600',
+    markCompleteButton: 'bg-amber-600 hover:bg-amber-700',
+    completionPanel: 'border-2 border-green-300 bg-gradient-to-br from-green-50 to-emerald-50',
+    completionIconBg: 'bg-green-600',
+    completionCta: 'bg-green-600 hover:bg-green-700',
+    completedLessonBadge: 'bg-green-100 text-green-700',
+    lessonNavigation: o.lessonNavigation,
+    footerCompleteButton: o.footerCompleteButton,
+    blockHeadingClass: 'text-lg font-semibold text-gray-900 mb-3',
+  }
+}
+
+const ENGAGEMENT_BY_SLUG: Record<string, AIGrowthModulePageVisual> = {
+  'gamification-fundamentals': engagementBase({
+    headerGradient: 'from-amber-600 via-orange-600 to-red-600',
+    heroSubtitleClass: 'text-amber-100',
+    engagementSidebarActive: 'bg-amber-50 border-2 border-amber-300',
+    engagementNumActive: 'bg-amber-100 text-amber-600',
+    engagementTitleActive: 'text-amber-900',
+    sidebarProgressFill: 'bg-amber-600',
+    footerCompleteButton: 'bg-amber-600 hover:bg-amber-700',
+    heroShowBookmarkShare: true,
+    lessonNavigation: 'footer-with-advance',
+  }),
+  'points-badges-leaderboards': engagementBase({
+    headerGradient: 'from-blue-600 via-indigo-600 to-purple-600',
+    heroSubtitleClass: 'text-blue-100',
+    engagementSidebarActive: 'bg-blue-50 border-2 border-blue-300',
+    engagementNumActive: 'bg-blue-100 text-blue-600',
+    engagementTitleActive: 'text-blue-900',
+    sidebarProgressFill: 'bg-blue-600',
+    footerCompleteButton: 'bg-blue-600 hover:bg-blue-700',
+    heroShowBookmarkShare: true,
+    lessonNavigation: 'footer-with-advance',
+  }),
+  'inquiry-learning-hooks': engagementBase({
+    headerGradient: 'from-green-600 via-emerald-600 to-teal-600',
+    heroSubtitleClass: 'text-green-100',
+    engagementSidebarActive: 'bg-green-50 border-2 border-green-300',
+    engagementNumActive: 'bg-green-100 text-green-600',
+    engagementTitleActive: 'text-green-900',
+    sidebarProgressFill: 'bg-green-600',
+    footerCompleteButton: 'bg-green-600 hover:bg-green-700',
+    heroShowBookmarkShare: false,
+    lessonNavigation: 'footer-with-advance',
+  }),
+  'quest-based-learning': engagementBase({
+    headerGradient: 'from-purple-600 via-pink-600 to-red-600',
+    heroSubtitleClass: 'text-purple-100',
+    engagementSidebarActive: 'bg-purple-50 border-2 border-purple-300',
+    engagementNumActive: 'bg-purple-100 text-purple-600',
+    engagementTitleActive: 'text-purple-900',
+    sidebarProgressFill: 'bg-purple-600',
+    footerCompleteButton: 'bg-purple-600 hover:bg-purple-700',
+    heroShowBookmarkShare: false,
+    lessonNavigation: 'footer-with-advance',
+  }),
+  'collaborative-game-mechanics': engagementBase({
+    headerGradient: 'from-cyan-600 via-blue-600 to-indigo-600',
+    heroSubtitleClass: 'text-cyan-100',
+    engagementSidebarActive: 'bg-cyan-50 border-2 border-cyan-300',
+    engagementNumActive: 'bg-cyan-100 text-cyan-600',
+    engagementTitleActive: 'text-cyan-900',
+    sidebarProgressFill: 'bg-cyan-600',
+    footerCompleteButton: 'bg-cyan-600 hover:bg-cyan-700',
+    heroShowBookmarkShare: false,
+    lessonNavigation: 'footer-with-advance',
+  }),
+  'adaptive-gamification': engagementBase({
+    headerGradient: 'from-violet-600 via-purple-600 to-fuchsia-600',
+    heroSubtitleClass: 'text-violet-100',
+    engagementSidebarActive: 'bg-violet-50 border-2 border-violet-300',
+    engagementNumActive: 'bg-violet-100 text-violet-600',
+    engagementTitleActive: 'text-violet-900',
+    sidebarProgressFill: 'bg-violet-600',
+    footerCompleteButton: 'bg-violet-600 hover:bg-violet-700',
+    heroShowBookmarkShare: false,
+    lessonNavigation: 'footer-with-advance',
+  }),
+  'gamified-assessment': engagementBase({
+    headerGradient: 'from-rose-600 via-pink-600 to-red-600',
+    heroSubtitleClass: 'text-rose-100',
+    engagementSidebarActive: 'bg-rose-50 border-2 border-rose-300',
+    engagementNumActive: 'bg-rose-100 text-rose-600',
+    engagementTitleActive: 'text-rose-900',
+    sidebarProgressFill: 'bg-rose-600',
+    footerCompleteButton: 'bg-rose-600 hover:bg-rose-700',
+    heroShowBookmarkShare: false,
+    lessonNavigation: 'footer-with-advance',
+  }),
+  'advanced-inquiry-frameworks': engagementBase({
+    headerGradient: 'from-teal-600 via-cyan-600 to-blue-600',
+    heroSubtitleClass: 'text-teal-100',
+    engagementSidebarActive: 'bg-teal-50 border-2 border-teal-300',
+    engagementNumActive: 'bg-teal-100 text-teal-600',
+    engagementTitleActive: 'text-teal-900',
+    sidebarProgressFill: 'bg-teal-600',
+    footerCompleteButton: 'bg-teal-600 hover:bg-teal-700',
+    heroShowBookmarkShare: false,
+    lessonNavigation: 'footer-with-advance',
+  }),
+}
+
+export function resolveAIGrowthModulePageVisual(parentPathSlug: string, moduleSlug: string): AIGrowthModulePageVisual {
+  if (parentPathSlug === 'advanced-differentiation-strategies') return tieredGreen()
+  if (parentPathSlug === 'ai-assisted-assessment-design') return tieredIndigo()
+  if (parentPathSlug === 'student-engagement-techniques') {
+    return ENGAGEMENT_BY_SLUG[moduleSlug] ?? ENGAGEMENT_BY_SLUG['gamification-fundamentals']!
+  }
+  return tieredGreen()
+}

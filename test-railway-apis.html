@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Railway API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Railway Backend API Test</h1>
+    <p>Testing connection to: <strong>https://1nebackend-production.up.railway.app</strong></p>
+    
+    <button onclick="testAll()">Test All APIs</button>
+    <button onclick="testHealth()">Test Health</button>
+    <button onclick="testChatbots()">Test Chatbots</button>
+    <button onclick="testTemplates()">Test Templates</button>
+    
+    <div id="results"></div>
+
+    <script>
+        const RAILWAY_URL = 'https://1nebackend-production.up.railway.app';
+        const API_URL = `${RAILWAY_URL}/api`;
+        
+        function addResult(title, status, details = '') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `test-result ${status}`;
+            div.innerHTML = `
+                <h3>${title}</h3>
+                <p><strong>Status:</strong> ${status === 'success' ? '✅ PASSED' : '❌ FAILED'}</p>
+                ${details ? `<pre>${details}</pre>` : ''}
+            `;
+            results.appendChild(div);
+        }
+        
+        async function testHealth() {
+            try {
+                const response = await fetch(`${RAILWAY_URL}/health`);
+                const data = await response.json();
+                if (response.ok) {
+                    addResult('Health Check', 'success', JSON.stringify(data, null, 2));
+                } else {
+                    addResult('Health Check', 'error', `Status: ${response.status}\n${JSON.stringify(data, null, 2)}`);
+                }
+            } catch (error) {
+                addResult('Health Check', 'error', error.message);
+            }
+        }
+        
+        async function testChatbots() {
+            try {
+                const response = await fetch(`${API_URL}/v1/chatbots?pageSize=5`);
+                const data = await response.json();
+                if (response.ok) {
+                    addResult('Chatbots API', 'success', `Found ${data.items?.length || 0} chatbots\n${JSON.stringify(data, null, 2).substring(0, 500)}...`);
+                } else {
+                    addResult('Chatbots API', 'error', `Status: ${response.status}\n${JSON.stringify(data, null, 2)}`);
+                }
+            } catch (error) {
+                addResult('Chatbots API', 'error', error.message);
+            }
+        }
+        
+        async function testTemplates() {
+            try {
+                const response = await fetch(`${API_URL}/v1/templates?pageSize=5`);
+                const data = await response.json();
+                if (response.ok) {
+                    addResult('Templates API', 'success', `Found ${data.items?.length || 0} templates\n${JSON.stringify(data, null, 2).substring(0, 500)}...`);
+                } else {
+                    addResult('Templates API', 'error', `Status: ${response.status}\n${JSON.stringify(data, null, 2)}`);
+                }
+            } catch (error) {
+                addResult('Templates API', 'error', error.message);
+            }
+        }
+        
+        async function testAll() {
+            document.getElementById('results').innerHTML = '';
+            addResult('Starting Tests...', 'info', 'Testing Railway backend APIs...');
+            await testHealth();
+            await testChatbots();
+            await testTemplates();
+        }
+    </script>
+</body>
+</html>

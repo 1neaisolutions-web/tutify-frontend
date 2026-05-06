@@ -1,0 +1,50 @@
+{
+  "common": {
+    "loading": "Cargando…",
+    "cancel": "Cancelar",
+    "search": "Buscar"
+  },
+  "settings": {
+    "general": {
+      "title": "Preferencias generales",
+      "language": { "label": "Idioma", "change": "Cambiar" },
+      "timezone": { "label": "Zona horaria", "adjust": "Ajustar", "currentTime": "Hora actual" },
+      "theme": { "label": "Tema de la interfaz", "light": "Claro", "dark": "Oscuro", "system": "Sistema" },
+      "syncSaving": "Guardando…",
+      "syncSaved": "Guardado",
+      "syncError": "No se pudo guardar"
+    }
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "teacherTools": "Herramientas",
+    "teacherToolsOverview": "Resumen",
+    "teacherToolsAnalytics": "Analíticas",
+    "quiz": "Cuestionario",
+    "assignment": "Tarea",
+    "worksheet": "Hoja de trabajo",
+    "exams": "Exámenes",
+    "templates": "Biblioteca de plantillas",
+    "chatbots": "Chatbots especializados",
+    "youtubeQuiz": "Generador de cuestionarios de YouTube",
+    "pixgen": "PixGen (Estudio de medios IA)",
+    "learningHub": "Centro de aprendizaje profesional",
+    "personalization": "Personalización",
+    "administration": "Administración",
+    "reporting": "Informes",
+    "assessment": "Evaluación",
+    "contentManagement": "Gestión de contenido",
+    "history": "Historial",
+    "analytics": "Analíticas",
+    "useCases": "Explorar casos de uso",
+    "profile": "Perfil",
+    "settings": "Configuración"
+  },
+  "history": {
+    "justNow": "Ahora mismo",
+    "minutesAgo": "hace {{count}} min",
+    "hoursAgo": "hace {{count}} h",
+    "daysAgo": "hace {{count}} d"
+  }
+}
+

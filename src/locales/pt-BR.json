@@ -1,0 +1,31 @@
+{
+  "common": {
+    "loading": "Carregando…",
+    "cancel": "Cancelar",
+    "search": "Pesquisar"
+  },
+  "settings": {
+    "general": {
+      "title": "Preferências gerais",
+      "language": { "label": "Idioma", "change": "Alterar" },
+      "timezone": { "label": "Fuso horário", "adjust": "Ajustar", "currentTime": "Hora atual" },
+      "theme": { "label": "Tema da interface", "light": "Claro", "dark": "Escuro", "system": "Sistema" },
+      "syncSaving": "Salvando…",
+      "syncSaved": "Salvo",
+      "syncError": "Falha ao salvar"
+    }
+  },
+  "nav": {
+    "dashboard": "Painel",
+    "teacherTools": "Ferramentas",
+    "history": "Histórico",
+    "settings": "Configurações"
+  },
+  "history": {
+    "justNow": "Agora mesmo",
+    "minutesAgo": "há {{count}} min",
+    "hoursAgo": "há {{count}} h",
+    "daysAgo": "há {{count}} d"
+  }
+}
+

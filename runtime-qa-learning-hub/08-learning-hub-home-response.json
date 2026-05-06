@@ -1,0 +1,144 @@
+{
+  "mode": "partial_ready",
+  "personalization_version": 5,
+  "sections": {
+    "growth_recommendations": {
+      "readiness": "partial_ready",
+      "visible_items": [
+        {
+          "assignment_id": "a8babc58-e1f3-48c8-80b0-1ca4028f0e6d",
+          "content_id": "factory-a0568008-generated-learning-path",
+          "content_type": "learning_path",
+          "section": "growth_recommendations",
+          "bucket": "visible",
+          "position": 0,
+          "locked": false,
+          "title": "Classroom management deep dive",
+          "route": "/learning-hub/student-engagement-path",
+          "content_slug": "factory-a0568008-generated-learning-path",
+          "score": 0.5,
+          "reason_codes": [
+            "profile_match"
+          ],
+          "display_meta": {
+            "category": "classroom_management",
+            "duration": "120 min",
+            "difficulty": "intermediate",
+            "source_type": "content_factory"
+          }
+        }
+      ],
+      "locked_preview_items": [
+        {
+          "assignment_id": "75131056-25b8-43af-980d-74de18dab247",
+          "content_id": "starter-en-lesson-planning-learning-path",
+          "content_type": "learning_path",
+          "section": "growth_recommendations",
+          "bucket": "locked_preview",
+          "position": 1,
+          "locked": true,
+          "title": "Lesson planning mastery path",
+          "route": "/learning-hub/ai-assessment-path",
+          "content_slug": "starter-en-lesson-planning-learning-path",
+          "score": 0.5,
+          "reason_codes": [
+            "profile_match"
+          ],
+          "display_meta": {
+            "category": "lesson_planning",
+            "duration": "150 min",
+            "difficulty": "intermediate",
+            "source_type": "starter_seed"
+          }
+        }
+      ],
+      "message": "More personalized items are being prepared.",
+      "growth_state": {
+        "readiness_state": "ready",
+        "signal_count": 19,
+        "required_signal_count": 5,
+        "progress_percent": 100,
+        "generation_status": "idle"
+      }
+    },
+    "micro_courses": {
+      "readiness": "partial_ready",
+      "visible_items": [
+        {
+          "assignment_id": "711a0340-1bcb-4bd5-8838-ea5634e72acf",
+          "content_id": "factory-47e57f1d-foundational-teaching-strategies-for-science",
+          "content_type": "micro_course",
+          "section": "micro_courses",
+          "bucket": "visible",
+          "position": 0,
+          "locked": false,
+          "title": "Foundational teaching strategies for science",
+          "route": "/learning-hub/differentiation-course",
+          "content_slug": "factory-47e57f1d-foundational-teaching-strategies-for-science",
+          "score": 0.5,
+          "reason_codes": [
+            "profile_match"
+          ],
+          "display_meta": {
+            "category": "science",
+            "duration": "8 min",
+            "difficulty": "beginner",
+            "source_type": "content_factory"
+          }
+        },
+        {
+          "assignment_id": "6570cb2e-00b4-4bb8-af95-c8c00b3a5af9",
+          "content_id": "factory-6f7c036e-foundational-teaching-strategies-for-math",
+          "content_type": "micro_course",
+          "section": "micro_courses",
+          "bucket": "visible",
+          "position": 1,
+          "locked": false,
+          "title": "Foundational teaching strategies for math",
+          "route": "/learning-hub/differentiation-course",
+          "content_slug": "factory-6f7c036e-foundational-teaching-strategies-for-math",
+          "score": 0.5,
+          "reason_codes": [
+            "profile_match"
+          ],
+          "display_meta": {
+            "category": "math",
+            "duration": "8 min",
+            "difficulty": "beginner",
+            "source_type": "content_factory"
+          }
+        },
+        {
+          "assignment_id": "f808775a-cac0-493a-bb3e-0aca1ded8427",
+          "content_id": "factory-cc2e6d5a-foundational-teaching-strategies-for-lessonplanning",
+          "content_type": "micro_course",
+          "section": "micro_courses",
+          "bucket": "visible",
+          "position": 2,
+          "locked": false,
+          "title": "Foundational teaching strategies for lesson_planning",
+          "route": "/learning-hub/digital-literacy-course",
+          "content_slug": "factory-cc2e6d5a-foundational-teaching-strategies-for-lessonplanning",
+          "score": 0.5,
+          "reason_codes": [
+            "profile_match"
+          ],
+          "display_meta": {
+            "category": "lesson_planning",
+            "duration": "8 min",
+            "difficulty": "beginner",
+            "source_type": "content_factory"
+          }
+        }
+      ],
+      "locked_preview_items": [],
+      "message": "More personalized items are being prepared."
+    }
+  },
+  "hero_state": {
+    "mode": "partial_ready",
+    "ready_sections": 0,
+    "total_sections": 5
+  },
+  "last_recomputed_at": "2026-04-01T09:40:28.537740+00:00"
+}

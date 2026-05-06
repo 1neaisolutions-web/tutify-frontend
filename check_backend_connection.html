@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend Connection Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .test-item {
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #ddd;
+        }
+        .test-item.success {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        .test-item.error {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        .test-item.loading {
+            background: #fff3cd;
+            border-color: #ffc107;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .details {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Backend Connection Checker</h1>
+        <p>This tool checks if the backend server is running and accessible from the browser.</p>
+        
+        <div id="results"></div>
+        
+        <button onclick="runTests()">Run Tests</button>
+        <button onclick="location.reload()" style="background: #6c757d; margin-left: 10px;">Refresh</button>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        
+        function addResult(id, title, status, details = '') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = `test-item ${status}`;
+            div.innerHTML = `
+                <strong>${title}</strong>
+                ${details ? `<div class="details">${details}</div>` : ''}
+            `;
+            results.appendChild(div);
+        }
+        
+        function updateResult(id, status, details = '') {
+            const div = document.getElementById(id);
+            if (div) {
+                div.className = `test-item ${status}`;
+                if (details) {
+                    const detailsDiv = div.querySelector('.details') || document.createElement('div');
+                    detailsDiv.className = 'details';
+                    detailsDiv.innerHTML = details;
+                    if (!div.querySelector('.details')) {
+                        div.appendChild(detailsDiv);
+                    }
+                }
+            }
+        }
+        
+        async function testHealth() {
+            addResult('health', '1. Health Check', 'loading', 'Testing...');
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                if (response.ok) {
+                    updateResult('health', 'success', `✅ Status: ${data.status || 'OK'}`);
+                    return true;
+                } else {
+                    updateResult('health', 'error', `❌ Status: ${response.status}`);
+                    return false;
+                }
+            } catch (error) {
+                updateResult('health', 'error', `❌ Error: ${error.message}<br>→ Backend is not running or not accessible`);
+                return false;
+            }
+        }
+        
+        async function testTemplates() {
+            addResult('templates', '2. Templates Endpoint', 'loading', 'Testing...');
+            try {
+                const response = await fetch(`${API_BASE}/api/v1/templates`);
+                const data = await response.json();
+                if (response.ok) {
+                    const count = Array.isArray(data) ? data.length : 0;
+                    updateResult('templates', 'success', `✅ Found ${count} templates`);
+                    return true;
+                } else {
+                    updateResult('templates', 'error', `❌ Status: ${response.status}<br>Response: ${JSON.stringify(data).substring(0, 100)}`);
+                    return false;
+                }
+            } catch (error) {
+                updateResult('templates', 'error', `❌ Error: ${error.message}`);
+                return false;
+            }
+        }
+        
+        async function testCORS() {
+            addResult('cors', '3. CORS Configuration', 'loading', 'Testing...');
+            try {
+                const response = await fetch(`${API_BASE}/api/v1/templates`, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Origin': 'http://localhost:5173',
+                        'Access-Control-Request-Method': 'GET',
+                    }
+                });
+                const corsHeader = response.headers.get('access-control-allow-origin');
+                if (corsHeader) {
+                    updateResult('cors', 'success', `✅ CORS configured: ${corsHeader}`);
+                    return true;
+                } else {
+                    updateResult('cors', 'error', `⚠️ CORS headers not found - frontend requests may fail`);
+                    return false;
+                }
+            } catch (error) {
+                updateResult('cors', 'error', `❌ Error: ${error.message}`);
+                return false;
+            }
+        }
+        
+        async function runTests() {
+            document.getElementById('results').innerHTML = '';
+            
+            const healthOk = await testHealth();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            if (healthOk) {
+                await testTemplates();
+                await new Promise(resolve => setTimeout(resolve, 500));
+                await testCORS();
+            } else {
+                addResult('next-steps', 'Next Steps', 'error', `
+                    <strong>Backend is not running!</strong><br>
+                    1. Open terminal in <code>1ne_backend</code> directory<br>
+                    2. Run: <code>uvicorn app.main:app --reload</code><br>
+                    3. Or use: <code>.\start_server.ps1</code><br>
+                    4. Wait for "Application startup complete" message<br>
+                    5. Refresh this page and test again
+                `);
+            }
+        }
+        
+        // Auto-run on load
+        window.onload = () => {
+            setTimeout(runTests, 500);
+        };
+    </script>
+</body>
+</html>
+

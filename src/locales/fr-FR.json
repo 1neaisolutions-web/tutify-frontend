@@ -1,0 +1,31 @@
+{
+  "common": {
+    "loading": "Chargement…",
+    "cancel": "Annuler",
+    "search": "Rechercher"
+  },
+  "settings": {
+    "general": {
+      "title": "Préférences générales",
+      "language": { "label": "Langue", "change": "Modifier" },
+      "timezone": { "label": "Fuseau horaire", "adjust": "Ajuster", "currentTime": "Heure actuelle" },
+      "theme": { "label": "Thème de l’interface", "light": "Clair", "dark": "Sombre", "system": "Système" },
+      "syncSaving": "Enregistrement…",
+      "syncSaved": "Enregistré",
+      "syncError": "Échec de l’enregistrement"
+    }
+  },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "teacherTools": "Outils",
+    "history": "Historique",
+    "settings": "Paramètres"
+  },
+  "history": {
+    "justNow": "À l’instant",
+    "minutesAgo": "il y a {{count}} min",
+    "hoursAgo": "il y a {{count}} h",
+    "daysAgo": "il y a {{count}} j"
+  }
+}
+

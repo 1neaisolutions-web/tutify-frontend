@@ -1,0 +1,65 @@
+{
+  "authentication": {
+    "success": true,
+    "detail": "Authenticated browser session established."
+  },
+  "tests": [
+    {
+      "name": "Test 1 — Hard Refresh",
+      "pass": true,
+      "observation": "Header counts after hard refresh: micro=1, growth=1"
+    },
+    {
+      "name": "Test 2 — Normal Refresh",
+      "pass": true,
+      "observation": "Header counts after normal refresh: micro=1, growth=1"
+    },
+    {
+      "name": "Test 3 — View All → Back",
+      "pass": true,
+      "observation": "ViewAllClicked=true, header counts after back: micro=1, growth=1"
+    },
+    {
+      "name": "Test 4 — DOM Single Instance",
+      "pass": true,
+      "observation": "DOM instances: micro=1, growth=1"
+    },
+    {
+      "name": "Test 5 — Console",
+      "pass": true,
+      "observation": "consoleErrors=0, keyWarnings=0"
+    },
+    {
+      "name": "Test 6 — Network + State Consistency",
+      "pass": true,
+      "observation": "home.mode=partial_ready, sections=growth_recommendations,micro_courses, persistRoot=true"
+    },
+    {
+      "name": "Test 7 — Authenticated Runtime Behavior",
+      "pass": true,
+      "observation": "mode=partial_ready, sections=growth_recommendations,micro_courses"
+    }
+  ],
+  "artifacts": {
+    "screenshots": [
+      "01-full-page-initial.png",
+      "02-after-hard-refresh.png",
+      "03-after-normal-refresh.png",
+      "04-view-all-page.png",
+      "05-after-view-all-back.png",
+      "06-dom-single-instance-proof.png",
+      "07-console-proof-page.png"
+    ],
+    "networkResponse": "08-learning-hub-home-response.json"
+  },
+  "debug": {
+    "currentUrl": "http://localhost:5173/learning-hub",
+    "headings": [
+      "Grow as fast as your students — with your personalized professional learning hub",
+      "Personalized micro-courses",
+      "AI-guided tutorials & demonstrations",
+      "AI growth recommendations"
+    ],
+    "bodySnippet": "\n    Teacher AssistantTeacher AssistantDashboardTemplates LibrarySpecialized ChatbotsYouTube Quiz GeneratorPixGen (AI Media Studio)Professional Learning HubPersonalizationAdministrationHistoryAnalyticsExplore Use CasesProfileSubscriptionSettingsPersonalPersonal WorkspaceTokens12,450/ 50,00025%35 Growth HubGrow as fast as your students — with your personalized professional learning hubYou currently have 0 personalized items ready across your learning sections.Adaptive learning planEvidence-backed"
+  }
+}

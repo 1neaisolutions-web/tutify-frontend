@@ -1,0 +1,29 @@
+{
+  "authentication": {
+    "success": true,
+    "detail": "login success"
+  },
+  "reset": {
+    "status": "reset_initiated",
+    "detail": "Your personalization is being regenerated. This may take a moment."
+  },
+  "tests": [
+    {
+      "name": "Growth Step A (progress only, no cards)",
+      "pass": false,
+      "observation": "Start path buttons=0, analyzingText=0"
+    }
+  ],
+  "artifacts": {
+    "screenshots": {
+      "shell": "01-hub-shell-after-reset.png"
+    }
+  },
+  "debug": {
+    "signals": {
+      "accepted": 5,
+      "duplicate_skipped": 0
+    },
+    "error": "Error: Growth Step B timeout: Start path buttons never appeared (found=0)"
+  }
+}

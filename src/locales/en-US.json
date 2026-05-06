@@ -1,0 +1,64 @@
+{
+  "common": {
+    "loading": "Loading…",
+    "cancel": "Cancel",
+    "search": "Search"
+  },
+  "app": {
+    "name": "Teacher Assistant"
+  },
+  "layout": {
+    "activateCredits": "Activate credits",
+    "credits": "Credits",
+    "messages": "Messages",
+    "notifications": "Notifications",
+    "newCount": "{{count}} new",
+    "viewAllMessages": "View all messages",
+    "viewAllNotifications": "View all notifications",
+    "signOut": "Sign out",
+    "signingOut": "Signing out…"
+  },
+  "settings": {
+    "general": {
+      "title": "General preferences",
+      "language": { "label": "Language", "change": "Change" },
+      "timezone": { "label": "Time zone", "adjust": "Adjust", "currentTime": "Current time" },
+      "theme": { "label": "Interface theme", "light": "Light", "dark": "Dark", "system": "System" },
+      "syncSaving": "Saving…",
+      "syncSaved": "Saved",
+      "syncError": "Failed to save"
+    }
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "teacherTools": "Teacher Tools",
+    "teacherToolsOverview": "Overview",
+    "teacherToolsAnalytics": "Analytics",
+    "quiz": "Quiz",
+    "assignment": "Assignment",
+    "worksheet": "Worksheet",
+    "exams": "Exams",
+    "templates": "Templates Library",
+    "chatbots": "Specialized Chatbots",
+    "youtubeQuiz": "YouTube Quiz Generator",
+    "pixgen": "PixGen (AI Media Studio)",
+    "learningHub": "Professional Learning Hub",
+    "personalization": "Personalization",
+    "administration": "Administration",
+    "reporting": "Reporting",
+    "assessment": "Assessment",
+    "contentManagement": "Content Management",
+    "history": "History",
+    "analytics": "Analytics",
+    "useCases": "Explore Use Cases",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "history": {
+    "justNow": "Just now",
+    "minutesAgo": "{{count}}m ago",
+    "hoursAgo": "{{count}}h ago",
+    "daysAgo": "{{count}}d ago"
+  }
+}
+
