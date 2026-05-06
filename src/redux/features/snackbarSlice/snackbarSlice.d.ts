@@ -7,3 +7,5 @@ declare module '../redux/features/snackbarSlice/snackbarSlice' {
   }) => any
 }
 
+export {}
+
