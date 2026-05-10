@@ -5,6 +5,7 @@ import { useStoreData } from '../hooks/useStoreData'
 import { logoutUser, logoutUserAPI, getProfileDetails } from '../redux/features/auth/authSlice'
 import { CustomAvatar } from './shared'
 import { baseURL } from '../redux/constant'
+import { setAuthToken } from '../redux/http'
 
 // Click outside handler hook
 const useClickOutside = (ref: React.RefObject<HTMLElement>, handler: (event: MouseEvent | TouchEvent) => void) => {
@@ -175,6 +176,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   } catch (error) {
     console.error('Error formatting role:', error);
   }
+
+  const appName =
+    String(getUserRole() || '').toLowerCase() === 'student'
+      ? t('app.studentName', 'Student Assistant')
+      : t('app.name')
   
   // Load profile details and credit balance on mount
   useEffect(() => {
@@ -228,7 +234,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       
       // Clear localStorage to ensure clean logout
       try {
+        // Route guards fallback to this token; it MUST be cleared or PrivateRoutes will still render.
+        localStorage.removeItem('access_token')
         localStorage.removeItem('persist:root')
+        setAuthToken(null)
       } catch (e) {
         console.warn('Failed to clear localStorage:', e)
       }
@@ -240,7 +249,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       console.error('Logout error:', err)
       dispatch(logoutUser())
       try {
+        localStorage.removeItem('access_token')
         localStorage.removeItem('persist:root')
+        setAuthToken(null)
       } catch (e) {
         // Ignore localStorage errors
       }
@@ -329,7 +340,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <GraduationCap className="w-6 h-6 text-primary-600" />
-          <span className="font-bold text-lg text-gray-900">{t('app.name')}</span>
+          <span className="font-bold text-lg text-gray-900">{appName}</span>
         </div>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -357,7 +368,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                 <GraduationCap className="w-5 h-5 text-white" />
               </div>
               <span className="font-bold text-lg text-gray-900 hidden lg:block">
-                {t('app.name')}
+                {appName}
               </span>
             </div>
             <button

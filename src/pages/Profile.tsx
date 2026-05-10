@@ -128,6 +128,7 @@ const Profile = () => {
   const userRole = getUserRole();
   const formattedRole = userRole ? formatRoleName(userRole) : '';
   const roleBadgeColor = userRole ? getRoleBadgeColor(userRole) : 'bg-gray-100 text-gray-700';
+  const isStudent = String(userRole || '').toLowerCase() === 'student';
 
   // Active tab state
   const [activeTab, setActiveTab] = useState('account');
@@ -196,6 +197,13 @@ const Profile = () => {
   useEffect(() => {
     dispatch(getProfileDetails());
   }, [dispatch]);
+
+  // Ensure students never land on teaching-only tab
+  useEffect(() => {
+    if (isStudent && activeTab === 'teaching-profile') {
+      setActiveTab('account');
+    }
+  }, [isStudent, activeTab]);
 
   // Fetch profile metadata (dropdown options) on mount
   useEffect(() => {
@@ -916,19 +924,35 @@ const Profile = () => {
                 Account & Security
               </div>
             </button>
-            <button
-              onClick={() => setActiveTab('teaching-profile')}
-              className={`py-4 px-6 font-medium text-sm border-b-2 transition-colors ${
-                activeTab === 'teaching-profile'
-                  ? 'border-primary text-primary'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <BookOpen className="w-4 h-4" />
-                Teaching Profile
-              </div>
-            </button>
+            {isStudent ? (
+              <button
+                onClick={() => setActiveTab('student-profile')}
+                className={`py-4 px-6 font-medium text-sm border-b-2 transition-colors ${
+                  activeTab === 'student-profile'
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <BookOpen className="w-4 h-4" />
+                  Student Profile
+                </div>
+              </button>
+            ) : (
+              <button
+                onClick={() => setActiveTab('teaching-profile')}
+                className={`py-4 px-6 font-medium text-sm border-b-2 transition-colors ${
+                  activeTab === 'teaching-profile'
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <BookOpen className="w-4 h-4" />
+                  Teaching Profile
+                </div>
+              </button>
+            )}
           </nav>
         </div>
 
@@ -1251,8 +1275,140 @@ const Profile = () => {
             </div>
           )}
 
+          {/* Student Profile Tab */}
+          {isStudent && activeTab === 'student-profile' && (
+            <div className="space-y-6">
+              <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                <div className="flex items-center gap-2 mb-2">
+                  <BookOpen className="w-5 h-5 text-gray-700" />
+                  <h2 className="text-lg font-semibold text-gray-900">Student Profile</h2>
+                </div>
+                <p className="text-sm text-gray-500 mb-4">
+                  This profile is used for student onboarding context (stored locally in Phase 1).
+                </p>
+
+                {(() => {
+                  const PROFILE_KEY = 'tutify_student_profile';
+                  const CLASSES_KEY = 'tutify_student_classes';
+                  const GOALS_KEY = 'tutify_student_goals';
+
+                  let profile = { name: '', gradeLevel: '', timezone: '' };
+                  let classes = { classes: '' };
+                  let goals = { goals: '' };
+
+                  try {
+                    profile = JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null') || profile;
+                    classes = JSON.parse(localStorage.getItem(CLASSES_KEY) || 'null') || classes;
+                    goals = JSON.parse(localStorage.getItem(GOALS_KEY) || 'null') || goals;
+                  } catch (e) {
+                    void e;
+                  }
+
+                  const save = () => {
+                    try {
+                      localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+                      localStorage.setItem(CLASSES_KEY, JSON.stringify(classes));
+                      localStorage.setItem(GOALS_KEY, JSON.stringify(goals));
+                      toast('Student profile saved (local demo).', 'success');
+                    } catch (err) {
+                      console.error(err);
+                      toast('Failed to save student profile.', 'error');
+                    }
+                  };
+
+                  return (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <CustomInput
+                          label="Name"
+                          name="student_name"
+                          value={profile.name || ''}
+                          onChange={(e) => {
+                            profile = { ...profile, name: e.target.value };
+                          }}
+                          placeholder="Alex"
+                          icon={<User className="w-4 h-4" />}
+                        />
+                      </div>
+                      <div>
+                        <CustomInput
+                          label="Grade / Level"
+                          name="student_grade"
+                          value={profile.gradeLevel || ''}
+                          onChange={(e) => {
+                            profile = { ...profile, gradeLevel: e.target.value };
+                          }}
+                          placeholder="Grade 10"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <CustomInput
+                          label="Timezone"
+                          name="student_timezone"
+                          value={profile.timezone || ''}
+                          onChange={(e) => {
+                            profile = { ...profile, timezone: e.target.value };
+                          }}
+                          placeholder="America/New_York"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <CustomInput
+                          label="Classes"
+                          name="student_classes"
+                          value={classes.classes || ''}
+                          onChange={(e) => {
+                            classes = { classes: e.target.value };
+                          }}
+                          placeholder="Math, Biology, English…"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <CustomInput
+                          label="Goals"
+                          name="student_goals"
+                          value={goals.goals || ''}
+                          onChange={(e) => {
+                            goals = { goals: e.target.value };
+                          }}
+                          placeholder="Improve algebra, prepare for next week’s exam…"
+                        />
+                      </div>
+
+                      <div className="md:col-span-2 flex items-center justify-end gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3">
+                        <CustomButton
+                          type="button"
+                          onClick={() => {
+                            try {
+                              localStorage.removeItem('tutify_student_onboarding_completed');
+                              toast('Onboarding will show again next time.', 'success');
+                            } catch (e) {
+                              void e;
+                            }
+                          }}
+                          variant="outlined"
+                          className="!h-10 !min-w-[170px] !rounded-lg !border-gray-300 !text-gray-700 hover:!bg-gray-50"
+                        >
+                          Reset onboarding
+                        </CustomButton>
+
+                        <CustomButton
+                          type="button"
+                          onClick={save}
+                          className="!h-10 !min-w-[150px] !rounded-lg !bg-primary !text-white hover:!bg-primary-dark"
+                        >
+                          Save student profile
+                        </CustomButton>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
+          )}
+
           {/* Teaching Profile Tab */}
-          {activeTab === 'teaching-profile' && (
+          {!isStudent && activeTab === 'teaching-profile' && (
             <div className="space-y-6">
               <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                 <div className="flex items-center gap-2 mb-2">

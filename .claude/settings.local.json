@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\rttsg\\\\OneDrive\\\\Desktop\\\\tutify\\\\tutify-frontend\" -Force)",
+      "Bash(Select-Object Name, FullName)",
+      "Bash(python -c \"import fitz; doc=fitz.open\\('student_portal_document_V1.0.pdf'\\); [print\\(doc[i].get_text\\(\\)\\) for i in range\\(min\\(len\\(doc\\),30\\)\\)]\")",
+      "Bash(python -c ' *)"
     ]
   }
 }

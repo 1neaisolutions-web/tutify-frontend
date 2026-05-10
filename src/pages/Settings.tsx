@@ -38,6 +38,7 @@ import ActivateCreditsModal from '../components/ActivateCreditsModal'
 import { formatDate, formatNumber } from '../lib/i18n/format'
 import i18n, { SUPPORTED_LOCALES } from '../i18n'
 import { LANGUAGE_OPTIONS, TIMEZONE_OPTIONS } from '../constants/preferencesOptions'
+import { LOCKED_LANGUAGE, LOCKED_THEME, PREFERENCES_LOCKED } from '../config/preferencesLock'
 import {
   setLanguage,
   setTheme,
@@ -304,10 +305,13 @@ const Settings = () => {
     setSearchParams(tab === 'general' ? {} : { tab })
   }
 
+  const effectiveTheme: Theme = PREFERENCES_LOCKED ? LOCKED_THEME : theme
+  const effectiveLanguage: string = PREFERENCES_LOCKED ? LOCKED_LANGUAGE : language
+
   const currentLanguageLabel =
-    LANGUAGE_OPTIONS.find((l) => l.value === language)?.label ||
+    LANGUAGE_OPTIONS.find((l) => l.value === effectiveLanguage)?.label ||
     LANGUAGE_OPTIONS[0]?.label ||
-    language
+    effectiveLanguage
 
   const currentTimezoneLabel = TIMEZONE_OPTIONS.find((z) => z.value === timezone)?.label ?? timezone
 
@@ -318,6 +322,7 @@ const Settings = () => {
   }, [tzQuery])
 
   const onSelectLanguage = (next: string) => {
+    if (PREFERENCES_LOCKED) return
     const supported = (SUPPORTED_LOCALES as readonly string[]).includes(next)
     const finalLang = supported ? next : 'en-US'
     dispatch(setLanguage(finalLang))
@@ -334,6 +339,7 @@ const Settings = () => {
   }
 
   const onSelectTheme = (next: Theme) => {
+    if (PREFERENCES_LOCKED) return
     dispatch(setTheme(next))
     dispatch(syncPreferences({ theme: next }) as any)
   }
@@ -416,33 +422,35 @@ const Settings = () => {
                         <p>{currentLanguageLabel}</p>
                       </div>
                     </div>
-                    <div className="relative">
-                      <button
-                        onClick={() => setLanguageOpen((v) => !v)}
-                        className="text-sm font-semibold text-primary-600 hover:text-primary-500"
-                      >
-                        {t('settings.general.language.change')}
-                      </button>
-                      {languageOpen && (
-                        <>
-                          <div className="fixed inset-0 z-10" onClick={() => setLanguageOpen(false)} />
-                          <div className="absolute right-0 top-7 z-20 w-72 rounded-2xl border border-gray-200 bg-white shadow-xl py-1">
-                            {LANGUAGE_OPTIONS.map((opt) => (
-                              <button
-                                key={opt.value}
-                                onClick={() => onSelectLanguage(opt.value)}
-                                className={`flex w-full items-center justify-between px-4 py-2.5 text-left text-sm hover:bg-gray-50 ${
-                                  opt.value === language ? 'font-semibold text-primary-600' : 'text-gray-700'
-                                }`}
-                              >
-                                <span>{opt.label}</span>
-                                {opt.value === language && <CheckCircle className="h-4 w-4 text-primary-500" />}
-                              </button>
-                            ))}
-                          </div>
-                        </>
-                      )}
-                    </div>
+                    {!PREFERENCES_LOCKED && (
+                      <div className="relative">
+                        <button
+                          onClick={() => setLanguageOpen((v) => !v)}
+                          className="text-sm font-semibold text-primary-600 hover:text-primary-500"
+                        >
+                          {t('settings.general.language.change')}
+                        </button>
+                        {languageOpen && (
+                          <>
+                            <div className="fixed inset-0 z-10" onClick={() => setLanguageOpen(false)} />
+                            <div className="absolute right-0 top-7 z-20 w-72 rounded-2xl border border-gray-200 bg-white shadow-xl py-1">
+                              {LANGUAGE_OPTIONS.map((opt) => (
+                                <button
+                                  key={opt.value}
+                                  onClick={() => onSelectLanguage(opt.value)}
+                                  className={`flex w-full items-center justify-between px-4 py-2.5 text-left text-sm hover:bg-gray-50 ${
+                                    opt.value === effectiveLanguage ? 'font-semibold text-primary-600' : 'text-gray-700'
+                                  }`}
+                                >
+                                  <span>{opt.label}</span>
+                                  {opt.value === effectiveLanguage && <CheckCircle className="h-4 w-4 text-primary-500" />}
+                                </button>
+                              ))}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    )}
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -509,32 +517,37 @@ const Settings = () => {
                       <Palette className="h-5 w-5 text-rose-500" />
                       <div>
                         <p className="font-medium text-gray-900">{t('settings.general.theme.label')}</p>
-                        <p className="capitalize">{theme}{theme === 'system' ? ' (follows device)' : ''}</p>
+                        <p className="capitalize">
+                          {effectiveTheme}
+                          {effectiveTheme === 'system' ? ' (follows device)' : ''}
+                        </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1 rounded-xl bg-gray-100 p-1">
-                      {([
-                        { value: 'light' as Theme, icon: Sun, label: t('settings.general.theme.light') },
-                        { value: 'dark' as Theme, icon: Moon, label: t('settings.general.theme.dark') },
-                        { value: 'system' as Theme, icon: Laptop, label: t('settings.general.theme.system') },
-                      ] as const).map((opt) => {
-                        const Icon = opt.icon
-                        const active = theme === opt.value
-                        return (
-                          <button
-                            key={opt.value}
-                            onClick={() => onSelectTheme(opt.value)}
-                            title={opt.label}
-                            className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition ${
-                              active ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-                            }`}
-                          >
-                            <Icon className="h-3.5 w-3.5" />
-                            <span className="hidden sm:inline">{opt.label}</span>
-                          </button>
-                        )
-                      })}
-                    </div>
+                    {!PREFERENCES_LOCKED && (
+                      <div className="flex items-center gap-1 rounded-xl bg-gray-100 p-1">
+                        {([
+                          { value: 'light' as Theme, icon: Sun, label: t('settings.general.theme.light') },
+                          { value: 'dark' as Theme, icon: Moon, label: t('settings.general.theme.dark') },
+                          { value: 'system' as Theme, icon: Laptop, label: t('settings.general.theme.system') },
+                        ] as const).map((opt) => {
+                          const Icon = opt.icon
+                          const active = effectiveTheme === opt.value
+                          return (
+                            <button
+                              key={opt.value}
+                              onClick={() => onSelectTheme(opt.value)}
+                              title={opt.label}
+                              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition ${
+                                active ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                              }`}
+                            >
+                              <Icon className="h-3.5 w-3.5" />
+                              <span className="hidden sm:inline">{opt.label}</span>
+                            </button>
+                          )
+                        })}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

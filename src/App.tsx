@@ -8,6 +8,7 @@ import type { Theme } from './redux/features/preferences/preferencesSlice'
 import i18n, { SUPPORTED_LOCALES } from './i18n'
 import { useDispatch } from 'react-redux'
 import { loadFromProfile, setLanguage, setTimezone, syncPreferences } from './redux/features/preferences/preferencesSlice'
+import { LOCKED_LANGUAGE, LOCKED_THEME, PREFERENCES_LOCKED } from './config/preferencesLock'
 
 function App() {
   const theme = useSelector((s: any) => (s.preferences?.theme ?? 'system') as Theme)
@@ -24,12 +25,13 @@ function App() {
   }, [])
 
   useEffect(() => {
-    applyTheme(theme)
+    applyTheme(PREFERENCES_LOCKED ? LOCKED_THEME : theme)
   }, [theme])
 
   useEffect(() => {
-    if (language && i18n.language !== language) {
-      i18n.changeLanguage(language).catch(() => {})
+    const finalLang = PREFERENCES_LOCKED ? LOCKED_LANGUAGE : language
+    if (finalLang && i18n.language !== finalLang) {
+      i18n.changeLanguage(finalLang).catch(() => {})
     }
   }, [language])
 
@@ -43,6 +45,7 @@ function App() {
   useEffect(() => {
     if (!isAuthenticated) return
     if (lastSyncedAt) return
+    if (PREFERENCES_LOCKED) return
 
     const patch: { language?: string; timezone?: string } = {}
 

@@ -5,7 +5,8 @@
     "search": "Search"
   },
   "app": {
-    "name": "Teacher Assistant"
+    "name": "Teacher Assistant",
+    "studentName": "Student Assistant"
   },
   "layout": {
     "activateCredits": "Activate credits",
@@ -52,7 +53,31 @@
     "analytics": "Analytics",
     "useCases": "Explore Use Cases",
     "profile": "Profile",
-    "settings": "Settings"
+    "settings": "Settings",
+    "student": {
+      "copilot": "AI Copilot",
+      "studyPlan": "Study Plan",
+      "tutors": "AI Tutors",
+      "allTutors": "All Tutors",
+      "doubtSolver": "Doubt Solver",
+      "pixgen": "AI Image Studio",
+      "ytQuiz": "YouTube Quiz",
+      "templates": "Templates",
+      "assignments": "Assignments",
+      "quizzes": "Quizzes",
+      "exams": "Exams",
+      "content": "Study Materials",
+      "timetable": "Timetable",
+      "notes": "Notes",
+      "tasks": "My Tasks",
+      "subjects": "Study Rooms",
+      "studyTime": "Study Tracker",
+      "gradeCalc": "Grade Calculator",
+      "teachers": "Teachers",
+      "myTeachers": "My Teachers",
+      "doubts": "My Doubts",
+      "progress": "My Progress"
+    }
   },
   "history": {
     "justNow": "Just now",

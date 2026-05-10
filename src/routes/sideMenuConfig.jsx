@@ -3,9 +3,11 @@ import {
   LayoutDashboard,
   FileText,
   MessageSquare,
+  Bot,
   Youtube,
   Image,
   BookOpen,
+  BookMarked,
   History,
   User,
   Settings,
@@ -26,6 +28,14 @@ import {
   FolderOpen,
   Upload,
   Key,
+  CalendarDays,
+  CheckSquare,
+  Calculator,
+  TrendingUp,
+  Palette,
+  Timer,
+  FlaskConical,
+  PenLine,
 } from 'lucide-react';
 
 const teacherMenu = [
@@ -123,7 +133,53 @@ const schoolAdminMenu = [
 ];
 
 const studentMenu = [
-  { path: '/student', text: 'Student', icon: GraduationCap },
+  // ── AI Suite (primary section) ──────────────────────────────────────
+  { path: '/student/dashboard', text: 'AI Copilot', i18nKey: 'nav.student.copilot', icon: Bot },
+  { path: '/student/study-plan', text: 'Study Plan', i18nKey: 'nav.student.studyPlan', icon: CalendarDays },
+  {
+    path: '/student/tutors',
+    text: 'AI Tutors',
+    i18nKey: 'nav.student.tutors',
+    icon: GraduationCap,
+    child: [
+      { path: '/student/tutors', text: 'All Tutors', i18nKey: 'nav.student.allTutors', icon: GraduationCap, childIcon: GraduationCap },
+      { path: '/student/doubt-solver', text: 'Doubt Solver', i18nKey: 'nav.student.doubtSolver', icon: Lightbulb, childIcon: Lightbulb },
+    ],
+  },
+  { path: '/student/pixgen', text: 'AI Image Studio', i18nKey: 'nav.student.pixgen', icon: Palette },
+  { path: '/student/youtube-quiz', text: 'YouTube Quiz', i18nKey: 'nav.student.ytQuiz', icon: Youtube },
+  { path: '/student/templates', text: 'Templates', i18nKey: 'nav.student.templates', icon: FileText },
+
+  // ── Academics ───────────────────────────────────────────────────────
+  { path: '/student/assignments', text: 'Assignments', i18nKey: 'nav.student.assignments', icon: ClipboardList },
+  { path: '/student/quizzes', text: 'Quizzes', i18nKey: 'nav.student.quizzes', icon: ListChecks },
+  { path: '/student/exams', text: 'Exams', i18nKey: 'nav.student.exams', icon: Award },
+  { path: '/student/content', text: 'Study Materials', i18nKey: 'nav.student.content', icon: BookOpen },
+  { path: '/student/timetable', text: 'Timetable', i18nKey: 'nav.student.timetable', icon: CalendarDays },
+
+  // ── Study Tools ─────────────────────────────────────────────────────
+  { path: '/student/notes', text: 'Notes', i18nKey: 'nav.student.notes', icon: PenLine },
+  { path: '/student/tasks', text: 'My Tasks', i18nKey: 'nav.student.tasks', icon: CheckSquare },
+  { path: '/student/subjects', text: 'Study Rooms', i18nKey: 'nav.student.subjects', icon: FlaskConical },
+  { path: '/student/study-time', text: 'Study Tracker', i18nKey: 'nav.student.studyTime', icon: Timer },
+  { path: '/student/grade-calculator', text: 'Grade Calculator', i18nKey: 'nav.student.gradeCalc', icon: Calculator },
+
+  // ── Teacher & Progress ───────────────────────────────────────────────
+  {
+    path: '/student/teachers',
+    text: 'Teachers',
+    i18nKey: 'nav.student.teachers',
+    icon: MessageSquare,
+    child: [
+      { path: '/student/teachers', text: 'My Teachers', i18nKey: 'nav.student.myTeachers', icon: GraduationCap, childIcon: GraduationCap },
+      { path: '/student/doubts', text: 'My Doubts', i18nKey: 'nav.student.doubts', icon: MessageSquare, childIcon: MessageSquare },
+    ],
+  },
+  { path: '/student/progress', text: 'My Progress', i18nKey: 'nav.student.progress', icon: TrendingUp },
+
+  // ── Account ─────────────────────────────────────────────────────────
+  { path: '/profile', text: 'Profile', i18nKey: 'nav.profile', icon: User },
+  { path: '/settings', text: 'Settings', i18nKey: 'nav.settings', icon: Settings },
 ];
 
 const parentMenu = [

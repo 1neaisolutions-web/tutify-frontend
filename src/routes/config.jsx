@@ -60,7 +60,7 @@ import ProblemSolvingCoach from '../pages/features/ProblemSolvingCoach';
 import { AdvancedKnowledgeSkillsCoach } from '../pages/features/AdvancedKnowledgeSkillsCoach';
 import UNECAcademicDevelopment from '../pages/features/UNECAcademicDevelopment';
 import YouTubeQuizGenerator from '../pages/features/YouTubeQuizGenerator';
-import QuizResults from '../pages/features/QuizResults';
+import FeatureQuizResults from '../pages/features/QuizResults';
 import PixGen from '../pages/features/PixGen';
 import ProfessionalLearningHub from '../pages/features/ProfessionalLearningHub';
 import PersonalizedMicroCoursePage from '../pages/features/learningHubSections/PersonalizedMicroCoursePage';
@@ -113,6 +113,53 @@ import ExamResults from '../pages/features/teacher-tools/exams/ExamResults';
 import ExamAnalytics from '../pages/features/teacher-tools/exams/ExamAnalytics';
 import TeacherToolsTemplates from '../pages/features/teacher-tools/templates/TeacherToolsTemplates';
 import TeacherToolsUnifiedAnalytics from '../pages/features/teacher-tools/analytics/TeacherToolsUnifiedAnalytics';
+
+// ─── Student Portal — Phase 1 ───────────────────────────────────────────────
+import StudentOnboarding from '../panels/student/Onboarding';
+import AICopilot from '../panels/student/AICopilot';
+import StudyPlan from '../panels/student/StudyPlan';
+import AssignmentHub from '../panels/student/AssignmentHub';
+import StudentAssignmentDetail from '../panels/student/AssignmentHub/AssignmentDetail';
+import AssignmentSubmit from '../panels/student/AssignmentHub/AssignmentSubmit';
+import AssignmentFeedback from '../panels/student/AssignmentHub/AssignmentFeedback';
+import QuizCenter from '../panels/student/QuizCenter';
+import QuizTake from '../panels/student/QuizCenter/QuizTake';
+import StudentQuizResults from '../panels/student/QuizCenter/QuizResults';
+import ExamCenter from '../panels/student/ExamCenter';
+import ExamTake from '../panels/student/ExamCenter/ExamTake';
+import ExamPrepare from '../panels/student/ExamCenter/ExamPrepare';
+import ExamReflect from '../panels/student/ExamCenter/ExamReflect';
+import StudentPixGen from '../panels/student/StudentPixGen';
+import StudentYouTubeQuiz from '../panels/student/StudentYouTubeQuiz';
+import YouTubeQuizTake from '../panels/student/StudentYouTubeQuiz/YouTubeQuizTake';
+import YouTubeQuizResults from '../panels/student/StudentYouTubeQuiz/YouTubeQuizResults';
+import StudentTemplates from '../panels/student/StudentTemplates';
+import StudentTemplateRunner from '../panels/student/StudentTemplates/TemplateRunner';
+import AITutors from '../panels/student/AITutors';
+import AITutorChat from '../panels/student/AITutors/AITutorChat';
+import DoubtSolver from '../panels/student/DoubtSolver';
+import DoubtSolverSession from '../panels/student/DoubtSolver/DoubtSolverSession';
+import SmartNotes from '../panels/student/SmartNotes';
+import NoteEditor from '../panels/student/SmartNotes/NoteEditor';
+import NoteDetail from '../panels/student/SmartNotes/NoteDetail';
+import SubjectStudyRoom from '../panels/student/SubjectStudyRoom';
+import StudyRoomDetail from '../panels/student/SubjectStudyRoom/StudyRoomDetail';
+import StudyTimeTracker from '../panels/student/StudyTimeTracker';
+import GradeCalculator from '../panels/student/GradeCalculator';
+import TeacherHub from '../panels/student/TeacherHub';
+import TeacherDetail from '../panels/student/TeacherHub/TeacherDetail';
+import DoubtList from '../panels/student/TeacherHub/DoubtList';
+import DoubtDetail from '../panels/student/TeacherHub/DoubtDetail';
+import PersonalTaskManager from '../panels/student/PersonalTaskManager';
+import TaskCreate from '../panels/student/PersonalTaskManager/TaskCreate';
+import TaskDetailPage from '../panels/student/PersonalTaskManager/TaskDetail';
+import TaskEdit from '../panels/student/PersonalTaskManager/TaskEdit';
+import StudentTimetable from '../panels/student/Timetable';
+import ContentViewer from '../panels/student/ContentViewer';
+import ContentSubjectView from '../panels/student/ContentViewer/ContentSubjectView';
+import ContentWorksheetViewer from '../panels/student/ContentViewer/ContentWorksheetViewer';
+import ProgressView from '../panels/student/ProgressView';
+import SubjectProgress from '../panels/student/ProgressView/SubjectProgress';
 
 export const commonRoutes = [
   {
@@ -719,7 +766,7 @@ export const teacherRoutes = [
         moduleName: 'Quiz Results',
         element: (
           <DashboardLayout>
-            <QuizResults />
+            <FeatureQuizResults />
           </DashboardLayout>
         ),
       },
@@ -1097,14 +1144,129 @@ export const schoolAdminRoutes = [
 ];
 
 export const studentRoutes = [
+  { path: '/student', moduleName: 'Student Root', element: <Navigate to="/student/dashboard" replace /> },
+  { path: '/student/onboarding', moduleName: 'Onboarding', element: withDashboardLayout(<StudentOnboarding />) },
+  { path: '/student/dashboard', moduleName: 'AI Copilot', element: withDashboardLayout(<AICopilot />) },
+  { path: '/student/study-plan', moduleName: 'Study Plan', element: withDashboardLayout(<StudyPlan />) },
+  // Assignment Hub
   {
-    path: '/student',
-    moduleName: 'Student',
-    element: (
-      <DashboardLayout>
-        <ComingSoon />
-      </DashboardLayout>
-    ),
+    path: '/student/assignments',
+    moduleName: 'Assignments',
+    element: withDashboardLayout(<AssignmentHub />),
+    child: [
+      { path: '/student/assignments/:id', moduleName: 'Assignment Detail', element: withDashboardLayout(<StudentAssignmentDetail />) },
+      { path: '/student/assignments/:id/submit', moduleName: 'Assignment Submit', element: withDashboardLayout(<AssignmentSubmit />) },
+      { path: '/student/assignments/:id/feedback', moduleName: 'Assignment Feedback', element: withDashboardLayout(<AssignmentFeedback />) },
+    ],
+  },
+  // Quiz Center
+  {
+    path: '/student/quizzes',
+    moduleName: 'Quizzes',
+    element: withDashboardLayout(<QuizCenter />),
+    child: [
+      { path: '/student/quiz/:id/take', moduleName: 'Take Quiz', element: withDashboardLayout(<QuizTake />) },
+      { path: '/student/quiz/:id/results', moduleName: 'Quiz Results', element: withDashboardLayout(<StudentQuizResults />) },
+    ],
+  },
+  // Exam Center
+  {
+    path: '/student/exams',
+    moduleName: 'Exams',
+    element: withDashboardLayout(<ExamCenter />),
+    child: [
+      { path: '/student/exam/:id/take', moduleName: 'Take Exam', element: withDashboardLayout(<ExamTake />) },
+      { path: '/student/exams/:id/prepare', moduleName: 'Exam Prepare', element: withDashboardLayout(<ExamPrepare />) },
+      { path: '/student/exams/:id/reflect', moduleName: 'Exam Reflect', element: withDashboardLayout(<ExamReflect />) },
+    ],
+  },
+  // AI Tools
+  { path: '/student/pixgen', moduleName: 'Student PixGen', element: withDashboardLayout(<StudentPixGen />) },
+  {
+    path: '/student/youtube-quiz',
+    moduleName: 'YouTube Quiz',
+    element: withDashboardLayout(<StudentYouTubeQuiz />),
+    child: [
+      { path: '/student/youtube-quiz/:id/take', element: withDashboardLayout(<YouTubeQuizTake />) },
+      { path: '/student/youtube-quiz/:id/results', element: withDashboardLayout(<YouTubeQuizResults />) },
+    ],
+  },
+  {
+    path: '/student/templates',
+    moduleName: 'Student Templates',
+    element: withDashboardLayout(<StudentTemplates />),
+    child: [{ path: '/student/templates/:templateId', element: withDashboardLayout(<StudentTemplateRunner />) }],
+  },
+  {
+    path: '/student/tutors',
+    moduleName: 'AI Tutors',
+    element: withDashboardLayout(<AITutors />),
+    child: [{ path: '/student/tutors/:tutorId', element: withDashboardLayout(<AITutorChat />) }],
+  },
+  {
+    path: '/student/doubt-solver',
+    moduleName: 'Doubt Solver',
+    element: withDashboardLayout(<DoubtSolver />),
+    child: [{ path: '/student/doubt-solver/:sessionId', element: withDashboardLayout(<DoubtSolverSession />) }],
+  },
+  // Notes + Subjects + Tracker + Calculator
+  {
+    path: '/student/notes',
+    moduleName: 'Notes',
+    element: withDashboardLayout(<SmartNotes />),
+    child: [
+      { path: '/student/notes/new', element: withDashboardLayout(<NoteEditor />) },
+      { path: '/student/notes/:id', element: withDashboardLayout(<NoteDetail />) },
+    ],
+  },
+  {
+    path: '/student/subjects',
+    moduleName: 'Subjects',
+    element: withDashboardLayout(<SubjectStudyRoom />),
+    child: [{ path: '/student/subjects/:id/room', element: withDashboardLayout(<StudyRoomDetail />) }],
+  },
+  { path: '/student/study-time', moduleName: 'Study Time', element: withDashboardLayout(<StudyTimeTracker />) },
+  { path: '/student/grade-calculator', moduleName: 'Grade Calculator', element: withDashboardLayout(<GradeCalculator />) },
+  // Teachers + Doubts
+  {
+    path: '/student/teachers',
+    moduleName: 'Teacher Hub',
+    element: withDashboardLayout(<TeacherHub />),
+    child: [{ path: '/student/teachers/:id', element: withDashboardLayout(<TeacherDetail />) }],
+  },
+  {
+    path: '/student/doubts',
+    moduleName: 'Doubts',
+    element: withDashboardLayout(<DoubtList />),
+    child: [{ path: '/student/doubts/:id', element: withDashboardLayout(<DoubtDetail />) }],
+  },
+  // Personal Task Manager
+  {
+    path: '/student/tasks',
+    moduleName: 'Tasks',
+    element: withDashboardLayout(<PersonalTaskManager />),
+    child: [
+      { path: '/student/tasks/create', element: withDashboardLayout(<TaskCreate />) },
+      { path: '/student/tasks/:taskId', element: withDashboardLayout(<TaskDetailPage />) },
+      { path: '/student/tasks/:taskId/edit', element: withDashboardLayout(<TaskEdit />) },
+    ],
+  },
+  // Supporting
+  {
+    path: '/student/content',
+    moduleName: 'Content',
+    element: withDashboardLayout(<ContentViewer />),
+    child: [
+      { path: '/student/content/:subjectId', element: withDashboardLayout(<ContentSubjectView />) },
+      { path: '/student/content/worksheet/:id', element: withDashboardLayout(<ContentWorksheetViewer />) },
+    ],
+  },
+  { path: '/student/timetable', moduleName: 'Timetable', element: withDashboardLayout(<StudentTimetable />) },
+  {
+    path: '/student/progress',
+    moduleName: 'Progress',
+    element: withDashboardLayout(<ProgressView />),
+    child: [{ path: '/student/progress/:subjectId', element: withDashboardLayout(<SubjectProgress />) }],
   },
 ];
 
