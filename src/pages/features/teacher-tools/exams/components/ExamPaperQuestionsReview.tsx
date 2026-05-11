@@ -35,6 +35,13 @@ function toolbarClass(disabled?: boolean) {
   return `rounded-lg p-1.5 ${disabled ? 'cursor-not-allowed opacity-30' : 'text-gray-600 hover:bg-gray-200'}`
 }
 
+function stripLeadingSubpartLabel(text: string, letter: string): string {
+  // Avoid "(a) (a) ..." when backend already included a label prefix.
+  // Supports "(a) foo", "a) foo", "(a). foo", "(a): foo"
+  const re = new RegExp(`^\\s*(?:\\(${letter}\\)|${letter}\\))\\s*[:\\.-]?\\s*`, 'i')
+  return text.replace(re, '').trimStart()
+}
+
 export function ExamPaperQuestionsReview({
   paper,
   mcqs,
@@ -339,7 +346,15 @@ export function ExamPaperQuestionsReview({
                 <ul className="mt-3 space-y-2 border-l-2 border-violet-100 pl-3">
                   {q.subparts.map((sp, si) => (
                     <li key={si} className="text-sm leading-relaxed text-gray-800">
-                      <span className="font-semibold text-gray-900">({String.fromCharCode(97 + si)})</span> {sp}
+                      {(() => {
+                        const letter = String.fromCharCode(97 + si)
+                        const cleaned = stripLeadingSubpartLabel(sp, letter)
+                        return (
+                          <>
+                            <span className="font-semibold text-gray-900">({letter})</span> {cleaned}
+                          </>
+                        )
+                      })()}
                     </li>
                   ))}
                 </ul>

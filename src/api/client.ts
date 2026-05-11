@@ -124,6 +124,13 @@ async function tryRefreshToken(): Promise<boolean> {
     
     const nextAccessToken = refreshData?.access_token || refreshData?.token || refreshData?.accessToken
     if (nextAccessToken) {
+      // Keep legacy/local guard token in sync (PrivateRoutes reads this key).
+      try {
+        localStorage.setItem('access_token', nextAccessToken)
+      } catch (e) {
+        console.warn('[apiRequest] Could not persist access_token:', e)
+      }
+
       // Update token in localStorage
       authState.user.token = nextAccessToken
       const nextRefreshToken = refreshData?.refresh_token || refreshData?.refreshToken
@@ -132,21 +139,9 @@ async function tryRefreshToken(): Promise<boolean> {
       }
       parsed.auth = JSON.stringify(authState)
       localStorage.setItem('persist:root', JSON.stringify(parsed))
-      
-      // Update Redux store if available
-      if (storeRef) {
-        try {
-          const state = storeRef.getState()
-          if (state?.auth?.user) {
-            state.auth.user.token = nextAccessToken
-            if (nextRefreshToken) {
-              state.auth.user.refresh_token = nextRefreshToken
-            }
-          }
-        } catch (e) {
-          console.warn('[apiRequest] Could not update Redux store:', e)
-        }
-      }
+      // IMPORTANT: Do not mutate Redux state directly (it is read-only in dev).
+      // The Redux slice + redux-persist will reconcile from storage on the next rehydrate,
+      // and fetch requests use `getAuthToken()` which now also reads `access_token`.
       
       console.log('[apiRequest] ✅ Token refreshed successfully')
       return true
@@ -161,18 +156,35 @@ async function tryRefreshToken(): Promise<boolean> {
 
 // Helper to get auth token from Redux store (same way as Redux axios does)
 export const getAuthToken = (): string | null => {
-  // First try: Get from Redux store directly (most reliable, same as http.js)
+  // Read both possible sources:
+  // - Redux (preferred when up-to-date)
+  // - localStorage.access_token (used by route guard + updated during refresh)
+  let reduxToken: string | null = null
+  let localToken: string | null = null
+
   if (storeRef) {
     try {
       const state = storeRef.getState()
-      const token = state?.auth?.user?.token
-      if (token) {
-        return token
-      }
+      reduxToken = state?.auth?.user?.token ?? null
     } catch (error) {
       console.warn('[getAuthToken] Could not get token from Redux store:', error)
     }
   }
+
+  try {
+    localToken = localStorage.getItem('access_token')
+  } catch (error) {
+    console.warn('[getAuthToken] Could not read access_token from localStorage:', error)
+  }
+
+  // If localStorage has a token and Redux is missing/stale, prefer localStorage.
+  // This matters after refresh: we update localStorage but Redux state may lag.
+  if (localToken) {
+    if (!reduxToken) return localToken
+    if (reduxToken !== localToken && isTokenExpired(reduxToken)) return localToken
+  }
+
+  if (reduxToken) return reduxToken
   
   // Fallback: Get from localStorage (for cases where store not yet initialized)
   try {

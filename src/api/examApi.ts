@@ -211,7 +211,7 @@ export function fetchExamList(params: ExamListParams = {}, signal?: AbortSignal)
   for (const [k, v] of Object.entries(params)) {
     if (v !== undefined && v !== '') query[k] = v as string | number
   }
-  return apiRequest<ExamListResponse>(BASE, { query, signal })
+  return apiRequest<ExamListResponse>(`${BASE}/`, { query, signal })
 }
 
 export function fetchExam(id: string, signal?: AbortSignal): Promise<ExamApiItem> {
@@ -219,7 +219,7 @@ export function fetchExam(id: string, signal?: AbortSignal): Promise<ExamApiItem
 }
 
 export function createExam(payload: ExamCreatePayload): Promise<ExamApiItem> {
-  return apiRequest<ExamApiItem>(BASE, { method: 'POST', body: payload })
+  return apiRequest<ExamApiItem>(`${BASE}/`, { method: 'POST', body: payload })
 }
 
 export function patchExam(id: string, patch: ExamPatchPayload): Promise<ExamApiItem> {

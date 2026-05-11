@@ -7,6 +7,11 @@ import { longPoolSize, shortPoolSize } from '../demo/examQuestionStubs'
 import { getDemoLongBlock, getDemoMcq, getDemoShortStem } from '../demo/examReviewDemoContent'
 import { stripLeadingMcqOptionLabel } from '../utils/mcqOptionDisplay'
 
+function stripLeadingSubpartLabel(text: string, letter: string): string {
+  const re = new RegExp(`^\\s*(?:\\(${letter}\\)|${letter}\\))\\s*[:\\.-]?\\s*`, 'i')
+  return text.replace(re, '').trimStart()
+}
+
 type Props = {
   title: string
   subject: string
@@ -203,9 +208,11 @@ export function ExamPrintPreviewContent({
                   <div className="ml-0 space-y-2 border-l-2 border-gray-200 pl-3 print:border-gray-300">
                     {subparts.map((text, si) => {
                       const sub = `(${String.fromCharCode(97 + si)})`
+                      const letter = String.fromCharCode(97 + si)
+                      const cleaned = stripLeadingSubpartLabel(text, letter)
                       return (
                         <p key={sub} className="text-sm leading-relaxed text-gray-800">
-                          <span className="font-medium text-gray-900">{sub}</span> {text}
+                          <span className="font-medium text-gray-900">{sub}</span> {cleaned}
                         </p>
                       )
                     })}
@@ -226,9 +233,11 @@ export function ExamPrintPreviewContent({
                     <div className="ml-0 space-y-2 border-l-2 border-gray-200 pl-3 print:border-gray-300">
                       {subparts.map((text, si) => {
                         const sub = `(${String.fromCharCode(97 + si)})`
+                        const letter = String.fromCharCode(97 + si)
+                        const cleaned = stripLeadingSubpartLabel(text, letter)
                         return (
                           <p key={sub} className="text-sm leading-relaxed text-gray-800">
-                            <span className="font-medium text-gray-900">{sub}</span> {text}
+                            <span className="font-medium text-gray-900">{sub}</span> {cleaned}
                           </p>
                         )
                       })}
