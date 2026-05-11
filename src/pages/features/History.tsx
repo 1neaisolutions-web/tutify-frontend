@@ -560,13 +560,32 @@ const History = () => {
                   onClick={(it) => setSelectedItem(it)}
                   onDelete={(it) => {
                     const path = DELETE_PATH_MAP[it.sourceType](it.id)
+                    // Optimistically remove from the current list cache so the UI updates immediately.
+                    // We'll still invalidate after the request so stats/quota stay correct.
+                    const patch = dispatch(
+                      historyApiSlice.util.updateQueryData('listHistory', listParams, (draft) => {
+                        const before = draft.items.length
+                        draft.items = draft.items.filter((x) => !(x.id === it.id && x.sourceType === it.sourceType))
+                        if (draft.total != null) {
+                          const removed = before - draft.items.length
+                          if (removed > 0) draft.total = Math.max(0, draft.total - removed)
+                        }
+                      }),
+                    )
+
+                    // Keep local selection state consistent with the optimistic UI.
+                    setSelectedIds((prev) => prev.filter((id) => id !== it.id))
+                    if (selectedItem?.id === it.id && selectedItem?.sourceType === it.sourceType) setSelectedItem(null)
+
                     apiRequest(path, { method: 'DELETE' })
                       .then(() => {
-                        if (selectedItem?.id === it.id) setSelectedItem(null)
                         invalidateHistory()
                         toast.success('Deleted')
                       })
-                      .catch(() => toast.error('Could not delete'))
+                      .catch(() => {
+                        patch.undo()
+                        toast.error('Could not delete')
+                      })
                   }}
                   onDuplicate={handleDuplicate}
                   onTogglePin={handleTogglePinItem}

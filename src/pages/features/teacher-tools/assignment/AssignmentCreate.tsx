@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams, useLocation, useSearchParams } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { TeacherToolsPageHeader, TeacherToolsWizardStepper } from '../components'
 import { demoClasses, type DemoAssignment } from '../demo/teacherToolsDemoData'
 import { formatSourceSummary, type AssignmentBriefLineStub, type AssignmentBriefTopicStub, type QuizDifficultyId } from '../demo/generationFromSources'
@@ -70,6 +71,7 @@ export default function AssignmentCreate() {
   const isEdit = location.pathname.endsWith('/edit')
   const { toast } = useSnackbar()
   const { api } = useTeacherToolsDemo()
+  const hasCredits = useSelector((s: any) => (s?.subscription?.hasActiveCredits ?? false) || (s?.subscription?.balance ?? 0) > 0)
 
   const refreshCredits = useCallback(() => {
     void getCreditBalance()
@@ -82,6 +84,11 @@ export default function AssignmentCreate() {
   const [genProgress, setGenProgress] = useState(0.15)
   const [generationError, setGenerationError] = useState<string | null>(null)
   const [creditGate, setCreditGate] = useState<ParsedCreditError | null>(null)
+
+  useEffect(() => {
+    if (!hasCredits) return
+    if (creditGate) setCreditGate(null)
+  }, [hasCredits])
   const [regenCreditGate, setRegenCreditGate] = useState<ParsedCreditError | null>(null)
   const [buildErrors, setBuildErrors] = useState<string[]>([])
   const [topicBlocks, setTopicBlocks] = useState<AssignmentBriefTopicStub[]>([])

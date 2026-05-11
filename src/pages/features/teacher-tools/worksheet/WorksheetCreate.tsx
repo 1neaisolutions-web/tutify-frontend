@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams, useLocation, useSearchParams } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { TeacherToolsPageHeader, TeacherToolsWizardStepper } from '../components'
 import { demoClasses } from '../demo/teacherToolsDemoData'
 import { SHORT_RESPONSE_LINES, clampResponseLines, formatSourceSummary } from '../demo/generationFromSources'
@@ -339,6 +340,7 @@ export default function WorksheetCreate() {
   const { worksheetId } = useParams<{ worksheetId?: string }>()
   const isEdit = location.pathname.endsWith('/edit')
   const { toast } = useSnackbar()
+  const hasCredits = useSelector((s: any) => (s?.subscription?.hasActiveCredits ?? false) || (s?.subscription?.balance ?? 0) > 0)
   const worksheetIdRef = useRef<string | null>(worksheetId ?? null)
   const idempotencyKeyRef = useRef<string>(typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}`)
 
@@ -377,6 +379,12 @@ export default function WorksheetCreate() {
   const [generationError, setGenerationError] = useState<string | null>(null)
   const [creditGate, setCreditGate] = useState<ParsedCreditError | null>(null)
   const [blockRegenCreditGate, setBlockRegenCreditGate] = useState<ParsedCreditError | null>(null)
+
+  useEffect(() => {
+    if (!hasCredits) return
+    if (creditGate) setCreditGate(null)
+    if (blockRegenCreditGate) setBlockRegenCreditGate(null)
+  }, [hasCredits])
   const [buildErrors, setBuildErrors] = useState<string[]>([])
   const [sessions, setSessions] = useState<LocalWorksheetSession[]>([])
   const [previewOpen, setPreviewOpen] = useState(false)

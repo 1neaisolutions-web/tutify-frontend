@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams, useLocation, useSearchParams } from 'react-router-dom'
 import { TeacherToolsPageHeader, TeacherToolsWizardStepper } from '../components'
 import { demoClasses } from '../demo/teacherToolsDemoData'
@@ -71,6 +71,7 @@ export default function QuizCreate() {
   const { toast } = useSnackbar()
   const { api } = useTeacherToolsDemo()
   const dispatch = useDispatch()
+  const hasCredits = useSelector((s: any) => (s?.subscription?.hasActiveCredits ?? false) || (s?.subscription?.balance ?? 0) > 0)
 
   const refreshCredits = useCallback(() => {
     void getCreditBalance()
@@ -82,6 +83,11 @@ export default function QuizCreate() {
   const [generating, setGenerating] = useState(false)
   const [generationError, setGenerationError] = useState<string | null>(null)
   const [creditGate, setCreditGate] = useState<ParsedCreditError | null>(null)
+
+  useEffect(() => {
+    if (!hasCredits) return
+    if (creditGate) setCreditGate(null)
+  }, [hasCredits])
   const [regenQuestionCreditGate, setRegenQuestionCreditGate] = useState<ParsedCreditError | null>(null)
   const [genProgress, setGenProgress] = useState(0.15)
   const [lastCriteria, setLastCriteria] = useState<QuizStubCriteria | null>(null)

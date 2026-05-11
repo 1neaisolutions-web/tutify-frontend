@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { useNavigate, useParams, useLocation, useSearchParams } from 'react-router-dom'
 import { TeacherToolsPageHeader, TeacherToolsWizardStepper } from '../components'
 import { demoClasses } from '../demo/teacherToolsDemoData'
@@ -89,6 +90,9 @@ export default function ExamCreate() {
   const { examId } = useParams<{ examId?: string }>()
   const isEdit = location.pathname.endsWith('/edit')
   const { toast } = useSnackbar()
+
+  // If credits get activated elsewhere (e.g. Settings page), clear any stale gating UI.
+  const hasCredits = useSelector((s: any) => (s?.subscription?.hasActiveCredits ?? false) || (s?.subscription?.balance ?? 0) > 0)
 
   const refreshCredits = useCallback(() => {
     void getCreditBalance()
@@ -196,6 +200,12 @@ export default function ExamCreate() {
   useEffect(() => {
     if (!isEdit) setScheduleStartIso(null)
   }, [isEdit])
+
+  useEffect(() => {
+    if (!hasCredits) return
+    if (creditGate) setCreditGate(null)
+    if (regenCreditGate) setRegenCreditGate(null)
+  }, [hasCredits])
 
   useEffect(() => {
     if (scheduleDate) {

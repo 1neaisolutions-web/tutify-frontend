@@ -6,6 +6,11 @@ import {
 } from '../quiz/config/handoutLayoutConfig'
 import { stripLeadingMcqOptionLabel } from '../exams/utils/mcqOptionDisplay'
 
+function stripLeadingSubpartLabel(text: string, letter: string): string {
+  const re = new RegExp(`^\\s*(?:\\(${letter}\\)|${letter}\\))\\s*[:\\.-]?\\s*`, 'i')
+  return text.replace(re, '').trimStart()
+}
+
 const PAGE_H_MM = 297
 const MARGIN = 14
 const BOTTOM_SAFE = 18
@@ -226,8 +231,10 @@ export function downloadExamHandoutPdf(input: ExamHandoutPdfInput, filename?: st
       let si = 0
       for (const sp of q.subparts) {
         const label = `(${String.fromCharCode(97 + si)})`
+        const letter = String.fromCharCode(97 + si)
+        const cleaned = stripLeadingSubpartLabel(sp, letter)
         y = ensureY(doc, y, 6)
-        y = writeParagraph(doc, `${label} ${sp}`, MARGIN + 4, y, w - 4, lineStep - 0.3)
+        y = writeParagraph(doc, `${label} ${cleaned}`, MARGIN + 4, y, w - 4, lineStep - 0.3)
         si += 1
       }
       doc.setFontSize(10)
