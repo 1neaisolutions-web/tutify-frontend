@@ -11,7 +11,17 @@
     "test:e2e:ui": "playwright test --ui",
     "test:templates": "node scripts/test-templates-api.js",
     "test:all-templates": "node scripts/test-all-templates-schema.js",
-    "test:stream": "node scripts/test-all-templates-stream.mjs"
+    "test:stream": "node scripts/test-all-templates-stream.mjs",
+    "remotion:preview": "npx remotion studio src/remotion/index.ts",
+    "remotion:preview:v6": "npx remotion studio src/remotion/index.ts",
+    "remotion:render:v6": "npx remotion render src/remotion/index.ts TutifyDemoV6 out/TutifyDemoV6.mp4 --codec h264 --pixel-format yuv420p --crf 18",
+    "remotion:render": "npx remotion render src/remotion/index.ts TutifyDemo out/tutify-demo.mp4",
+    "remotion:render:hq": "npx remotion render src/remotion/index.ts TutifyDemo out/tutify-demo-hq.mp4 --codec h264 --pixel-format yuv420p --crf 18",
+    "remotion:render:scene1": "npx remotion render src/remotion/index.ts TeachingIntro out/scene-01-teaching-intro.mp4 --codec h264 --pixel-format yuv420p --crf 18",
+    "remotion:render:scene2": "npx remotion render src/remotion/index.ts EducationChangingSlide out/scene-02-education-changing.mp4 --codec h264 --pixel-format yuv420p --crf 18",
+    "remotion:render:scene3": "npx remotion render src/remotion/index.ts TeachersOverwhelmedSlide out/scene-03-teachers-overwhelmed.mp4 --codec h264 --pixel-format yuv420p --crf 18",
+    "remotion:render:scenes123": "yarn remotion:render:scene1 && yarn remotion:render:scene2 && yarn remotion:render:scene3",
+    "remotion:render:scenes123-combined": "npx remotion render src/remotion/index.ts TutifyScenes123 out/scenes-1-2-3-combined.mp4 --codec h264 --pixel-format yuv420p --crf 18"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -25,6 +35,10 @@
     "@mui/material": "^7.3.6",
     "@mui/x-date-pickers": "^8.23.0",
     "@reduxjs/toolkit": "^2.8.2",
+    "@remotion/cli": "^4.0.461",
+    "@remotion/google-fonts": "^4.0.461",
+    "@remotion/media-utils": "^4.0.461",
+    "@remotion/transitions": "^4.0.461",
     "apexcharts": "^5.3.6",
     "axios": "^1.10.0",
     "better-react-mathjax": "^2.4.0-beta-1",
@@ -45,6 +59,7 @@
     "react-router-dom": "^6.20.0",
     "redux-persist": "^6.0.0",
     "remark-gfm": "^4.0.1",
+    "remotion": "^4.0.461",
     "turndown": "^7.1.3"
   },
   "devDependencies": {
