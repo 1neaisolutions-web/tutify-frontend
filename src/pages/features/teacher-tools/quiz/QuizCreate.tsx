@@ -794,7 +794,7 @@ export default function QuizCreate() {
             onNegativeMarking={setNegativeMarking}
             validationErrors={buildErrors}
           />
-          <div className="sticky bottom-4 z-10 mt-8 flex flex-col gap-3 rounded-2xl border border-indigo-200 bg-white/95 p-4 shadow-lg backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-8 flex flex-col gap-3 rounded-2xl border border-indigo-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
             <div className="min-w-0">
               <p className="text-sm font-semibold text-gray-900">Ready to generate from your scope</p>
               <p className="mt-0.5 text-xs text-gray-600">

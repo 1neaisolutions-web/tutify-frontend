@@ -120,6 +120,41 @@ const getRoleBadgeColor = (role: string | null | undefined): string => {
   return colorMap[roleStr] || 'bg-gray-100 text-gray-700';
 };
 
+const headerMessages: {
+  id: number
+  sender: string
+  preview: string
+  time: string
+  unread: boolean
+}[] = []
+
+const headerNotifications: {
+  id: number
+  type: 'success' | 'info' | 'warning'
+  title: string
+  message: string
+  time: string
+  unread: boolean
+}[] = []
+
+const DropdownEmptyState = ({
+  icon: Icon,
+  title,
+  hint,
+}: {
+  icon: React.ComponentType<{ className?: string }>
+  title: string
+  hint: string
+}) => (
+  <div className="px-4 py-10 text-center">
+    <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+      <Icon className="h-6 w-6 text-gray-400" />
+    </div>
+    <p className="text-sm font-medium text-gray-900">{title}</p>
+    <p className="mt-1 text-xs text-gray-500">{hint}</p>
+  </div>
+)
+
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -584,9 +619,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             >
               <button className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-500 transition hover:border-primary-200 hover:text-primary-600">
                 <Mail className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary-500 text-[10px] font-semibold text-white">
-                  3
-                </span>
+                {headerMessages.length > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary-500 text-[10px] font-semibold text-white">
+                    {headerMessages.length}
+                  </span>
+                )}
               </button>
 
               {/* Messages Dropdown Menu */}
@@ -595,64 +632,56 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   <div className="p-4 border-b border-gray-200">
                     <div className="flex items-center justify-between">
                       <h3 className="text-sm font-semibold text-gray-900">{t('layout.messages')}</h3>
-                      <span className="text-xs text-gray-500">{t('layout.newCount', { count: 3 })}</span>
+                      {headerMessages.length > 0 && (
+                        <span className="text-xs text-gray-500">
+                          {t('layout.newCount', { count: headerMessages.filter((m) => m.unread).length })}
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="max-h-96 overflow-y-auto">
-                    {[
-                      {
-                        id: 1,
-                        sender: 'Sarah Johnson',
-                        preview: 'Thanks for sharing the lesson plan template!',
-                        time: '2 min ago',
-                        unread: true,
-                      },
-                      {
-                        id: 2,
-                        sender: 'Michael Chen',
-                        preview: 'Can we schedule a meeting to discuss the assessment?',
-                        time: '1 hour ago',
-                        unread: true,
-                      },
-                      {
-                        id: 3,
-                        sender: 'Emily Davis',
-                        preview: 'The new chatbot feature looks great!',
-                        time: '3 hours ago',
-                        unread: true,
-                      },
-                    ].map((message) => (
-                      <button
-                        key={message.id}
-                        className="w-full text-left px-4 py-3 hover:bg-gray-50 transition border-b border-gray-100 last:border-b-0"
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-600">
-                            <span className="text-xs font-semibold">
-                              {message.sender.split(' ').map((n) => n[0]).join('')}
-                            </span>
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between mb-1">
-                              <p className="text-sm font-semibold text-gray-900 truncate">
-                                {message.sender}
-                              </p>
-                              {message.unread && (
-                                <span className="flex h-2 w-2 rounded-full bg-primary-500 flex-shrink-0" />
-                              )}
+                    {headerMessages.length === 0 ? (
+                      <DropdownEmptyState
+                        icon={Mail}
+                        title={t('layout.noMessages')}
+                        hint={t('layout.noMessagesHint')}
+                      />
+                    ) : (
+                      headerMessages.map((message) => (
+                        <button
+                          key={message.id}
+                          className="w-full text-left px-4 py-3 hover:bg-gray-50 transition border-b border-gray-100 last:border-b-0"
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-600">
+                              <span className="text-xs font-semibold">
+                                {message.sender.split(' ').map((n) => n[0]).join('')}
+                              </span>
                             </div>
-                            <p className="text-xs text-gray-600 line-clamp-1">{message.preview}</p>
-                            <p className="text-xs text-gray-500 mt-1">{message.time}</p>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between mb-1">
+                                <p className="text-sm font-semibold text-gray-900 truncate">
+                                  {message.sender}
+                                </p>
+                                {message.unread && (
+                                  <span className="flex h-2 w-2 rounded-full bg-primary-500 flex-shrink-0" />
+                                )}
+                              </div>
+                              <p className="text-xs text-gray-600 line-clamp-1">{message.preview}</p>
+                              <p className="text-xs text-gray-500 mt-1">{message.time}</p>
+                            </div>
                           </div>
-                        </div>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                  {headerMessages.length > 0 && (
+                    <div className="p-3 border-t border-gray-200">
+                      <button className="w-full text-center text-sm font-semibold text-primary-600 hover:text-primary-500">
+                        {t('layout.viewAllMessages')}
                       </button>
-                    ))}
-                  </div>
-                  <div className="p-3 border-t border-gray-200">
-                    <button className="w-full text-center text-sm font-semibold text-primary-600 hover:text-primary-500">
-                      {t('layout.viewAllMessages')}
-                    </button>
-                  </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -679,9 +708,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             >
               <button className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-500 transition hover:border-primary-200 hover:text-primary-600">
                 <Bell className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[10px] font-semibold text-white">
-                  5
-                </span>
+                {headerNotifications.length > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[10px] font-semibold text-white">
+                    {headerNotifications.length}
+                  </span>
+                )}
               </button>
 
               {/* Notifications Dropdown Menu */}
@@ -690,87 +721,62 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   <div className="p-4 border-b border-gray-200">
                     <div className="flex items-center justify-between">
                       <h3 className="text-sm font-semibold text-gray-900">{t('layout.notifications')}</h3>
-                      <span className="text-xs text-gray-500">{t('layout.newCount', { count: 5 })}</span>
+                      {headerNotifications.length > 0 && (
+                        <span className="text-xs text-gray-500">
+                          {t('layout.newCount', {
+                            count: headerNotifications.filter((n) => n.unread).length,
+                          })}
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="max-h-96 overflow-y-auto">
-                    {[
-                      {
-                        id: 1,
-                        type: 'success',
-                        title: 'Quiz Generated Successfully',
-                        message: 'Your YouTube quiz has been generated and is ready to use.',
-                        time: '5 min ago',
-                        unread: true,
-                      },
-                      {
-                        id: 2,
-                        type: 'info',
-                        title: 'New Template Available',
-                        message: 'A new STEM activity template has been added to the library.',
-                        time: '1 hour ago',
-                        unread: true,
-                      },
-                      {
-                        id: 3,
-                        type: 'warning',
-                        title: 'Token Usage Alert',
-                        message: 'You have used 80% of your monthly token allocation.',
-                        time: '2 hours ago',
-                        unread: true,
-                      },
-                      {
-                        id: 4,
-                        type: 'info',
-                        title: 'Assessment Completed',
-                        message: 'Quarterly Performance Review has been completed by all students.',
-                        time: '3 hours ago',
-                        unread: true,
-                      },
-                      {
-                        id: 5,
-                        type: 'success',
-                        title: 'Report Generated',
-                        message: 'Your monthly usage report is ready for download.',
-                        time: '1 day ago',
-                        unread: true,
-                      },
-                    ].map((notification) => (
-                      <button
-                        key={notification.id}
-                        className="w-full text-left px-4 py-3 hover:bg-gray-50 transition border-b border-gray-100 last:border-b-0"
-                      >
-                        <div className="flex items-start gap-3">
-                          <div
-                            className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full ${
-                              notification.type === 'success'
-                                ? 'bg-green-100 text-green-600'
-                                : notification.type === 'warning'
-                                ? 'bg-amber-100 text-amber-600'
-                                : 'bg-blue-100 text-blue-600'
-                            }`}
-                          >
-                            <Bell className="h-4 w-4" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between mb-1">
-                              <p className="text-sm font-semibold text-gray-900">{notification.title}</p>
-                              {notification.unread && (
-                                <span className="flex h-2 w-2 rounded-full bg-primary-500 flex-shrink-0" />
-                              )}
+                    {headerNotifications.length === 0 ? (
+                      <DropdownEmptyState
+                        icon={Bell}
+                        title={t('layout.noNotifications')}
+                        hint={t('layout.noNotificationsHint')}
+                      />
+                    ) : (
+                      headerNotifications.map((notification) => (
+                        <button
+                          key={notification.id}
+                          className="w-full text-left px-4 py-3 hover:bg-gray-50 transition border-b border-gray-100 last:border-b-0"
+                        >
+                          <div className="flex items-start gap-3">
+                            <div
+                              className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full ${
+                                notification.type === 'success'
+                                  ? 'bg-green-100 text-green-600'
+                                  : notification.type === 'warning'
+                                  ? 'bg-amber-100 text-amber-600'
+                                  : 'bg-blue-100 text-blue-600'
+                              }`}
+                            >
+                              <Bell className="h-4 w-4" />
                             </div>
-                            <p className="text-xs text-gray-600 line-clamp-2">{notification.message}</p>
-                            <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between mb-1">
+                                <p className="text-sm font-semibold text-gray-900">{notification.title}</p>
+                                {notification.unread && (
+                                  <span className="flex h-2 w-2 rounded-full bg-primary-500 flex-shrink-0" />
+                                )}
+                              </div>
+                              <p className="text-xs text-gray-600 line-clamp-2">{notification.message}</p>
+                              <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
+                            </div>
                           </div>
-                        </div>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                  {headerNotifications.length > 0 && (
+                    <div className="p-3 border-t border-gray-200">
+                      <button className="w-full text-center text-sm font-semibold text-primary-600 hover:text-primary-500">
+                        {t('layout.viewAllNotifications')}
                       </button>
-                    ))}
-                  </div>
-                  <div className="p-3 border-t border-gray-200">
-                    <button className="w-full text-center text-sm font-semibold text-primary-600 hover:text-primary-500">
-                      {t('layout.viewAllNotifications')}
-                    </button>
-                  </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

@@ -678,24 +678,21 @@ export function QuizRagBuildSection({
 
           <fieldset>
             <legend className="text-sm font-medium text-gray-800">Difficulty profile</legend>
-            <div className="mt-2 grid gap-2 sm:grid-cols-3">
+            <div className="mt-2 grid gap-2 sm:grid-cols-3" role="radiogroup" aria-label="Difficulty profile">
               {DIFFICULTY_OPTIONS.map((d) => (
-                <label
+                <button
                   key={d.id}
-                  className={`cursor-pointer rounded-2xl border px-3 py-3 text-sm transition ${
+                  type="button"
+                  role="radio"
+                  aria-checked={difficulty === d.id}
+                  onClick={() => onDifficultyChange(d.id)}
+                  className={`text-left rounded-2xl border px-3 py-3 text-sm transition ${
                     difficulty === d.id ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-500/20' : 'border-gray-200 hover:border-gray-300'
                   }`}
                 >
-                  <input
-                    type="radio"
-                    name="quiz-difficulty"
-                    className="sr-only"
-                    checked={difficulty === d.id}
-                    onChange={() => onDifficultyChange(d.id)}
-                  />
                   <span className="font-semibold text-gray-900">{d.label}</span>
                   <span className="mt-1 block text-xs text-gray-600">{d.hint}</span>
-                </label>
+                </button>
               ))}
             </div>
           </fieldset>

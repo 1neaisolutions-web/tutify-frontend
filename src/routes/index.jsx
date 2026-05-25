@@ -1,5 +1,5 @@
 // Library Imports
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 // Local Imports
@@ -16,6 +16,7 @@ import {
   parentRoutes,
 } from './config';
 import DashboardLayout from '../components/DashboardLayout';
+import { UnknownRouteRedirect } from './routeHelpers';
 import { ContentPackDetail } from '../pages/features/ContentPackDetail';
 import { DocumentUpload } from '../pages/features/DocumentUpload';
 import { DocumentDetails } from '../pages/features/DocumentDetails';
@@ -175,8 +176,8 @@ export const Router = () => {
         })}
       </Route>
       
-      {/* Final fallback - redirect based on auth status */}
-      <Route path="*" element={<Navigate to={user?.token ? '/dashboard' : '/login'} replace />} />
+      {/* Final fallback - role-aware redirect (avoids /dashboard loop for non-teacher roles) */}
+      <Route path="*" element={<UnknownRouteRedirect />} />
     </Routes>
   );
 };

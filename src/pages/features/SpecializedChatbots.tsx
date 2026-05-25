@@ -235,8 +235,9 @@ const SpecializedChatbots = () => {
         })
 
         if (isMounted) setBusinessBots(updated)
-      } catch {
-        if (isMounted) setChatbotAvailability({})
+      } catch (err) {
+        console.warn('Failed to load chatbot availability from API', err)
+        if (isMounted) setChatbotAvailability(null)
       }
     }
 
@@ -364,8 +365,10 @@ const SpecializedChatbots = () => {
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {effectiveBots.map((bot, idx) => {
                   const Icon = bot.icon
+                  // While loading, show cards normally; unknown slugs default to available (dedicated routes exist).
                   const isAvailable =
-                    chatbotAvailability === null || chatbotAvailability[bot.slug] === true
+                    chatbotAvailability === null ||
+                    chatbotAvailability[bot.slug] !== false
                   return (
                     <div
                       key={idx}

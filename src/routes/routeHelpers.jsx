@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { sideMenuRoutes } from './sideMenuConfig';
 
@@ -70,11 +70,24 @@ export const RoleBasedRedirect = () => {
 };
 
 export const UnknownRouteRedirect = () => {
+  const location = useLocation();
   const user = useSelector((state) => state?.auth?.user);
   const isRehydrated = useSelector((state) => state?._persist?.rehydrated);
+
   if (isRehydrated === false || (isRehydrated === undefined && user === null)) {
     return null;
   }
-  return <Navigate to={user ? '/dashboard' : '/login'} replace />;
+
+  if (!user) {
+    return <Navigate to='/login' replace />;
+  }
+
+  const destination = getFirstRouteByRole(user?.role || '');
+  // Avoid redirect loops when the target path is not registered for this role
+  if (location.pathname === destination) {
+    return null;
+  }
+
+  return <Navigate to={destination} replace />;
 };
 
