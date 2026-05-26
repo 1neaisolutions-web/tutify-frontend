@@ -52,7 +52,6 @@ type Props = {
   onToggleMatch: (v: boolean) => void
   teacherNotes: string
   onTeacherNotesChange: (v: string) => void
-  validationErrors: string[]
 }
 
 export function WorksheetGenerationParametersSection({
@@ -80,7 +79,6 @@ export function WorksheetGenerationParametersSection({
   onToggleMatch,
   teacherNotes,
   onTeacherNotesChange,
-  validationErrors,
 }: Props) {
   const customTotal = countMcq + countFillBlank + countShort + countMatch
 
@@ -272,19 +270,6 @@ export function WorksheetGenerationParametersSection({
         </label>
       </div>
 
-      {validationErrors.length > 0 && (
-        <div className="border-t border-amber-100 bg-amber-50/50 px-6 py-4">
-          <p className="flex items-center gap-2 text-sm font-semibold text-amber-950">
-            <AlertCircle className="h-4 w-4 shrink-0" aria-hidden />
-            Complete the following before generating
-          </p>
-          <ul className="mt-2 list-inside list-disc space-y-1.5 text-sm text-amber-950">
-            {validationErrors.map((e) => (
-              <li key={e}>{e}</li>
-            ))}
-          </ul>
-        </div>
-      )}
     </section>
   )
 }

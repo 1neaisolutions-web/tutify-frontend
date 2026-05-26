@@ -4,6 +4,7 @@
  */
 
 import { normalizeStreamingContent } from '../components/ai/SectionRenderer'
+import { normalizeLessonPhaseBulletContent } from './formatLessonFlow'
 
 export interface DocumentSection {
   key: string
@@ -77,6 +78,9 @@ export function composeAiDocumentFromSections(
 
     const heading = toHeadingLabel(sec.key, sec.label)
     let content = stripMarkers(sec.content ?? '')
+    if (sec.key === 'lesson_flow') {
+      content = normalizeLessonPhaseBulletContent(content)
+    }
     content = normalizeStreamingContent(content)
     const isComplete = !isStreaming || (completedSectionKeys as string[]).includes(sec.key)
 

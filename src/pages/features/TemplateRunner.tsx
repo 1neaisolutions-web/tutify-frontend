@@ -14,6 +14,7 @@ import { useRefreshCreditBalance } from '../../hooks/useRefreshCreditBalance'
 import { composeAiDocumentFromSections } from '../../lib/aiDocument'
 import { AiDocumentRenderer } from '../../components/ai/AiDocumentRenderer'
 import { normalizeStreamingContent } from '../../components/ai/SectionRenderer'
+import { formatLessonFlowArrayAsMarkdownTable } from '../../lib/formatLessonFlow'
 import NoCreditsCard from '../../components/NoCreditsCard'
 
 type TemplateField = {
@@ -58,6 +59,7 @@ const TemplateRunner = () => {
     providerFailedNotice,
     insufficientCredits,
     startStream,
+    showExemplarPreview,
     stopStream,
     reset: resetStream,
   } = useTemplateStream()
@@ -500,6 +502,8 @@ const TemplateRunner = () => {
     if (typeof value === 'number' || typeof value === 'boolean') return String(value)
 
     if (Array.isArray(value)) {
+      const table = formatLessonFlowArrayAsMarkdownTable(value)
+      if (table) return table
       const allStrings = value.every((x) => typeof x === 'string')
       if (allStrings) {
         return (value as string[]).map((s) => `- ${s}`).join('\n')
@@ -561,7 +565,14 @@ const TemplateRunner = () => {
     })
     setFormValues(nextValues)
 
-    setParsedOutput(buildExemplarParsedOutput(template.exemplarOutput as Record<string, unknown>))
+    const exemplarOut = template.exemplarOutput as Record<string, unknown>
+    setParsedOutput(buildExemplarParsedOutput(exemplarOut))
+    showExemplarPreview(
+      exemplarOut,
+      template.outputSchema ?? null,
+      template.renderSections ?? null,
+      slug ?? null,
+    )
     setShowOutput(true)
 
     if (exemplarNoticeTimeoutRef.current) {
@@ -662,6 +673,8 @@ const TemplateRunner = () => {
     startStream(slug, payload, {
       exemplarOutput: template?.exemplarOutput ?? undefined,
       outputSchema: template?.outputSchema ?? undefined,
+      renderSections: template?.renderSections ?? undefined,
+      templateSlug: slug,
       onSuccessfulCompletion: () => {
         void refreshCreditBalance()
       },
@@ -739,6 +752,8 @@ const TemplateRunner = () => {
     startStream(slug, payload, {
       exemplarOutput: template?.exemplarOutput ?? undefined,
       outputSchema: template?.outputSchema ?? undefined,
+      renderSections: template?.renderSections ?? undefined,
+      templateSlug: slug,
       onSuccessfulCompletion: () => {
         void refreshCreditBalance()
       },

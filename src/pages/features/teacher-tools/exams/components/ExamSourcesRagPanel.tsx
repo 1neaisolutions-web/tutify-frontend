@@ -19,15 +19,18 @@ type Props = {
   rag: QuizRagScopeModel
   subject: string
   grade: string
+  panelStep: 'sources' | 'scope'
 }
 
-export function ExamSourcesRagPanel({ rag, subject, grade }: Props) {
+export function ExamSourcesRagPanel({ rag, subject, grade, panelStep }: Props) {
   const selectedBooks = rag.selectedBookIds
     .map((id) => getBookById(id, rag.catalog as never))
     .filter(Boolean)
 
   return (
-    <div className="space-y-5 border-t border-gray-100 pt-6">
+    <div className="space-y-5">
+      {panelStep === 'sources' && (
+        <>
       <label className="inline-flex items-start gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800">
         <input
           type="checkbox"
@@ -204,10 +207,14 @@ export function ExamSourcesRagPanel({ rag, subject, grade }: Props) {
         </>
       ) : (
         <div className="rounded-2xl border border-dashed border-emerald-200 bg-emerald-50/70 p-4 text-sm text-emerald-900">
-          Source selection is disabled for this run. Generation will rely on your scope prompt and exam settings only.
+          Source selection is disabled for this run. Continue to Scope to define your topic focus.
         </div>
       )}
+        </>
+      )}
 
+      {panelStep === 'scope' && (
+        <>
       {!rag.generateWithoutSources && rag.selectedBookIds.length === 0 ? (
         <div className="flex gap-3 rounded-2xl border border-amber-200 bg-amber-50/80 px-4 py-4 text-sm text-amber-950">
           <AlertCircle className="h-5 w-5 shrink-0 text-amber-600" aria-hidden />
@@ -344,6 +351,8 @@ export function ExamSourcesRagPanel({ rag, subject, grade }: Props) {
       <p className="border-t border-gray-100 pt-4 text-xs leading-relaxed text-gray-600">
         <span className="font-semibold text-gray-800">Generation scope:</span> {formatSourceSummary(rag.getGenerationContext())}
       </p>
+        </>
+      )}
     </div>
   )
 }

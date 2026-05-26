@@ -10,34 +10,47 @@ import {
   X,
 } from 'lucide-react'
 import type { QuizRagScopeModel } from '../hooks/useQuizRagScope'
+import { TeacherToolsPanelHeader } from '../../components/TeacherToolsPanelHeader'
 import { getBookById, type DemoBook } from '../../demo/demoContentLibrary'
 import { DIFFICULTY_OPTIONS, QUESTION_COUNT } from '../config/quizCreationConfig'
+import type { QuizBuildSubStepId } from '../config/quizWizardSteps'
 import type { QuestionMixMode, QuizDifficultyId } from '../../demo/generationFromSources'
 import { SUBJECTS, GRADES } from '../../types'
 
-function StepHeader({
-  step,
-  kicker,
-  title,
-  subtitle,
-}: {
-  step: number
-  kicker: string
-  title: string
-  subtitle: string
-}) {
-  return (
-    <div className="flex gap-4 border-b border-gray-100 pb-4">
-      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-indigo-600 text-sm font-bold text-white shadow-md shadow-indigo-600/25">
-        {step}
-      </span>
-      <div className="min-w-0 flex-1">
-        <p className="text-[11px] font-bold uppercase tracking-wide text-indigo-600">{kicker}</p>
-        <h2 className="mt-1 text-lg font-semibold tracking-tight text-gray-900">{title}</h2>
-        <p className="mt-1 text-sm leading-relaxed text-gray-600">{subtitle}</p>
-      </div>
-    </div>
-  )
+const STEP_META: Record<
+  QuizBuildSubStepId,
+  { kicker: string; title: string; subtitle: string; tone: 'indigo' | 'emerald' | 'violet' | 'sky' | 'gray' }
+> = {
+  basics: {
+    kicker: 'Assessment identity',
+    title: 'Quiz basics',
+    subtitle: 'Name the quiz and set what students see before they begin.',
+    tone: 'indigo',
+  },
+  sources: {
+    kicker: 'Retrieval sources',
+    title: 'Source materials',
+    subtitle: 'Pick published packs; retrieval uses indexed chunks from your workspace.',
+    tone: 'emerald',
+  },
+  scope: {
+    kicker: 'Scope definition',
+    title: 'Topics & refinement',
+    subtitle: 'Pick topic strands, then optionally narrow with a scope hint.',
+    tone: 'violet',
+  },
+  design: {
+    kicker: 'Question design',
+    title: 'Generation parameters',
+    subtitle: 'Volume, difficulty, and formats for this retrieval pass.',
+    tone: 'sky',
+  },
+  delivery: {
+    kicker: 'Delivery defaults',
+    title: 'Delivery & scoring defaults',
+    subtitle: 'Saved with the quiz for assignees.',
+    tone: 'gray',
+  },
 }
 
 type Props = {
@@ -78,7 +91,7 @@ type Props = {
   onShuffleQuestions: (v: boolean) => void
   onShuffleAnswers: (v: boolean) => void
   onNegativeMarking: (v: boolean) => void
-  validationErrors: string[]
+  activeStepId: QuizBuildSubStepId
 }
 
 export function QuizRagBuildSection({
@@ -119,7 +132,7 @@ export function QuizRagBuildSection({
   onShuffleQuestions,
   onShuffleAnswers,
   onNegativeMarking,
-  validationErrors,
+  activeStepId,
 }: Props) {
   const customTotal = countMcq + countTf + countShort
 
@@ -128,18 +141,11 @@ export function QuizRagBuildSection({
     .filter(Boolean)
 
   return (
-    <div className="space-y-10">
-      {/* Step 1 — Quiz basics */}
-      <section className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div className="border-b border-indigo-100 bg-gradient-to-r from-indigo-50/80 to-white px-6 py-5">
-          <StepHeader
-            step={1}
-            kicker="Assessment identity"
-            title="Quiz basics"
-            subtitle="Name the quiz and set what students see before they begin. Subject and cohort tune the catalog and defaults."
-          />
-        </div>
-        <div className="grid gap-4 p-6 md:grid-cols-2">
+    <div>
+      {activeStepId === 'basics' && (
+      <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+        <TeacherToolsPanelHeader {...STEP_META.basics} />
+        <div className="grid gap-4 p-5 md:grid-cols-2">
           <label className="md:col-span-2 block text-sm font-medium text-gray-800">
             Quiz title <span className="text-red-500">*</span>
             <input
@@ -190,18 +196,12 @@ export function QuizRagBuildSection({
           </label>
         </div>
       </section>
+      )}
 
-      {/* Step 2 — Source materials */}
-      <section className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div className="border-b border-emerald-100 bg-gradient-to-r from-emerald-50/70 to-white px-6 py-5">
-          <StepHeader
-            step={2}
-            kicker="Retrieval sources"
-            title="Source materials"
-            subtitle="Pick any published pack in your workspace (any board or publisher). Retrieval uses indexed chunks; titles and topic strands come from pack and document metadata."
-          />
-        </div>
-        <div className="space-y-5 p-6">
+      {activeStepId === 'sources' && (
+      <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+        <TeacherToolsPanelHeader {...STEP_META.sources} />
+        <div className="space-y-5 p-5">
           <label className="inline-flex items-start gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800">
             <input
               type="checkbox"
@@ -383,18 +383,12 @@ export function QuizRagBuildSection({
           )}
         </div>
       </section>
+      )}
 
-      {/* Step 3 — Scope */}
-      <section className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div className="border-b border-violet-100 bg-gradient-to-r from-violet-50/80 to-white px-6 py-5">
-          <StepHeader
-            step={3}
-            kicker="Scope definition"
-            title="Topics & refinement"
-            subtitle="Strands come from the book's PDF outline or chapter map when available; otherwise they are grouped by page ranges. Pick one or more, then optionally narrow with the hint below."
-          />
-        </div>
-        <div className="space-y-5 p-6">
+      {activeStepId === 'scope' && (
+      <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+        <TeacherToolsPanelHeader {...STEP_META.scope} />
+        <div className="space-y-5 p-5">
           {!rag.generateWithoutSources && rag.selectedBookIds.length === 0 ? (
             <div className="flex gap-3 rounded-2xl border border-amber-200 bg-amber-50/80 px-4 py-4 text-sm text-amber-950">
               <AlertCircle className="h-5 w-5 shrink-0 text-amber-600" aria-hidden />
@@ -568,18 +562,12 @@ export function QuizRagBuildSection({
           )}
         </div>
       </section>
+      )}
 
-      {/* Step 4 — Generation settings */}
-      <section className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div className="border-b border-sky-100 bg-gradient-to-r from-sky-50/70 to-white px-6 py-5">
-          <StepHeader
-            step={4}
-            kicker="Question design"
-            title="Generation parameters"
-            subtitle="Volume, difficulty, and formats for this retrieval pass. These map cleanly to a backend generation job."
-          />
-        </div>
-        <div className="space-y-5 p-6">
+      {activeStepId === 'design' && (
+      <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+        <TeacherToolsPanelHeader {...STEP_META.design} />
+        <div className="space-y-5 p-5">
           <div className="rounded-2xl border border-gray-100 bg-gray-50/80 p-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
@@ -754,18 +742,12 @@ export function QuizRagBuildSection({
           </label>
         </div>
       </section>
+      )}
 
-      {/* Step 5 — Delivery */}
-      <section className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div className="border-b border-gray-100 px-6 py-5">
-          <StepHeader
-            step={5}
-            kicker="Delivery defaults"
-            title="Delivery & scoring defaults"
-            subtitle="Saved with the quiz for assignees — independent of the generation pass."
-          />
-        </div>
-        <div className="flex flex-wrap gap-4 p-6">
+      {activeStepId === 'delivery' && (
+      <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+        <TeacherToolsPanelHeader {...STEP_META.delivery} />
+        <div className="flex flex-wrap gap-4 p-5">
           <label className="inline-flex items-center gap-2 text-sm text-gray-800">
             <input type="checkbox" checked={shuffleQuestions} onChange={(e) => onShuffleQuestions(e.target.checked)} />
             Shuffle question order for each student
@@ -780,19 +762,6 @@ export function QuizRagBuildSection({
           </label>
         </div>
       </section>
-
-      {validationErrors.length > 0 && (
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-950 shadow-sm">
-          <p className="flex items-center gap-2 font-semibold">
-            <AlertCircle className="h-4 w-4 shrink-0" aria-hidden />
-            Complete the following before generating
-          </p>
-          <ul className="mt-2 list-inside list-disc space-y-1.5">
-            {validationErrors.map((e) => (
-              <li key={e}>{e}</li>
-            ))}
-          </ul>
-        </div>
       )}
     </div>
   )

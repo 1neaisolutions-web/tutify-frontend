@@ -163,6 +163,7 @@ export const fetchTemplateDetail = (slug: string, signal?: AbortSignal) => {
       promptDefinition: promptDefinition,
       exemplarInput,
       exemplarOutput,
+      renderSections: Array.isArray(detail.render_sections) ? detail.render_sections : null,
       canonicalOutcome: null,
       standards: [],
     } as TemplateResponse

@@ -405,7 +405,7 @@ const CodingProgrammingTutor = () => {
       )}
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-3xl p-8 text-white shadow-xl">
+      <div className="relative z-10 overflow-visible bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-3xl p-8 text-white shadow-xl">
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-4">
@@ -434,13 +434,16 @@ const CodingProgrammingTutor = () => {
             </div>
             
             {/* Quick Settings */}
-            <div className="flex flex-wrap gap-4 mt-6">
+            <div className="relative z-20 flex flex-wrap gap-4 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Grade Level:</label>
+                <label htmlFor="coding-tutor-grade" className="text-sm font-medium shrink-0">
+                  Grade Level:
+                </label>
                 <select
+                  id="coding-tutor-grade"
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select"
                 >
                   <option value="K-5">K-5</option>
                   <option value="6-8">6-8</option>
@@ -448,26 +451,36 @@ const CodingProgrammingTutor = () => {
                 </select>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Language:</label>
+                <label htmlFor="coding-tutor-language" className="text-sm font-medium shrink-0">
+                  Language:
+                </label>
                 <select
+                  id="coding-tutor-language"
                   value={programmingLanguage}
                   onChange={(e) => setProgrammingLanguage(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select min-w-[8.5rem]"
                 >
                   {languages.map(lang => (
-                    <option key={lang.id} value={lang.id}>{lang.name}</option>
+                    <option key={lang.id} value={lang.id}>
+                      {lang.name}
+                    </option>
                   ))}
                 </select>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Competition:</label>
+                <label htmlFor="coding-tutor-competition" className="text-sm font-medium shrink-0">
+                  Competition:
+                </label>
                 <select
+                  id="coding-tutor-competition"
                   value={selectedCompetition}
                   onChange={(e) => setSelectedCompetition(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select min-w-[9.5rem]"
                 >
                   {competitions.map(comp => (
-                    <option key={comp.id} value={comp.id}>{comp.name}</option>
+                    <option key={comp.id} value={comp.id}>
+                      {comp.name}
+                    </option>
                   ))}
                 </select>
               </div>

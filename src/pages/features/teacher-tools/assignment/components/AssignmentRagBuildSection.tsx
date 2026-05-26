@@ -17,6 +17,7 @@ import { DIFFICULTY_OPTIONS } from '../../quiz/config/quizCreationConfig'
 import type { QuizDifficultyId } from '../../demo/generationFromSources'
 import { SUBJECTS, GRADES } from '../../types'
 import { ASSIGNMENT_TOPIC_COUNT } from '../config/assignmentCreationConfig'
+import type { AssignmentBuildSubStepId } from '../config/assignmentWizardSteps'
 
 type SectionTone = 'blue' | 'teal' | 'amber' | 'purple'
 
@@ -111,7 +112,7 @@ type Props = {
   onDifficultyChange: (v: QuizDifficultyId) => void
   generatorInstructions: string
   onGeneratorInstructionsChange: (v: string) => void
-  validationErrors: string[]
+  activeStepId: AssignmentBuildSubStepId
 }
 
 export function AssignmentRagBuildSection({
@@ -138,7 +139,7 @@ export function AssignmentRagBuildSection({
   onDifficultyChange,
   generatorInstructions,
   onGeneratorInstructionsChange,
-  validationErrors,
+  activeStepId,
 }: Props) {
   const selectedBooks = rag.selectedBookIds
     .map((id) => getBookById(id, rag.catalog as unknown as DemoBook[]))
@@ -151,8 +152,8 @@ export function AssignmentRagBuildSection({
   }
 
   return (
-    <div className="space-y-10">
-      {/* Section 1 — Basics */}
+    <div className="space-y-6">
+      {activeStepId === 'basics' && (
       <section className="overflow-hidden rounded-2xl border-[0.5px] border-gray-200 bg-white shadow-sm">
         <div className={`px-6 py-5 ${SECTION_HEADER.blue.wrap}`}>
           <StepHeader
@@ -253,8 +254,9 @@ export function AssignmentRagBuildSection({
           </label>
         </div>
       </section>
+      )}
 
-      {/* Section 2 — Source materials (same behaviour as quiz) */}
+      {activeStepId === 'sources' && (
       <section className="overflow-hidden rounded-2xl border-[0.5px] border-gray-200 bg-white shadow-sm">
         <div className={`px-6 py-5 ${SECTION_HEADER.teal.wrap}`}>
           <StepHeader
@@ -437,8 +439,9 @@ export function AssignmentRagBuildSection({
           )}
         </div>
       </section>
+      )}
 
-      {/* Section 3 — Topics & refinement (quiz logic; teal strand chips) */}
+      {activeStepId === 'scope' && (
       <section className="overflow-hidden rounded-2xl border-[0.5px] border-gray-200 bg-white shadow-sm">
         <div className={`px-6 py-5 ${SECTION_HEADER.amber.wrap}`}>
           <StepHeader
@@ -622,8 +625,9 @@ export function AssignmentRagBuildSection({
           )}
         </div>
       </section>
+      )}
 
-      {/* Section 4 — Generation parameters */}
+      {activeStepId === 'design' && (
       <section className="overflow-hidden rounded-2xl border-[0.5px] border-gray-200 bg-white shadow-sm">
         <div className={`px-6 py-5 ${SECTION_HEADER.purple.wrap}`}>
           <StepHeader
@@ -733,19 +737,6 @@ export function AssignmentRagBuildSection({
           </label>
         </div>
       </section>
-
-      {validationErrors.length > 0 && (
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-950 shadow-sm">
-          <p className="flex items-center gap-2 font-semibold">
-            <AlertCircle className="h-4 w-4 shrink-0" aria-hidden />
-            Complete the following before generating
-          </p>
-          <ul className="mt-2 list-inside list-disc space-y-1.5">
-            {validationErrors.map((e) => (
-              <li key={e}>{e}</li>
-            ))}
-          </ul>
-        </div>
       )}
     </div>
   )

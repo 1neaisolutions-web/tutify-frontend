@@ -353,6 +353,21 @@ export function useQuizRagScope({
     setTopicQuery('')
   }, [])
 
+  const applySourceSnapshot = useCallback(
+    (snap: {
+      bookIds?: string[]
+      topics?: string[]
+      refinement?: string
+      generateWithoutSources?: boolean
+    }) => {
+      if (snap.generateWithoutSources != null) setGenerateWithoutSources(snap.generateWithoutSources)
+      if (snap.bookIds) setSelectedBookIds(snap.bookIds)
+      if (snap.topics) setSelectedTopics(snap.topics)
+      if (snap.refinement != null) setScopeRefinement(snap.refinement)
+    },
+    [],
+  )
+
   const ragSourceLabels = useMemo(
     () =>
       selectedBookIds
@@ -398,6 +413,7 @@ export function useQuizRagScope({
     generationSignature,
     isDirty,
     resetSources,
+    applySourceSnapshot,
     ragSourceLabels,
   }
 }

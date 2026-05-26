@@ -1,7 +1,21 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams, useLocation, useSearchParams } from 'react-router-dom'
-import { TeacherToolsPageHeader, TeacherToolsWizardStepper } from '../components'
+import {
+  TeacherToolsConfigureNav,
+  TeacherToolsCreateLayout,
+  TeacherToolsCreateReviewFooter,
+  TeacherToolsExemplarReviewBanner,
+  TeacherToolsFieldErrors,
+  TeacherToolsPageHeader,
+  TeacherToolsWizardFooter,
+} from '../components'
+import { useTeacherToolsSubWizard } from '../hooks/useTeacherToolsSubWizard'
+import { useTeacherToolsExemplarPreview } from '../hooks/useTeacherToolsExemplarPreview'
+import { useTeacherToolsDirtyBaseline } from '../hooks/useTeacherToolsDirtyBaseline'
+import { useTeacherToolsFormBaselineReady } from '../hooks/useTeacherToolsFormBaselineReady'
+import { useTeacherToolsLeaveGuard } from '../hooks/useTeacherToolsLeaveGuard'
+import { TEACHER_TOOLS_CREATION_STEPS } from '../config/teacherToolsCreationSteps'
 import { demoClasses } from '../demo/teacherToolsDemoData'
 import {
   formatSourceSummary,
@@ -32,12 +46,15 @@ import {
   type QuizGeneratePayload,
 } from '../../../../api/quizApi'
 import {
-  QUIZ_CREATION_STEPS,
   distributeBalancedToTypeCounts,
   QUESTION_COUNT,
   randomGenerationDelay,
+  validateQuizBuildSubStep,
   validateRagQuizBuild,
+  type QuizRagBuildInput,
 } from './config/quizCreationConfig'
+import { QUIZ_BUILD_SUB_STEPS, type QuizBuildSubStepId } from './config/quizWizardSteps'
+import { QUIZ_EXEMPLAR } from '../exemplars/quizExemplar'
 import { DEFAULT_HANDOUT_LAYOUT, type HandoutLayoutOpts } from './config/handoutLayoutConfig'
 import { useQuizRagScope } from './hooks/useQuizRagScope'
 import { QuizRagBuildSection } from './components/QuizRagBuildSection'
@@ -125,10 +142,10 @@ export default function QuizCreate() {
   const [hydrateReady, setHydrateReady] = useState(!isEdit)
   const [publishPending, setPublishPending] = useState(false)
   const [saveDraftPending, setSaveDraftPending] = useState(false)
-  const [discardOpen, setDiscardOpen] = useState(false)
   const [buildErrors, setBuildErrors] = useState<string[]>([])
 
   const [stubs, setStubs] = useState<QuizQuestionStub[]>([])
+  const [quizPrintOpen, setQuizPrintOpen] = useState(false)
 
   const rag = useQuizRagScope({
     subject,
@@ -137,6 +154,210 @@ export default function QuizCreate() {
     initialScopeTopics: isEdit ? loadedQuiz?.scopeTopics : undefined,
     initialScopeRefinement: isEdit ? loadedQuiz?.scopeRefinement : templateScopeHint,
   })
+
+  const subWizard = useTeacherToolsSubWizard(QUIZ_BUILD_SUB_STEPS, {
+    storageKey: 'tutify-quiz-create-substep',
+  })
+  const { isExemplarPreview, enterExemplarPreview, exitExemplarPreview } = useTeacherToolsExemplarPreview()
+
+  const quizBuildInput: QuizRagBuildInput = useMemo(
+    () => ({
+      title,
+      generateWithoutSources: rag.generateWithoutSources,
+      selectedBookIds: rag.selectedBookIds,
+      selectedTopics: rag.selectedTopics,
+      scopeRefinement: rag.scopeRefinement,
+      mixMode,
+      includeMcq,
+      includeTf,
+      includeShort,
+      questionCount,
+      countsByType: { mcq: countMcq, tf: countTf, short: countShort },
+      timeLimitMinutes: timeLimit,
+    }),
+    [
+      title,
+      rag.generateWithoutSources,
+      rag.selectedBookIds,
+      rag.selectedTopics,
+      rag.scopeRefinement,
+      mixMode,
+      includeMcq,
+      includeTf,
+      includeShort,
+      questionCount,
+      countMcq,
+      countTf,
+      countShort,
+      timeLimit,
+    ],
+  )
+
+  const currentStepValidation = useMemo(
+    () => validateQuizBuildSubStep(subWizard.currentStepId as QuizBuildSubStepId, quizBuildInput),
+    [subWizard.currentStepId, quizBuildInput],
+  )
+
+  const fullBuildValidation = useMemo(() => validateRagQuizBuild(quizBuildInput), [quizBuildInput])
+
+  const hasGeneratedContent = stubs.length > 0 && !isExemplarPreview
+  const topMaxReachable = stubs.length > 0 ? 1 : 0
+
+  const formBaselineReady = useTeacherToolsFormBaselineReady(hydrateReady, isEdit)
+
+  const formSnapshot = useMemo(
+    () =>
+      JSON.stringify({
+        phase,
+        title,
+        subject,
+        grade,
+        studentInstructions,
+        teacherNotes,
+        timeLimit,
+        questionCount,
+        mixMode,
+        countMcq,
+        countTf,
+        countShort,
+        difficulty,
+        includeMcq,
+        includeTf,
+        includeShort,
+        shuffleQuestions,
+        shuffleAnswers,
+        negativeMarking,
+        handoutLayout,
+        stubs: stubs.map((s) => `${s.id}:${s.prompt?.slice(0, 40)}`),
+        rag: rag.generationSignature,
+        subStep: subWizard.currentStep,
+        subMax: subWizard.maxUnlockedStep,
+        exemplar: isExemplarPreview,
+        liveQuizId,
+      }),
+    [
+      phase,
+      title,
+      subject,
+      grade,
+      studentInstructions,
+      teacherNotes,
+      timeLimit,
+      questionCount,
+      mixMode,
+      countMcq,
+      countTf,
+      countShort,
+      difficulty,
+      includeMcq,
+      includeTf,
+      includeShort,
+      shuffleQuestions,
+      shuffleAnswers,
+      negativeMarking,
+      handoutLayout,
+      stubs,
+      rag.generationSignature,
+      subWizard.currentStep,
+      subWizard.maxUnlockedStep,
+      isExemplarPreview,
+      liveQuizId,
+    ],
+  )
+
+  const { isDirty: isFormDirty, clearBaseline } = useTeacherToolsDirtyBaseline(
+    formSnapshot,
+    formBaselineReady,
+  )
+
+  const hasUnsavedWork = useMemo(() => {
+    const wizardProgress =
+      isExemplarPreview ||
+      subWizard.currentStep > 0 ||
+      subWizard.maxUnlockedStep > 0 ||
+      (!isEdit && phase === 'review')
+
+    if (isEdit) {
+      return isFormDirty || rag.isDirty || wizardProgress
+    }
+
+    return (
+      isFormDirty ||
+      rag.isDirty ||
+      stubs.length > 0 ||
+      !!liveQuizId ||
+      wizardProgress
+    )
+  }, [
+    isEdit,
+    isFormDirty,
+    rag.isDirty,
+    stubs.length,
+    liveQuizId,
+    phase,
+    isExemplarPreview,
+    subWizard.currentStep,
+    subWizard.maxUnlockedStep,
+  ])
+
+  const clearSessionOnLeave = useCallback(() => {
+    rag.resetSources()
+    subWizard.clearStorage()
+    subWizard.resetWizard()
+    exitExemplarPreview()
+    if (!isEdit) setLiveQuizId(null)
+    clearBaseline()
+  }, [rag, subWizard, exitExemplarPreview, isEdit, clearBaseline])
+
+  const { discardOpen, requestLeave, confirmDiscard, cancelDiscard } = useTeacherToolsLeaveGuard(
+    hasUnsavedWork,
+    clearSessionOnLeave,
+  )
+
+  const handleBackToConfigure = useCallback(() => {
+    if (isExemplarPreview) {
+      exitExemplarPreview()
+      setStubs([])
+      setLiveQuizId(null)
+      subWizard.resetWizard()
+    }
+    setPhase('build')
+  }, [isExemplarPreview, exitExemplarPreview, subWizard])
+
+  const handleShowExemplar = useCallback(() => {
+    const ex = QUIZ_EXEMPLAR.input
+    setLiveQuizId(null)
+    enterExemplarPreview()
+    setTitle(ex.title)
+    setSubject(ex.subject)
+    setGrade(ex.grade)
+    setStudentInstructions(ex.studentInstructions)
+    setTeacherNotes(ex.teacherNotes)
+    setMixMode(ex.mixMode)
+    setQuestionCount(ex.questionCount)
+    setCountMcq(ex.countMcq)
+    setCountTf(ex.countTf)
+    setCountShort(ex.countShort)
+    setDifficulty(ex.difficulty)
+    setIncludeMcq(ex.includeMcq)
+    setIncludeTf(ex.includeTf)
+    setIncludeShort(ex.includeShort)
+    setTimeLimit(ex.timeLimit)
+    setShuffleQuestions(ex.shuffleQuestions)
+    setShuffleAnswers(ex.shuffleAnswers)
+    setNegativeMarking(ex.negativeMarking)
+    rag.applySourceSnapshot({
+      bookIds: ex.bookIds,
+      topics: ex.topics,
+      refinement: ex.scopeRefinement,
+      generateWithoutSources: ex.generateWithoutSources,
+    })
+    setStubs(QUIZ_EXEMPLAR.output.questions)
+    setBuildErrors([])
+    subWizard.unlockAllSteps()
+    setPhase('review')
+    toast.success('Exemplar loaded — edit or regenerate anytime.')
+  }, [rag, subWizard, toast, enterExemplarPreview])
 
   useEffect(() => {
     if (isEdit) return
@@ -284,6 +505,7 @@ export default function QuizCreate() {
     setGenerationError(null)
     setCreditGate(null)
     setRegenQuestionCreditGate(null)
+    exitExemplarPreview()
     setGenerating(true)
     setGenProgress(0.12)
     const steps = window.setInterval(() => {
@@ -584,7 +806,11 @@ export default function QuizCreate() {
     [liveQuizId, stubs.length, toast]
   )
 
-  const goList = () => navigate('/teacher-tools/quiz')
+  const goList = useCallback(() => navigate('/teacher-tools/quiz'), [navigate])
+
+  const handleExitToList = useCallback(() => {
+    requestLeave(goList)
+  }, [requestLeave, goList])
 
   const handleHandoutLayoutSave = useCallback((layout: HandoutLayoutOpts) => {
     const nextLayout = { ...DEFAULT_HANDOUT_LAYOUT, ...layout }
@@ -616,6 +842,10 @@ export default function QuizCreate() {
   )
 
   const handleSaveDraft = useCallback(async () => {
+    if (isExemplarPreview) {
+      toast.error('Generate your quiz first — exemplar preview is not saved.')
+      return
+    }
     if (stubs.length === 0) {
       toast.error('Generate at least one question before saving a draft.')
       return
@@ -632,9 +862,13 @@ export default function QuizCreate() {
     } finally {
       setSaveDraftPending(false)
     }
-  }, [liveQuizId, navigate, stubs.length, toast])
+  }, [isExemplarPreview, liveQuizId, navigate, stubs.length, toast])
 
   const handlePublish = useCallback(async () => {
+    if (isExemplarPreview) {
+      toast.error('Generate your quiz first — exemplar preview cannot be published.')
+      return
+    }
     if (stubs.length === 0) {
       toast.error('Add questions before publishing.')
       return
@@ -651,7 +885,7 @@ export default function QuizCreate() {
     } finally {
       setPublishPending(false)
     }
-  }, [liveQuizId, navigate, stubs.length, toast])
+  }, [isExemplarPreview, liveQuizId, navigate, stubs.length, toast])
 
   const exportPdf = useCallback(() => {
     const ctx = rag.getGenerationContext()
@@ -708,29 +942,100 @@ export default function QuizCreate() {
 
   const wizardStep = phase === 'build' ? 0 : 1
 
-  return (
-    <div className="space-y-6 pb-10">
-      <TeacherToolsPageHeader
-        title={isEdit ? 'Edit quiz' : 'Create quiz'}
-        subtitle="Choose catalog sources, define retrieval scope, run generation, then review and publish."
-        breadcrumbs={[
-          { label: 'Teacher Tools', to: '/teacher-tools' },
-          { label: 'Quiz', to: '/teacher-tools/quiz' },
-          { label: isEdit ? 'Edit' : 'Create' },
-        ]}
-      />
+  const buildFooter = (
+    <TeacherToolsWizardFooter
+      isFirstStep={subWizard.isFirstStep}
+      isLastStep={subWizard.isLastStep}
+      canGoNext={currentStepValidation.ok}
+      onBack={subWizard.goBack}
+      onNext={() => {
+        if (!currentStepValidation.ok) {
+          setBuildErrors(currentStepValidation.errors)
+          return
+        }
+        setBuildErrors([])
+        subWizard.goNext()
+      }}
+      onGenerate={() => {
+        if (!fullBuildValidation.ok) {
+          setBuildErrors(fullBuildValidation.errors)
+          toast.error('Fix the highlighted fields to generate.')
+          return
+        }
+        setBuildErrors([])
+        void runGeneration()
+      }}
+      generating={generating}
+      generateLabel={
+        rag.generateWithoutSources ? 'Generate without sources' : 'Generate from selected materials'
+      }
+      onShowExemplar={handleShowExemplar}
+      onExitToList={handleExitToList}
+      exitLabel="Back to quiz list"
+    />
+  )
 
-      <TeacherToolsWizardStepper
-        steps={[...QUIZ_CREATION_STEPS]}
-        current={wizardStep}
-        onStepClick={(i) => {
-          if (i === 1 && stubs.length === 0) {
-            toast.error('Generate questions before opening review.')
-            return
-          }
-          setPhase(i === 0 ? 'build' : 'review')
-        }}
-      />
+  const reviewFooter = (
+    <TeacherToolsCreateReviewFooter
+      exitLabel="Back to quiz list"
+      onExitToList={handleExitToList}
+      onEditRequirements={handleBackToConfigure}
+      publish={{
+        onPrintPreview: () => setQuizPrintOpen(true),
+        printPreviewDisabled: stubs.length === 0,
+        onSaveDraft: handleSaveDraft,
+        saveDraftPending,
+        saveDraftDisabled: stubs.length === 0 || isExemplarPreview,
+        onExportPdf: exportPdf,
+        exportDisabled: stubs.length === 0,
+        onPublish: handlePublish,
+        publishPending,
+        publishDisabled: stubs.length === 0 || isExemplarPreview,
+        publishLabel: isEdit ? 'Save changes' : 'Publish quiz',
+      }}
+    />
+  )
+
+  return (
+    <>
+    <TeacherToolsCreateLayout
+      header={
+        <>
+          <TeacherToolsPageHeader
+            variant="compact"
+            title={isEdit ? 'Edit quiz' : 'Create quiz'}
+            subtitle="Choose catalog sources, define retrieval scope, run generation, then review and publish."
+            breadcrumbs={[
+              { label: 'Teacher Tools', to: '/teacher-tools' },
+              { label: 'Quiz', to: '/teacher-tools/quiz' },
+              { label: isEdit ? 'Edit' : 'Create' },
+            ]}
+          />
+          <div className="px-0 pb-2">
+            <TeacherToolsConfigureNav
+              primarySteps={[...TEACHER_TOOLS_CREATION_STEPS]}
+              primaryCurrent={wizardStep}
+              primaryMaxReachable={topMaxReachable}
+              onPrimaryStepClick={(i) => {
+                if (i === 1 && stubs.length === 0) {
+                  toast.error('Generate questions before opening review.')
+                  return
+                }
+                if (i === 0) handleBackToConfigure()
+                else setPhase('review')
+              }}
+              showSubSteps={phase === 'build'}
+              subSteps={QUIZ_BUILD_SUB_STEPS}
+              subCurrent={subWizard.currentStep}
+              subMaxUnlocked={subWizard.maxUnlockedStep}
+              onSubStepClick={subWizard.goToStep}
+            />
+          </div>
+        </>
+      }
+      footer={phase === 'build' ? buildFooter : reviewFooter}
+    >
+      <div className="space-y-4 px-0.5 pb-4">
 
       {generationError && (
         <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
@@ -754,7 +1059,9 @@ export default function QuizCreate() {
 
       {phase === 'build' && (
         <>
+          <TeacherToolsFieldErrors errors={currentStepValidation.errors} />
           <QuizRagBuildSection
+            activeStepId={subWizard.currentStepId as QuizBuildSubStepId}
             rag={rag}
             title={title}
             onTitleChange={setTitle}
@@ -792,26 +1099,10 @@ export default function QuizCreate() {
             onShuffleQuestions={setShuffleQuestions}
             onShuffleAnswers={setShuffleAnswers}
             onNegativeMarking={setNegativeMarking}
-            validationErrors={buildErrors}
           />
-          <div className="mt-8 flex flex-col gap-3 rounded-2xl border border-indigo-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-            <div className="min-w-0">
-              <p className="text-sm font-semibold text-gray-900">Ready to generate from your scope</p>
-              <p className="mt-0.5 text-xs text-gray-600">
-                {rag.generateWithoutSources
-                  ? 'Primary action runs topic-only generation (no catalog retrieval).'
-                  : 'Primary action runs a demo retrieval + generation pass using the selected titles and topic strands above.'}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => runGeneration()}
-              disabled={generating}
-              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-md hover:bg-indigo-500 disabled:opacity-60"
-            >
-              {rag.generateWithoutSources ? 'Generate without sources' : 'Generate from selected materials'}
-            </button>
-          </div>
+          {buildErrors.length > 0 && !currentStepValidation.errors.length && (
+            <TeacherToolsFieldErrors errors={buildErrors} />
+          )}
         </>
       )}
 
@@ -826,7 +1117,9 @@ export default function QuizCreate() {
       )}
 
       {phase === 'review' && (
-        <QuizReviewSection
+        <>
+          {isExemplarPreview && <TeacherToolsExemplarReviewBanner />}
+          <QuizReviewSection
           stubs={stubs}
           totalPoints={totalMarksFromStubs(stubs)}
           sourceSummaryLine={formatSourceSummary(rag.getGenerationContext())}
@@ -863,44 +1156,28 @@ export default function QuizCreate() {
           onAddQuestion={handleAddQuestion}
           onRegenerateAll={regenerateAll}
           onRegenerateOne={regenerateOne}
-          onBackToEdit={() => setPhase('build')}
-          onSaveDraft={handleSaveDraft}
-          onExportPdf={exportPdf}
-          onPublish={handlePublish}
-          saveDraftPending={saveDraftPending}
-          publishPending={publishPending}
+          onBackToEdit={handleBackToConfigure}
+          isExemplarPreview={isExemplarPreview}
+          printOpen={quizPrintOpen}
+          onPrintOpenChange={setQuizPrintOpen}
         />
+        </>
       )}
+      </div>
+    </TeacherToolsCreateLayout>
 
       <CustomModal
         open={discardOpen}
-        close={() => setDiscardOpen(false)}
-        title="Discard changes?"
+        close={cancelDiscard}
+        title="Leave without saving?"
         primaryButtonText="Leave"
         isDelete
-        handleSave={() => {
-          rag.resetSources()
-          setDiscardOpen(false)
-          goList()
-        }}
+        handleSave={confirmDiscard}
       >
         <p className="py-3 text-sm text-gray-600">
-          Unsaved catalog scope (titles, topics, refinement) will be cleared. Continue?
+          You have unsaved changes on this page. If you leave now, your progress will be cleared.
         </p>
       </CustomModal>
-
-      <div className="flex flex-wrap gap-3 border-t border-gray-200 pt-6">
-        <button
-          type="button"
-          onClick={() => {
-            if (rag.isDirty) setDiscardOpen(true)
-            else goList()
-          }}
-          className="text-sm font-semibold text-primary-600 hover:text-primary-500"
-        >
-          ← Back to quiz list
-        </button>
-      </div>
-    </div>
+    </>
   )
 }

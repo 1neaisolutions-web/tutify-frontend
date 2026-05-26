@@ -19,6 +19,7 @@ import { newDemoId } from '../../demo/newDemoId'
 import { QuizEditQuestionModal } from './QuizEditQuestionModal'
 import type { HandoutLayoutOpts } from '../config/handoutLayoutConfig'
 import { QuizPrintPreviewModal, type QuizPrintMeta } from './QuizPrintPreviewModal'
+import { TeacherToolsReviewHeaderCompact } from '../../components/TeacherToolsReviewHeaderCompact'
 
 type Props = {
   stubs: QuizQuestionStub[]
@@ -37,11 +38,9 @@ type Props = {
   questionLoadingId?: string | null
   regeneratingAll?: boolean
   onBackToEdit: () => void
-  onSaveDraft: () => void
-  onExportPdf: () => void
-  onPublish: () => void
-  saveDraftPending: boolean
-  publishPending: boolean
+  isExemplarPreview?: boolean
+  printOpen?: boolean
+  onPrintOpenChange?: (open: boolean) => void
 }
 
 function blankManualStub(): QuizQuestionStub {
@@ -71,50 +70,44 @@ export function QuizReviewSection({
   questionLoadingId,
   regeneratingAll,
   onBackToEdit,
-  onSaveDraft,
-  onExportPdf,
-  onPublish,
-  saveDraftPending,
-  publishPending,
+  isExemplarPreview = false,
+  printOpen: printOpenProp,
+  onPrintOpenChange,
 }: Props) {
   const [editing, setEditing] = useState<QuizQuestionStub | null>(null)
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
-  const [printOpen, setPrintOpen] = useState(false)
+  const [printOpenInternal, setPrintOpenInternal] = useState(false)
+  const printOpen = printOpenProp ?? printOpenInternal
+  const setPrintOpen = onPrintOpenChange ?? setPrintOpenInternal
   const [manualDraft, setManualDraft] = useState<QuizQuestionStub | null>(null)
 
   const busy = Boolean(questionLoadingId) || Boolean(regeneratingAll)
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/80 to-white p-6 shadow-sm lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-indigo-700">Review</p>
-          <h2 className="mt-1 text-lg font-semibold text-gray-900">Generated question set</h2>
-          <p className="mt-1 max-w-2xl text-sm text-gray-600">
-            Edit prompts, reorder, or regenerate items. When you publish, this snapshot is stored for students and exports.
-          </p>
-          <p className="mt-2 text-xs text-gray-500">{sourceSummaryLine}</p>
-        </div>
-        <div className="flex flex-col items-stretch gap-3 sm:items-end">
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="rounded-xl bg-white px-4 py-2 text-center shadow-sm ring-1 ring-gray-100">
-              <p className="text-2xl font-semibold text-gray-900">{stubs.length}</p>
-              <p className="text-xs text-gray-500">Questions</p>
-            </div>
-            <div className="rounded-xl bg-white px-4 py-2 text-center shadow-sm ring-1 ring-gray-100">
-              <p className="text-2xl font-semibold text-gray-900">{totalPoints}</p>
-              <p className="text-xs text-gray-500">Total marks</p>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-2">
+    <div className="space-y-3">
+      <TeacherToolsReviewHeaderCompact
+        sourceTag={sourceSummaryLine}
+        stats={[
+          { label: 'questions', value: stubs.length },
+          { label: 'marks', value: totalPoints },
+        ]}
+        actions={
+          <>
             <button
               type="button"
               onClick={() => setPrintOpen(true)}
               disabled={stubs.length === 0}
-              className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white px-4 py-2 text-xs font-semibold text-indigo-900 shadow-sm hover:bg-indigo-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-lg border border-indigo-200 bg-white px-2 py-1 text-xs font-semibold text-indigo-800 hover:bg-indigo-50 disabled:opacity-50"
             >
-              <Eye className="h-3.5 w-3.5" />
               Print preview
+            </button>
+            <button
+              type="button"
+              onClick={onRegenerateAll}
+              disabled={busy || isExemplarPreview}
+              className="rounded-lg border border-indigo-200 bg-white px-2 py-1 text-xs font-semibold text-indigo-800 hover:bg-indigo-50 disabled:opacity-50"
+            >
+              {regeneratingAll ? 'Regenerating…' : 'Regenerate all'}
             </button>
             <button
               type="button"
@@ -123,15 +116,13 @@ export function QuizReviewSection({
                 setManualDraft(blankManualStub())
               }}
               disabled={!canAddMoreQuestions}
-              title={!canAddMoreQuestions ? 'Maximum questions reached for this quiz' : undefined}
-              className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-4 py-2 text-xs font-semibold text-emerald-900 shadow-sm hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-lg border border-emerald-200 bg-white px-2 py-1 text-xs font-semibold text-emerald-800 hover:bg-emerald-50 disabled:opacity-50"
             >
-              <PlusCircle className="h-3.5 w-3.5" />
-              Add question manually
+              + Question
             </button>
-          </div>
-        </div>
-      </div>
+          </>
+        }
+      />
 
       {stubs.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-12 text-center">
@@ -260,74 +251,6 @@ export function QuizReviewSection({
           ))}
         </ul>
       )}
-
-      <div className="flex flex-wrap items-center gap-2 border-t border-gray-200 pt-6">
-        <button
-          type="button"
-          onClick={onBackToEdit}
-          className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50"
-        >
-          ← Edit requirements
-        </button>
-        <button
-          type="button"
-          onClick={onRegenerateAll}
-          disabled={busy}
-          className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-900 hover:bg-indigo-100"
-        >
-          {regeneratingAll ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-          {regeneratingAll ? 'Regenerating…' : 'Regenerate all'}
-        </button>
-      </div>
-
-      <div className="rounded-2xl border border-gray-200 bg-gray-50/80 p-5">
-        <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">Publish & export</p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          <button
-            type="button"
-            disabled={saveDraftPending || stubs.length === 0}
-            onClick={onSaveDraft}
-            className="rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50"
-          >
-            {saveDraftPending ? 'Saving draft…' : 'Save draft'}
-          </button>
-          <button
-            type="button"
-            onClick={() => setPrintOpen(true)}
-            disabled={stubs.length === 0}
-            className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50"
-          >
-            <Printer className="h-4 w-4" />
-            Print preview
-          </button>
-          <button
-            type="button"
-            onClick={onExportPdf}
-            disabled={stubs.length === 0}
-            className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50"
-          >
-            <Download className="h-4 w-4" />
-            Export PDF
-          </button>
-          <button
-            type="button"
-            disabled
-            title="Coming with LMS integration"
-            className="inline-flex cursor-not-allowed items-center gap-2 rounded-full border border-dashed border-gray-300 bg-white/60 px-4 py-2 text-sm font-medium text-gray-400"
-          >
-            <FileJson className="h-4 w-4" />
-            QTI / LMS (soon)
-          </button>
-          <button
-            type="button"
-            disabled={publishPending || stubs.length === 0}
-            onClick={onPublish}
-            className="ml-auto rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 disabled:opacity-50"
-          >
-            {publishPending ? 'Publishing…' : 'Publish quiz'}
-          </button>
-        </div>
-      </div>
 
       <QuizEditQuestionModal
         open={editing !== null && editingIndex !== null}

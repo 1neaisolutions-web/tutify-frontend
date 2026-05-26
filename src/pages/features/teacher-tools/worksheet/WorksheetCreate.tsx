@@ -1,7 +1,22 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams, useLocation, useSearchParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { TeacherToolsPageHeader, TeacherToolsWizardStepper } from '../components'
+import {
+  TeacherToolsConfigureNav,
+  TeacherToolsCreateLayout,
+  TeacherToolsCreateReviewFooter,
+  TeacherToolsExemplarReviewBanner,
+  TeacherToolsFieldErrors,
+  TeacherToolsPageHeader,
+  TeacherToolsReviewHeaderCompact,
+  TeacherToolsWizardFooter,
+} from '../components'
+import { TEACHER_TOOLS_CREATION_STEPS } from '../config/teacherToolsCreationSteps'
+import { useTeacherToolsSubWizard } from '../hooks/useTeacherToolsSubWizard'
+import { useTeacherToolsExemplarPreview } from '../hooks/useTeacherToolsExemplarPreview'
+import { useTeacherToolsDirtyBaseline } from '../hooks/useTeacherToolsDirtyBaseline'
+import { useTeacherToolsFormBaselineReady } from '../hooks/useTeacherToolsFormBaselineReady'
+import { useTeacherToolsLeaveGuard } from '../hooks/useTeacherToolsLeaveGuard'
 import { demoClasses } from '../demo/teacherToolsDemoData'
 import { SHORT_RESPONSE_LINES, clampResponseLines, formatSourceSummary } from '../demo/generationFromSources'
 import type { QuestionMixMode, QuizDifficultyId } from '../demo/generationFromSources'
@@ -69,11 +84,16 @@ import {
   RULED_LINE_SPACING_PRESETS,
   type HandoutLayoutOpts,
 } from '../quiz/config/handoutLayoutConfig'
-import { QUIZ_CREATION_STEPS } from '../quiz/config/quizCreationConfig'
 import { useQuizRagScope } from '../quiz/hooks/useQuizRagScope'
-import { validateRagWorksheetBuild } from './config/worksheetCreationConfig'
+import {
+  validateRagWorksheetBuild,
+  validateWorksheetBuildSubStep,
+  type WorksheetRagBuildInput,
+} from './config/worksheetCreationConfig'
+import { WORKSHEET_BUILD_SUB_STEPS, type WorksheetBuildSubStepId } from './config/worksheetWizardSteps'
 import { WorksheetRagIdentitySection, type WorksheetOutputFormat } from './components/WorksheetRagIdentitySection'
 import { WorksheetGenerationParametersSection } from './components/WorksheetGenerationParametersSection'
+import { WORKSHEET_EXEMPLAR } from '../exemplars/worksheetExemplar'
 
 const TYPE_ORDER = ['mcq', 'fill_blank', 'short', 'match'] as const
 const TYPE_HEADING: Record<(typeof TYPE_ORDER)[number], string> = {
@@ -408,7 +428,6 @@ export default function WorksheetCreate() {
   const [includeMatch, setIncludeMatch] = useState(true)
   const [teacherNotes, setTeacherNotes] = useState('')
 
-  const [discardOpen, setDiscardOpen] = useState(false)
   const [loadedTopic, setLoadedTopic] = useState<string | undefined>(undefined)
   const [hydrateReady, setHydrateReady] = useState(!isEdit)
   const [publishPending, setPublishPending] = useState(false)
@@ -430,6 +449,201 @@ export default function WorksheetCreate() {
     initialScopeRefinement: ragHydration ? ragHydration.scopeRefinement : loadedTopic,
     initialGenerateWithoutSources: ragHydration?.generateWithoutSources,
   })
+
+  const subWizard = useTeacherToolsSubWizard(WORKSHEET_BUILD_SUB_STEPS, {
+    storageKey: 'tutify-worksheet-create-substep',
+  })
+  const { isExemplarPreview, enterExemplarPreview, exitExemplarPreview } = useTeacherToolsExemplarPreview()
+
+  const worksheetBuildInput: WorksheetRagBuildInput = useMemo(
+    () => ({
+      title,
+      generateWithoutSources: rag.generateWithoutSources,
+      selectedBookIds: rag.selectedBookIds,
+      selectedTopics: rag.selectedTopics,
+      scopeRefinement: rag.scopeRefinement,
+      mixMode,
+      questionCount,
+      includeMcq,
+      includeFillBlank,
+      includeShort,
+      includeMatch,
+      countsByType: { mcq: countMcq, fill_blank: countFillBlank, short: countShort, match: countMatch },
+    }),
+    [
+      title,
+      rag.generateWithoutSources,
+      rag.selectedBookIds,
+      rag.selectedTopics,
+      rag.scopeRefinement,
+      mixMode,
+      questionCount,
+      includeMcq,
+      includeFillBlank,
+      includeShort,
+      includeMatch,
+      countMcq,
+      countFillBlank,
+      countShort,
+      countMatch,
+    ],
+  )
+
+  const currentStepValidation = useMemo(
+    () =>
+      validateWorksheetBuildSubStep(subWizard.currentStepId as WorksheetBuildSubStepId, worksheetBuildInput),
+    [subWizard.currentStepId, worksheetBuildInput],
+  )
+
+  const fullBuildValidation = useMemo(() => validateRagWorksheetBuild(worksheetBuildInput), [worksheetBuildInput])
+
+  const hasGeneratedContent = totalQuestionsInSessions(sessions) > 0 && !isExemplarPreview
+  const topMaxReachable = totalQuestionsInSessions(sessions) > 0 ? 1 : 0
+
+  const formBaselineReady = useTeacherToolsFormBaselineReady(hydrateReady, isEdit)
+
+  const formSnapshot = useMemo(
+    () =>
+      JSON.stringify({
+        phase,
+        title,
+        subject,
+        grade,
+        outputFormat,
+        mixMode,
+        questionCount,
+        countMcq,
+        countFillBlank,
+        countShort,
+        countMatch,
+        difficulty,
+        includeMcq,
+        includeFillBlank,
+        includeShort,
+        includeMatch,
+        teacherNotes,
+        sessionCount: sessions.length,
+        questionCountLive: totalQuestionsInSessions(sessions),
+        rag: rag.generationSignature,
+        subStep: subWizard.currentStep,
+        subMax: subWizard.maxUnlockedStep,
+        exemplar: isExemplarPreview,
+        worksheetId: worksheetId ?? worksheetIdRef.current,
+      }),
+    [
+      phase,
+      title,
+      subject,
+      grade,
+      outputFormat,
+      mixMode,
+      questionCount,
+      countMcq,
+      countFillBlank,
+      countShort,
+      countMatch,
+      difficulty,
+      includeMcq,
+      includeFillBlank,
+      includeShort,
+      includeMatch,
+      teacherNotes,
+      sessions,
+      rag.generationSignature,
+      subWizard.currentStep,
+      subWizard.maxUnlockedStep,
+      isExemplarPreview,
+      worksheetId,
+    ],
+  )
+
+  const { isDirty: isFormDirty, clearBaseline } = useTeacherToolsDirtyBaseline(
+    formSnapshot,
+    formBaselineReady,
+  )
+
+  const hasUnsavedWork = useMemo(() => {
+    const wizardProgress =
+      isExemplarPreview ||
+      subWizard.currentStep > 0 ||
+      subWizard.maxUnlockedStep > 0 ||
+      (!isEdit && phase === 'review')
+
+    if (isEdit) {
+      return isFormDirty || rag.isDirty || wizardProgress
+    }
+
+    return (
+      isFormDirty ||
+      rag.isDirty ||
+      totalQuestionsInSessions(sessions) > 0 ||
+      !!(worksheetId ?? worksheetIdRef.current) ||
+      wizardProgress
+    )
+  }, [
+    isEdit,
+    isFormDirty,
+    rag.isDirty,
+    sessions,
+    worksheetId,
+    phase,
+    isExemplarPreview,
+    subWizard.currentStep,
+    subWizard.maxUnlockedStep,
+  ])
+
+  const clearSessionOnLeave = useCallback(() => {
+    rag.resetSources()
+    subWizard.clearStorage()
+    subWizard.resetWizard()
+    exitExemplarPreview()
+    if (!isEdit) worksheetIdRef.current = null
+    clearBaseline()
+  }, [rag, subWizard, exitExemplarPreview, isEdit, clearBaseline])
+
+  const { discardOpen, requestLeave, confirmDiscard, cancelDiscard } = useTeacherToolsLeaveGuard(
+    hasUnsavedWork,
+    clearSessionOnLeave,
+  )
+
+  const handleBackToConfigure = useCallback(() => {
+    if (isExemplarPreview) {
+      exitExemplarPreview()
+      setSessions([])
+      if (!isEdit) worksheetIdRef.current = null
+      subWizard.resetWizard()
+    }
+    setPhase('build')
+  }, [isExemplarPreview, exitExemplarPreview, isEdit, subWizard])
+
+  const handleShowExemplar = useCallback(() => {
+    const ex = WORKSHEET_EXEMPLAR.input
+    if (!isEdit) worksheetIdRef.current = null
+    enterExemplarPreview()
+    setTitle(ex.title)
+    setSubject(ex.subject)
+    setGrade(ex.grade)
+    setOutputFormat(ex.outputFormat)
+    setMixMode(ex.mixMode)
+    setQuestionCount(ex.questionCount)
+    setDifficulty(ex.difficulty)
+    setIncludeMcq(ex.includeMcq)
+    setIncludeFillBlank(ex.includeFillBlank)
+    setIncludeShort(ex.includeShort)
+    setIncludeMatch(ex.includeMatch)
+    setTeacherNotes(ex.teacherNotes)
+    rag.applySourceSnapshot({
+      bookIds: ex.bookIds,
+      topics: ex.topics,
+      refinement: ex.scopeRefinement,
+      generateWithoutSources: ex.generateWithoutSources,
+    })
+    setSessions(WORKSHEET_EXEMPLAR.output.sessions)
+    setBuildErrors([])
+    subWizard.unlockAllSteps()
+    setPhase('review')
+    toast.success('Exemplar loaded — edit or regenerate anytime.')
+  }, [rag, subWizard, toast, enterExemplarPreview, isEdit])
 
   const previewSections = useMemo(() => {
     let n = 0
@@ -784,6 +998,7 @@ export default function WorksheetCreate() {
     setGenerationError(null)
     setCreditGate(null)
     setBlockRegenCreditGate(null)
+    exitExemplarPreview()
     setGenerating(true)
     setGenProgress(0.12)
     const steps = window.setInterval(() => {
@@ -891,6 +1106,10 @@ export default function WorksheetCreate() {
   ])
 
   const handleSaveDraft = async () => {
+    if (isExemplarPreview) {
+      toast.error('Generate your worksheet first — exemplar preview is not saved.')
+      return
+    }
     const wsId = worksheetId ?? worksheetIdRef.current
     if (!wsId) {
       toast.error('Generate first.')
@@ -916,6 +1135,10 @@ export default function WorksheetCreate() {
   }
 
   const handlePublish = async () => {
+    if (isExemplarPreview) {
+      toast.error('Generate your worksheet first — exemplar preview cannot be published.')
+      return
+    }
     const wsId = worksheetId ?? worksheetIdRef.current
     if (!wsId) {
       toast.error('Generate first.')
@@ -940,7 +1163,11 @@ export default function WorksheetCreate() {
     }
   }
 
-  const goList = () => navigate('/teacher-tools/worksheet')
+  const goList = useCallback(() => navigate('/teacher-tools/worksheet'), [navigate])
+
+  const handleExitToList = useCallback(() => {
+    requestLeave(goList)
+  }, [requestLeave, goList])
 
   const exportPdf = () => {
     let ordinal = 0
@@ -1006,33 +1233,105 @@ export default function WorksheetCreate() {
   const totalQs = totalQuestionsInSessions(sessions)
   const typeCount = distinctBlockTypesInSessions(sessions)
 
-  return (
-    <div className="space-y-6 pb-10">
-      <TeacherToolsPageHeader
-        title={isEdit ? 'Edit worksheet' : 'Create worksheet'}
-        subtitle={
-          isEdit && usageMeta.createdAt
-            ? `Created ${usageMeta.createdAt} · ${usageMeta.usageCount} submission${usageMeta.usageCount === 1 ? '' : 's'}. Configure scope and settings, generate, then review and publish.`
-            : 'Configure scope and settings, generate the worksheet, then review and publish.'
+  const buildFooter = (
+    <TeacherToolsWizardFooter
+      isFirstStep={subWizard.isFirstStep}
+      isLastStep={subWizard.isLastStep}
+      canGoNext={currentStepValidation.ok}
+      onBack={subWizard.goBack}
+      onNext={() => {
+        if (!currentStepValidation.ok) {
+          setBuildErrors(currentStepValidation.errors)
+          return
         }
-        breadcrumbs={[
-          { label: 'Teacher Tools', to: '/teacher-tools' },
-          { label: 'Worksheet', to: '/teacher-tools/worksheet' },
-          { label: isEdit ? 'Edit' : 'Create' },
-        ]}
-      />
+        setBuildErrors([])
+        subWizard.goNext()
+      }}
+      onGenerate={() => {
+        if (!fullBuildValidation.ok) {
+          setBuildErrors(fullBuildValidation.errors)
+          toast.error('Fix the highlighted fields to generate.')
+          return
+        }
+        setBuildErrors([])
+        void runGeneration()
+      }}
+      generating={generating}
+      generateLabel="Generate worksheet"
+      onShowExemplar={handleShowExemplar}
+      onExitToList={handleExitToList}
+      exitLabel="Back to worksheet list"
+    />
+  )
 
-      <TeacherToolsWizardStepper
-        steps={[...QUIZ_CREATION_STEPS]}
-        current={wizardStep}
-        onStepClick={(i) => {
-          if (i === 1 && totalQuestionsInSessions(sessions) === 0) {
-            toast.error('Generate the worksheet first to open review.')
-            return
-          }
-          setPhase(i === 0 ? 'build' : 'review')
-        }}
-      />
+  const reviewFooter = (
+    <TeacherToolsCreateReviewFooter
+      exitLabel="Back to worksheet list"
+      onExitToList={handleExitToList}
+      onEditRequirements={handleBackToConfigure}
+      publish={{
+        onPrintPreview: () => {
+          setDraftLayout(handoutLayout)
+          setPreviewOpen(true)
+        },
+        printPreviewDisabled: totalQs === 0,
+        onSaveDraft: () => void handleSaveDraft(),
+        saveDraftPending,
+        saveDraftDisabled: totalQs === 0 || isExemplarPreview,
+        onExportPdf: exportPdf,
+        exportDisabled: totalQs === 0,
+        onPublish: () => void handlePublish(),
+        publishPending,
+        publishDisabled: totalQs === 0 || isExemplarPreview,
+        publishLabel: isEdit ? 'Save changes' : 'Publish worksheet',
+      }}
+    />
+  )
+
+  return (
+    <>
+    <TeacherToolsCreateLayout
+      header={
+        <>
+          <TeacherToolsPageHeader
+            variant="compact"
+            title={isEdit ? 'Edit worksheet' : 'Create worksheet'}
+            subtitle={
+              isEdit && usageMeta.createdAt
+                ? `Created ${usageMeta.createdAt} · ${usageMeta.usageCount} submission${usageMeta.usageCount === 1 ? '' : 's'}. Configure, generate, then review.`
+                : 'Configure scope and settings, generate the worksheet, then review and publish.'
+            }
+            breadcrumbs={[
+              { label: 'Teacher Tools', to: '/teacher-tools' },
+              { label: 'Worksheet', to: '/teacher-tools/worksheet' },
+              { label: isEdit ? 'Edit' : 'Create' },
+            ]}
+          />
+          <div className="pb-2">
+            <TeacherToolsConfigureNav
+              primarySteps={[...TEACHER_TOOLS_CREATION_STEPS]}
+              primaryCurrent={wizardStep}
+              primaryMaxReachable={topMaxReachable}
+              onPrimaryStepClick={(i) => {
+                if (i === 1 && totalQuestionsInSessions(sessions) === 0) {
+                  toast.error('Generate the worksheet first to open review.')
+                  return
+                }
+                if (i === 0) handleBackToConfigure()
+                else setPhase('review')
+              }}
+              showSubSteps={phase === 'build'}
+              subSteps={WORKSHEET_BUILD_SUB_STEPS}
+              subCurrent={subWizard.currentStep}
+              subMaxUnlocked={subWizard.maxUnlockedStep}
+              onSubStepClick={subWizard.goToStep}
+            />
+          </div>
+        </>
+      }
+      footer={phase === 'build' ? buildFooter : reviewFooter}
+    >
+      <div className="space-y-4 pb-4">
 
       <QuizGeneratingOverlay open={generating} progress={genProgress} />
       {generationError && (
@@ -1054,70 +1353,53 @@ export default function WorksheetCreate() {
       )}
 
       {phase === 'build' && (
-        <div className="space-y-10">
-          <WorksheetRagIdentitySection
-            rag={rag}
-            title={title}
-            onTitleChange={setTitle}
-            outputFormat={outputFormat}
-            onOutputFormatChange={setOutputFormat}
-            subject={subject}
-            onSubjectChange={setSubject}
-            grade={grade}
-            onGradeChange={setGrade}
-          />
-
-          <WorksheetGenerationParametersSection
-            mixMode={mixMode}
-            onMixModeChange={setMixMode}
-            questionCount={questionCount}
-            onQuestionCountChange={setQuestionCount}
-            countMcq={countMcq}
-            countFillBlank={countFillBlank}
-            countShort={countShort}
-            countMatch={countMatch}
-            onCountMcq={setCountMcq}
-            onCountFillBlank={setCountFillBlank}
-            onCountShort={setCountShort}
-            onCountMatch={setCountMatch}
-            difficulty={difficulty}
-            onDifficultyChange={setDifficulty}
-            includeMcq={includeMcq}
-            includeFillBlank={includeFillBlank}
-            includeShort={includeShort}
-            includeMatch={includeMatch}
-            onToggleMcq={setIncludeMcq}
-            onToggleFillBlank={setIncludeFillBlank}
-            onToggleShort={setIncludeShort}
-            onToggleMatch={setIncludeMatch}
-            teacherNotes={teacherNotes}
-            onTeacherNotesChange={setTeacherNotes}
-            validationErrors={buildErrors}
-          />
-
-          <div className="sticky bottom-4 z-10 mt-8 flex flex-col gap-3 rounded-2xl border border-indigo-200 bg-white/95 p-4 shadow-lg backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between">
-            <div className="min-w-0">
-              <p className="text-sm font-semibold text-gray-900">Ready to generate worksheet content</p>
-              <p className="mt-0.5 text-xs text-gray-600">
-                Uses generation parameters together with basics and sources above.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => void runGeneration()}
-              disabled={generating}
-              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-md hover:bg-emerald-500 disabled:opacity-60"
-            >
-              {generating ? (
-                <>
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                  Generating…
-                </>
-              ) : (
-                'Generate worksheet'
-              )}
-            </button>
-          </div>
+        <div className="space-y-4">
+          <TeacherToolsFieldErrors errors={currentStepValidation.errors} />
+          {['basics', 'sources', 'scope'].includes(subWizard.currentStepId) && (
+            <WorksheetRagIdentitySection
+              rag={rag}
+              title={title}
+              onTitleChange={setTitle}
+              outputFormat={outputFormat}
+              onOutputFormatChange={setOutputFormat}
+              subject={subject}
+              onSubjectChange={setSubject}
+              grade={grade}
+              onGradeChange={setGrade}
+              activeStepId={subWizard.currentStepId as WorksheetBuildSubStepId}
+            />
+          )}
+          {subWizard.currentStepId === 'generation' && (
+            <WorksheetGenerationParametersSection
+              mixMode={mixMode}
+              onMixModeChange={setMixMode}
+              questionCount={questionCount}
+              onQuestionCountChange={setQuestionCount}
+              countMcq={countMcq}
+              countFillBlank={countFillBlank}
+              countShort={countShort}
+              countMatch={countMatch}
+              onCountMcq={setCountMcq}
+              onCountFillBlank={setCountFillBlank}
+              onCountShort={setCountShort}
+              onCountMatch={setCountMatch}
+              difficulty={difficulty}
+              onDifficultyChange={setDifficulty}
+              includeMcq={includeMcq}
+              includeFillBlank={includeFillBlank}
+              includeShort={includeShort}
+              includeMatch={includeMatch}
+              onToggleMcq={setIncludeMcq}
+              onToggleFillBlank={setIncludeFillBlank}
+              onToggleShort={setIncludeShort}
+              onToggleMatch={setIncludeMatch}
+              teacherNotes={teacherNotes}
+              onTeacherNotesChange={setTeacherNotes}
+            />
+          )}
+          {buildErrors.length > 0 && !currentStepValidation.errors.length && (
+            <TeacherToolsFieldErrors errors={buildErrors} />
+          )}
         </div>
       )}
 
@@ -1132,74 +1414,46 @@ export default function WorksheetCreate() {
       )}
 
       {phase === 'review' && (
-        <div className="space-y-6">
-          <div className="flex flex-col gap-4 rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/80 to-white p-6 shadow-sm lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-indigo-700">REVIEW</p>
-              <h2 className="mt-1 text-lg font-semibold text-gray-900">Generated question set</h2>
-              <p className="mt-1 max-w-2xl text-sm text-gray-600">
-                Organise content into sessions, edit prompts per item, reorder within a session, then publish. Print preview and PDF include session titles.
-              </p>
-              <p className="mt-2 text-xs text-gray-500">{reviewSourceTag}</p>
-            </div>
-            <div className="flex flex-col items-stretch gap-3 sm:items-end">
-              <div className="flex flex-wrap items-center gap-2">
-                <div className="rounded-xl bg-white px-4 py-2 text-center shadow-sm ring-1 ring-gray-100">
-                  <p className="text-2xl font-semibold text-gray-900">{totalQs}</p>
-                  <p className="text-xs text-gray-500">Questions</p>
-                </div>
-                <div className="rounded-xl bg-white px-4 py-2 text-center shadow-sm ring-1 ring-gray-100">
-                  <p className="text-2xl font-semibold text-gray-900">{sessions.length}</p>
-                  <p className="text-xs text-gray-500">Sessions</p>
-                </div>
-                <div className="rounded-xl bg-white px-4 py-2 text-center shadow-sm ring-1 ring-gray-100">
-                  <p className="text-2xl font-semibold text-gray-900">{typeCount}</p>
-                  <p className="text-xs text-gray-500">Types</p>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setDraftLayout(handoutLayout)
-                    setPreviewOpen(true)
-                  }}
-                  disabled={totalQs === 0}
-                  className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white px-4 py-2 text-xs font-semibold text-indigo-900 shadow-sm hover:bg-indigo-50 disabled:opacity-50"
-                >
-                  <Eye className="h-3.5 w-3.5" />
-                  Print preview
-                </button>
+        <div className="space-y-3">
+          {isExemplarPreview && <TeacherToolsExemplarReviewBanner />}
+          <TeacherToolsReviewHeaderCompact
+            title="Worksheet content"
+            sourceTag={reviewSourceTag}
+            stats={[
+              { label: 'questions', value: totalQs },
+              { label: 'sessions', value: sessions.length },
+              { label: 'types', value: typeCount },
+            ]}
+            actions={
+              <>
                 <button
                   type="button"
                   onClick={() => void addSession()}
-                  className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-4 py-2 text-xs font-semibold text-emerald-900 shadow-sm hover:bg-emerald-50"
+                  className="rounded-lg border border-emerald-200 bg-white px-2 py-1 text-xs font-semibold text-emerald-800 hover:bg-emerald-50"
                 >
-                  <FolderPlus className="h-3.5 w-3.5" />
-                  Add session
+                  + Session
                 </button>
-              </div>
-            </div>
-          </div>
+                <button
+                  type="button"
+                  disabled={regeneratingAll || generating || totalQs === 0 || isExemplarPreview}
+                  onClick={() => void regenerate()}
+                  className="rounded-lg border border-indigo-200 bg-white px-2 py-1 text-xs font-semibold text-indigo-800 hover:bg-indigo-50 disabled:opacity-50"
+                >
+                  {regeneratingAll ? 'Regenerating…' : 'Regenerate all'}
+                </button>
+              </>
+            }
+          />
 
-          <section className="overflow-hidden rounded-2xl border-[0.5px] border-gray-200 bg-white shadow-sm">
-            <div className="flex flex-wrap items-center gap-3 border-b border-gray-100 bg-gradient-to-r from-indigo-50/60 to-white px-6 py-4">
-              <h3 className="font-semibold text-gray-900">Content blocks</h3>
-              <span className="ml-auto text-xs font-medium text-gray-500">{reviewSourceTag}</span>
+          <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+            <div className="flex flex-wrap items-center gap-2 border-b border-gray-100 bg-gray-50/80 px-3 py-2">
+              <h3 className="text-sm font-semibold text-gray-900">Content blocks</h3>
               <button
                 type="button"
                 onClick={() => void addSession()}
-                className="text-xs font-semibold text-emerald-700 hover:text-emerald-600"
+                className="ml-auto text-xs font-semibold text-emerald-700 hover:text-emerald-600"
               >
                 Add session
-              </button>
-              <button
-                type="button"
-                disabled={regeneratingAll || generating}
-                onClick={() => void regenerate()}
-                className="text-xs font-semibold text-indigo-600 hover:text-indigo-500 disabled:opacity-50"
-              >
-                {regeneratingAll ? 'Regenerating…' : 'Regenerate'}
               </button>
             </div>
             {sessions.length === 0 || totalQs === 0 ? (
@@ -1207,7 +1461,7 @@ export default function WorksheetCreate() {
                 No content yet — go back and generate, or add a session and use Add question on that session.
               </div>
             ) : (
-              <div className="space-y-8 p-6">
+              <div className="space-y-6 p-4">
                 {sessions.map((session) => (
                   <div
                     key={session.id}
@@ -1376,93 +1630,22 @@ export default function WorksheetCreate() {
               </div>
             )}
           </section>
-
-          <div className="flex flex-wrap items-center gap-2 border-t border-gray-200 pt-6">
-            <button
-              type="button"
-              onClick={() => setPhase('build')}
-              className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50"
-            >
-              ← Edit requirements
-            </button>
-            <button
-              type="button"
-              disabled={regeneratingAll || generating || totalQs === 0}
-              onClick={() => void regenerate()}
-              className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-900 hover:bg-indigo-100 disabled:opacity-50"
-            >
-              <Sparkles className={`h-4 w-4 ${regeneratingAll ? 'animate-pulse' : ''}`} />
-              {regeneratingAll ? 'Regenerating…' : 'Regenerate all'}
-            </button>
-          </div>
-
-          <div className="rounded-2xl border border-gray-200 bg-gray-50/80 p-5">
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">Publish & export</p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setDraftLayout(handoutLayout)
-                  setPreviewOpen(true)
-                }}
-                disabled={totalQs === 0}
-                className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50"
-              >
-                <Printer className="h-4 w-4" />
-                Print preview
-              </button>
-              <button
-                type="button"
-                disabled={saveDraftPending || totalQs === 0}
-                onClick={() => void handleSaveDraft()}
-                className="rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50"
-              >
-                {saveDraftPending ? 'Saving draft…' : 'Save draft'}
-              </button>
-              <button
-                type="button"
-                onClick={exportPdf}
-                disabled={totalQs === 0}
-                className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50"
-              >
-                <Download className="h-4 w-4" />
-                Export PDF
-              </button>
-              <button
-                type="button"
-                disabled
-                title="Coming with LMS integration"
-                className="inline-flex cursor-not-allowed items-center gap-2 rounded-full border border-dashed border-gray-300 bg-white/60 px-4 py-2 text-sm font-medium text-gray-400"
-              >
-                <FileJson className="h-4 w-4" />
-                QTI / LMS (soon)
-              </button>
-              <button
-                type="button"
-                disabled={publishPending || totalQs === 0}
-                onClick={() => void handlePublish()}
-                className="ml-auto rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 disabled:opacity-50"
-              >
-                {publishPending ? 'Publishing…' : isEdit ? 'Save changes' : 'Publish worksheet'}
-              </button>
-            </div>
-          </div>
         </div>
       )}
+      </div>
+    </TeacherToolsCreateLayout>
 
       <CustomModal
         open={discardOpen}
-        close={() => setDiscardOpen(false)}
-        title="Discard changes?"
+        close={cancelDiscard}
+        title="Leave without saving?"
         primaryButtonText="Leave"
         isDelete
-        handleSave={() => {
-          rag.resetSources()
-          setDiscardOpen(false)
-          goList()
-        }}
+        handleSave={confirmDiscard}
       >
-        <p className="py-3 text-sm text-gray-600">Unsaved catalog scope will be cleared. Continue?</p>
+        <p className="py-3 text-sm text-gray-600">
+          You have unsaved changes on this page. If you leave now, your progress will be cleared.
+        </p>
       </CustomModal>
 
       <CustomModal
@@ -1937,19 +2120,6 @@ export default function WorksheetCreate() {
           ) : null}
         </div>
       </CustomModal>
-
-      <div className="flex flex-wrap gap-3 border-t border-gray-200 pt-6">
-        <button
-          type="button"
-          onClick={() => {
-            if (rag.isDirty) setDiscardOpen(true)
-            else goList()
-          }}
-          className="text-sm font-semibold text-primary-600 hover:text-primary-500"
-        >
-          ← Back to worksheet list
-        </button>
-      </div>
-    </div>
+    </>
   )
 }

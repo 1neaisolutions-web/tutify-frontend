@@ -1,7 +1,23 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams, useLocation, useSearchParams } from 'react-router-dom'
-import { TeacherToolsPageHeader, TeacherToolsWizardStepper } from '../components'
+import {
+  TeacherToolsConfigureNav,
+  TeacherToolsCreateLayout,
+  TeacherToolsCreateReviewFooter,
+  TeacherToolsExemplarReviewBanner,
+  TeacherToolsFieldErrors,
+  TeacherToolsPageHeader,
+  TeacherToolsPanelHeader,
+  TeacherToolsReviewHeaderCompact,
+  TeacherToolsWizardFooter,
+} from '../components'
+import { EXAM_CREATION_STEPS } from '../config/teacherToolsCreationSteps'
+import { useTeacherToolsSubWizard } from '../hooks/useTeacherToolsSubWizard'
+import { useTeacherToolsExemplarPreview } from '../hooks/useTeacherToolsExemplarPreview'
+import { useTeacherToolsDirtyBaseline } from '../hooks/useTeacherToolsDirtyBaseline'
+import { useTeacherToolsFormBaselineReady } from '../hooks/useTeacherToolsFormBaselineReady'
+import { useTeacherToolsLeaveGuard } from '../hooks/useTeacherToolsLeaveGuard'
 import { demoClasses } from '../demo/teacherToolsDemoData'
 import { formatSourceSummary, generateExamSectionStubs } from '../demo/generationFromSources'
 import type { ExamSectionStub } from '../demo/generationFromSources'
@@ -36,7 +52,12 @@ import {
   type HandoutLayoutOpts,
 } from '../quiz/config/handoutLayoutConfig'
 import { useQuizRagScope } from '../quiz/hooks/useQuizRagScope'
-import { validateRagExamBuild } from './config/examCreationConfig'
+import {
+  validateExamBuildSubStep,
+  validateRagExamBuild,
+  type ExamRagBuildInput,
+} from './config/examCreationConfig'
+import { EXAM_BUILD_SUB_STEPS, type ExamBuildSubStepId } from './config/examWizardSteps'
 import {
   DEFAULT_EXAM_PAPER,
   deriveExamPaperMarks,
@@ -51,8 +72,7 @@ import { ExamPaperQuestionsReview } from './components/ExamPaperQuestionsReview'
 import { ExamPrintPreviewContent } from './components/ExamPrintPreviewContent'
 import { blankLongStub, blankMcqStub, blankShortStub } from './demo/examQuestionStubs'
 import { alignExamBlueprintMarksToTotal } from './utils/alignExamBlueprintMarks'
-
-const BUILD_STEPS = ['Configure & generate', 'Review & schedule']
+import { EXAM_EXEMPLAR } from '../exemplars/examExemplar'
 
 const EXAM_TYPES = ['Unit test', 'Mid-term', 'Final exam', 'Mock exam']
 const TERMS = ['Term 1', 'Term 2', 'Term 3']
@@ -134,7 +154,6 @@ export default function ExamCreate() {
   const [scheduleTime, setScheduleTime] = useState('09:00')
   const [scheduleStartIso, setScheduleStartIso] = useState<string | null>(null)
   const [selectedClasses, setSelectedClasses] = useState<string[]>([])
-  const [discardOpen, setDiscardOpen] = useState(false)
   const [loadedTopic, setLoadedTopic] = useState<string | undefined>(undefined)
   const [hydrateReady, setHydrateReady] = useState(!isEdit)
   const [publishPending, setPublishPending] = useState(false)
@@ -221,6 +240,198 @@ export default function ExamCreate() {
     initialScopeRefinement: scopeHydration?.refinement ?? loadedTopic,
     initialGenerateWithoutSources: scopeHydration?.without,
   })
+
+  const subWizard = useTeacherToolsSubWizard(EXAM_BUILD_SUB_STEPS, {
+    storageKey: 'tutify-exam-create-substep',
+  })
+  const { isExemplarPreview, enterExemplarPreview, exitExemplarPreview } = useTeacherToolsExemplarPreview()
+
+  const examBuildInput: ExamRagBuildInput = useMemo(
+    () => ({
+      title,
+      generateWithoutSources: rag.generateWithoutSources,
+      selectedBookIds: rag.selectedBookIds,
+      selectedTopics: rag.selectedTopics,
+      scopeRefinement: rag.scopeRefinement,
+      durationMinutes,
+      sectionTargetCount,
+      paper,
+    }),
+    [
+      title,
+      rag.generateWithoutSources,
+      rag.selectedBookIds,
+      rag.selectedTopics,
+      rag.scopeRefinement,
+      durationMinutes,
+      sectionTargetCount,
+      paper,
+    ],
+  )
+
+  const currentStepValidation = useMemo(
+    () => validateExamBuildSubStep(subWizard.currentStepId as ExamBuildSubStepId, examBuildInput),
+    [subWizard.currentStepId, examBuildInput],
+  )
+
+  const fullBuildValidation = useMemo(() => validateRagExamBuild(examBuildInput), [examBuildInput])
+
+  const hasGeneratedContent =
+    (examMcqs.length > 0 || examShorts.length > 0 || examLongs.length > 0 || generatedSections.length > 0) &&
+    !isExemplarPreview
+  const topMaxReachable =
+    examMcqs.length > 0 || examShorts.length > 0 || examLongs.length > 0 || generatedSections.length > 0 ? 1 : 0
+
+  const formBaselineReady = useTeacherToolsFormBaselineReady(hydrateReady, isEdit)
+
+  const formSnapshot = useMemo(
+    () =>
+      JSON.stringify({
+        phase,
+        title,
+        examType,
+        term,
+        durationMinutes,
+        subject,
+        grade,
+        internationalStandard,
+        sectionTargetCount,
+        paper,
+        scheduleDate,
+        scheduleTime,
+        selectedClasses,
+        mcqCount: examMcqs.length,
+        shortCount: examShorts.length,
+        longCount: examLongs.length,
+        sectionCount: generatedSections.length,
+        rag: rag.generationSignature,
+        subStep: subWizard.currentStep,
+        subMax: subWizard.maxUnlockedStep,
+        exemplar: isExemplarPreview,
+        examId: effectiveExamId,
+      }),
+    [
+      phase,
+      title,
+      examType,
+      term,
+      durationMinutes,
+      subject,
+      grade,
+      internationalStandard,
+      sectionTargetCount,
+      paper,
+      scheduleDate,
+      scheduleTime,
+      selectedClasses,
+      examMcqs.length,
+      examShorts.length,
+      examLongs.length,
+      generatedSections.length,
+      rag.generationSignature,
+      subWizard.currentStep,
+      subWizard.maxUnlockedStep,
+      isExemplarPreview,
+      effectiveExamId,
+    ],
+  )
+
+  const { isDirty: isFormDirty, clearBaseline } = useTeacherToolsDirtyBaseline(
+    formSnapshot,
+    formBaselineReady,
+  )
+
+  const hasUnsavedWork = useMemo(() => {
+    const wizardProgress =
+      isExemplarPreview ||
+      subWizard.currentStep > 0 ||
+      subWizard.maxUnlockedStep > 0 ||
+      (!isEdit && phase === 'review')
+
+    if (isEdit) {
+      return isFormDirty || rag.isDirty || wizardProgress
+    }
+
+    return (
+      isFormDirty ||
+      rag.isDirty ||
+      examMcqs.length > 0 ||
+      examShorts.length > 0 ||
+      examLongs.length > 0 ||
+      generatedSections.length > 0 ||
+      !!effectiveExamId ||
+      wizardProgress
+    )
+  }, [
+    isEdit,
+    isFormDirty,
+    rag.isDirty,
+    examMcqs.length,
+    examShorts.length,
+    examLongs.length,
+    generatedSections.length,
+    effectiveExamId,
+    phase,
+    isExemplarPreview,
+    subWizard.currentStep,
+    subWizard.maxUnlockedStep,
+  ])
+
+  const clearSessionOnLeave = useCallback(() => {
+    rag.resetSources()
+    subWizard.clearStorage()
+    subWizard.resetWizard()
+    exitExemplarPreview()
+    if (!isEdit) setBackendExamId(null)
+    clearBaseline()
+  }, [rag, subWizard, exitExemplarPreview, isEdit, clearBaseline])
+
+  const { discardOpen, requestLeave, confirmDiscard, cancelDiscard } = useTeacherToolsLeaveGuard(
+    hasUnsavedWork,
+    clearSessionOnLeave,
+  )
+
+  const handleBackToConfigure = useCallback(() => {
+    if (isExemplarPreview) {
+      exitExemplarPreview()
+      setExamMcqs([])
+      setExamShorts([])
+      setExamLongs([])
+      setGeneratedSections([])
+      if (!isEdit) setBackendExamId(null)
+      subWizard.resetWizard()
+    }
+    setPhase('build')
+  }, [isExemplarPreview, exitExemplarPreview, isEdit, subWizard])
+
+  const handleShowExemplar = useCallback(() => {
+    const ex = EXAM_EXEMPLAR.input
+    if (!isEdit) setBackendExamId(null)
+    enterExemplarPreview()
+    setTitle(ex.title)
+    setExamType(ex.examType)
+    setTerm(ex.term)
+    setDurationMinutes(ex.durationMinutes)
+    setSubject(ex.subject)
+    setGrade(ex.grade)
+    setInternationalStandard(ex.internationalStandard)
+    setSectionTargetCount(ex.sectionTargetCount)
+    setPaper(ex.paper)
+    rag.applySourceSnapshot({
+      bookIds: ex.bookIds,
+      topics: ex.topics,
+      refinement: ex.scopeRefinement,
+      generateWithoutSources: ex.generateWithoutSources,
+    })
+    setExamMcqs(EXAM_EXEMPLAR.output.mcqs)
+    setExamShorts(EXAM_EXEMPLAR.output.shorts)
+    setExamLongs(EXAM_EXEMPLAR.output.longs)
+    setGeneratedSections(EXAM_EXEMPLAR.output.sections)
+    setBuildErrors([])
+    subWizard.unlockAllSteps()
+    setPhase('review')
+    toast.success('Exemplar loaded — edit or regenerate anytime.')
+  }, [rag, subWizard, toast, enterExemplarPreview, isEdit])
 
   useEffect(() => {
     if (isEdit) return
@@ -319,6 +530,7 @@ export default function ExamCreate() {
     setGenerationError(null)
     setCreditGate(null)
     setRegenCreditGate(null)
+    exitExemplarPreview()
     setGenProgress(0.15)
     setGenerating(true)
     const progressTimer = window.setInterval(() => {
@@ -674,6 +886,10 @@ export default function ExamCreate() {
   }
 
   const handleSaveDraft = async () => {
+    if (isExemplarPreview) {
+      toast.error('Generate your exam first — exemplar preview is not saved.')
+      return
+    }
     if (phase !== 'review' && examMcqs.length === 0) {
       toast.error('Generate the exam before saving a draft.')
       return
@@ -695,6 +911,10 @@ export default function ExamCreate() {
   }
 
   const handlePublish = async () => {
+    if (isExemplarPreview) {
+      toast.error('Generate your exam first — exemplar preview cannot be scheduled.')
+      return
+    }
     if (phase !== 'review' && examMcqs.length === 0) {
       toast.error('Generate the exam before scheduling.')
       return
@@ -715,7 +935,11 @@ export default function ExamCreate() {
     }
   }
 
-  const goList = () => navigate('/teacher-tools/exams')
+  const goList = useCallback(() => navigate('/teacher-tools/exams'), [navigate])
+
+  const handleExitToList = useCallback(() => {
+    requestLeave(goList)
+  }, [requestLeave, goList])
 
   const exportPdf = () => {
     if (examMcqs.length === 0) {
@@ -754,29 +978,103 @@ export default function ExamCreate() {
   const sections = generatedSections.length > 0 ? generatedSections : sectionsSeed
   const reviewSourceTag = rag.generateWithoutSources ? 'Topic-only' : 'Sources selected'
 
-  return (
-    <div className="space-y-6 pb-10">
-      <TeacherToolsPageHeader
-        title={isEdit ? 'Edit exam' : 'Create exam'}
-        subtitle="Configure scope and paper layout, generate the exam, then review and schedule."
-        breadcrumbs={[
-          { label: 'Teacher Tools', to: '/teacher-tools' },
-          { label: 'Exams', to: '/teacher-tools/exams' },
-          { label: isEdit ? 'Edit' : 'Create' },
-        ]}
-      />
+  const buildFooter = (
+    <TeacherToolsWizardFooter
+      isFirstStep={subWizard.isFirstStep}
+      isLastStep={subWizard.isLastStep}
+      canGoNext={currentStepValidation.ok}
+      onBack={subWizard.goBack}
+      onNext={() => {
+        if (!currentStepValidation.ok) {
+          setBuildErrors(currentStepValidation.errors)
+          return
+        }
+        setBuildErrors([])
+        subWizard.goNext()
+      }}
+      onGenerate={() => {
+        if (!fullBuildValidation.ok) {
+          setBuildErrors(fullBuildValidation.errors)
+          toast.error('Fix the highlighted fields to generate.')
+          return
+        }
+        setBuildErrors([])
+        void runGeneration()
+      }}
+      generating={generating}
+      generateLabel="Generate exam"
+      onShowExemplar={handleShowExemplar}
+      onExitToList={handleExitToList}
+      exitLabel="Back to exam list"
+    />
+  )
 
-      <TeacherToolsWizardStepper
-        steps={BUILD_STEPS}
-        current={wizardStep}
-        onStepClick={(i) => {
-          if (i === 1 && phase === 'build') {
-            toast.error('Generate the exam first to open review.')
-            return
-          }
-          setPhase(i === 0 ? 'build' : 'review')
-        }}
-      />
+  const reviewFooter = (
+    <TeacherToolsCreateReviewFooter
+      exitLabel="Back to exam list"
+      onExitToList={handleExitToList}
+      onEditRequirements={handleBackToConfigure}
+      publish={{
+        onPrintPreview: () => {
+          setDraftLayout(handoutLayout)
+          setPreviewOpen(true)
+        },
+        printPreviewDisabled: examMcqs.length === 0,
+        onSaveDraft: () => void handleSaveDraft(),
+        saveDraftPending,
+        saveDraftDisabled: isExemplarPreview,
+        onExportPdf: exportPdf,
+        exportDisabled: examMcqs.length === 0,
+        onPublish: () => void handlePublish(),
+        publishPending,
+        publishDisabled: isExemplarPreview,
+        publishLabel: isEdit ? 'Save changes' : 'Schedule exam',
+      }}
+    />
+  )
+
+  return (
+    <>
+    <TeacherToolsCreateLayout
+      header={
+        <>
+          <TeacherToolsPageHeader
+            variant="compact"
+            title={isEdit ? 'Edit exam' : 'Create exam'}
+            subtitle="Configure scope and paper layout, generate the exam, then review and schedule."
+            breadcrumbs={[
+              { label: 'Teacher Tools', to: '/teacher-tools' },
+              { label: 'Exams', to: '/teacher-tools/exams' },
+              { label: isEdit ? 'Edit' : 'Create' },
+            ]}
+          />
+          <div className="pb-2">
+            <TeacherToolsConfigureNav
+              primarySteps={[...EXAM_CREATION_STEPS]}
+              primaryCurrent={wizardStep}
+              primaryMaxReachable={topMaxReachable}
+              onPrimaryStepClick={(i) => {
+                const hasReviewContent =
+                  examMcqs.length > 0 || examShorts.length > 0 || examLongs.length > 0 || generatedSections.length > 0
+                if (i === 1 && !hasReviewContent) {
+                  toast.error('Generate the exam first to open review.')
+                  return
+                }
+                if (i === 0) handleBackToConfigure()
+                else setPhase('review')
+              }}
+              showSubSteps={phase === 'build'}
+              subSteps={EXAM_BUILD_SUB_STEPS}
+              subCurrent={subWizard.currentStep}
+              subMaxUnlocked={subWizard.maxUnlockedStep}
+              onSubStepClick={subWizard.goToStep}
+            />
+          </div>
+        </>
+      }
+      footer={phase === 'build' ? buildFooter : reviewFooter}
+    >
+      <div className="space-y-4 pb-4">
       <QuizGeneratingOverlay open={generating} progress={genProgress} />
       {generationError && (
         <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
@@ -812,19 +1110,21 @@ export default function ExamCreate() {
 
       {phase === 'build' && (
         <>
+          <TeacherToolsFieldErrors errors={currentStepValidation.errors} />
+          {subWizard.currentStepId === 'basics' && (
           <ExamSectionShell
             variant="blue"
+            compact
             header={
-              <ExamNumberedSectionHeader
-                step={1}
+              <TeacherToolsPanelHeader
                 kicker="Exam identity"
-                title="Basics & sources"
-                subtitle="Name the exam, set the type and term, duration, and pick the catalog scope to draw sections from."
-                variant="blue"
+                title="Exam basics"
+                subtitle="Name the exam and set type, term, duration, and cohort."
+                tone="indigo"
               />
             }
           >
-            <div className="grid gap-4 p-6 md:grid-cols-2">
+            <div className="grid gap-4 p-5 md:grid-cols-2">
               <label className="md:col-span-2 block text-sm font-medium text-gray-800">
                 Exam title <span className="text-red-500">*</span>
                 <input
@@ -917,87 +1217,109 @@ export default function ExamCreate() {
                   ))}
                 </select>
               </label>
-              <label className="md:col-span-2 block text-sm font-medium text-gray-800">
-                Target section count
-                <input
-                  type="number"
-                  min={1}
-                  max={12}
-                  value={sectionTargetCount}
-                  onChange={(e) => setSectionTargetCount(Math.min(12, Math.max(1, Number(e.target.value) || 4)))}
-                  className="mt-1.5 w-full max-w-xs rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-                />
-              </label>
-              <div className="md:col-span-2">
-                <ExamSourcesRagPanel rag={rag} subject={subject} grade={grade} />
-              </div>
             </div>
           </ExamSectionShell>
-
-          <ExamPaperStructureCard paper={paper} onChange={(patch) => setPaper((p) => ({ ...p, ...patch }))} />
-
-          {buildErrors.length > 0 && (
-            <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
-              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
-              <ul className="space-y-1 text-sm text-amber-900">
-                {buildErrors.map((e) => (
-                  <li key={e}>{e}</li>
-                ))}
-              </ul>
-            </div>
           )}
 
-          <div className="sticky bottom-4 z-10 mt-8 flex flex-col gap-3 rounded-2xl border border-emerald-200 bg-white/95 p-4 shadow-lg backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between">
-            <div className="min-w-0">
-              <p className="text-sm font-semibold text-gray-900">Ready to generate</p>
-              <p className="mt-0.5 text-xs text-gray-600">
-                Builds draft questions from your topic scope, sources, and paper structure above.
-              </p>
+          {subWizard.currentStepId === 'sources' && (
+          <ExamSectionShell
+            variant="teal"
+            compact
+            header={
+              <TeacherToolsPanelHeader
+                kicker="Content sources"
+                title="Source materials"
+                subtitle="Choose catalog titles or switch to topic-only generation."
+                tone="emerald"
+              />
+            }
+          >
+            <div className="p-5">
+              <ExamSourcesRagPanel rag={rag} subject={subject} grade={grade} panelStep="sources" />
             </div>
-            <button
-              type="button"
-              onClick={runGeneration}
-              disabled={generating}
-              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-md hover:bg-emerald-500 disabled:opacity-60"
-            >
-              {generating ? (
-                <>
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                  Generating…
-                </>
-              ) : (
-                'Generate'
-              )}
-            </button>
+          </ExamSectionShell>
+          )}
+
+          {subWizard.currentStepId === 'scope' && (
+          <ExamSectionShell
+            variant="coral"
+            compact
+            header={
+              <TeacherToolsPanelHeader
+                kicker="Scope definition"
+                title="Topic strands & refinement"
+                subtitle="Pick strands from your materials or describe the topic focus."
+                tone="violet"
+              />
+            }
+          >
+            <div className="p-5">
+              <ExamSourcesRagPanel rag={rag} subject={subject} grade={grade} panelStep="scope" />
+            </div>
+          </ExamSectionShell>
+          )}
+
+          {subWizard.currentStepId === 'paper_structure' && (
+          <div className="space-y-3">
+            <TeacherToolsPanelHeader
+              kicker="Paper structure"
+              title="Section layout & marks"
+              subtitle="Define sections and mark distribution for generation."
+              tone="gray"
+            />
+            <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+            <label className="mb-4 block text-sm font-medium text-gray-800">
+              Target section count
+              <input
+                type="number"
+                min={1}
+                max={12}
+                value={sectionTargetCount}
+                onChange={(e) => setSectionTargetCount(Math.min(12, Math.max(1, Number(e.target.value) || 4)))}
+                className="mt-1.5 w-full max-w-xs rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+              />
+            </label>
+            <ExamPaperStructureCard paper={paper} onChange={(patch) => setPaper((p) => ({ ...p, ...patch }))} />
+            </div>
           </div>
+          )}
+
+          {buildErrors.length > 0 && !currentStepValidation.errors.length && (
+            <TeacherToolsFieldErrors errors={buildErrors} />
+          )}
         </>
       )}
 
       {phase === 'review' && (
-        <div className="space-y-6">
-          {/* Review header */}
-          <div className="flex flex-col gap-4 rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/80 to-white p-6 shadow-sm lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-indigo-700">Review</p>
-              <h2 className="mt-1 text-lg font-semibold text-gray-900">Generated question set</h2>
-              <p className="mt-1 max-w-2xl text-sm text-gray-600">
-                Edit prompts, reorder, or regenerate items. When you schedule, this snapshot is stored for students and
-                exports.
-              </p>
-              <p className="mt-2 text-xs font-medium text-gray-600">{reviewSourceTag}</p>
-            </div>
-            <div className="flex flex-col items-stretch gap-3 sm:items-end">
-              <div className="flex flex-wrap items-center gap-2">
-                <div className="rounded-xl bg-white px-4 py-2 text-center shadow-sm ring-1 ring-gray-100">
-                  <p className="text-2xl font-semibold text-gray-900">{paperMarks.grand}</p>
-                  <p className="text-xs text-gray-500">Total marks</p>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <button type="button" onClick={() => { setDraftLayout(handoutLayout); setPreviewOpen(true) }} disabled={examMcqs.length === 0} className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white px-4 py-2 text-xs font-semibold text-indigo-900 shadow-sm hover:bg-indigo-50 disabled:opacity-50"><Eye className="h-3.5 w-3.5" />Print preview</button>
-              </div>
-            </div>
-          </div>
+        <div className="space-y-3">
+          {isExemplarPreview && <TeacherToolsExemplarReviewBanner />}
+          <TeacherToolsReviewHeaderCompact
+            sourceTag={reviewSourceTag}
+            stats={[{ label: 'marks', value: paperMarks.grand }]}
+            actions={
+              <>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDraftLayout(handoutLayout)
+                    setPreviewOpen(true)
+                  }}
+                  disabled={examMcqs.length === 0}
+                  className="rounded-lg border border-indigo-200 bg-white px-2 py-1 text-xs font-semibold text-indigo-800 hover:bg-indigo-50 disabled:opacity-50"
+                >
+                  Print preview
+                </button>
+                <button
+                  type="button"
+                  disabled={examRegenerateBusy !== null || isExemplarPreview}
+                  onClick={() => void regenerateSections()}
+                  className="rounded-lg border border-indigo-200 bg-white px-2 py-1 text-xs font-semibold text-indigo-800 hover:bg-indigo-50 disabled:opacity-50"
+                >
+                  {examRegenerateBusy === 'sections' ? 'Regenerating…' : 'Regenerate all'}
+                </button>
+              </>
+            }
+          />
 
           <ExamPaperQuestionsReview
             paper={paper}
@@ -1025,94 +1347,23 @@ export default function ExamCreate() {
             regenerateBusyKey={examRegenerateBusy}
           />
 
-          <ExamPaperStructureReviewCard paper={paper} onEdit={() => setPhase('build')} />
-
-          <div className="flex flex-wrap items-center gap-2 border-t border-gray-200 pt-6">
-            <button type="button" onClick={() => setPhase('build')} className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50">← Edit requirements</button>
-            <button
-              type="button"
-              disabled={examRegenerateBusy !== null}
-              onClick={() => void regenerateSections()}
-              className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-900 hover:bg-indigo-100 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {examRegenerateBusy === 'sections' ? (
-                <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-              ) : (
-                <Sparkles className="h-4 w-4" aria-hidden />
-              )}
-              {examRegenerateBusy === 'sections' ? 'Regenerating…' : 'Regenerate all'}
-            </button>
-          </div>
-
-          {/* Publish panel */}
-          <div className="sticky bottom-4 z-10 rounded-2xl border border-gray-200 bg-gray-50/95 p-5 shadow-lg backdrop-blur-sm">
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">Publish & export</p>
-            <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  disabled={examMcqs.length === 0}
-                  onClick={() => {
-                    setDraftLayout(handoutLayout)
-                    setPreviewOpen(true)
-                  }}
-                  className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50"
-                >
-                  <Eye className="h-4 w-4" />
-                  Print preview
-                </button>
-                <button
-                  type="button"
-                  disabled={saveDraftPending}
-                  onClick={() => void handleSaveDraft()}
-                  className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50"
-                >
-                  {saveDraftPending ? 'Saving…' : 'Save draft'}
-                </button>
-                <button
-                  type="button"
-                  onClick={exportPdf}
-                  className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm hover:bg-gray-50"
-                >
-                  <Download className="h-4 w-4" />
-                  Export PDF
-                </button>
-                <button
-                  type="button"
-                  disabled
-                  title="Coming with LMS integration"
-                  className="inline-flex cursor-not-allowed items-center gap-2 rounded-full border border-dashed border-gray-300 bg-white/60 px-4 py-2 text-sm font-medium text-gray-400"
-                >
-                  <FileJson className="h-4 w-4" />
-                  QTI / LMS (soon)
-                </button>
-              </div>
-              <button
-                type="button"
-                disabled={publishPending}
-                onClick={() => void handlePublish()}
-                className="inline-flex shrink-0 justify-center rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 disabled:opacity-50"
-              >
-                {publishPending ? 'Scheduling…' : isEdit ? 'Save changes' : 'Schedule exam'}
-              </button>
-            </div>
-          </div>
+          <ExamPaperStructureReviewCard paper={paper} onEdit={handleBackToConfigure} />
         </div>
       )}
+      </div>
+    </TeacherToolsCreateLayout>
 
       <CustomModal
         open={discardOpen}
-        close={() => setDiscardOpen(false)}
-        title="Discard source selections?"
-        primaryButtonText="Discard and leave"
+        close={cancelDiscard}
+        title="Leave without saving?"
+        primaryButtonText="Leave"
         isDelete
-        handleSave={() => {
-          rag.resetSources()
-          setDiscardOpen(false)
-          goList()
-        }}
+        handleSave={confirmDiscard}
       >
-        <p className="py-3 text-sm text-gray-600">You changed content sources. Leave without scheduling?</p>
+        <p className="py-3 text-sm text-gray-600">
+          You have unsaved changes on this page. If you leave now, your progress will be cleared.
+        </p>
       </CustomModal>
 
       <CustomModal
@@ -1306,19 +1557,6 @@ export default function ExamCreate() {
           </label>
         </div>
       </CustomModal>
-
-      <div className="flex flex-wrap gap-3 border-t border-gray-200 pt-6">
-        <button
-          type="button"
-          onClick={() => {
-            if (rag.isDirty) setDiscardOpen(true)
-            else goList()
-          }}
-          className="text-sm font-semibold text-primary-600 hover:text-primary-500"
-        >
-          ← Back to exam list
-        </button>
-      </div>
-    </div>
+    </>
   )
 }
