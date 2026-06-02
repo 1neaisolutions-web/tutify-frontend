@@ -28,6 +28,9 @@ import { ClassroomUseFlow } from './youtube-quiz/ClassroomUseFlow'
 import { QuickStartVideoSources } from './youtube-quiz/QuickStartVideoSources'
 import { AICapabilityPreview } from './youtube-quiz/AICapabilityPreview'
 
+import { useTranslation } from 'react-i18next'
+import { resolveApiMessage } from '../../i18n/resolveApiMessage'
+
 interface QuizPreview {
   id?: string
   title: string
@@ -35,107 +38,193 @@ interface QuizPreview {
   sections: YouTubeQuizSection[]
 }
 
-const questionStyles = ['Multiple choice', 'Higher-order thinking', 'Quick check', 'Discussion prompt']
-const difficultyOptions = [
-  { label: 'Easy', value: 'easy' as const },
-  { label: 'Medium', value: 'medium' as const },
-  { label: 'Challenging', value: 'challenging' as const },
-]
+type ReferenceVideo = {
+  id: string
+  url: string
+  thumbnail: string
+  gradeBand: string
+  subjectArea: string
+  learningFocus: string
+  duration: string
+}
 
-
-const referenceVideos = [
+const referenceVideos: ReferenceVideo[] = [
   {
-    title: 'Photosynthesis Explained - Crash Course Biology',
+    id: 'photosynthesis',
     url: 'https://www.youtube.com/watch?v=sQK3Yr4Sc_k',
     thumbnail: 'https://img.youtube.com/vi/sQK3Yr4Sc_k/maxresdefault.jpg',
     gradeBand: 'Grades 9-10',
     subjectArea: 'Science & STEM',
     learningFocus: 'Concept comprehension',
     duration: '13:15',
-    description: 'Perfect for biology units on plant processes and energy conversion.',
   },
   {
-    title: 'The Water Cycle - Educational Video for Kids',
+    id: 'waterCycle',
     url: 'https://www.youtube.com/watch?v=ncORPosDrjI',
     thumbnail: 'https://img.youtube.com/vi/ncORPosDrjI/maxresdefault.jpg',
     gradeBand: 'Grades 3-5',
     subjectArea: 'Science & STEM',
     learningFocus: 'Concept comprehension',
     duration: '7:13',
-    description: 'Engaging explanation of the water cycle with visual animations.',
   },
   {
-    title: 'Introduction to Fractions - Math Antics',
+    id: 'fractions',
     url: 'https://www.youtube.com/watch?v=3XOt1fjWKi8',
     thumbnail: 'https://img.youtube.com/vi/3XOt1fjWKi8/maxresdefault.jpg',
     gradeBand: 'Grades 6-8',
     subjectArea: 'Mathematics',
     learningFocus: 'Concept comprehension',
     duration: '12:47',
-    description: 'Clear introduction to fractions with step-by-step examples.',
   },
   {
-    title: 'World War II: Crash Course World History',
+    id: 'worldWarIi',
     url: 'https://www.youtube.com/watch?v=Q78COTwT7nE',
     thumbnail: 'https://img.youtube.com/vi/Q78COTwT7nE/maxresdefault.jpg',
     gradeBand: 'Grades 11-12',
     subjectArea: 'Social Sciences',
     learningFocus: 'Critical analysis',
     duration: '15:42',
-    description: 'Comprehensive overview of WWII with historical context and analysis.',
   },
   {
-    title: 'The Scientific Method - Khan Academy',
+    id: 'scientificMethod',
     url: 'https://www.youtube.com/watch?v=yi0hwFDQTSQ',
     thumbnail: 'https://img.youtube.com/vi/yi0hwFDQTSQ/maxresdefault.jpg',
     gradeBand: 'Grades 6-8',
     subjectArea: 'Science & STEM',
     learningFocus: 'Lab skills & procedures',
     duration: '11:48',
-    description: 'Step-by-step guide to the scientific method with real examples.',
-  },
-]
-
-const pedagogyNotes = [
-  {
-    icon: MessageSquare,
-    title: 'Pre-watch prompts',
-    body: 'Set purpose before pressing play. Students note predictions or questions to activate prior knowledge.',
-  },
-  {
-    icon: Mic,
-    title: 'Listening evidence',
-    body: 'Prompt oral summaries or think-pair-share moments between quiz sections to check comprehension.',
-  },
-  {
-    icon: Lightbulb,
-    title: 'Transfer & reflection',
-    body: 'Wrap with a creative task: connect the video to real-world practice or design challenges.',
-  },
-]
-
-
-const workflowSteps = [
-  {
-    icon: LinkIcon,
-    title: 'Grab the lesson link',
-    description: 'We pull transcripts, chapter markers, and engagement cues directly from the video metadata.',
-  },
-  {
-    icon: Sparkles,
-    title: 'Layer pedagogy intelligence',
-    description: 'Question stems align to Webb’s DOK and Bloom’s taxonomy with SEL-aware scaffolds.',
-  },
-  {
-    icon: ListChecks,
-    title: 'Publish & share instantly',
-    description: 'Export to Google Forms, LMS quizzes, or printable exit tickets with one click.',
   },
 ]
 
 const HERO_COLLAPSE_KEY = 'yt_quiz_hero_collapsed_v1'
 
 const YouTubeQuizGenerator = () => {
+  const { t } = useTranslation()
+  const questionStyles = useMemo(
+    () => [
+      {
+        value: 'Multiple choice',
+        label: t('youtubeQuizPage.questionStyles.multipleChoice'),
+      },
+      {
+        value: 'Higher-order thinking',
+        label: t('youtubeQuizPage.questionStyles.higherOrder'),
+      },
+      {
+        value: 'Quick check',
+        label: t('youtubeQuizPage.questionStyles.quickCheck'),
+      },
+      {
+        value: 'Discussion prompt',
+        label: t('youtubeQuizPage.questionStyles.discussionPrompt'),
+      },
+    ],
+    [t]
+  )
+  const difficultyOptions = useMemo(
+    () => [
+      { label: t('youtubeQuizPage.difficulty.easy'), value: 'easy' as const },
+      { label: t('youtubeQuizPage.difficulty.medium'), value: 'medium' as const },
+      { label: t('youtubeQuizPage.difficulty.challenging'), value: 'challenging' as const },
+    ],
+    [t]
+  )
+  const gradeBandOptions = useMemo(
+    () => [
+      { value: 'Grades 3-5', label: t('youtubeQuizPage.gradeBands.grades35') },
+      { value: 'Grades 6-8', label: t('youtubeQuizPage.gradeBands.grades68') },
+      { value: 'Grades 9-10', label: t('youtubeQuizPage.gradeBands.grades910') },
+      { value: 'Grades 11-12', label: t('youtubeQuizPage.gradeBands.grades1112') },
+      { value: 'Higher Education', label: t('youtubeQuizPage.gradeBands.higherEd') },
+    ],
+    [t]
+  )
+  const subjectOptions = useMemo(
+    () => [
+      { value: 'Science & STEM', label: t('youtubeQuizPage.subjects.scienceStem') },
+      { value: 'Mathematics', label: t('youtubeQuizPage.subjects.mathematics') },
+      { value: 'English Language Arts', label: t('youtubeQuizPage.subjects.englishLanguageArts') },
+      { value: 'Social Sciences', label: t('youtubeQuizPage.subjects.socialSciences') },
+      { value: 'Creative Arts & Media', label: t('youtubeQuizPage.subjects.creativeArtsMedia') },
+      { value: 'Career & Technical Education', label: t('youtubeQuizPage.subjects.careerTechnical') },
+    ],
+    [t]
+  )
+  const learningFocusOptions = useMemo(
+    () => [
+      {
+        value: 'Concept comprehension',
+        label: t('youtubeQuizPage.learningFocusOptions.conceptComprehension'),
+      },
+      {
+        value: 'Vocabulary development',
+        label: t('youtubeQuizPage.learningFocusOptions.vocabularyDevelopment'),
+      },
+      {
+        value: 'Critical analysis',
+        label: t('youtubeQuizPage.learningFocusOptions.criticalAnalysis'),
+      },
+      {
+        value: 'Lab skills & procedures',
+        label: t('youtubeQuizPage.learningFocusOptions.labSkills'),
+      },
+      {
+        value: 'Project reflection',
+        label: t('youtubeQuizPage.learningFocusOptions.projectReflection'),
+      },
+    ],
+    [t]
+  )
+  const languageOptions = useMemo(
+    () => [
+      { value: 'English', label: t('youtubeQuizPage.languages.english') },
+      { value: 'Spanish', label: t('youtubeQuizPage.languages.spanish') },
+      { value: 'French', label: t('youtubeQuizPage.languages.french') },
+      { value: 'Arabic', label: t('youtubeQuizPage.languages.arabic') },
+      { value: 'Hindi', label: t('youtubeQuizPage.languages.hindi') },
+    ],
+    [t]
+  )
+  const pedagogyNotes = useMemo(
+    () => [
+      {
+        icon: MessageSquare,
+        title: t('youtubeQuizPage.pedagogy.preWatch.title'),
+        body: t('youtubeQuizPage.pedagogy.preWatch.body'),
+      },
+      {
+        icon: Mic,
+        title: t('youtubeQuizPage.pedagogy.listening.title'),
+        body: t('youtubeQuizPage.pedagogy.listening.body'),
+      },
+      {
+        icon: Lightbulb,
+        title: t('youtubeQuizPage.pedagogy.transfer.title'),
+        body: t('youtubeQuizPage.pedagogy.transfer.body'),
+      },
+    ],
+    [t]
+  )
+  const workflowSteps = useMemo(
+    () => [
+      {
+        icon: LinkIcon,
+        title: t('youtubeQuizPage.workflow.grabLink.title'),
+        description: t('youtubeQuizPage.workflow.grabLink.description'),
+      },
+      {
+        icon: Sparkles,
+        title: t('youtubeQuizPage.workflow.layerPedagogy.title'),
+        description: t('youtubeQuizPage.workflow.layerPedagogy.description'),
+      },
+      {
+        icon: ListChecks,
+        title: t('youtubeQuizPage.workflow.publishShare.title'),
+        description: t('youtubeQuizPage.workflow.publishShare.description'),
+      },
+    ],
+    [t]
+  )
   const refreshCreditBalance = useRefreshCreditBalance()
   const { toast } = useSnackbar()
   const urlInputRef = useRef<HTMLInputElement>(null)
@@ -151,7 +240,10 @@ const YouTubeQuizGenerator = () => {
   const [subjectArea, setSubjectArea] = useState('Science & STEM')
   const [learningFocus, setLearningFocus] = useState('Concept comprehension')
   const [language, setLanguage] = useState('English')
-  const [selectedStyles, setSelectedStyles] = useState<string[]>(['Multiple choice', 'Higher-order thinking'])
+  const [selectedStyles, setSelectedStyles] = useState<string[]>([
+    'Multiple choice',
+    'Higher-order thinking',
+  ])
   const [questionCount, setQuestionCount] = useState(6)
   const [difficultyLevel, setDifficultyLevel] = useState<'easy' | 'medium' | 'challenging'>('medium')
   const [accessibilityMode, setAccessibilityMode] = useState(false)
@@ -180,9 +272,11 @@ const YouTubeQuizGenerator = () => {
     }
   }, [isHeroCollapsed])
 
+  const invalidUrlMessage = t('youtubeQuizPage.validation.invalidUrl')
+
   const getVideoUrlValidationError = (url: string): string | null => {
     const trimmed = url.trim()
-    if (!trimmed) return 'Please paste a valid YouTube watch/share/shorts URL.'
+    if (!trimmed) return invalidUrlMessage
     try {
       const parsed = new URL(trimmed)
       const host = parsed.hostname.toLowerCase()
@@ -193,14 +287,14 @@ const YouTubeQuizGenerator = () => {
         host === 'm.youtube.com' ||
         host === 'youtu.be' ||
         host === 'www.youtu.be'
-      if (!isYouTubeHost) return 'Please paste a valid YouTube watch/share/shorts URL.'
-      if (host.includes('youtu.be')) return path.length > 1 ? null : 'Please paste a valid YouTube watch/share/shorts URL.'
+      if (!isYouTubeHost) return invalidUrlMessage
+      if (host.includes('youtu.be')) return path.length > 1 ? null : invalidUrlMessage
       const isWatch = path === '/watch' && parsed.searchParams.get('v')
       const isShorts = /^\/shorts\/[^/]+/.test(path)
       const isEmbed = /^\/embed\/[^/]+/.test(path)
-      return isWatch || isShorts || isEmbed ? null : 'Please paste a valid YouTube watch/share/shorts URL.'
+      return isWatch || isShorts || isEmbed ? null : invalidUrlMessage
     } catch {
-      return 'Please paste a valid YouTube watch/share/shorts URL.'
+      return invalidUrlMessage
     }
   }
 
@@ -221,18 +315,24 @@ const YouTubeQuizGenerator = () => {
     setLearningFocus(video.learningFocus)
     setUrlError(null)
     setApiError(null)
-    toast.info('Example loaded — review settings in the sticky bar, then click Generate quiz.')
+    toast.info(t('youtubeQuizPage.toasts.exampleLoaded'))
   }
 
   const handleDifficultyChange = (nextDifficulty: 'easy' | 'medium' | 'challenging') => {
     setDifficultyLevel(nextDifficulty)
-    toast.info(`Adaptive Difficulty: ${nextDifficulty.charAt(0).toUpperCase()}${nextDifficulty.slice(1)}`)
+    const levelLabel =
+      difficultyOptions.find((opt) => opt.value === nextDifficulty)?.label ?? nextDifficulty
+    toast.info(t('youtubeQuizPage.toasts.adaptiveDifficulty', { level: levelLabel }))
   }
 
   const handleAccessibilityToggle = () => {
     setAccessibilityMode((prev) => {
       const next = !prev
-      toast.info(`Accessibility Assistant: ${next ? 'Enabled' : 'Disabled'}`)
+      toast.info(
+        next
+          ? t('youtubeQuizPage.toasts.accessibilityEnabled')
+          : t('youtubeQuizPage.toasts.accessibilityDisabled')
+      )
       return next
     })
   }
@@ -306,20 +406,20 @@ const YouTubeQuizGenerator = () => {
       }
       console.error('Failed to generate YouTube quiz:', error)
       setHasGenerated(false)
-      let message = 'Quiz generation failed. Please try again.'
+      let message = t('youtubeQuizPage.errors.generationFailed')
       if (error instanceof ApiError) {
         if (error.status === 400) {
-          message = 'Invalid request. Please check the YouTube link and form inputs.'
+          message = t('youtubeQuizPage.errors.invalidRequest')
         } else if (error.status === 502) {
-          message = 'Quiz generation failed on the server. Please retry in a moment.'
+          message = t('youtubeQuizPage.errors.serverFailed')
         } else if (typeof error.message === 'string' && error.message.trim()) {
-          message = error.message
+          message = resolveApiMessage(t, error.message)
         }
       } else if (error instanceof Error && error.message) {
         if (error.message.includes('timeout') || error.message.includes('Network error')) {
-          message = 'Cannot reach backend right now. Please check server connection and try again.'
+          message = t('youtubeQuizPage.errors.networkFailed')
         } else {
-          message = error.message
+          message = resolveApiMessage(t, error.message)
         }
       }
       setApiError(message)
@@ -332,22 +432,22 @@ const YouTubeQuizGenerator = () => {
   const progressHighlights = useMemo(
     () => [
       {
-        label: 'Video comprehension rate',
-        value: '87%',
-        caption: 'Average score for last 14 generated quizzes.',
+        label: t('youtubeQuizPage.progress.comprehensionLabel'),
+        value: t('youtubeQuizPage.progress.comprehensionValue'),
+        caption: t('youtubeQuizPage.progress.comprehensionCaption'),
       },
       {
-        label: 'Time saved per quiz',
-        value: '28 min',
-        caption: 'Compared with manual question design.',
+        label: t('youtubeQuizPage.progress.timeSavedLabel'),
+        value: t('youtubeQuizPage.progress.timeSavedValue'),
+        caption: t('youtubeQuizPage.progress.timeSavedCaption'),
       },
       {
-        label: 'Student reflection prompts',
-        value: 'Included',
-        caption: 'Every quiz comes with SEL-aware reflection ideas.',
+        label: t('youtubeQuizPage.progress.reflectionLabel'),
+        value: t('youtubeQuizPage.progress.reflectionValue'),
+        caption: t('youtubeQuizPage.progress.reflectionCaption'),
       },
     ],
-    []
+    [t]
   )
 
   return (
@@ -366,31 +466,29 @@ const YouTubeQuizGenerator = () => {
             type="button"
             onClick={() => setIsHeroCollapsed(true)}
             className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold text-white/90 backdrop-blur transition hover:bg-white/20"
-            aria-label="Dismiss banner"
+            aria-label={t('youtubeQuizPage.hero.dismissAria')}
           >
             <X className="h-4 w-4" />
-            Dismiss
+            {t('youtubeQuizPage.hero.dismiss')}
           </button>
           <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
             <div className="max-w-2xl space-y-4">
               <div className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
-                <Sparkles className="h-4 w-4" /> YouTube Quiz Generator
+                <Sparkles className="h-4 w-4" /> {t('youtubeQuizPage.hero.badge')}
               </div>
               <h1 className="text-[22px] font-semibold leading-tight sm:text-[26px]">
-                Turn a YouTube lesson into a classroom-ready quiz.
+                {t('youtubeQuizPage.hero.title')}
               </h1>
-              <p className="text-sm text-white/85">
-                Paste a link, choose your audience, and generate scaffolded questions in seconds.
-              </p>
+              <p className="text-sm text-white/85">{t('youtubeQuizPage.hero.description')}</p>
               <div className="flex flex-wrap gap-2 text-xs">
                 <div className="flex items-center gap-2 rounded-2xl bg-white/15 px-3 py-2">
-                  <GraduationCap className="h-4 w-4" /> Standards-aligned prompts
+                  <GraduationCap className="h-4 w-4" /> {t('youtubeQuizPage.hero.pillStandards')}
                 </div>
                 <div className="flex items-center gap-2 rounded-2xl bg-white/15 px-3 py-2">
-                  <Languages className="h-4 w-4" /> Multilingual support
+                  <Languages className="h-4 w-4" /> {t('youtubeQuizPage.hero.pillMultilingual')}
                 </div>
                 <div className="flex items-center gap-2 rounded-2xl bg-white/15 px-3 py-2">
-                  <CheckCircle2 className="h-4 w-4" /> Differentiation-ready
+                  <CheckCircle2 className="h-4 w-4" /> {t('youtubeQuizPage.hero.pillDifferentiation')}
                 </div>
               </div>
             </div>
@@ -411,15 +509,15 @@ const YouTubeQuizGenerator = () => {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2 text-gray-800">
               <Sparkles className="h-4 w-4 text-red-500" />
-              <span className="font-semibold">YouTube Quiz Generator</span>
-              <span className="text-gray-500">Paste a link → tune settings → generate.</span>
+              <span className="font-semibold">{t('youtubeQuizPage.hero.collapsedTitle')}</span>
+              <span className="text-gray-500">{t('youtubeQuizPage.hero.collapsedHint')}</span>
             </div>
             <button
               type="button"
               onClick={() => setIsHeroCollapsed(false)}
               className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:border-red-200 hover:bg-red-50 hover:text-red-700"
             >
-              Expand
+              {t('youtubeQuizPage.hero.expand')}
             </button>
           </div>
         </section>
@@ -431,12 +529,12 @@ const YouTubeQuizGenerator = () => {
             <div className="flex flex-wrap items-center gap-2">
               <h2 className="flex items-center gap-2 text-base font-semibold text-gray-900">
                 <Youtube className="h-5 w-5 text-red-500" />
-                Generate your quiz blueprint
+                {t('youtubeQuizPage.sticky.title')}
               </h2>
               {appliedStrategyTitle && (
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
                   <CheckCircle2 className="h-3.5 w-3.5" />
-                  Strategy: {appliedStrategyTitle}
+                  {t('youtubeQuizPage.sticky.strategyApplied', { title: appliedStrategyTitle })}
                 </span>
               )}
             </div>
@@ -445,7 +543,7 @@ const YouTubeQuizGenerator = () => {
                 htmlFor="youtube-quiz-url-input"
                 className="block text-xs font-semibold uppercase tracking-wide text-gray-600"
               >
-                YouTube video link
+                {t('youtubeQuizPage.sticky.urlLabel')}
               </label>
               {/* One row: input + actions share the same height so alignment matches the field, not the label */}
               <div className="mt-1 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
@@ -462,7 +560,7 @@ const YouTubeQuizGenerator = () => {
                     setHasGenerated(false)
                     setQuizPreview(null)
                   }}
-                  placeholder="https://www.youtube.com/watch?v=..."
+                  placeholder={t('youtubeQuizPage.sticky.urlPlaceholder')}
                   autoComplete="off"
                   className={`h-11 min-h-[2.75rem] w-full min-w-0 flex-1 rounded-xl border bg-white px-4 text-sm text-gray-700 shadow-sm focus:outline-none focus:ring-2 ${
                     urlError
@@ -478,7 +576,7 @@ const YouTubeQuizGenerator = () => {
                     className="inline-flex h-11 min-h-[2.75rem] flex-1 items-center justify-center gap-2 rounded-full border-2 border-red-500 bg-white px-4 text-sm font-semibold text-red-500 shadow-sm transition hover:bg-red-50 disabled:cursor-not-allowed disabled:border-red-300 disabled:text-red-300 sm:flex-initial"
                   >
                     <Eye className="h-4 w-4 shrink-0" aria-hidden />
-                    Preview
+                    {t('youtubeQuizPage.sticky.preview')}
                   </button>
                   <button
                     type="button"
@@ -487,7 +585,7 @@ const YouTubeQuizGenerator = () => {
                     className="inline-flex h-11 min-h-[2.75rem] flex-1 items-center justify-center gap-2 rounded-full bg-red-500 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-red-400 disabled:cursor-not-allowed disabled:bg-red-300 sm:flex-initial sm:px-5"
                   >
                     <Play className={`h-4 w-4 shrink-0 ${isGenerating ? 'animate-pulse' : ''}`} aria-hidden />
-                    {isGenerating ? 'Analysing…' : 'Generate quiz'}
+                    {isGenerating ? t('youtubeQuizPage.sticky.analysing') : t('youtubeQuizPage.sticky.generate')}
                   </button>
                 </div>
               </div>
@@ -510,98 +608,97 @@ const YouTubeQuizGenerator = () => {
           >
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Blueprint details</h3>
-                <p className="mt-1 text-sm text-gray-600">
-                  Set your audience and preferences. The link and Generate button are always available in the sticky bar above.
-                </p>
+                <h3 className="text-lg font-semibold text-gray-900">{t('youtubeQuizPage.blueprint.title')}</h3>
+                <p className="mt-1 text-sm text-gray-600">{t('youtubeQuizPage.blueprint.description')}</p>
               </div>
             </div>
 
             <div className="mt-6 space-y-6">
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="text-sm font-semibold text-gray-700">Grade band</label>
+                  <label className="text-sm font-semibold text-gray-700">{t('youtubeQuizPage.blueprint.gradeBand')}</label>
                   <select
                     value={gradeBand}
                     onChange={(event) => setGradeBand(event.target.value)}
                     className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 focus:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-100"
                   >
-                    <option>Grades 3-5</option>
-                    <option>Grades 6-8</option>
-                    <option>Grades 9-10</option>
-                    <option>Grades 11-12</option>
-                    <option>Higher Education</option>
+                    {gradeBandOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm font-semibold text-gray-700">Subject lens</label>
+                  <label className="text-sm font-semibold text-gray-700">{t('youtubeQuizPage.blueprint.subjectLens')}</label>
                   <select
                     value={subjectArea}
                     onChange={(event) => setSubjectArea(event.target.value)}
                     className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 focus:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-100"
                   >
-                    <option>Science & STEM</option>
-                    <option>Mathematics</option>
-                    <option>English Language Arts</option>
-                    <option>Social Sciences</option>
-                    <option>Creative Arts & Media</option>
-                    <option>Career & Technical Education</option>
+                    {subjectOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm font-semibold text-gray-700">Learning focus</label>
+                  <label className="text-sm font-semibold text-gray-700">{t('youtubeQuizPage.blueprint.learningFocus')}</label>
                   <select
                     value={learningFocus}
                     onChange={(event) => setLearningFocus(event.target.value)}
                     className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 focus:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-100"
                   >
-                    <option>Concept comprehension</option>
-                    <option>Vocabulary development</option>
-                    <option>Critical analysis</option>
-                    <option>Lab skills & procedures</option>
-                    <option>Project reflection</option>
+                    {learningFocusOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm font-semibold text-gray-700">Quiz language</label>
+                  <label className="text-sm font-semibold text-gray-700">{t('youtubeQuizPage.blueprint.quizLanguage')}</label>
                   <select
                     value={language}
                     onChange={(event) => setLanguage(event.target.value)}
                     className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 focus:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-100"
                   >
-                    <option>English</option>
-                    <option>Spanish</option>
-                    <option>French</option>
-                    <option>Arabic</option>
-                    <option>Hindi</option>
+                    {languageOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
 
               <div className="grid gap-6 md:grid-cols-[2fr,1fr]">
                 <div>
-                  <p className="text-sm font-semibold text-gray-700">Question styles</p>
+                  <p className="text-sm font-semibold text-gray-700">{t('youtubeQuizPage.blueprint.questionStyles')}</p>
                   <div className="mt-3 flex flex-wrap gap-3">
                     {questionStyles.map((style) => (
                       <button
-                        key={style}
-                        onClick={() => handleToggleStyle(style)}
+                        key={style.value}
+                        onClick={() => handleToggleStyle(style.value)}
                         type="button"
                         className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
-                          selectedStyles.includes(style)
+                          selectedStyles.includes(style.value)
                             ? 'border-red-400 bg-red-50 text-red-600'
                             : 'border-gray-200 text-gray-600 hover:border-red-200 hover:text-red-600'
                         }`}
                       >
-                        {style}
+                        {style.label}
                       </button>
                     ))}
                   </div>
                 </div>
                 <div>
                   <label className="flex items-center justify-between text-sm font-semibold text-gray-700">
-                    Question count
-                    <span className="text-xs font-normal text-gray-500">{questionCount} prompts</span>
+                    {t('youtubeQuizPage.blueprint.questionCount')}
+                    <span className="text-xs font-normal text-gray-500">
+                      {t('youtubeQuizPage.blueprint.promptsCount', { count: questionCount })}
+                    </span>
                   </label>
                   <input
                     type="range"
@@ -611,15 +708,17 @@ const YouTubeQuizGenerator = () => {
                     onChange={(event) => setQuestionCount(Number(event.target.value))}
                     className="mt-3 w-full accent-red-500"
                   />
-                  <p className="mt-1 text-xs text-gray-500">Slider adjusts pacing recommendations & differentiations.</p>
+                  <p className="mt-1 text-xs text-gray-500">{t('youtubeQuizPage.blueprint.sliderHint')}</p>
                 </div>
               </div>
 
               <div className="rounded-2xl border border-gray-200 bg-gray-50/70 p-4">
-                <p className="text-sm font-semibold text-gray-700">Quiz Intelligence controls</p>
+                <p className="text-sm font-semibold text-gray-700">{t('youtubeQuizPage.blueprint.intelligenceTitle')}</p>
                 <div className="mt-3 grid gap-4 md:grid-cols-2">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">Adaptive difficulty</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+                      {t('youtubeQuizPage.blueprint.adaptiveDifficulty')}
+                    </p>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {difficultyOptions.map((option) => (
                         <button
@@ -638,7 +737,9 @@ const YouTubeQuizGenerator = () => {
                     </div>
                   </div>
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">Accessibility assistant</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">
+                      {t('youtubeQuizPage.blueprint.accessibilityAssistant')}
+                    </p>
                     <button
                       type="button"
                       onClick={handleAccessibilityToggle}
@@ -648,13 +749,15 @@ const YouTubeQuizGenerator = () => {
                           : 'border-gray-200 text-gray-600 hover:border-red-200 hover:text-red-600'
                       }`}
                     >
-                      Accessibility Mode: {accessibilityMode ? 'ON' : 'OFF'}
+                      {t('youtubeQuizPage.blueprint.accessibilityMode', {
+                        state: accessibilityMode
+                          ? t('youtubeQuizPage.blueprint.accessibilityOn')
+                          : t('youtubeQuizPage.blueprint.accessibilityOff'),
+                      })}
                     </button>
                   </div>
                 </div>
-                <p className="mt-3 text-xs text-gray-500">
-                  Worksheet from Quiz becomes available after generation and uses your generated quiz result.
-                </p>
+                <p className="mt-3 text-xs text-gray-500">{t('youtubeQuizPage.blueprint.worksheetHint')}</p>
               </div>
             </div>
 
@@ -665,23 +768,20 @@ const YouTubeQuizGenerator = () => {
             >
               <div className="flex items-center gap-2 mb-4">
                 <LinkIcon className="h-5 w-5 text-red-500" />
-                <h3 className="text-sm font-semibold text-gray-900">Try with example videos</h3>
+                <h3 className="text-sm font-semibold text-gray-900">{t('youtubeQuizPage.examples.title')}</h3>
               </div>
-              <p className="text-xs text-gray-600 mb-4">
-                Click a card to fill the link and suggested grade/subject above — then press Generate quiz when you are
-                ready.
-              </p>
+              <p className="text-xs text-gray-600 mb-4">{t('youtubeQuizPage.examples.hint')}</p>
               <div className="grid gap-3 md:grid-cols-2">
-                {referenceVideos.map((video, idx) => (
+                {referenceVideos.map((video) => (
                   <button
-                    key={idx}
+                    key={video.id}
                     onClick={() => handleUseReference(video)}
                     className="group flex items-start gap-3 rounded-xl border-2 border-gray-200 bg-white p-4 text-left transition hover:border-red-300 hover:shadow-md"
                   >
                     <div className="relative h-20 w-32 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200">
                       <img
                         src={video.thumbnail}
-                        alt={video.title}
+                        alt={t(`youtubeQuizPage.examples.${video.id}.title`)}
                         className="h-full w-full object-cover"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement
@@ -694,16 +794,22 @@ const YouTubeQuizGenerator = () => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="text-sm font-semibold text-gray-900 line-clamp-2 group-hover:text-red-600">
-                        {video.title}
+                        {t(`youtubeQuizPage.examples.${video.id}.title`)}
                       </h4>
                       <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-gray-500">
-                        <span>{video.gradeBand}</span>
+                        <span>
+                          {gradeBandOptions.find((o) => o.value === video.gradeBand)?.label ?? video.gradeBand}
+                        </span>
                         <span>•</span>
-                        <span>{video.subjectArea}</span>
+                        <span>
+                          {subjectOptions.find((o) => o.value === video.subjectArea)?.label ?? video.subjectArea}
+                        </span>
                         <span>•</span>
                         <span>{video.duration}</span>
                       </div>
-                      <p className="mt-1 text-xs text-gray-600 line-clamp-1">{video.description}</p>
+                      <p className="mt-1 text-xs text-gray-600 line-clamp-1">
+                        {t(`youtubeQuizPage.examples.${video.id}.description`)}
+                      </p>
                     </div>
                   </button>
                 ))}
@@ -740,34 +846,27 @@ const YouTubeQuizGenerator = () => {
         <aside className="space-y-6">
           <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
             <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-gray-600">
-              <BookOpen className="h-4 w-4 text-red-500" /> Sample classroom use
+              <BookOpen className="h-4 w-4 text-red-500" /> {t('youtubeQuizPage.sidebar.classroomUseTitle')}
             </h3>
             <div className="mt-4 space-y-4 text-sm text-gray-700">
               <div className="rounded-2xl bg-red-50 p-4">
-                <p className="font-semibold text-gray-900">Day-before preview</p>
-                <p className="mt-1 text-gray-600">
-                  Share the quiz as pre-work. Students collect unfamiliar vocab while watching at home, then tackle
-                  higher-order prompts when class begins.
-                </p>
+                <p className="font-semibold text-gray-900">{t('youtubeQuizPage.sidebar.dayBeforeTitle')}</p>
+                <p className="mt-1 text-gray-600">{t('youtubeQuizPage.sidebar.dayBeforeBody')}</p>
               </div>
               <div className="rounded-2xl bg-orange-50 p-4">
-                <p className="font-semibold text-gray-900">Station rotation</p>
-                <p className="mt-1 text-gray-600">
-                  Set up a media lab station featuring the clip, earbuds, and QR code access to the adaptive quiz.
-                </p>
+                <p className="font-semibold text-gray-900">{t('youtubeQuizPage.sidebar.stationTitle')}</p>
+                <p className="mt-1 text-gray-600">{t('youtubeQuizPage.sidebar.stationBody')}</p>
               </div>
               <div className="rounded-2xl bg-rose-50 p-4">
-                <p className="font-semibold text-gray-900">Mini-documentary study</p>
-                <p className="mt-1 text-gray-600">
-                  Pair longer-form YouTube documentaries with reflection prompts to build media literacy and note-taking habits.
-                </p>
+                <p className="font-semibold text-gray-900">{t('youtubeQuizPage.sidebar.documentaryTitle')}</p>
+                <p className="mt-1 text-gray-600">{t('youtubeQuizPage.sidebar.documentaryBody')}</p>
               </div>
             </div>
           </div>
 
           <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
             <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-gray-600">
-              <Target className="h-4 w-4 text-red-500" /> Pedagogical guardrails
+              <Target className="h-4 w-4 text-red-500" /> {t('youtubeQuizPage.sidebar.guardrailsTitle')}
             </h3>
             <ul className="mt-4 space-y-4 text-sm text-gray-600">
               {pedagogyNotes.map((note) => {

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ListChecks, Sparkles, RefreshCw, Download } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 type LearningFocus = 'knowledge' | 'skills' | 'application' | 'investigation'
 type Difficulty = 'easy' | 'moderate' | 'advanced'
 type OutputFormat = 'structured_json' | 'teacher_text'
@@ -70,6 +71,7 @@ const sampleBreakdown: LearningIntentionOutput = {
 }
 
 const LearningIntentionBreakdown = () => {
+  const { t } = useTranslation()
   const [inputs, setInputs] = useState<LearningIntentionInputs>({
     grade: 8,
     topic: 'Forces and Motion',
@@ -153,10 +155,8 @@ const LearningIntentionBreakdown = () => {
             <ListChecks className="w-6 h-6 text-primary-600" />
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold text-gray-900">Learning Intention Breakdown</h1>
-            <p className="text-sm text-gray-600 mt-0.5">
-              Translate standards into clear success criteria and instructional moves
-            </p>
+            <h1 className="text-xl font-bold text-gray-900">{t('learningIntentionBreakdown.learningIntentionBreakdown')}</h1>
+            <p className="text-sm text-gray-600 mt-0.5">{t('learningIntentionBreakdown.translateStandardsIntoClearSuccessCriteriaAndInstructio')}</p>
           </div>
         </div>
       </div>
@@ -166,13 +166,12 @@ const LearningIntentionBreakdown = () => {
           <div className="card">
             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
               <Sparkles className="w-5 h-5 text-primary-600" />
-              <span>Learning Intention Inputs</span>
+              <span>{t('learningIntentionBreakdown.learningIntentionInputs')}</span>
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Grade <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('learningIntentionBreakdown.grade2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -181,14 +180,13 @@ const LearningIntentionBreakdown = () => {
                   value={inputs.grade}
                   onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
                   className="input-field"
-                  placeholder="Enter grade (1-12)"
+                  placeholder={t('common.gradePlaceholder')}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Topic <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('learningIntentionBreakdown.topic2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -201,7 +199,7 @@ const LearningIntentionBreakdown = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Curriculum Standard</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('learningIntentionBreakdown.curriculumStandard2')}</label>
                 <textarea
                   value={inputs.curriculum_standard}
                   onChange={(e) => handleInputChange('curriculum_standard', e.target.value)}
@@ -212,7 +210,7 @@ const LearningIntentionBreakdown = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Learning Focus</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('learningIntentionBreakdown.learningFocus')}</label>
                 <select
                   value={inputs.learning_focus}
                   onChange={(e) =>
@@ -224,26 +222,26 @@ const LearningIntentionBreakdown = () => {
                   className="input-field"
                 >
                   <option value="">Select focus (optional)</option>
-                  <option value="knowledge">Knowledge</option>
-                  <option value="skills">Skills</option>
-                  <option value="application">Application</option>
-                  <option value="investigation">Investigation</option>
+                  <option value="knowledge">{t('learningIntentionBreakdown.knowledge')}</option>
+                  <option value="skills">{t('learningIntentionBreakdown.skills')}</option>
+                  <option value="application">{t('learningIntentionBreakdown.application')}</option>
+                  <option value="investigation">{t('learningIntentionBreakdown.investigation')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('learningIntentionBreakdown.duration2')}</label>
                 <input
                   type="text"
                   value={inputs.duration}
                   onChange={(e) => handleInputChange('duration', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., PT40M"
+                  placeholder={t('learningIntentionBreakdown.eGPt40m')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Difficulty</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('learningIntentionBreakdown.difficulty2')}</label>
                 <select
                   value={inputs.difficulty}
                   onChange={(e) =>
@@ -252,25 +250,25 @@ const LearningIntentionBreakdown = () => {
                   className="input-field"
                 >
                   <option value="">Select difficulty (optional)</option>
-                  <option value="easy">Easy</option>
-                  <option value="moderate">Moderate</option>
-                  <option value="advanced">Advanced</option>
+                  <option value="easy">{t('learningIntentionBreakdown.easy')}</option>
+                  <option value="moderate">{t('learningIntentionBreakdown.moderate')}</option>
+                  <option value="advanced">{t('learningIntentionBreakdown.advanced')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('learningIntentionBreakdown.language2')}</label>
                 <input
                   type="text"
                   value={inputs.language}
                   onChange={(e) => handleInputChange('language', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., en-US"
+                  placeholder={t('learningIntentionBreakdown.eGEnUs')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Output Format</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('learningIntentionBreakdown.outputFormat')}</label>
                 <select
                   value={inputs.output_format}
                   onChange={(e) =>
@@ -282,8 +280,8 @@ const LearningIntentionBreakdown = () => {
                   className="input-field"
                 >
                   <option value="">Select output format (optional)</option>
-                  <option value="teacher_text">Teacher Text</option>
-                  <option value="structured_json">Structured JSON</option>
+                  <option value="teacher_text">{t('learningIntentionBreakdown.teacherText')}</option>
+                  <option value="structured_json">{t('learningIntentionBreakdown.structuredJson')}</option>
                 </select>
               </div>
 
@@ -295,12 +293,12 @@ const LearningIntentionBreakdown = () => {
                 {isGenerating ? (
                   <>
                     <RefreshCw className="w-5 h-5 animate-spin" />
-                    <span>Generating...</span>
+                    <span>{t('learningIntentionBreakdown.generating')}</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-5 h-5" />
-                    <span>Generate Breakdown</span>
+                    <span>{t('learningIntentionBreakdown.generateBreakdown')}</span>
                   </>
                 )}
               </button>
@@ -312,18 +310,18 @@ const LearningIntentionBreakdown = () => {
           {output ? (
             <div className="card">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Generated Breakdown</h2>
+                <h2 className="text-lg font-semibold text-gray-900">{t('learningIntentionBreakdown.generatedBreakdown')}</h2>
                 <div className="flex gap-2">
                   <button className="btn-secondary flex items-center space-x-2">
                     <Download className="w-4 h-4" />
-                    <span>Download</span>
+                    <span>{t('learningIntentionBreakdown.download')}</span>
                   </button>
                   <button
                     onClick={() => setOutput(null)}
                     className="btn-secondary flex items-center space-x-2"
                   >
                     <RefreshCw className="w-4 h-4" />
-                    <span>Reset</span>
+                    <span>{t('learningIntentionBreakdown.reset')}</span>
                   </button>
                 </div>
               </div>
@@ -333,42 +331,42 @@ const LearningIntentionBreakdown = () => {
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">{output.title}</h3>
                   <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                     <span>
-                      <strong>Grade:</strong> {output.grade}
+                      <strong>{t('learningIntentionBreakdown.grade')}</strong> {output.grade}
                     </span>
                     <span>
-                      <strong>Topic:</strong> {output.topic}
+                      <strong>{t('learningIntentionBreakdown.topic')}</strong> {output.topic}
                     </span>
                     {output.learning_focus && (
                       <span>
-                        <strong>Focus:</strong> {output.learning_focus.replace(/_/g, ' ')}
+                        <strong>{t('learningIntentionBreakdown.focus')}</strong> {output.learning_focus.replace(/_/g, ' ')}
                       </span>
                     )}
                     {output.duration && (
                       <span>
-                        <strong>Duration:</strong> {output.duration}
+                        <strong>{t('learningIntentionBreakdown.duration')}</strong> {output.duration}
                       </span>
                     )}
                     {output.difficulty && (
                       <span>
-                        <strong>Difficulty:</strong> {output.difficulty}
+                        <strong>{t('learningIntentionBreakdown.difficulty')}</strong> {output.difficulty}
                       </span>
                     )}
                     {output.language && (
                       <span>
-                        <strong>Language:</strong> {output.language}
+                        <strong>{t('learningIntentionBreakdown.language')}</strong> {output.language}
                       </span>
                     )}
                   </div>
                   <p className="mt-3 text-gray-700 text-sm">{output.overview}</p>
                   {output.curriculum_standard && (
                     <p className="mt-2 text-sm text-gray-700">
-                      <strong>Curriculum Standard:</strong> {output.curriculum_standard}
+                      <strong>{t('learningIntentionBreakdown.curriculumStandard')}</strong> {output.curriculum_standard}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Success Criteria</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('learningIntentionBreakdown.successCriteria')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.success_criteria.map((item, index) => (
                       <li key={index}>{item}</li>
@@ -377,7 +375,7 @@ const LearningIntentionBreakdown = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Teacher Moves</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('learningIntentionBreakdown.teacherMoves')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.teacher_moves.map((move, index) => (
                       <li key={index}>{move}</li>
@@ -386,7 +384,7 @@ const LearningIntentionBreakdown = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Student Actions</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('learningIntentionBreakdown.studentActions')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.student_actions.map((action, index) => (
                       <li key={index}>{action}</li>
@@ -395,7 +393,7 @@ const LearningIntentionBreakdown = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Checks for Understanding</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('learningIntentionBreakdown.checksForUnderstanding')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.checks_for_understanding.map((check, index) => (
                       <li key={index}>{check}</li>
@@ -404,7 +402,7 @@ const LearningIntentionBreakdown = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Differentiation Tips</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('learningIntentionBreakdown.differentiationTips')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.differentiation_tips.map((tip, index) => (
                       <li key={index}>{tip}</li>
@@ -417,12 +415,8 @@ const LearningIntentionBreakdown = () => {
             <div className="card">
               <div className="text-center py-12">
                 <ListChecks className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Your breakdown will appear here
-                </h3>
-                <p className="text-gray-600">
-                  Fill in the inputs and click "Generate Breakdown" to see the learning intention details.
-                </p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('learningIntentionBreakdown.yourBreakdownWillAppearHere')}</h3>
+                <p className="text-gray-600">{t('learningIntentionBreakdown.fillInTheInputsAndClickGenerateBreakdownToSee')}</p>
               </div>
             </div>
           )}

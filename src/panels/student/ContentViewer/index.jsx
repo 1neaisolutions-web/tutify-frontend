@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 const subjects = [
@@ -7,13 +8,14 @@ const subjects = [
 ];
 
 const ContentViewer = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
     <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Study Materials</h1>
-        <p className="text-sm text-gray-600 dark:text-gray-300">Teacher resources + worksheet viewer (demo).</p>
+        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.content.title')}</h1>
+        <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.content.subtitle')}</p>
       </div>
 
       <div className="px-6 py-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">

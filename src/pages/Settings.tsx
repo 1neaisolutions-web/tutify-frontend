@@ -36,9 +36,12 @@ import {
 } from '../api/subscriptions'
 import ActivateCreditsModal from '../components/ActivateCreditsModal'
 import { formatDate, formatNumber } from '../lib/i18n/format'
-import i18n, { SUPPORTED_LOCALES } from '../i18n'
-import { LANGUAGE_OPTIONS, TIMEZONE_OPTIONS } from '../constants/preferencesOptions'
-import { LOCKED_LANGUAGE, LOCKED_THEME, PREFERENCES_LOCKED } from '../config/preferencesLock'
+import i18n from '../i18n'
+import { TIMEZONE_OPTIONS } from '../constants/preferencesOptions'
+import { LanguageSearchDropdown } from '../components/shared/LanguageSearchDropdown'
+import { hasUiTranslation, resolveTranslationLocale } from '../i18n'
+import { useLanguageList } from '../hooks/useLanguageList'
+import { LOCKED_THEME, THEME_LOCKED } from '../config/preferencesLock'
 import {
   setLanguage,
   setTheme,
@@ -50,18 +53,17 @@ import { useTranslation } from 'react-i18next'
 
 type Tab = 'general' | 'notifications' | 'plan' | 'integrations' | 'developer' | 'export'
 
-const TABS: { key: Tab; label: string }[] = [
-  { key: 'general', label: 'General' },
-  { key: 'notifications', label: 'Notifications' },
-  { key: 'plan', label: 'Plan & Credits' },
-  { key: 'integrations', label: 'Integrations' },
-  { key: 'developer', label: 'Developer' },
-  { key: 'export', label: 'Export' },
+const TAB_KEYS: { key: Tab; labelKey: string }[] = [
+  { key: 'general', labelKey: 'settings.tabs.general' },
+  { key: 'notifications', labelKey: 'settings.tabs.notifications' },
+  { key: 'plan', labelKey: 'settings.tabs.plan' },
+  { key: 'integrations', labelKey: 'settings.tabs.integrations' },
+  { key: 'developer', labelKey: 'settings.tabs.developer' },
+  { key: 'export', labelKey: 'settings.tabs.export' },
 ]
 
-// ── Plan & Credits Tab ────────────────────────────────────────────────────────
-
 function PlanCreditsTab() {
+  const { t } = useTranslation()
   const [balance, setBalance] = useState<CreditBalance | null>(null)
   const [summary, setSummary] = useState<UsageSummary | null>(null)
   const [breakdown, setBreakdown] = useState<UsageBreakdownItem[]>([])
@@ -119,11 +121,12 @@ function PlanCreditsTab() {
               <Coins className="h-5 w-5 text-amber-600" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">Your credits</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{t('settings.plan.yourCredits')}</h2>
               {balance?.subscription_started_at && (
                 <p className="text-xs text-gray-400">
-                  Member since{' '}
-                  {formatDate(balance.subscription_started_at, { month: 'long', year: 'numeric' })}
+                  {t('settings.plan.memberSince', {
+                    date: formatDate(balance.subscription_started_at, { month: 'long', year: 'numeric' }),
+                  })}
                 </p>
               )}
             </div>
@@ -132,7 +135,7 @@ function PlanCreditsTab() {
             onClick={() => setActivateOpen(true)}
             className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-semibold text-primary-600 hover:bg-primary-50 transition"
           >
-            + Activate code
+            {t('settings.plan.activateCode')}
           </button>
         </div>
 
@@ -140,7 +143,7 @@ function PlanCreditsTab() {
           <div className="flex items-baseline gap-2">
             <span className="text-3xl font-bold text-gray-900">{formatNumber(bal)}</span>
             {total > 0 && (
-              <span className="text-sm text-gray-400">/ {formatNumber(total)} credits</span>
+              <span className="text-sm text-gray-400">{t('settings.plan.creditsRemaining', { total: formatNumber(total) })}</span>
             )}
           </div>
 
@@ -153,18 +156,19 @@ function PlanCreditsTab() {
                 />
               </div>
               <div className="flex items-center justify-between text-xs text-gray-400">
-                <span className={`font-semibold ${pctColor}`}>{labelPct}% remaining</span>
+                <span className={`font-semibold ${pctColor}`}>{t('settings.plan.remainingPct', { pct: labelPct })}</span>
                 {balance?.expires_at && !balance.auto_renew && (
                   <span className="flex items-center gap-1">
                     <Clock className="h-3 w-3" />
-                    Expires{' '}
-                    {formatDate(balance.expires_at, { month: 'short', day: 'numeric', year: 'numeric' })}
+                    {t('settings.plan.expires', {
+                      date: formatDate(balance.expires_at, { month: 'short', day: 'numeric', year: 'numeric' }),
+                    })}
                   </span>
                 )}
                 {balance?.auto_renew && (
                   <span className="flex items-center gap-1 text-emerald-600 font-medium">
                     <Zap className="h-3 w-3" />
-                    Auto-renewing
+                    {t('settings.plan.autoRenewing')}
                   </span>
                 )}
               </div>
@@ -173,12 +177,12 @@ function PlanCreditsTab() {
 
           {bal === 0 && !loading && (
             <div className="rounded-xl bg-gray-50 border border-dashed border-gray-200 p-4 text-center">
-              <p className="text-sm text-gray-500">No active credits. Activate a code to get started.</p>
+              <p className="text-sm text-gray-500">{t('settings.plan.noActiveCredits')}</p>
               <button
                 onClick={() => setActivateOpen(true)}
                 className="mt-2 text-sm font-semibold text-primary-600 hover:text-primary-500"
               >
-                Activate credits →
+                {t('settings.plan.activateCreditsLink')}
               </button>
             </div>
           )}
@@ -191,9 +195,9 @@ function PlanCreditsTab() {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4 text-gray-400" />
-              <h2 className="text-base font-semibold text-gray-900">Usage breakdown</h2>
+              <h2 className="text-base font-semibold text-gray-900">{t('settings.plan.usageBreakdown')}</h2>
             </div>
-            <span className="text-xs text-gray-400">Last 30 days</span>
+            <span className="text-xs text-gray-400">{t('settings.plan.last30Days')}</span>
           </div>
           <div className="space-y-3">
             {breakdown.map((item) => (
@@ -209,7 +213,7 @@ function PlanCreditsTab() {
                 </div>
                 <div className="w-20 text-right">
                   <span className="text-sm font-semibold text-gray-700">{item.credits}</span>
-                  <span className="text-xs text-gray-400 ml-1">cr</span>
+                  <span className="text-xs text-gray-400 ml-1">{t('credits.plan.creditsShort')}</span>
                 </div>
                 <span className="w-10 text-right text-xs text-gray-400">{item.pct_of_total}%</span>
               </div>
@@ -223,7 +227,7 @@ function PlanCreditsTab() {
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="h-4 w-4 text-gray-400" />
-            <h2 className="text-base font-semibold text-gray-900">Activity</h2>
+            <h2 className="text-base font-semibold text-gray-900">{t('settings.plan.activity')}</h2>
           </div>
           <div className="space-y-1">
             {transactions.map((txn) => (
@@ -244,7 +248,7 @@ function PlanCreditsTab() {
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-medium text-gray-800 truncate">
-                      {txn.description || txn.feature_key || 'Activity'}
+                      {txn.description || txn.feature_key || t('settings.plan.activityFallback')}
                     </p>
                     <p className="text-xs text-gray-400">
                       {formatDate(txn.created_at, {
@@ -263,7 +267,7 @@ function PlanCreditsTab() {
                     {txn.amount > 0 ? '+' : ''}{formatNumber(txn.amount)}
                   </span>
                   <span className="text-xs text-gray-400 hidden sm:block">
-                    {formatNumber(txn.balance_after)} left
+                    {t('settings.plan.left', { count: formatNumber(txn.balance_after) })}
                   </span>
                 </div>
               </div>
@@ -287,17 +291,23 @@ const Settings = () => {
   const timezone = useSelector((s: any) => (s.preferences?.timezone ?? 'UTC') as string)
   const syncStatus = useSelector((s: any) => (s.preferences?.syncStatus ?? 'idle') as string)
 
-  const [languageOpen, setLanguageOpen] = useState(false)
   const [timezoneOpen, setTimezoneOpen] = useState(false)
   const [tzQuery, setTzQuery] = useState('')
   const { t } = useTranslation()
+  const { languages } = useLanguageList()
+
+  const languageLabel = useMemo(() => {
+    const match = languages.find((l) => l.code === language)
+    return match ? `${match.name} (${match.nativeName})` : language
+  }, [languages, language])
+  const showLanguageFallbackNotice = !hasUiTranslation(language)
 
   const initialTab = (searchParams.get('tab') as Tab) || 'general'
   const [activeTab, setActiveTab] = useState<Tab>(initialTab)
 
   useEffect(() => {
     const tab = searchParams.get('tab') as Tab
-    if (tab && TABS.some((t) => t.key === tab)) setActiveTab(tab)
+    if (tab && TAB_KEYS.some((t) => t.key === tab)) setActiveTab(tab)
   }, [searchParams])
 
   const handleTabChange = (tab: Tab) => {
@@ -305,13 +315,7 @@ const Settings = () => {
     setSearchParams(tab === 'general' ? {} : { tab })
   }
 
-  const effectiveTheme: Theme = PREFERENCES_LOCKED ? LOCKED_THEME : theme
-  const effectiveLanguage: string = PREFERENCES_LOCKED ? LOCKED_LANGUAGE : language
-
-  const currentLanguageLabel =
-    LANGUAGE_OPTIONS.find((l) => l.value === effectiveLanguage)?.label ||
-    LANGUAGE_OPTIONS[0]?.label ||
-    effectiveLanguage
+  const effectiveTheme: Theme = THEME_LOCKED ? LOCKED_THEME : theme
 
   const currentTimezoneLabel = TIMEZONE_OPTIONS.find((z) => z.value === timezone)?.label ?? timezone
 
@@ -322,13 +326,9 @@ const Settings = () => {
   }, [tzQuery])
 
   const onSelectLanguage = (next: string) => {
-    if (PREFERENCES_LOCKED) return
-    const supported = (SUPPORTED_LOCALES as readonly string[]).includes(next)
-    const finalLang = supported ? next : 'en-US'
-    dispatch(setLanguage(finalLang))
-    dispatch(syncPreferences({ language: finalLang }) as any)
-    i18n.changeLanguage(finalLang).catch(() => {})
-    setLanguageOpen(false)
+    dispatch(setLanguage(next))
+    dispatch(syncPreferences({ language: next }) as any)
+    i18n.changeLanguage(resolveTranslationLocale(next)).catch(() => {})
   }
 
   const onSelectTimezone = (next: string) => {
@@ -339,7 +339,7 @@ const Settings = () => {
   }
 
   const onSelectTheme = (next: Theme) => {
-    if (PREFERENCES_LOCKED) return
+    if (THEME_LOCKED) return
     dispatch(setTheme(next))
     dispatch(syncPreferences({ theme: next }) as any)
   }
@@ -371,22 +371,22 @@ const Settings = () => {
   }
 
   const integrations = [
-    { name: 'Google Classroom', status: 'Connected', description: 'Sync assignments and rosters automatically.' },
-    { name: 'Microsoft Teams', status: 'Available', description: 'Enable Teams meetings and assignment syncing.' },
-    { name: 'Canvas LMS', status: 'Coming soon', description: 'Direct gradebook integration for Canvas users.' },
+    { nameKey: 'settings.integrations.googleClassroom.name', descKey: 'settings.integrations.googleClassroom.description', statusKey: 'settings.integrations.status.connected' },
+    { nameKey: 'settings.integrations.microsoftTeams.name', descKey: 'settings.integrations.microsoftTeams.description', statusKey: 'settings.integrations.status.available' },
+    { nameKey: 'settings.integrations.canvasLms.name', descKey: 'settings.integrations.canvasLms.description', statusKey: 'settings.integrations.status.comingSoon' },
   ]
 
   const notificationPrefs = [
-    { label: 'Product updates & release notes', channel: 'Email + in-app' },
-    { label: 'Lesson plan reminders', channel: 'Email only' },
-    { label: 'Weekly insights report', channel: 'In-app only' },
+    { labelKey: 'settings.notifications.productUpdates', channelKey: 'settings.notifications.channels.emailAndApp' },
+    { labelKey: 'settings.notifications.lessonReminders', channelKey: 'settings.notifications.channels.emailOnly' },
+    { labelKey: 'settings.notifications.weeklyInsights', channelKey: 'settings.notifications.channels.appOnly' },
   ]
 
   return (
     <div className="space-y-6">
       {/* Tab bar */}
       <div className="flex gap-1 rounded-xl border border-gray-200 bg-gray-50 p-1 overflow-x-auto">
-        {TABS.map((tab) => (
+        {TAB_KEYS.map((tab) => (
           <button
             key={tab.key}
             onClick={() => handleTabChange(tab.key)}
@@ -396,7 +396,7 @@ const Settings = () => {
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
-            {tab.label}
+            {t(tab.labelKey)}
           </button>
         ))}
       </div>
@@ -414,43 +414,21 @@ const Settings = () => {
                   <SyncPill />
                 </div>
                 <div className="space-y-4 text-sm text-gray-600">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Globe className="h-5 w-5 text-primary-500" />
-                      <div>
-                        <p className="font-medium text-gray-900">{t('settings.general.language.label')}</p>
-                        <p>{currentLanguageLabel}</p>
-                      </div>
+                  <div className="flex items-start gap-3">
+                    <Globe className="h-5 w-5 text-primary-500 mt-3 shrink-0" />
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-900 mb-1.5">{t('settings.general.language.label')}</p>
+                      <LanguageSearchDropdown
+                        value={language}
+                        onChange={onSelectLanguage}
+                        placeholder={t('common.search')}
+                      />
+                      {showLanguageFallbackNotice && (
+                        <p className="mt-2 text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
+                          {t('settings.general.language.uiFallback', { language: languageLabel })}
+                        </p>
+                      )}
                     </div>
-                    {!PREFERENCES_LOCKED && (
-                      <div className="relative">
-                        <button
-                          onClick={() => setLanguageOpen((v) => !v)}
-                          className="text-sm font-semibold text-primary-600 hover:text-primary-500"
-                        >
-                          {t('settings.general.language.change')}
-                        </button>
-                        {languageOpen && (
-                          <>
-                            <div className="fixed inset-0 z-10" onClick={() => setLanguageOpen(false)} />
-                            <div className="absolute right-0 top-7 z-20 w-72 rounded-2xl border border-gray-200 bg-white shadow-xl py-1">
-                              {LANGUAGE_OPTIONS.map((opt) => (
-                                <button
-                                  key={opt.value}
-                                  onClick={() => onSelectLanguage(opt.value)}
-                                  className={`flex w-full items-center justify-between px-4 py-2.5 text-left text-sm hover:bg-gray-50 ${
-                                    opt.value === effectiveLanguage ? 'font-semibold text-primary-600' : 'text-gray-700'
-                                  }`}
-                                >
-                                  <span>{opt.label}</span>
-                                  {opt.value === effectiveLanguage && <CheckCircle className="h-4 w-4 text-primary-500" />}
-                                </button>
-                              ))}
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    )}
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -491,7 +469,7 @@ const Settings = () => {
                             </div>
                             <ul className="max-h-64 overflow-y-auto py-1">
                               {filteredTimezones.length === 0 ? (
-                                <li className="px-4 py-3 text-sm text-gray-400">No timezones match.</li>
+                                <li className="px-4 py-3 text-sm text-gray-400">{t('settings.general.timezone.noMatch')}</li>
                               ) : (
                                 filteredTimezones.map((z) => (
                                   <li key={z.value}>
@@ -519,11 +497,11 @@ const Settings = () => {
                         <p className="font-medium text-gray-900">{t('settings.general.theme.label')}</p>
                         <p className="capitalize">
                           {effectiveTheme}
-                          {effectiveTheme === 'system' ? ' (follows device)' : ''}
+                          {effectiveTheme === 'system' ? t('settings.general.theme.followsDevice') : ''}
                         </p>
                       </div>
                     </div>
-                    {!PREFERENCES_LOCKED && (
+                    {!THEME_LOCKED && (
                       <div className="flex items-center gap-1 rounded-xl bg-gray-100 p-1">
                         {([
                           { value: 'light' as Theme, icon: Sun, label: t('settings.general.theme.light') },
@@ -555,19 +533,19 @@ const Settings = () => {
 
             {activeTab === 'notifications' && (
               <div className="card">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Notifications</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('settings.notifications.title')}</h2>
                 <div className="space-y-4 text-sm text-gray-600">
                   {notificationPrefs.map((pref) => (
-                    <div key={pref.label} className="flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3">
+                    <div key={pref.labelKey} className="flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3">
                       <div>
-                        <p className="font-medium text-gray-900">{pref.label}</p>
-                        <p className="text-xs text-gray-500">Current channel: {pref.channel}</p>
+                        <p className="font-medium text-gray-900">{t(pref.labelKey)}</p>
+                        <p className="text-xs text-gray-500">{t('settings.notifications.currentChannel', { channel: t(pref.channelKey) })}</p>
                       </div>
-                      <button className="text-sm font-semibold text-primary-600 hover:text-primary-500">Edit</button>
+                      <button className="text-sm font-semibold text-primary-600 hover:text-primary-500">{t('settings.notifications.edit')}</button>
                     </div>
                   ))}
                   <button className="text-sm font-semibold text-primary-600 hover:text-primary-500">
-                    Manage notification defaults
+                    {t('settings.notifications.manageDefaults')}
                   </button>
                 </div>
               </div>
@@ -575,26 +553,26 @@ const Settings = () => {
 
             {activeTab === 'integrations' && (
               <div className="card">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Integrations</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('settings.integrations.title')}</h2>
                 <div className="space-y-3 text-sm text-gray-600">
                   {integrations.map((integration) => (
-                    <div key={integration.name} className="rounded-lg border border-gray-100 px-4 py-3 hover:border-primary-200">
+                    <div key={integration.nameKey} className="rounded-lg border border-gray-100 px-4 py-3 hover:border-primary-200">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <Cloud className="h-5 w-5 text-sky-500" />
                           <div>
-                            <p className="font-medium text-gray-900">{integration.name}</p>
-                            <p className="text-xs text-gray-500">{integration.description}</p>
+                            <p className="font-medium text-gray-900">{t(integration.nameKey)}</p>
+                            <p className="text-xs text-gray-500">{t(integration.descKey)}</p>
                           </div>
                         </div>
                         <span className="text-xs font-semibold uppercase tracking-wide text-emerald-600">
-                          {integration.status}
+                          {t(integration.statusKey)}
                         </span>
                       </div>
                     </div>
                   ))}
                   <button className="text-sm font-semibold text-primary-600 hover:text-primary-500">
-                    Add new integration
+                    {t('settings.integrations.addNew')}
                   </button>
                 </div>
               </div>
@@ -604,17 +582,17 @@ const Settings = () => {
           <aside className="space-y-6">
             {(activeTab === 'developer' || activeTab === 'general') && (
               <div className="card">
-                <h2 className="text-lg font-semibold text-gray-900 mb-3">API & developer access</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-3">{t('settings.developer.title')}</h2>
                 <div className="space-y-3 text-sm text-gray-600">
                   <div className="flex items-start gap-3">
                     <Link2 className="h-5 w-5 text-fuchsia-600" />
                     <div>
-                      <p className="font-medium text-gray-900">Connected apps</p>
-                      <p>3 apps have access to your teaching workspace.</p>
+                      <p className="font-medium text-gray-900">{t('settings.developer.connectedApps')}</p>
+                      <p>{t('settings.developer.connectedAppsDesc')}</p>
                     </div>
                   </div>
                   <button className="text-sm font-semibold text-primary-600 hover:text-primary-500">
-                    Manage API tokens
+                    {t('settings.developer.manageTokens')}
                   </button>
                 </div>
               </div>
@@ -622,22 +600,22 @@ const Settings = () => {
 
             {(activeTab === 'export' || activeTab === 'general') && (
               <div className="card">
-                <h2 className="text-lg font-semibold text-gray-900 mb-3">Export & backup</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-3">{t('settings.export.title')}</h2>
                 <div className="space-y-3 text-sm text-gray-600">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <ArrowDownToLine className="h-5 w-5 text-sky-600" />
                       <div>
-                        <p className="font-medium text-gray-900">Download workspace data</p>
-                        <p className="text-xs text-gray-500">Templates, assessments, and chat history</p>
+                        <p className="font-medium text-gray-900">{t('settings.export.downloadData')}</p>
+                        <p className="text-xs text-gray-500">{t('settings.export.downloadDataDesc')}</p>
                       </div>
                     </div>
                     <button className="text-sm font-semibold text-primary-600 hover:text-primary-500">
-                      Export
+                      {t('common.export')}
                     </button>
                   </div>
                   <button className="text-sm font-semibold text-primary-600 hover:text-primary-500">
-                    Schedule weekly backups
+                    {t('settings.export.scheduleBackups')}
                   </button>
                 </div>
               </div>

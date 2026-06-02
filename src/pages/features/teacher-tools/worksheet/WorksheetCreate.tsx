@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import i18n from 'i18next'
 import { useNavigate, useParams, useLocation, useSearchParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
@@ -96,11 +98,11 @@ import { WorksheetGenerationParametersSection } from './components/WorksheetGene
 import { WORKSHEET_EXEMPLAR } from '../exemplars/worksheetExemplar'
 
 const TYPE_ORDER = ['mcq', 'fill_blank', 'short', 'match'] as const
-const TYPE_HEADING: Record<(typeof TYPE_ORDER)[number], string> = {
-  mcq: 'MULTIPLE CHOICE',
-  fill_blank: 'FILL IN THE BLANK',
-  short: 'SHORT ANSWER',
-  match: 'MATCHING',
+const TYPE_HEADING_KEYS: Record<(typeof TYPE_ORDER)[number], string> = {
+  mcq: 'worksheet.typeHeading.mcq',
+  fill_blank: 'worksheet.typeHeading.fill_blank',
+  short: 'worksheet.typeHeading.short',
+  match: 'worksheet.typeHeading.match',
 }
 
 function totalQuestionsInSessions(sessionList: LocalWorksheetSession[]): number {
@@ -155,15 +157,15 @@ function buildBlockFromEditForm(
     const options = parseNonEmptyLines(form.optionsLines)
     const answer = form.answer.trim()
     if (!prompt) {
-      toast.error('Add a question prompt.')
+      toast.error(i18n.t('worksheet.toastAddPrompt'))
       return null
     }
     if (options.length < 2) {
-      toast.error('Add at least two answer choices (one per line).')
+      toast.error(i18n.t('worksheet.toastMcqChoices'))
       return null
     }
     if (!answer || !options.includes(answer)) {
-      toast.error('Correct answer must exactly match one of the choice lines.')
+      toast.error(i18n.t('worksheet.toastMcqCorrect'))
       return null
     }
     return { type: 'mcq', prompt, options, answer }
@@ -172,7 +174,7 @@ function buildBlockFromEditForm(
     const prompt = form.prompt.trim()
     const answer = form.answer.trim()
     if (!prompt || !answer) {
-      toast.error('Prompt and model answer are required.')
+      toast.error(i18n.t('worksheet.toastShortRequired'))
       return null
     }
     return { type: 'fill_blank', prompt, answer }
@@ -180,7 +182,7 @@ function buildBlockFromEditForm(
   if (form.t === 'short') {
     const prompt = form.prompt.trim()
     if (!prompt) {
-      toast.error('Prompt is required.')
+      toast.error(i18n.t('worksheet.toastPromptRequired'))
       return null
     }
     return {
@@ -193,11 +195,11 @@ function buildBlockFromEditForm(
   const left = parseNonEmptyLines(form.leftLines)
   const right = parseNonEmptyLines(form.rightLines)
   if (left.length === 0 || right.length === 0) {
-    toast.error('Add at least one row in each matching column.')
+    toast.error(i18n.t('worksheet.toastMatchingRows'))
     return null
   }
   if (left.length !== right.length) {
-    toast.error('Left and right columns must have the same number of lines (one pair per row).')
+    toast.error(i18n.t('worksheet.toastMatchingPairs'))
     return null
   }
   return { type: 'match', left, right }
@@ -217,11 +219,11 @@ function emptyAddQuestionDraft(): AddQuestionDraft {
   return {
     kind: 'short',
     prompt: '',
-    mcqOptions: 'Option A\nOption B\nOption C\nOption D',
-    mcqAnswer: 'Option B',
+    mcqOptions: i18n.t('worksheet.defaults.mcqOptions'),
+    mcqAnswer: i18n.t('worksheet.defaults.mcqAnswer'),
     fillAnswer: '',
-    matchLeft: 'Term 1\nTerm 2',
-    matchRight: 'Definition 1\nDefinition 2',
+    matchLeft: i18n.t('worksheet.defaults.matchLeft'),
+    matchRight: i18n.t('worksheet.defaults.matchRight'),
   }
 }
 
@@ -232,7 +234,7 @@ function buildBlockFromAddDraft(
   if (draft.kind === 'short') {
     const prompt = draft.prompt.trim()
     if (!prompt) {
-      toast.error('Enter a question prompt.')
+      toast.error(i18n.t('worksheet.toastEnterPrompt'))
       return null
     }
     return { type: 'short', prompt, sampleAnswer: '', responseLines: SHORT_RESPONSE_LINES.default }
@@ -256,7 +258,7 @@ function buildBlockFromAddDraft(
 }
 
 function worksheetPreviewTypeLabel(block: WorksheetBlock): string {
-  return TYPE_HEADING[block.type]
+  return i18n.t(TYPE_HEADING_KEYS[block.type])
 }
 
 function worksheetMutationErrorMessage(err: unknown): string {
@@ -276,7 +278,7 @@ function worksheetMutationErrorMessage(err: unknown): string {
       }
     }
   }
-  return 'Request failed.'
+  return i18n.t('teacherTools.requestFailed')
 }
 
 function WorksheetPreviewBlockContent({
@@ -286,6 +288,7 @@ function WorksheetPreviewBlockContent({
   block: WorksheetBlock
   ruledLineSpacingPx: number
 }) {
+  const { t } = useTranslation()
   if (block.type === 'mcq') {
     return (
       <div>
@@ -298,7 +301,8 @@ function WorksheetPreviewBlockContent({
           ))}
         </ol>
         <p className="mt-3 border-t border-gray-100 pt-2 text-xs text-gray-500">
-          Answer key: <span className="font-medium text-gray-700">{block.answer}</span>
+          {t('worksheet.preview.answerKey')}{' '}
+          <span className="font-medium text-gray-700">{block.answer}</span>
         </p>
       </div>
     )
@@ -322,8 +326,8 @@ function WorksheetPreviewBlockContent({
   return (
     <div className="mt-1 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
       <div className="grid grid-cols-2 divide-x divide-gray-200 bg-gray-50/90 text-[11px] font-semibold uppercase tracking-wide text-gray-600">
-        <div className="px-3 py-2">Terms / concepts</div>
-        <div className="px-3 py-2">Definitions / roles</div>
+        <div className="px-3 py-2">{t('worksheet.preview.matchingTermsHeader')}</div>
+        <div className="px-3 py-2">{t('worksheet.preview.matchingDefsHeader')}</div>
       </div>
       <div className="grid grid-cols-2 divide-x divide-gray-200 text-[14px]">
         <div className="divide-y divide-gray-100">
@@ -344,13 +348,14 @@ function WorksheetPreviewBlockContent({
         </div>
       </div>
       <p className="border-t border-gray-100 bg-gray-50/50 px-3 py-2 text-[11px] text-gray-500">
-        Students draw lines or write letters to match each numbered term to a definition.
+        {t('worksheet.preview.matchingInstructions')}
       </p>
     </div>
   )
 }
 
 export default function WorksheetCreate() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const [searchParams] = useSearchParams()
@@ -411,7 +416,7 @@ export default function WorksheetCreate() {
   const [handoutLayout, setHandoutLayout] = useState<HandoutLayoutOpts>(DEFAULT_HANDOUT_LAYOUT)
   const [draftLayout, setDraftLayout] = useState<HandoutLayoutOpts>(DEFAULT_HANDOUT_LAYOUT)
 
-  const [title, setTitle] = useState('Practice worksheet')
+  const [title, setTitle] = useState(() => t('worksheet.defaultTitle'))
   const [subject, setSubject] = useState<string>(SUBJECTS[3])
   const [grade, setGrade] = useState<string>(GRADES[3])
   const [outputFormat, setOutputFormat] = useState<WorksheetOutputFormat>('interactive_digital')
@@ -642,7 +647,7 @@ export default function WorksheetCreate() {
     setBuildErrors([])
     subWizard.unlockAllSteps()
     setPhase('review')
-    toast.success('Exemplar loaded — edit or regenerate anytime.')
+    toast.success(t('teacherTools.toastExemplarLoaded'))
   }, [rag, subWizard, toast, enterExemplarPreview, isEdit])
 
   const previewSections = useMemo(() => {
@@ -674,7 +679,7 @@ export default function WorksheetCreate() {
     }
     if (searchParams.get('fromTemplate') && !templateToastRef.current) {
       templateToastRef.current = true
-      toast.success('Prefilled from template')
+      toast.success(t('teacherTools.toastPrefilledTemplate'))
     }
   }, [isEdit, searchParams, toast])
 
@@ -721,7 +726,7 @@ export default function WorksheetCreate() {
         setHydrateReady(true)
       } catch {
         if (cancelled) return
-        toast.error('Worksheet not found')
+        toast.error(t('worksheet.toastNotFound'))
         navigate('/teacher-tools/worksheet')
       }
     })()
@@ -733,7 +738,7 @@ export default function WorksheetCreate() {
   const regenerate = useCallback(async () => {
     const wsId = worksheetId ?? worksheetIdRef.current
     if (!wsId) {
-      toast.error('Worksheet id missing. Reload the page or run Generate from the build step.')
+      toast.error(t('worksheet.toastIdMissingGenerate'))
       return
     }
     idempotencyKeyRef.current =
@@ -760,7 +765,7 @@ export default function WorksheetCreate() {
       setSessions(apiSessionsToLocal(result.worksheet.sessions))
       const warn = result.warnings?.[0]
       if (warn) toast.warning(warn)
-      else toast.success('Worksheet regenerated from sources.')
+      else toast.success(t('worksheet.toastRegenerated'))
       refreshCredits()
     } catch (err) {
       const credit = parseCreditErrorFromUnknown(err)
@@ -795,7 +800,7 @@ export default function WorksheetCreate() {
   const addSession = async () => {
     const wsId = worksheetId ?? worksheetIdRef.current
     if (!wsId) {
-      toast.error('Generate the worksheet first.')
+      toast.error(t('worksheet.toastGenerateFirst'))
       return
     }
     try {
@@ -804,9 +809,9 @@ export default function WorksheetCreate() {
         payload: { title: `Session ${sessions.length + 1}` },
       }).unwrap()
       setSessions(apiSessionsToLocal(updated.sessions))
-      toast.success('Session added')
+      toast.success(t('worksheet.toastSessionAdded'))
     } catch {
-      toast.error('Could not add session')
+      toast.error(t('worksheet.toastSessionAddFailed'))
     }
   }
 
@@ -814,7 +819,7 @@ export default function WorksheetCreate() {
     const wsId = worksheetId ?? worksheetIdRef.current
     if (!wsId) return
     if (sessions.length <= 1) {
-      toast.error('Keep at least one session.')
+      toast.error(t('worksheet.toastKeepOneSession'))
       return
     }
     const idx = sessions.findIndex((s) => s.id === sessionId)
@@ -835,9 +840,9 @@ export default function WorksheetCreate() {
       }
       const updated = await deleteWorksheetSessionMutation({ worksheetId: wsId, sessionId }).unwrap()
       setSessions(apiSessionsToLocal(updated.sessions))
-      toast.success('Session removed — its questions were merged into the session above.')
+      toast.success(t('worksheet.toastSessionRemoved'))
     } catch {
-      toast.error('Could not remove session')
+      toast.error(t('worksheet.toastSessionRemoveFailed'))
     }
   }
 
@@ -856,7 +861,7 @@ export default function WorksheetCreate() {
       }).unwrap()
       setSessions(apiSessionsToLocal(updated.sessions))
     } catch {
-      toast.error('Could not save session title')
+      toast.error(t('worksheet.toastSessionTitleFailed'))
     }
   }
 
@@ -890,13 +895,13 @@ export default function WorksheetCreate() {
   const handleRegenerateBlock = async (sessionId: string, blockIndex: number) => {
     const wsId = worksheetId ?? worksheetIdRef.current
     if (!wsId) {
-      toast.error('Worksheet id missing. Reload the page or run Generate first.')
+      toast.error(t('worksheet.toastIdMissing'))
       return
     }
     const session = sessions.find((s) => s.id === sessionId)
     const block = session?.blocks[blockIndex] as LocalWorksheetBlock | undefined
     if (!block?._id) {
-      toast.error('This question has no server id yet. Reload the worksheet, then try again.')
+      toast.error(t('worksheet.toastNoServerId'))
       return
     }
     const rk = `${sessionId}:${block._id}`
@@ -909,7 +914,7 @@ export default function WorksheetCreate() {
         blockId: block._id,
       }).unwrap()
       setSessions(apiSessionsToLocal(updated.sessions))
-      toast.success('Question replaced with a new version.')
+      toast.success(t('worksheet.toastQuestionReplaced'))
       refreshCredits()
     } catch (err) {
       const credit = parseCreditErrorFromUnknown(err)
@@ -928,7 +933,7 @@ export default function WorksheetCreate() {
     if (!wsId) return
     const total = totalQuestionsInSessions(sessions)
     if (total <= 1) {
-      toast.error('Keep at least one question block, or go back to edit requirements.')
+      toast.error(t('worksheet.toastKeepOneBlock'))
       return
     }
     const session = sessions.find((s) => s.id === sessionId)
@@ -941,9 +946,9 @@ export default function WorksheetCreate() {
         blockId: block._id,
       }).unwrap()
       setSessions(apiSessionsToLocal(updated.sessions))
-      toast.success('Block removed')
+      toast.success(t('worksheet.toastBlockRemoved'))
     } catch {
-      toast.error('Could not remove block')
+      toast.error(t('worksheet.toastBlockRemoveFailed'))
     }
   }
 
@@ -959,7 +964,7 @@ export default function WorksheetCreate() {
     reordered.splice(target, 0, row)
     const order = reordered.map((b, i) => ({ id: (b as LocalWorksheetBlock)._id, sort_order: i }))
     if (order.some((o) => !o.id)) {
-      toast.error('Missing block ids — save worksheet again.')
+      toast.error(t('worksheet.toastMissingBlockIds'))
       return
     }
     try {
@@ -970,7 +975,7 @@ export default function WorksheetCreate() {
       }).unwrap()
       setSessions(apiSessionsToLocal(updated.sessions))
     } catch {
-      toast.error('Could not reorder blocks')
+      toast.error(t('worksheet.toastReorderFailed'))
     }
   }
 
@@ -991,7 +996,7 @@ export default function WorksheetCreate() {
     })
     if (!v.ok) {
       setBuildErrors(v.errors)
-      toast.error('Fix the highlighted fields to generate.')
+      toast.error(t('teacherTools.toastFixFields'))
       return
     }
     setBuildErrors([])
@@ -1008,7 +1013,7 @@ export default function WorksheetCreate() {
       let wsId = worksheetId ?? worksheetIdRef.current
       if (!wsId) {
         const created = await createWorksheet({
-          title: title.trim() || 'Untitled worksheet',
+          title: title.trim() || t('worksheet.untitled'),
           subject,
           grade,
           outputFormat,
@@ -1028,7 +1033,7 @@ export default function WorksheetCreate() {
         await patchWorksheet({
           id: wsId,
           patch: {
-            title: title.trim() || 'Untitled worksheet',
+            title: title.trim() || t('worksheet.untitled'),
             subject,
             grade,
             outputFormat,
@@ -1062,7 +1067,7 @@ export default function WorksheetCreate() {
       setSessions(apiSessionsToLocal(result.worksheet.sessions))
       setPhase('review')
       if (result.warnings.length > 0) toast.warning(result.warnings[0] ?? '')
-      else toast.success('Worksheet generated — review below.')
+      else toast.success(t('worksheet.toastGenerated'))
       refreshCredits()
     } catch (err) {
       const credit = parseCreditErrorFromUnknown(err)
@@ -1071,7 +1076,7 @@ export default function WorksheetCreate() {
         setGenerationError(null)
         return
       }
-      setGenerationError('Generation failed. Please retry.')
+      setGenerationError(t('worksheet.generationFailed'))
       toast.error(worksheetMutationErrorMessage(err))
     } finally {
       window.clearInterval(steps)
@@ -1107,16 +1112,16 @@ export default function WorksheetCreate() {
 
   const handleSaveDraft = async () => {
     if (isExemplarPreview) {
-      toast.error('Generate your worksheet first — exemplar preview is not saved.')
+      toast.error(t('teacherTools.toastExemplarNotSaved'))
       return
     }
     const wsId = worksheetId ?? worksheetIdRef.current
     if (!wsId) {
-      toast.error('Generate first.')
+      toast.error(t('worksheet.toastGenerateFirstShort'))
       return
     }
     if (totalQuestionsInSessions(sessions) === 0) {
-      toast.error('Generate at least one block before saving a draft.')
+      toast.error(t('worksheet.toastDraftNeedsBlocks'))
       return
     }
     setSaveDraftPending(true)
@@ -1125,10 +1130,10 @@ export default function WorksheetCreate() {
         id: wsId,
         patch: { status: 'draft', handoutLayout },
       }).unwrap()
-      toast.success('Draft saved')
+      toast.success(t('teacherTools.toastDraftSaved'))
       navigate(`/teacher-tools/worksheet/${wsId}`)
     } catch {
-      toast.error('Could not save draft')
+      toast.error(t('teacherTools.toastDraftFailed'))
     } finally {
       setSaveDraftPending(false)
     }
@@ -1136,16 +1141,16 @@ export default function WorksheetCreate() {
 
   const handlePublish = async () => {
     if (isExemplarPreview) {
-      toast.error('Generate your worksheet first — exemplar preview cannot be published.')
+      toast.error(t('teacherTools.toastExemplarCannotPublish'))
       return
     }
     const wsId = worksheetId ?? worksheetIdRef.current
     if (!wsId) {
-      toast.error('Generate first.')
+      toast.error(t('worksheet.toastGenerateFirstShort'))
       return
     }
     if (totalQuestionsInSessions(sessions) === 0) {
-      toast.error('Generate at least one block before publishing.')
+      toast.error(t('worksheet.toastPublishNeedsBlocks'))
       return
     }
     setPublishPending(true)
@@ -1154,10 +1159,10 @@ export default function WorksheetCreate() {
         id: wsId,
         patch: { status: 'published', handoutLayout },
       }).unwrap()
-      toast.success(isEdit ? 'Worksheet updated' : 'Worksheet published')
+      toast.success(isEdit ? t('worksheet.publishUpdated') : t('worksheet.publishWorksheet'))
       navigate('/teacher-tools/worksheet')
     } catch {
-      toast.error('Could not publish')
+      toast.error(t('worksheet.toastPublishFailed'))
     } finally {
       setPublishPending(false)
     }
@@ -1192,7 +1197,7 @@ export default function WorksheetCreate() {
         worksheetId ??
         worksheetIdRef.current ??
         (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `ws-preview-${Date.now()}`),
-      title: `${title || 'Worksheet'} — Handout`,
+      title: `${title || t('worksheet.fallbackTitle')} — ${t('teacherTools.handoutPreviewSuffix')}`,
       subject,
       grade,
       classes: [classKeyForGrade(grade)],
@@ -1205,14 +1210,14 @@ export default function WorksheetCreate() {
       topic: rag.combinedTopicLabel,
       sourceSummary: formatSourceSummary(rag.getGenerationContext()),
       questionStubs: stubs,
-      studentInstructions: 'Complete all worksheet items.',
+      studentInstructions: t('worksheet.defaultHandoutInstructions'),
       handoutLayout,
     }
     try {
       downloadQuizPdf(payload, `${(title || 'worksheet').replace(/\s+/g, '-').slice(0, 32)}-worksheet.pdf`)
-      toast.success('PDF downloaded')
+      toast.success(t('teacherTools.toastPdfDownloaded'))
     } catch {
-      toast.error('Could not generate PDF')
+      toast.error(t('teacherTools.toastPdfFailed'))
     }
   }
 
@@ -1221,14 +1226,14 @@ export default function WorksheetCreate() {
       <div className="min-h-[40vh] space-y-3 p-8">
         <div className="h-4 w-48 animate-pulse rounded bg-gray-200" />
         <div className="h-32 max-w-xl animate-pulse rounded-2xl bg-gray-100" />
-        <p className="text-sm text-gray-600">Loading worksheet…</p>
+        <p className="text-sm text-gray-600">{t('worksheet.loading')}</p>
       </div>
     )
   }
 
   const wizardStep = phase === 'build' ? 0 : 1
 
-  const reviewSourceTag = rag.generateWithoutSources ? 'Topic-only' : 'Sources selected'
+  const reviewSourceTag = rag.generateWithoutSources ? t('teacherTools.topicOnlyTag') : t('teacherTools.sourcesSelected')
 
   const totalQs = totalQuestionsInSessions(sessions)
   const typeCount = distinctBlockTypesInSessions(sessions)
@@ -1250,23 +1255,23 @@ export default function WorksheetCreate() {
       onGenerate={() => {
         if (!fullBuildValidation.ok) {
           setBuildErrors(fullBuildValidation.errors)
-          toast.error('Fix the highlighted fields to generate.')
+          toast.error(t('teacherTools.toastFixFields'))
           return
         }
         setBuildErrors([])
         void runGeneration()
       }}
       generating={generating}
-      generateLabel="Generate worksheet"
+      generateLabel={t('worksheet.generateLabel')}
       onShowExemplar={handleShowExemplar}
       onExitToList={handleExitToList}
-      exitLabel="Back to worksheet list"
+      exitLabel={t('worksheet.exitLabel')}
     />
   )
 
   const reviewFooter = (
     <TeacherToolsCreateReviewFooter
-      exitLabel="Back to worksheet list"
+      exitLabel={t('worksheet.exitLabel')}
       onExitToList={handleExitToList}
       onEditRequirements={handleBackToConfigure}
       publish={{
@@ -1283,7 +1288,7 @@ export default function WorksheetCreate() {
         onPublish: () => void handlePublish(),
         publishPending,
         publishDisabled: totalQs === 0 || isExemplarPreview,
-        publishLabel: isEdit ? 'Save changes' : 'Publish worksheet',
+        publishLabel: isEdit ? t('worksheet.saveChanges') : t('worksheet.publishWorksheet'),
       }}
     />
   )
@@ -1295,16 +1300,19 @@ export default function WorksheetCreate() {
         <>
           <TeacherToolsPageHeader
             variant="compact"
-            title={isEdit ? 'Edit worksheet' : 'Create worksheet'}
+            title={isEdit ? t('worksheet.editTitle') : t('worksheet.createTitle')}
             subtitle={
               isEdit && usageMeta.createdAt
-                ? `Created ${usageMeta.createdAt} · ${usageMeta.usageCount} submission${usageMeta.usageCount === 1 ? '' : 's'}. Configure, generate, then review.`
-                : 'Configure scope and settings, generate the worksheet, then review and publish.'
+                ? t('worksheet.createSubtitleEdit', {
+                    date: usageMeta.createdAt,
+                    count: usageMeta.usageCount,
+                  })
+                : t('worksheet.createSubtitle')
             }
             breadcrumbs={[
-              { label: 'Teacher Tools', to: '/teacher-tools' },
-              { label: 'Worksheet', to: '/teacher-tools/worksheet' },
-              { label: isEdit ? 'Edit' : 'Create' },
+              { label: t('teacherTools.breadcrumbTeacherTools'), to: '/teacher-tools' },
+              { label: t('worksheet.breadcrumb'), to: '/teacher-tools/worksheet' },
+              { label: isEdit ? t('teacherTools.breadcrumbEdit') : t('teacherTools.breadcrumbCreate') },
             ]}
           />
           <div className="pb-2">
@@ -1314,7 +1322,7 @@ export default function WorksheetCreate() {
               primaryMaxReachable={topMaxReachable}
               onPrimaryStepClick={(i) => {
                 if (i === 1 && totalQuestionsInSessions(sessions) === 0) {
-                  toast.error('Generate the worksheet first to open review.')
+                  toast.error(t('worksheet.toastReviewNeedsGenerate'))
                   return
                 }
                 if (i === 0) handleBackToConfigure()
@@ -1338,7 +1346,7 @@ export default function WorksheetCreate() {
         <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
           {generationError}
           <button type="button" className="ml-3 font-semibold underline" onClick={() => setGenerationError(null)}>
-            Dismiss
+            {t('teacherTools.dismiss')}
           </button>
         </div>
       )}
@@ -1417,12 +1425,12 @@ export default function WorksheetCreate() {
         <div className="space-y-3">
           {isExemplarPreview && <TeacherToolsExemplarReviewBanner />}
           <TeacherToolsReviewHeaderCompact
-            title="Worksheet content"
+            title={t('worksheet.contentTitle')}
             sourceTag={reviewSourceTag}
             stats={[
-              { label: 'questions', value: totalQs },
-              { label: 'sessions', value: sessions.length },
-              { label: 'types', value: typeCount },
+              { label: t('worksheet.statQuestions'), value: totalQs },
+              { label: t('worksheet.statSessions'), value: sessions.length },
+              { label: t('worksheet.statTypes'), value: typeCount },
             ]}
             actions={
               <>
@@ -1431,7 +1439,7 @@ export default function WorksheetCreate() {
                   onClick={() => void addSession()}
                   className="rounded-lg border border-emerald-200 bg-white px-2 py-1 text-xs font-semibold text-emerald-800 hover:bg-emerald-50"
                 >
-                  + Session
+                  {t('teacherTools.plusSession')}
                 </button>
                 <button
                   type="button"
@@ -1439,7 +1447,7 @@ export default function WorksheetCreate() {
                   onClick={() => void regenerate()}
                   className="rounded-lg border border-indigo-200 bg-white px-2 py-1 text-xs font-semibold text-indigo-800 hover:bg-indigo-50 disabled:opacity-50"
                 >
-                  {regeneratingAll ? 'Regenerating…' : 'Regenerate all'}
+                  {regeneratingAll ? t('quiz.review.regeneratingAll') : t('quiz.review.regenerateAll')}
                 </button>
               </>
             }
@@ -1447,18 +1455,18 @@ export default function WorksheetCreate() {
 
           <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
             <div className="flex flex-wrap items-center gap-2 border-b border-gray-100 bg-gray-50/80 px-3 py-2">
-              <h3 className="text-sm font-semibold text-gray-900">Content blocks</h3>
+              <h3 className="text-sm font-semibold text-gray-900">{t('worksheet.contentBlocks')}</h3>
               <button
                 type="button"
                 onClick={() => void addSession()}
                 className="ml-auto text-xs font-semibold text-emerald-700 hover:text-emerald-600"
               >
-                Add session
+                {t('teacherTools.addSession')}
               </button>
             </div>
             {sessions.length === 0 || totalQs === 0 ? (
               <div className="p-6 text-sm text-gray-500">
-                No content yet — go back and generate, or add a session and use Add question on that session.
+                {t('worksheet.review.noContentYet')}
               </div>
             ) : (
               <div className="space-y-6 p-4">
@@ -1469,7 +1477,7 @@ export default function WorksheetCreate() {
                   >
                     <div className="flex flex-wrap items-center gap-3 border-b border-gray-200 bg-white px-4 py-3">
                       <label className="flex min-w-[10rem] flex-1 flex-col gap-1 text-[10px] font-bold uppercase tracking-wide text-gray-500 sm:flex-row sm:items-center sm:gap-2">
-                        <span className="shrink-0">Session</span>
+                        <span className="shrink-0">{t('worksheet.sessionLabel')}</span>
                         <input
                           value={session.title}
                           onChange={(e) => updateSessionTitleLocal(session.id, e.target.value)}
@@ -1483,7 +1491,7 @@ export default function WorksheetCreate() {
                         className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-900 hover:bg-emerald-100"
                       >
                         <PlusCircle className="h-3.5 w-3.5" />
-                        Add question
+                        {t('worksheet.addQuestion')}
                       </button>
                       {sessions.length > 1 ? (
                         <button
@@ -1491,13 +1499,13 @@ export default function WorksheetCreate() {
                           onClick={() => void removeSession(session.id)}
                           className="text-xs font-semibold text-red-700 hover:text-red-600"
                         >
-                          Remove session
+                          {t('teacherTools.removeSession')}
                         </button>
                       ) : null}
                     </div>
                     <div className="p-4">
                       {session.blocks.length === 0 ? (
-                        <p className="text-sm text-gray-600">No questions in this session yet.</p>
+                        <p className="text-sm text-gray-600">{t('worksheet.review.noQuestionsInSession')}</p>
                       ) : (
                         <div className="space-y-6">
                           {TYPE_ORDER.map((kind) => {
@@ -1508,7 +1516,7 @@ export default function WorksheetCreate() {
                             return (
                               <div key={`${session.id}-${kind}`}>
                                 <p className="mb-3 text-xs font-bold uppercase tracking-wide text-gray-900">
-                                  {TYPE_HEADING[kind]} ({group.length})
+                                  {t(TYPE_HEADING_KEYS[kind])} ({group.length})
                                 </p>
                                 <ul className="space-y-3">
                                   {group.map(({ b, idx: blockIndex }) => {
@@ -1539,7 +1547,7 @@ export default function WorksheetCreate() {
                                         <div>
                                           <p className="whitespace-pre-wrap leading-relaxed">{b.prompt}</p>
                                           <p className="mt-1 text-xs text-gray-400">
-                                            {clampResponseLines(b.responseLines)} ruled lines
+                                            {t('teacherTools.ruledLines', { count: clampResponseLines(b.responseLines) })}
                                           </p>
                                           <ShortAnswerStudentResponsePreview
                                             responseLines={b.responseLines}
@@ -1568,7 +1576,7 @@ export default function WorksheetCreate() {
                                       <div className="mt-3 flex justify-end gap-1 border-t border-gray-100 pt-3">
                                         <button
                                           type="button"
-                                          title="Move up"
+                                          title={t('teacherTools.moveUp')}
                                           disabled={blockIndex === 0}
                                           onClick={() => void moveBlockInSession(session.id, blockIndex, -1)}
                                           className="rounded-lg p-1.5 text-gray-600 hover:bg-gray-200 disabled:opacity-30"
@@ -1577,7 +1585,7 @@ export default function WorksheetCreate() {
                                         </button>
                                         <button
                                           type="button"
-                                          title="Move down"
+                                          title={t('teacherTools.moveDown')}
                                           disabled={blockIndex === session.blocks.length - 1}
                                           onClick={() => void moveBlockInSession(session.id, blockIndex, 1)}
                                           className="rounded-lg p-1.5 text-gray-600 hover:bg-gray-200 disabled:opacity-30"
@@ -1586,7 +1594,7 @@ export default function WorksheetCreate() {
                                         </button>
                                         <button
                                           type="button"
-                                          title="Edit"
+                                          title={t('exam.detail.edit')}
                                           onClick={() => editBlock(session.id, blockIndex)}
                                           className="rounded-lg p-1.5 text-indigo-700 hover:bg-indigo-100"
                                         >
@@ -1594,7 +1602,7 @@ export default function WorksheetCreate() {
                                         </button>
                                         <button
                                           type="button"
-                                          title="Regenerate this question"
+                                          title={t('teacherTools.regenerateThisQuestion')}
                                           disabled={blockBusy || regeneratingAll || generating}
                                           onClick={() => void handleRegenerateBlock(session.id, blockIndex)}
                                           className="rounded-lg p-1.5 text-amber-800 hover:bg-amber-100 disabled:opacity-40"
@@ -1607,7 +1615,7 @@ export default function WorksheetCreate() {
                                         </button>
                                         <button
                                           type="button"
-                                          title="Remove"
+                                          title={t('teacherTools.remove')}
                                           disabled={totalQs <= 1}
                                           onClick={() => void handleDeleteBlock(session.id, blockIndex)}
                                           className="rounded-lg p-1.5 text-red-700 hover:bg-red-50 disabled:opacity-30"
@@ -1638,8 +1646,8 @@ export default function WorksheetCreate() {
       <CustomModal
         open={discardOpen}
         close={cancelDiscard}
-        title="Leave without saving?"
-        primaryButtonText="Leave"
+        title={t('teacherTools.leaveTitle')}
+        primaryButtonText={t('teacherTools.leave')}
         isDelete
         handleSave={confirmDiscard}
       >
@@ -1651,8 +1659,8 @@ export default function WorksheetCreate() {
       <CustomModal
         open={previewOpen}
         close={() => setPreviewOpen(false)}
-        title="Worksheet preview"
-        primaryButtonText="Save layout and close"
+        title={t('worksheet.previewTitle')}
+        primaryButtonText={t('quiz.printPreview.saveLayoutClose')}
         handleSave={() => {
           setHandoutLayout(draftLayout)
           setPreviewOpen(false)
@@ -1660,9 +1668,9 @@ export default function WorksheetCreate() {
       >
         <div className="space-y-4">
           <div className="flex flex-wrap items-center gap-3 rounded-xl border border-indigo-100 bg-indigo-50/50 px-3 py-2.5">
-            <span className="text-xs font-semibold uppercase tracking-wide text-indigo-900">Handout spacing</span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-indigo-900">{t('quiz.printPreview.handoutSpacing')}</span>
             <label className="flex items-center gap-1.5 text-xs text-gray-800">
-              <span className="text-gray-600">Line height</span>
+              <span className="text-gray-600">{t('quiz.printPreview.lineHeight')}</span>
               <select
                 value={draftLayout.bodyLineHeight}
                 onChange={(e) =>
@@ -1681,7 +1689,7 @@ export default function WorksheetCreate() {
               </select>
             </label>
             <label className="flex items-center gap-1.5 text-xs text-gray-800">
-              <span className="text-gray-600">Question gap</span>
+              <span className="text-gray-600">{t('teacherTools.questionGap')}</span>
               <select
                 value={draftLayout.questionGapPx}
                 onChange={(e) =>
@@ -1700,7 +1708,7 @@ export default function WorksheetCreate() {
               </select>
             </label>
             <label className="flex items-center gap-1.5 text-xs text-gray-800">
-              <span className="text-gray-600">Response line height</span>
+              <span className="text-gray-600">{t('teacherTools.responseLineHeight')}</span>
               <select
                 value={draftLayout.ruledLineSpacingPx}
                 onChange={(e) =>
@@ -1721,14 +1729,14 @@ export default function WorksheetCreate() {
           </div>
           <div className="max-h-[60vh] overflow-y-auto py-3">
             <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-inner">
-              <p className="text-lg font-semibold tracking-tight text-gray-900">{title || 'Untitled worksheet'}</p>
+              <p className="text-lg font-semibold tracking-tight text-gray-900">{title || t('worksheet.untitled')}</p>
               <p className="mt-1 text-xs text-gray-500">
                 {subject} · {grade} ·{' '}
                 {outputFormat === 'printable_pdf'
-                  ? 'Print-ready PDF'
+                  ? t('worksheet.detail.formatPrintablePdf')
                   : outputFormat === 'both'
-                    ? 'Both'
-                    : 'Interactive digital'}
+                    ? t('worksheet.detail.formatBoth')
+                    : t('worksheet.detail.formatInteractive')}
               </p>
               <div className="mt-6 space-y-8">
                 {previewSections.map(({ session, items }) => (
@@ -1772,14 +1780,14 @@ export default function WorksheetCreate() {
         close={closeBlockEditor}
         title={
           editForm?.t === 'mcq'
-            ? 'Edit multiple choice'
+            ? t('worksheet.editModal.editMcq')
             : editForm?.t === 'fill_blank'
-              ? 'Edit fill in the blank'
+              ? t('worksheet.editModal.editFillBlank')
               : editForm?.t === 'short'
-                ? 'Edit short answer'
-                : 'Edit matching'
+                ? t('worksheet.editModal.editShort')
+                : t('worksheet.editModal.editMatch')
         }
-        primaryButtonText="Save"
+        primaryButtonText={t('teacherTools.save')}
         handleSave={() => {
           void (async () => {
             if (editingRef === null || editForm === null) return
@@ -1798,10 +1806,10 @@ export default function WorksheetCreate() {
                 patch: localBlockToPatchPayload(next),
               }).unwrap()
               setSessions(apiSessionsToLocal(updated.sessions))
-              toast.success('Question updated')
+              toast.success(t('worksheet.toastQuestionUpdated'))
               closeBlockEditor()
             } catch {
-              toast.error('Could not update question')
+              toast.error(t('worksheet.toastQuestionUpdateFailed'))
             }
           })()
         }}
@@ -1809,7 +1817,7 @@ export default function WorksheetCreate() {
         {editForm?.t === 'mcq' ? (
           <div className="space-y-4 py-1">
             <label className="block text-sm font-medium text-gray-800">
-              Question
+              {t('worksheet.editModal.question')}
               <textarea
                 rows={3}
                 value={editForm.prompt}
@@ -1818,7 +1826,7 @@ export default function WorksheetCreate() {
               />
             </label>
             <label className="block text-sm font-medium text-gray-800">
-              Choices <span className="font-normal text-gray-500">(one per line)</span>
+              {t('worksheet.editModal.choicesOnePerLine')}
               <textarea
                 rows={5}
                 value={editForm.optionsLines}
@@ -1827,7 +1835,7 @@ export default function WorksheetCreate() {
               />
             </label>
             <label className="block text-sm font-medium text-gray-800">
-              Correct answer <span className="font-normal text-gray-500">(must match a line exactly)</span>
+              {t('worksheet.editModal.correctAnswerMatch')}
               <input
                 type="text"
                 value={editForm.answer}
@@ -1840,7 +1848,7 @@ export default function WorksheetCreate() {
         {editForm?.t === 'fill_blank' ? (
           <div className="space-y-4 py-1">
             <label className="block text-sm font-medium text-gray-800">
-              Prompt <span className="font-normal text-gray-500">(use ______ for the blank)</span>
+              {t('worksheet.editModal.promptBlankHint')}
               <textarea
                 rows={3}
                 value={editForm.prompt}
@@ -1849,7 +1857,7 @@ export default function WorksheetCreate() {
               />
             </label>
             <label className="block text-sm font-medium text-gray-800">
-              Model answer
+              {t('worksheet.editModal.modelAnswer')}
               <input
                 type="text"
                 value={editForm.answer}
@@ -1862,7 +1870,7 @@ export default function WorksheetCreate() {
         {editForm?.t === 'short' ? (
           <div className="space-y-4 py-1">
             <label className="block text-sm font-medium text-gray-800">
-              Prompt
+              {t('worksheet.editModal.prompt')}
               <textarea
                 rows={4}
                 value={editForm.prompt}
@@ -1871,7 +1879,7 @@ export default function WorksheetCreate() {
               />
             </label>
             <label className="block text-sm font-medium text-gray-800">
-              Sample / exemplar answer <span className="font-normal text-gray-500">(optional)</span>
+              {t('worksheet.editModal.sampleAnswerOptional')}
               <textarea
                 rows={3}
                 value={editForm.sampleAnswer}
@@ -1881,16 +1889,14 @@ export default function WorksheetCreate() {
             </label>
             <section className="rounded-xl border border-gray-200 bg-gray-50/40 p-3">
               <div className="border-b border-gray-200/80 pb-2">
-                <h3 className="text-sm font-semibold text-gray-900">Response space (print and PDF)</h3>
-                <p className="mt-0.5 text-xs text-gray-500">
-                  Ruled rows under this question on the handout — same rules as quiz short answers.
-                </p>
+                <h3 className="text-sm font-semibold text-gray-900">{t('quiz.editModal.responseSpace')}</h3>
+                <p className="mt-0.5 text-xs text-gray-500">{t('worksheet.review.responseSpaceHint')}</p>
               </div>
               <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
                 <div className="flex w-fit items-center gap-1 rounded-lg border border-gray-200 bg-white p-1">
                   <button
                     type="button"
-                    aria-label="Fewer lines"
+                    aria-label={t('quiz.editModal.ariaFewerLines')}
                     disabled={clampResponseLines(editForm.responseLines) <= SHORT_RESPONSE_LINES.min}
                     onClick={() =>
                       setEditForm((f) =>
@@ -1913,7 +1919,7 @@ export default function WorksheetCreate() {
                   </span>
                   <button
                     type="button"
-                    aria-label="More lines"
+                    aria-label={t('quiz.editModal.ariaMoreLines')}
                     disabled={clampResponseLines(editForm.responseLines) >= SHORT_RESPONSE_LINES.max}
                     onClick={() =>
                       setEditForm((f) =>
@@ -1933,12 +1939,14 @@ export default function WorksheetCreate() {
                   </button>
                 </div>
                 <p className="min-w-0 text-xs text-gray-600 sm:max-w-[14rem] sm:text-right">
-                  {SHORT_RESPONSE_LINES.min}–{SHORT_RESPONSE_LINES.max} lines. Row height uses “Response line height” in
-                  print preview (saved layout).
+                  {t('worksheet.review.responseLinesRangeHint', {
+                    min: SHORT_RESPONSE_LINES.min,
+                    max: SHORT_RESPONSE_LINES.max,
+                  })}
                 </p>
               </div>
               <div className="mt-3 rounded-lg border border-dashed border-gray-300 bg-white px-3 py-2">
-                <p className="text-xs font-medium text-gray-600">Quick preview</p>
+                <p className="text-xs font-medium text-gray-600">{t('teacherTools.quickPreview')}</p>
                 <ShortAnswerHandoutLines
                   responseLines={editForm.responseLines}
                   ruledLineSpacingPx={DEFAULT_HANDOUT_LAYOUT.ruledLineSpacingPx}
@@ -1951,10 +1959,10 @@ export default function WorksheetCreate() {
         ) : null}
         {editForm?.t === 'match' ? (
           <div className="space-y-4 py-1">
-            <p className="text-xs text-gray-600">Each line on the left pairs with the same line on the right.</p>
+            <p className="text-xs text-gray-600">{t('worksheet.preview.matchingPairHint')}</p>
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="block text-sm font-medium text-gray-800">
-                Left column
+                {t('worksheet.editModal.leftColumn')}
                 <textarea
                   rows={6}
                   value={editForm.leftLines}
@@ -1963,7 +1971,7 @@ export default function WorksheetCreate() {
                 />
               </label>
               <label className="block text-sm font-medium text-gray-800">
-                Right column
+                {t('worksheet.editModal.rightColumn')}
                 <textarea
                   rows={6}
                   value={editForm.rightLines}
@@ -1982,19 +1990,21 @@ export default function WorksheetCreate() {
         close={closeAddQuestion}
         title={
           addingBlockSessionId
-            ? `Add question · ${sessions.find((s) => s.id === addingBlockSessionId)?.title ?? 'Session'}`
-            : 'Add question'
+            ? t('worksheet.addQuestionSession', {
+                session: sessions.find((s) => s.id === addingBlockSessionId)?.title ?? t('worksheet.addModal.sessionFallback'),
+              })
+            : t('worksheet.addQuestion')
         }
-        primaryButtonText="Add to session"
+        primaryButtonText={t('worksheet.addToSession')}
         handleSave={() => {
           void (async () => {
             const sessionId = addQuestionTargetSessionRef.current ?? addingBlockSessionId
             if (!sessionId) {
-              toast.error('No session selected. Close and use “Add question” on a session again.')
+              toast.error(t('worksheet.toastNoSession'))
               return
             }
             if (!sessions.some((s) => s.id === sessionId)) {
-              toast.error('That session no longer exists. Close this dialog.')
+              toast.error(t('worksheet.toastSessionGone'))
               closeAddQuestion()
               return
             }
@@ -2002,7 +2012,7 @@ export default function WorksheetCreate() {
             if (!block) return
             const wsId = worksheetId ?? worksheetIdRef.current
             if (!wsId) {
-              toast.error('Generate the worksheet first.')
+              toast.error(t('worksheet.toastGenerateFirst'))
               return
             }
             try {
@@ -2012,17 +2022,17 @@ export default function WorksheetCreate() {
                 block: localBlockToCreatePayload(block),
               }).unwrap()
               setSessions(apiSessionsToLocal(updated.sessions))
-              toast.success('Question added to session')
+              toast.success(t('worksheet.toastQuestionAdded'))
               closeAddQuestion()
             } catch {
-              toast.error('Could not add question')
+              toast.error(t('exam.toastAddFailed'))
             }
           })()
         }}
       >
         <div className="space-y-4 py-1">
           <label className="block text-sm font-medium text-gray-800">
-            Question type
+            {t('worksheet.addModal.questionType')}
             <select
               value={addQuestionDraft.kind}
               onChange={(e) =>
@@ -2034,10 +2044,10 @@ export default function WorksheetCreate() {
               }
               className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm"
             >
-              <option value="short">Short answer</option>
-              <option value="mcq">Multiple choice</option>
-              <option value="fill_blank">Fill in the blank</option>
-              <option value="match">Matching</option>
+              <option value="short">{t('teacherTools.shortAnswer')}</option>
+              <option value="mcq">{t('teacherTools.multipleChoice')}</option>
+              <option value="fill_blank">{t('worksheet.detail.blockFillBlank')}</option>
+              <option value="match">{t('worksheet.detail.blockMatch')}</option>
             </select>
           </label>
 
@@ -2046,11 +2056,9 @@ export default function WorksheetCreate() {
             addQuestionDraft.kind === 'fill_blank') && (
             <label className="block text-sm font-medium text-gray-800">
               {addQuestionDraft.kind === 'fill_blank' ? (
-                <span>
-                  Prompt <span className="font-normal text-gray-500">(include ______ for the blank)</span>
-                </span>
+                t('worksheet.editModal.promptFillBlankInclude')
               ) : (
-                'Question prompt'
+                t('worksheet.editModal.questionPrompt')
               )}
               <textarea
                 rows={addQuestionDraft.kind === 'mcq' ? 3 : 4}
@@ -2073,7 +2081,7 @@ export default function WorksheetCreate() {
                 />
               </label>
               <label className="block text-sm font-medium text-gray-800">
-                Correct answer <span className="font-normal text-gray-500">(exact line match)</span>
+                {t('worksheet.editModal.correctAnswerExact')}
                 <input
                   type="text"
                   value={addQuestionDraft.mcqAnswer}
@@ -2086,7 +2094,7 @@ export default function WorksheetCreate() {
 
           {addQuestionDraft.kind === 'fill_blank' ? (
             <label className="block text-sm font-medium text-gray-800">
-              Model answer
+              {t('worksheet.editModal.modelAnswer')}
               <input
                 type="text"
                 value={addQuestionDraft.fillAnswer}
@@ -2099,7 +2107,7 @@ export default function WorksheetCreate() {
           {addQuestionDraft.kind === 'match' ? (
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="block text-sm font-medium text-gray-800">
-                Left column <span className="font-normal text-gray-500">(one per line)</span>
+                {t('worksheet.editModal.leftColumn')} <span className="font-normal text-gray-500">{t('worksheet.editModal.leftColumnHint')}</span>
                 <textarea
                   rows={5}
                   value={addQuestionDraft.matchLeft}
@@ -2108,7 +2116,7 @@ export default function WorksheetCreate() {
                 />
               </label>
               <label className="block text-sm font-medium text-gray-800">
-                Right column <span className="font-normal text-gray-500">(same line count)</span>
+                {t('worksheet.editModal.rightColumn')} <span className="font-normal text-gray-500">(same line count)</span>
                 <textarea
                   rows={5}
                   value={addQuestionDraft.matchRight}

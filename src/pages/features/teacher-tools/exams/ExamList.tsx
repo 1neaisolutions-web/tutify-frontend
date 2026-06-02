@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Plus } from 'lucide-react'
 import {
@@ -23,7 +24,17 @@ import { CustomModal } from '../../../../components/shared/CustomModal'
 
 const tabs = ['All', 'Draft', 'Scheduled', 'Ongoing', 'Completed', 'Archived'] as const
 
+const EXAM_TAB_KEYS: Record<(typeof tabs)[number], string> = {
+  All: 'teacherTools.tabAll',
+  Draft: 'teacherTools.tabDraft',
+  Scheduled: 'teacherTools.tabScheduled',
+  Ongoing: 'teacherTools.tabOngoing',
+  Completed: 'teacherTools.tabCompleted',
+  Archived: 'teacherTools.tabArchived',
+}
+
 export default function ExamList() {
+  const { t } = useTranslation()
   const { toast } = useSnackbar()
   const navigate = useNavigate()
   const location = useLocation()
@@ -118,14 +129,14 @@ export default function ExamList() {
       try {
         const r = await examApi.duplicateExam(id)
         if (r.ok && r.id) {
-          toast.success('Created an editable copy from the sample library')
+          toast.success(t('teacherTools.toastEditableCopy'))
           navigate(`/teacher-tools/exams/${r.id}/edit`)
           return
         }
       } catch {
         /* fall through */
       }
-      toast.error('Could not create a copy')
+      toast.error(t('teacherTools.toastCopyFailed'))
       return
     }
     navigate(`/teacher-tools/exams/${id}/edit`)
@@ -136,11 +147,11 @@ export default function ExamList() {
     setArchivePending(true)
     try {
       await examApi.patchExam(archiveId, { status: 'archived' })
-      toast.success('Exam archived')
+      toast.success(t('exam.toastArchived'))
       setArchiveId(null)
       bump()
     } catch {
-      toast.error('Could not archive exam')
+      toast.error(t('exam.toastArchiveFailed'))
     } finally {
       setArchivePending(false)
     }
@@ -151,11 +162,11 @@ export default function ExamList() {
     setDeletePending(true)
     try {
       await examApi.deleteExam(deleteId)
-      toast.success('Exam deleted')
+      toast.success(t('exam.toastDeleted'))
       setDeleteId(null)
       bump()
     } catch {
-      toast.error('Could not delete exam')
+      toast.error(t('exam.toastDeleteListFailed'))
     } finally {
       setDeletePending(false)
     }
@@ -165,26 +176,26 @@ export default function ExamList() {
     try {
       const r = await examApi.duplicateExam(id)
       if (r.ok && r.id) {
-        toast.success('Exam duplicated')
+        toast.success(t('exam.toastDuplicated'))
         bump()
-      } else toast.error('Could not duplicate')
+      } else toast.error(t('teacherTools.toastDuplicateFailed'))
     } catch {
-      toast.error('Could not duplicate')
+      toast.error(t('teacherTools.toastDuplicateFailed'))
     }
   }
 
   return (
     <div className="space-y-6">
       <TeacherToolsPageHeader
-        title="Exams"
-        subtitle="Formal assessments with sections, integrity controls, and results publishing."
-        breadcrumbs={[{ label: 'Teacher Tools', to: '/teacher-tools' }, { label: 'Exams' }]}
+        title={t('exam.title')}
+        subtitle={t('exam.listSubtitle')}
+        breadcrumbs={[{ label: t('teacherTools.breadcrumbTeacherTools'), to: '/teacher-tools' }, { label: t('exam.breadcrumb') }]}
         actions={
           <Link
             to="/teacher-tools/exams/create"
             className="inline-flex items-center gap-2 rounded-full bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-500"
           >
-            <Plus className="h-4 w-4" /> Create Exam
+            <Plus className="h-4 w-4" /> {t('teacherTools.createExam')}
           </Link>
         }
       />
@@ -207,16 +218,16 @@ export default function ExamList() {
       {liveListUnavailable && <TeacherToolsListSyncHint kind="exams" onRetry={() => bump()} />}
 
       <div className="flex flex-wrap gap-2">
-        {tabs.map((t) => (
+        {tabs.map((tabItem) => (
           <button
-            key={t}
+            key={tabItem}
             type="button"
-            onClick={() => setTab(t)}
+            onClick={() => setTab(tabItem)}
             className={`rounded-full px-3 py-1.5 text-xs font-semibold ${
-              tab === t ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              tab === tabItem ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            {t}
+            {t(EXAM_TAB_KEYS[tabItem])}
           </button>
         ))}
       </div>
@@ -232,7 +243,7 @@ export default function ExamList() {
               for (const id of selected) {
                 await examApi.duplicateExam(id)
               }
-              toast.success('Duplicated selected')
+              toast.success(t('teacherTools.toastBulkDuplicated'))
               setSelected([])
               bump()
             } finally {
@@ -240,62 +251,62 @@ export default function ExamList() {
             }
           }}
         >
-          {bulkPending ? 'Working…' : 'Duplicate selected'}
+          {bulkPending ? t('teacherTools.working') : t('teacherTools.duplicateSelected')}
         </button>
       </TeacherToolsBulkActionBar>
 
       <CustomModal
         open={Boolean(deleteId)}
         close={() => !deletePending && setDeleteId(null)}
-        title="Delete exam?"
-        primaryButtonText="Delete"
+        title={t('exam.deleteTitle')}
+        primaryButtonText={t('teacherTools.delete')}
         isDelete
         loading={deletePending}
         handleSave={confirmDelete}
       >
-        <p className="py-3 text-sm text-gray-600">This removes the exam from your session. This cannot be undone.</p>
+        <p className="py-3 text-sm text-gray-600">{t('exam.deleteBody')}</p>
       </CustomModal>
 
       <CustomModal
         open={Boolean(archiveId)}
         close={() => !archivePending && setArchiveId(null)}
-        title="Archive exam?"
-        primaryButtonText="Archive"
+        title={t('exam.archiveTitle')}
+        primaryButtonText={t('teacherTools.archive')}
         loading={archivePending}
         handleSave={() => void confirmArchive()}
       >
-        <p className="py-3 text-sm text-gray-600">Archived exams stay under the Archived tab. You can duplicate or delete later.</p>
+        <p className="py-3 text-sm text-gray-600">{t('exam.archiveBody')}</p>
       </CustomModal>
 
       {!listReady && !listError && <TableSkeletonRows />}
 
       {listError && (
         <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-800">
-          <p className="font-semibold">No exams to show</p>
+          <p className="font-semibold">{t('exam.listErrorTitle')}</p>
           <p className="mt-1 text-red-700">{listError}</p>
           <button
             type="button"
             onClick={() => bump()}
             className="mt-4 rounded-full bg-primary-600 px-4 py-2 text-xs font-semibold text-white"
           >
-            Try again
+            {t('teacherTools.tryAgain')}
           </button>
         </div>
       )}
 
       {listReady && filtered.length === 0 && (
         <div className="rounded-2xl border border-gray-200 bg-white p-10 text-center text-sm text-gray-600">
-          No exams match your filters.{' '}
+          {t('exam.emptyFilters')}{' '}
           <button
             type="button"
             className="font-semibold text-primary-600 hover:underline"
             onClick={() => setFilters({ q: '', subject: '', grade: '', classKey: '', status: '', dateFrom: '', dateTo: '' })}
           >
-            Clear filters
+            {t('teacherTools.clearFilters')}
           </button>
           {' · '}
           <Link to="/teacher-tools/exams/create" className="font-semibold text-primary-600">
-            Create exam
+            {t('exam.createLink')}
           </Link>
         </div>
       )}
@@ -308,7 +319,7 @@ export default function ExamList() {
                 <th className="px-3 py-3 text-left">
                   <input
                     type="checkbox"
-                    aria-label="Select all"
+                    aria-label={t('teacherTools.ariaSelectAll')}
                     onChange={(e) => {
                       if (e.target.checked) setSelected(filtered.map((x) => x.id))
                       else setSelected([])
@@ -316,10 +327,10 @@ export default function ExamList() {
                     checked={selected.length === filtered.length && filtered.length > 0}
                   />
                 </th>
-                <th className="px-3 py-3 text-left font-semibold text-gray-700">Title</th>
-                <th className="px-3 py-3 text-left font-semibold text-gray-700">Type</th>
-                <th className="px-3 py-3 text-left font-semibold text-gray-700">When</th>
-                <th className="px-3 py-3 text-left font-semibold text-gray-700">Status</th>
+                <th className="px-3 py-3 text-left font-semibold text-gray-700">{t('teacherTools.title')}</th>
+                <th className="px-3 py-3 text-left font-semibold text-gray-700">{t('exam.colType')}</th>
+                <th className="px-3 py-3 text-left font-semibold text-gray-700">{t('exam.colWhen')}</th>
+                <th className="px-3 py-3 text-left font-semibold text-gray-700">{t('teacherTools.status')}</th>
                 <th className="px-3 py-3" />
               </tr>
             </thead>
@@ -343,16 +354,16 @@ export default function ExamList() {
                   <td className="px-3 py-3 text-right">
                     <TeacherToolsActionMenu
                       actions={[
-                        { key: 'edit', label: 'Edit', onClick: () => void goEdit(e.id) },
-                        { key: 'dup', label: 'Duplicate', onClick: () => void runDuplicate(e.id) },
+                        { key: 'edit', label: t('teacherTools.edit'), onClick: () => void goEdit(e.id) },
+                        { key: 'dup', label: t('teacherTools.duplicate'), onClick: () => void runDuplicate(e.id) },
                         {
                           key: 'arch',
-                          label: 'Archive',
+                          label: t('teacherTools.archive'),
                           onClick: () => setArchiveId(e.id),
                         },
                         {
                           key: 'del',
-                          label: 'Delete',
+                          label: t('teacherTools.delete'),
                           onClick: () => setDeleteId(e.id),
                         },
                       ]}

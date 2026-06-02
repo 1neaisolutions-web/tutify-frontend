@@ -19,6 +19,7 @@ import {
   Layers,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 const BLOOMS_SLUG = 'blooms-taxonomy'
 
 const sidebarIcons = {
@@ -30,6 +31,7 @@ const sidebarIcons = {
 } as const
 
 export function BloomsTaxonomyResearchView({ item }: { item: LearningHubSectionItem }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const c = item.researchInsightContent
   const body = (c?.payload ?? null) as BloomsTaxonomyBody | null
@@ -60,9 +62,7 @@ export function BloomsTaxonomyResearchView({ item }: { item: LearningHubSectionI
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Research Insight
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('bloomsTaxonomyResearch.researchInsight')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm">{c.heroSubtitle}</span>
                   <span className="text-white/80">•</span>
@@ -104,7 +104,7 @@ export function BloomsTaxonomyResearchView({ item }: { item: LearningHubSectionI
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Sections</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('bloomsTaxonomyResearch.sections')}</h3>
             <div className="space-y-1">
               {body.sidebarNav.map((section) => {
                 const Icon = sidebarIcons[section.icon]
@@ -143,9 +143,7 @@ export function BloomsTaxonomyResearchView({ item }: { item: LearningHubSectionI
 
                 <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl p-6 border border-purple-200 mb-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <Lightbulb className="h-5 w-5 text-purple-600" />
-                    Why It Matters
-                  </h3>
+                    <Lightbulb className="h-5 w-5 text-purple-600" />{t('bloomsTaxonomyResearch.whyItMatters')}</h3>
                   <ul className="space-y-2">
                     {body.overview.whyItMatters.map((point, idx) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -166,7 +164,7 @@ export function BloomsTaxonomyResearchView({ item }: { item: LearningHubSectionI
                       <p className="text-xs text-gray-600 mb-2 italic">{evidence.source}</p>
                       <p className="text-sm text-gray-700 mb-3">{evidence.evidence}</p>
                       <div className="bg-white rounded-lg p-3 border border-blue-200">
-                        <p className="text-xs font-semibold text-blue-700 mb-1">Practical Tip:</p>
+                        <p className="text-xs font-semibold text-blue-700 mb-1">{t('bloomsTaxonomyResearch.practicalTip')}</p>
                         <p className="text-xs text-gray-700">{evidence.practicalTip}</p>
                       </div>
                     </div>
@@ -175,9 +173,7 @@ export function BloomsTaxonomyResearchView({ item }: { item: LearningHubSectionI
 
                 <div className="bg-green-50 rounded-xl p-6 border border-green-200">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <Zap className="h-5 w-5 text-green-600" />
-                    Quick Tips for Success
-                  </h3>
+                    <Zap className="h-5 w-5 text-green-600" />{t('bloomsTaxonomyResearch.quickTipsForSuccess')}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {quickTips.map((tip, idx) => (
                       <div key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -194,7 +190,7 @@ export function BloomsTaxonomyResearchView({ item }: { item: LearningHubSectionI
           {activeSection === 'levels' && (
             <div className="space-y-6">
               <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">The Six Cognitive Levels</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('bloomsTaxonomyResearch.theSixCognitiveLevels')}</h2>
                 <div className="space-y-6">
                   {cognitiveLevels.map((level, idx) => (
                     <div
@@ -218,7 +214,7 @@ export function BloomsTaxonomyResearchView({ item }: { item: LearningHubSectionI
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-10">
                         <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                          <h4 className="text-sm font-semibold text-gray-900 mb-2">Example Verbs</h4>
+                          <h4 className="text-sm font-semibold text-gray-900 mb-2">{t('bloomsTaxonomyResearch.exampleVerbs')}</h4>
                           <div className="flex flex-wrap gap-2">
                             {level.exampleVerbs.map((verb, verbIdx) => (
                               <span
@@ -232,7 +228,7 @@ export function BloomsTaxonomyResearchView({ item }: { item: LearningHubSectionI
                         </div>
 
                         <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-                          <h4 className="text-sm font-semibold text-gray-900 mb-2">Classroom Examples</h4>
+                          <h4 className="text-sm font-semibold text-gray-900 mb-2">{t('bloomsTaxonomyResearch.classroomExamples')}</h4>
                           <ul className="space-y-1">
                             {level.classroomExamples.slice(0, 3).map((example, exIdx) => (
                               <li key={exIdx} className="text-xs text-gray-700 flex items-start gap-1">
@@ -244,7 +240,7 @@ export function BloomsTaxonomyResearchView({ item }: { item: LearningHubSectionI
                         </div>
 
                         <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
-                          <h4 className="text-sm font-semibold text-gray-900 mb-2">Assessment Ideas</h4>
+                          <h4 className="text-sm font-semibold text-gray-900 mb-2">{t('bloomsTaxonomyResearch.assessmentIdeas')}</h4>
                           <ul className="space-y-1">
                             {level.assessmentIdeas.map((idea, ideaIdx) => (
                               <li key={ideaIdx} className="text-xs text-gray-700 flex items-start gap-1">
@@ -256,7 +252,7 @@ export function BloomsTaxonomyResearchView({ item }: { item: LearningHubSectionI
                         </div>
 
                         <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
-                          <h4 className="text-sm font-semibold text-gray-900 mb-2">Modern Applications</h4>
+                          <h4 className="text-sm font-semibold text-gray-900 mb-2">{t('bloomsTaxonomyResearch.modernApplications')}</h4>
                           <ul className="space-y-1">
                             {level.modernApplications.map((app, appIdx) => (
                               <li key={appIdx} className="text-xs text-gray-700 flex items-start gap-1">
@@ -277,10 +273,10 @@ export function BloomsTaxonomyResearchView({ item }: { item: LearningHubSectionI
           {activeSection === 'applications' && (
             <div className="space-y-6">
               <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Practical Classroom Applications</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('bloomsTaxonomyResearch.practicalClassroomApplications')}</h2>
 
                 <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Lesson Planning Framework</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('bloomsTaxonomyResearch.lessonPlanningFramework')}</h3>
                   <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-200">
                     <ol className="space-y-3">
                       {body.applications.lessonPlanningSteps.map((step, idx) => (
@@ -296,7 +292,7 @@ export function BloomsTaxonomyResearchView({ item }: { item: LearningHubSectionI
                 </div>
 
                 <div className="mb-8">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Real Classroom Examples</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('bloomsTaxonomyResearch.realClassroomExamples')}</h3>
                   <div className="space-y-4">
                     {lessonExamples.map((example, idx) => (
                       <div key={idx} className="rounded-xl border-2 border-gray-200 bg-white p-6">
@@ -318,7 +314,7 @@ export function BloomsTaxonomyResearchView({ item }: { item: LearningHubSectionI
                         </div>
 
                         <div className="mb-4">
-                          <h5 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">Activities</h5>
+                          <h5 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">{t('bloomsTaxonomyResearch.activities')}</h5>
                           <ul className="space-y-2">
                             {example.activities.map((activity, actIdx) => (
                               <li key={actIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -330,7 +326,7 @@ export function BloomsTaxonomyResearchView({ item }: { item: LearningHubSectionI
                         </div>
 
                         <div className="bg-indigo-50 rounded-lg p-4 border border-indigo-200">
-                          <h5 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-1">Assessment</h5>
+                          <h5 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-1">{t('bloomsTaxonomyResearch.assessment')}</h5>
                           <p className="text-sm text-gray-700">{example.assessment}</p>
                         </div>
                       </div>
@@ -340,9 +336,7 @@ export function BloomsTaxonomyResearchView({ item }: { item: LearningHubSectionI
 
                 <div className="bg-green-50 rounded-xl p-6 border border-green-200">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <Target className="h-5 w-5 text-green-600" />
-                    Differentiation Strategies
-                  </h3>
+                    <Target className="h-5 w-5 text-green-600" />{t('bloomsTaxonomyResearch.differentiationStrategies')}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {body.applications.differentiationStrategies.map((item, idx) => (
                       <div key={idx} className="bg-white rounded-lg p-4 border border-green-200">
@@ -363,7 +357,7 @@ export function BloomsTaxonomyResearchView({ item }: { item: LearningHubSectionI
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Assessment Design with Bloom&apos;s Taxonomy</h2>
 
                 <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">The Golden Rule</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('bloomsTaxonomyResearch.theGoldenRule')}</h3>
                   <div className="bg-amber-50 rounded-xl p-6 border-2 border-amber-300">
                     <p className="text-base font-semibold text-gray-900 mb-2">{body.assessment.goldenRuleLead}</p>
                     <p className="text-sm text-gray-700">{body.assessment.goldenRuleSupport}</p>
@@ -371,7 +365,7 @@ export function BloomsTaxonomyResearchView({ item }: { item: LearningHubSectionI
                 </div>
 
                 <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Question Stems by Level</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('bloomsTaxonomyResearch.questionStemsByLevel')}</h3>
                   <div className="space-y-4">
                     {cognitiveLevels.map((level, idx) => (
                       <div key={idx} className="rounded-lg border border-gray-200 bg-gray-50 p-5">
@@ -393,7 +387,7 @@ export function BloomsTaxonomyResearchView({ item }: { item: LearningHubSectionI
                 </div>
 
                 <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Assessment Alignment Checklist</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('bloomsTaxonomyResearch.assessmentAlignmentChecklist')}</h3>
                   <ul className="space-y-2">
                     {body.assessment.checklist.map((checkItem, idx) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -419,9 +413,9 @@ export function BloomsTaxonomyResearchView({ item }: { item: LearningHubSectionI
                     {body.modern.digitalLevels.map((row, idx) => (
                       <div key={idx} className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-lg p-4 border border-purple-200">
                         <h4 className="text-sm font-semibold text-gray-900 mb-2">{row.level}</h4>
-                        <p className="text-xs text-gray-600 mb-1">Digital Skills:</p>
+                        <p className="text-xs text-gray-600 mb-1">{t('bloomsTaxonomyResearch.digitalSkills')}</p>
                         <p className="text-sm text-gray-700 mb-2">{row.digital}</p>
-                        <p className="text-xs text-gray-600 mb-1">Tools:</p>
+                        <p className="text-xs text-gray-600 mb-1">{t('bloomsTaxonomyResearch.tools')}</p>
                         <p className="text-sm text-gray-700">{row.tools}</p>
                       </div>
                     ))}
@@ -429,7 +423,7 @@ export function BloomsTaxonomyResearchView({ item }: { item: LearningHubSectionI
                 </div>
 
                 <div className="bg-green-50 rounded-xl p-6 border border-green-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Integrating Technology</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('bloomsTaxonomyResearch.integratingTechnology')}</h3>
                   <div className="space-y-3">
                     {body.modern.integrationTips.map((tip, idx) => (
                       <div key={idx} className="flex items-start gap-2 text-sm text-gray-700">

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import {
@@ -32,17 +33,6 @@ import { HistoryCard } from './history/HistoryCard'
 import { HistoryDetailPanel } from './history/HistoryDetailPanel'
 import { DELETE_PATH_MAP, getItemRoute } from './history/historyRouting'
 
-const SOURCE_LABELS: Record<HistorySourceType, string> = {
-  quiz: 'Quiz',
-  assignment: 'Assignment',
-  worksheet: 'Worksheet',
-  exam: 'Exam',
-  chatbot_conversation: 'Chatbot',
-  pixgen_generation: 'PixGen',
-  youtube_quiz: 'YouTube Quiz',
-  template_execution: 'Template',
-}
-
 const ALL_SOURCE_TYPES: HistorySourceType[] = [
   'quiz',
   'assignment',
@@ -56,6 +46,17 @@ const ALL_SOURCE_TYPES: HistorySourceType[] = [
 
 const PAGE_SIZE = 20
 const CHATBOT_GROUP_WINDOW_MS = 30 * 60 * 1000
+
+type DateRangePreset = 'all' | 'today' | 'thisWeek' | 'last30Days' | 'thisMonth' | 'custom'
+
+const DATE_RANGE_PRESETS: DateRangePreset[] = [
+  'all',
+  'today',
+  'thisWeek',
+  'last30Days',
+  'thisMonth',
+  'custom',
+]
 
 type GroupedHistoryItem = HistoryItem & {
   __collapsedIds?: string[]
@@ -107,9 +108,14 @@ function collapseChatbotHistoryItems(items: HistoryItem[]): GroupedHistoryItem[]
 }
 
 const History = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { toast } = useSnackbar()
+
+  const sourceLabel = (type: HistorySourceType) => t(`history.sourceTypes.${type}`)
+
+  const dateRangeLabel = (preset: DateRangePreset) => t(`history.dateRange.${preset}`)
 
   const [selectedItem, setSelectedItem] = useState<HistoryItem | null>(null)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
@@ -117,7 +123,7 @@ const History = () => {
   const [selectedSourceTypes, setSelectedSourceTypes] = useState<HistorySourceType[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
-  const [dateRangePreset, setDateRangePreset] = useState<string>('All')
+  const [dateRangePreset, setDateRangePreset] = useState<DateRangePreset>('all')
   const [customStartDate, setCustomStartDate] = useState<string>('')
   const [customEndDate, setCustomEndDate] = useState<string>('')
   const [page, setPage] = useState(1)
@@ -150,15 +156,15 @@ const History = () => {
     thirtyDaysAgo.setHours(0, 0, 0, 0)
 
     switch (dateRangePreset) {
-      case 'Today':
+      case 'today':
         return startOfToday.toISOString()
-      case 'This week':
+      case 'thisWeek':
         return startOfWeek.toISOString()
-      case 'Last 30 days':
+      case 'last30Days':
         return thirtyDaysAgo.toISOString()
-      case 'This month':
+      case 'thisMonth':
         return startOfMonth.toISOString()
-      case 'Custom':
+      case 'custom':
         return customStartDate ? new Date(customStartDate).toISOString() : undefined
       default:
         return undefined
@@ -166,10 +172,10 @@ const History = () => {
   }, [customStartDate, dateRangePreset])
 
   const computedDateTo = useMemo(() => {
-    if (dateRangePreset === 'Custom') {
+    if (dateRangePreset === 'custom') {
       return customEndDate ? new Date(customEndDate).toISOString() : undefined
     }
-    if (dateRangePreset === 'All') return undefined
+    if (dateRangePreset === 'all') return undefined
     return new Date().toISOString()
   }, [customEndDate, dateRangePreset])
 
@@ -288,16 +294,16 @@ const History = () => {
       setBulkDeleteOpen(false)
       setSelectedItem(null)
       invalidateHistory()
-      toast.success(`${n} items deleted`)
+      toast.success(t('history.itemsDeleted', { count: n }))
     } catch {
-      toast.error('Some items could not be deleted')
+      toast.error(t('history.someItemsCouldNotBeDeleted'))
     } finally {
       setBulkDeletePending(false)
     }
   }
 
   const isFiltered =
-    selectedSourceTypes.length > 0 || Boolean(debouncedSearch) || dateRangePreset !== 'All'
+    selectedSourceTypes.length > 0 || Boolean(debouncedSearch) || dateRangePreset !== 'all'
 
   async function handleClearHistory() {
     setClearPending(true)
@@ -313,9 +319,9 @@ const History = () => {
       clearSelection()
       setSelectedItem(null)
       invalidateHistory()
-      toast.success('History cleared')
+      toast.success(t('history.historyCleared'))
     } catch {
-      toast.error('Could not clear history')
+      toast.error(t('history.couldNotClearHistory'))
     } finally {
       setClearPending(false)
     }
@@ -331,23 +337,23 @@ const History = () => {
         <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-2xl space-y-4">
             <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-white/90">
-              <HistoryIcon className="h-4 w-4" /> Your Teaching Archive
+              <HistoryIcon className="h-4 w-4" /> {t('history.yourTeachingArchive')}
             </div>
-            <h1 className="text-4xl font-semibold leading-tight">Everything you’ve created, all in one place</h1>
-            <p className="text-base text-white/80">Find, reuse, and improve your best teaching resources.</p>
+            <h1 className="text-4xl font-semibold leading-tight">{t('history.everythingYouVeCreatedAllInOnePlace')}</h1>
+            <p className="text-base text-white/80">{t('history.findReuseAndImproveYourBestTeachingResources')}</p>
           </div>
 
           <div className="grid w-full max-w-sm gap-4 rounded-2xl bg-white/10 p-6 backdrop-blur">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-white/70">Total items</span>
+              <span className="text-sm text-white/70">{t('history.totalItems')}</span>
               <span className="text-2xl font-semibold">{stats?.total ?? '—'}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-white/70">This week</span>
+              <span className="text-sm text-white/70">{t('history.thisWeek')}</span>
               <span className="text-2xl font-semibold">{stats?.thisWeek ?? '—'}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-white/70">Pinned</span>
+              <span className="text-sm text-white/70">{t('history.pinned')}</span>
               <span className="text-2xl font-semibold">{stats?.pinned ?? '—'}</span>
             </div>
           </div>
@@ -359,13 +365,13 @@ const History = () => {
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <AlertCircle className="h-5 w-5 text-amber-600" />
-              <p className="text-sm font-semibold text-amber-900">Storage usage</p>
+              <p className="text-sm font-semibold text-amber-900">{t('history.storageUsage')}</p>
             </div>
             <a
               href="/settings?tab=plan"
               className="rounded-full bg-amber-600 px-3 py-1 text-xs font-semibold text-white hover:bg-amber-500"
             >
-              Upgrade for more
+              {t('history.upgradeForMore')}
             </a>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -376,7 +382,7 @@ const History = () => {
               return (
                 <div key={u.sourceType}>
                   <div className="mb-1 flex justify-between text-xs text-gray-600">
-                    <span className="font-medium">{SOURCE_LABELS[u.sourceType]}</span>
+                    <span className="font-medium">{sourceLabel(u.sourceType)}</span>
                     <span>
                       {u.used} / {u.limit}
                     </span>
@@ -398,7 +404,7 @@ const History = () => {
               <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search your history…"
+                placeholder={t('history.searchYourHistory')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full rounded-2xl border-2 border-gray-200 bg-gray-50 py-3 pl-12 pr-4 text-sm font-medium text-gray-800 outline-none transition focus:border-blue-400 focus:bg-white"
@@ -413,26 +419,28 @@ const History = () => {
                   selectedSourceTypes.length === 0 ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'
                 }`}
               >
-                All
+                {t('common.all')}
               </button>
-              {ALL_SOURCE_TYPES.map((t) => (
+              {ALL_SOURCE_TYPES.map((sourceType) => (
                 <button
                   type="button"
-                  key={t}
+                  key={sourceType}
                   onClick={() =>
-                    setSelectedSourceTypes((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]))
+                    setSelectedSourceTypes((prev) =>
+                      prev.includes(sourceType) ? prev.filter((x) => x !== sourceType) : [...prev, sourceType],
+                    )
                   }
                   className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                    selectedSourceTypes.includes(t) ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'
+                    selectedSourceTypes.includes(sourceType) ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'
                   }`}
                 >
-                  {SOURCE_LABELS[t]}
+                  {sourceLabel(sourceType)}
                 </button>
               ))}
             </div>
 
             <div className="mt-4 flex flex-wrap items-center gap-2">
-              {['All', 'Today', 'This week', 'Last 30 days', 'This month', 'Custom'].map((p) => (
+              {DATE_RANGE_PRESETS.map((p) => (
                 <button
                   type="button"
                   key={p}
@@ -441,10 +449,10 @@ const History = () => {
                     dateRangePreset === p ? 'bg-slate-900 text-white' : 'bg-gray-100 text-gray-700'
                   }`}
                 >
-                  {p}
+                  {dateRangeLabel(p)}
                 </button>
               ))}
-              {dateRangePreset === 'Custom' && (
+              {dateRangePreset === 'custom' && (
                 <div className="flex items-center gap-2">
                   <input
                     type="date"
@@ -452,7 +460,7 @@ const History = () => {
                     onChange={(e) => setCustomStartDate(e.target.value)}
                     className="rounded-xl border border-gray-200 px-3 py-1 text-xs"
                   />
-                  <span className="text-xs text-gray-500">to</span>
+                  <span className="text-xs text-gray-500">{t('history.to')}</span>
                   <input
                     type="date"
                     value={customEndDate}
@@ -469,7 +477,7 @@ const History = () => {
                   type="button"
                   onClick={() => setViewMode('grid')}
                   className={`rounded-xl p-2 ${viewMode === 'grid' ? 'bg-primary-100 text-primary-700' : 'text-gray-400 hover:bg-gray-100'}`}
-                  aria-label="Grid view"
+                  aria-label={t('history.gridView')}
                 >
                   <LayoutGrid className="h-4 w-4" />
                 </button>
@@ -477,7 +485,7 @@ const History = () => {
                   type="button"
                   onClick={() => setViewMode('list')}
                   className={`rounded-xl p-2 ${viewMode === 'list' ? 'bg-primary-100 text-primary-700' : 'text-gray-400 hover:bg-gray-100'}`}
-                  aria-label="List view"
+                  aria-label={t('history.listView')}
                 >
                   <List className="h-4 w-4" />
                 </button>
@@ -491,7 +499,7 @@ const History = () => {
                       onChange={(e) => (e.target.checked ? selectAllOnPage() : clearSelection())}
                       className="h-3.5 w-3.5 rounded border-gray-300 text-primary-600"
                     />
-                    Select all
+                    {t('table.selectAll')}
                   </label>
                 )}
                 <button
@@ -500,7 +508,7 @@ const History = () => {
                   className="flex items-center gap-1.5 rounded-xl border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-500 transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
-                  Clear history
+                  {t('history.clearHistory')}
                 </button>
               </div>
             </div>
@@ -514,7 +522,7 @@ const History = () => {
               className="flex items-center gap-1.5 rounded-lg bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-500 disabled:opacity-50"
             >
               <Trash2 className="h-3.5 w-3.5" />
-              Delete {selectedIds.length} item{selectedIds.length !== 1 ? 's' : ''}
+              {t('history.deleteItems', { count: selectedIds.length })}
             </button>
           </TeacherToolsBulkActionBar>
 
@@ -527,7 +535,9 @@ const History = () => {
                 className="h-4 w-4 rounded border-gray-300 text-primary-600"
               />
               <span>
-                {selectedIds.length > 0 ? `${selectedIds.length} selected` : `${historyData?.total ?? 0} items`}
+                {selectedIds.length > 0
+                  ? t('history.selectedCount', { count: selectedIds.length })
+                  : t('history.itemsCount', { count: historyData?.total ?? 0 })}
               </span>
             </div>
           )}
@@ -542,9 +552,9 @@ const History = () => {
             ) : collapsedItems.length === 0 ? (
               <div className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-gray-200 py-16 text-center">
                 <Sparkles className="h-12 w-12 text-gray-300" />
-                <p className="mt-4 text-base font-semibold text-gray-500">Nothing here yet</p>
+                <p className="mt-4 text-base font-semibold text-gray-500">{t('history.nothingHereYet')}</p>
                 <p className="mt-2 max-w-sm text-sm text-gray-400">
-                  Your quizzes, assignments, chatbot sessions, images, and more will appear here.
+                  {t('history.yourQuizzesAssignmentsChatbotSessionsImagesAndMoreWillA')}
                 </p>
               </div>
             ) : (
@@ -580,11 +590,11 @@ const History = () => {
                     apiRequest(path, { method: 'DELETE' })
                       .then(() => {
                         invalidateHistory()
-                        toast.success('Deleted')
+                        toast.success(t('history.deleted'))
                       })
                       .catch(() => {
                         patch.undo()
-                        toast.error('Could not delete')
+                        toast.error(t('history.couldNotDelete'))
                       })
                   }}
                   onDuplicate={handleDuplicate}
@@ -597,23 +607,26 @@ const History = () => {
                       className="ml-6 text-left text-xs font-semibold text-gray-500 hover:text-gray-700"
                       onClick={(e) => {
                         e.stopPropagation()
-                        toast.info(`Collapsed ${item.__collapsedIds.length} earlier run${item.__collapsedIds.length === 1 ? '' : 's'}.`)
+                        toast.info(t('history.collapsedRuns', { count: item.__collapsedIds.length }))
                       }}
                     >
-                      Latest output · +{item.__collapsedIds.length} earlier
+                      {t('history.latestOutputEarlier', { count: item.__collapsedIds.length })}
                     </button>
                   )}
                 </div>
               ))
             )}
-            {isFetching && !isLoading && <div className="text-xs text-gray-500">Updating…</div>}
+            {isFetching && !isLoading && <div className="text-xs text-gray-500">{t('history.updating')}</div>}
           </div>
 
           {historyData && historyData.total > PAGE_SIZE && (
             <div className="flex items-center justify-between border-t border-gray-200 pt-4">
               <p className="text-sm text-gray-500">
-                Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, historyData.total)} of{' '}
-                {historyData.total}
+                {t('history.showingRange', {
+                  from: (page - 1) * PAGE_SIZE + 1,
+                  to: Math.min(page * PAGE_SIZE, historyData.total),
+                  total: historyData.total,
+                })}
               </p>
               <div className="flex gap-2">
                 <button
@@ -622,7 +635,7 @@ const History = () => {
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-semibold disabled:opacity-40"
                 >
-                  Previous
+                  {t('history.previous')}
                 </button>
                 <button
                   type="button"
@@ -630,7 +643,7 @@ const History = () => {
                   onClick={() => setPage((p) => p + 1)}
                   className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-semibold disabled:opacity-40"
                 >
-                  Next
+                  {t('history.next')}
                 </button>
               </div>
             </div>
@@ -655,26 +668,23 @@ const History = () => {
       <CustomModal
         open={bulkDeleteOpen}
         close={() => setBulkDeleteOpen(false)}
-        title={`Delete ${selectedIds.length} item${selectedIds.length !== 1 ? 's' : ''}?`}
-        primaryButtonText={`Delete ${selectedIds.length} item${selectedIds.length !== 1 ? 's' : ''}`}
+        title={t('history.deleteItemsTitle', { count: selectedIds.length })}
+        primaryButtonText={t('history.deleteItems', { count: selectedIds.length })}
         isDelete
         loading={bulkDeletePending}
         handleSave={handleBulkDelete}
       >
-        <p className="text-sm text-gray-600">
-          This will permanently delete the selected items. Items that are pinned will also be removed. This cannot be
-          undone.
-        </p>
+        <p className="text-sm text-gray-600">{t('history.thisWillPermanentlyDeleteTheSelectedItemsItemsThatAre')}</p>
       </CustomModal>
 
       <CustomModal
         open={clearHistoryOpen}
         close={() => setClearHistoryOpen(false)}
-        title={isFiltered ? 'Clear filtered items?' : 'Clear all history?'}
+        title={isFiltered ? t('history.clearFilteredTitle') : t('history.clearAllTitle')}
         primaryButtonText={
           isFiltered
-            ? `Delete ${historyData?.total ?? ''} filtered items`
-            : `Delete all ${stats?.total ?? ''} items`
+            ? t('history.deleteFilteredItems', { count: historyData?.total ?? 0 })
+            : t('history.deleteAllItems', { count: stats?.total ?? 0 })
         }
         isDelete
         loading={clearPending}
@@ -683,8 +693,8 @@ const History = () => {
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
             {isFiltered
-              ? `This will permanently delete the ${historyData?.total ?? ''} items matching your current filters.`
-              : `This will permanently delete all ${stats?.total ?? ''} items in your history.`}
+              ? t('history.clearFilteredBody', { count: historyData?.total ?? 0 })
+              : t('history.clearAllBody', { count: stats?.total ?? 0 })}
           </p>
           <label className="flex cursor-pointer items-center gap-2.5">
             <input
@@ -693,12 +703,11 @@ const History = () => {
               onChange={(e) => setKeepPinned(e.target.checked)}
               className="h-4 w-4 rounded border-gray-300 text-primary-600"
             />
-            <span className="text-sm font-medium text-gray-700">Keep pinned items</span>
+            <span className="text-sm font-medium text-gray-700">{t('history.keepPinnedItems')}</span>
           </label>
           {!isFiltered && (
             <p className="rounded-xl bg-red-50 px-4 py-3 text-xs text-red-700">
-              This action is irreversible. Your quizzes, assignments, chatbot conversations, and generated images will
-              be permanently deleted.
+              {t('history.thisActionIsIrreversibleYourQuizzesAssignmentsChatbotCo')}
             </p>
           )}
         </div>

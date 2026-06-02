@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Plus } from 'lucide-react'
 import {
@@ -24,6 +25,7 @@ import { CustomModal } from '../../../../components/shared/CustomModal'
 const tabs = ['All', 'Draft', 'Published', 'Scheduled', 'Archived'] as const
 
 export default function QuizList() {
+  const { t } = useTranslation()
   const { toast } = useSnackbar()
   const navigate = useNavigate()
   const location = useLocation()
@@ -106,11 +108,11 @@ export default function QuizList() {
     if (TEACHER_TOOLS_SEED_QUIZ_IDS.has(id)) {
       const r = await api.duplicateQuiz(id)
       if (r.ok && 'id' in r && r.id) {
-        toast.success('Created an editable copy from the sample library')
+        toast.success(t('teacherTools.toastEditableCopy'))
         navigate(`/teacher-tools/quiz/${r.id}/edit`)
         return
       }
-      toast.error('Could not create a copy')
+      toast.error(t('teacherTools.toastCopyFailed'))
       return
     }
     navigate(`/teacher-tools/quiz/${id}/edit`)
@@ -122,11 +124,11 @@ export default function QuizList() {
     try {
       const res = await api.deleteQuiz(deleteId)
       if (!res.ok) {
-        if (res.error === 'READ_ONLY') toast.error('Sample library items cannot be deleted.')
-        else toast.error('Could not delete quiz')
+        if (res.error === 'READ_ONLY') toast.error(t('teacherTools.toastReadOnlyDelete'))
+        else toast.error(t('quiz.toastDeleteFailed'))
         return
       }
-      toast.success('Quiz deleted')
+      toast.success(t('quiz.toastDeleted'))
       setDeleteId(null)
       bump()
     } finally {
@@ -137,9 +139,9 @@ export default function QuizList() {
   const runDuplicate = async (id: string) => {
     const r = await api.duplicateQuiz(id)
     if (r.ok && 'id' in r && r.id) {
-      toast.success('Quiz duplicated')
+      toast.success(t('quiz.toastDuplicated'))
       bump()
-    } else toast.error('Could not duplicate')
+    } else toast.error(t('teacherTools.toastDuplicateFailed'))
   }
 
   const confirmArchive = async () => {
@@ -148,11 +150,11 @@ export default function QuizList() {
     try {
       const res = await api.updateQuiz(archiveId, { status: 'archived' })
       if (!res.ok && res.error === 'READ_ONLY') {
-        toast.error('Sample items cannot be archived. Duplicate first.')
+        toast.error(t('teacherTools.toastReadOnlyArchive'))
         return
       }
       if (res.ok) {
-        toast.success('Quiz archived')
+        toast.success(t('quiz.toastArchived'))
         setArchiveId(null)
         bump()
       }
@@ -164,18 +166,18 @@ export default function QuizList() {
   return (
     <div className="space-y-6">
       <TeacherToolsPageHeader
-        title="Quizzes"
-        subtitle="Create and manage formative quizzes with scheduling, attempts, and analytics."
+        title={t('quiz.title')}
+        subtitle={t('quiz.listSubtitle')}
         breadcrumbs={[
-          { label: 'Teacher Tools', to: '/teacher-tools' },
-          { label: 'Quiz' },
+          { label: t('teacherTools.breadcrumbTeacherTools'), to: '/teacher-tools' },
+          { label: t('quiz.breadcrumb') },
         ]}
         actions={
           <Link
             to="/teacher-tools/quiz/create"
             className="inline-flex items-center gap-2 rounded-full bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-500"
           >
-            <Plus className="h-4 w-4" /> Create Quiz
+            <Plus className="h-4 w-4" /> {t('teacherTools.createQuiz')}
           </Link>
         }
       />
@@ -199,16 +201,16 @@ export default function QuizList() {
       {liveListUnavailable && <TeacherToolsListSyncHint kind="quizzes" onRetry={() => bump()} />}
 
       <div className="flex flex-wrap gap-2">
-        {tabs.map((t) => (
+        {tabs.map((tabItem) => (
           <button
-            key={t}
+            key={tabItem}
             type="button"
-            onClick={() => setTab(t)}
+            onClick={() => setTab(tabItem)}
             className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wide ${
-              tab === t ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              tab === tabItem ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            {t}
+            {t({ All: 'teacherTools.tabAll', Draft: 'teacherTools.tabDraft', Published: 'teacherTools.tabPublished', Scheduled: 'teacherTools.tabScheduled', Archived: 'teacherTools.tabArchived' }[tabItem])}
           </button>
         ))}
       </div>
@@ -224,7 +226,7 @@ export default function QuizList() {
               for (const id of selected) {
                 await api.duplicateQuiz(id)
               }
-              toast.success('Duplicated selected')
+              toast.success(t('teacherTools.toastBulkDuplicated'))
               setSelected([])
               bump()
             } finally {
@@ -232,62 +234,62 @@ export default function QuizList() {
             }
           }}
         >
-          {bulkPending ? 'Working…' : 'Duplicate selected'}
+          {bulkPending ? t('teacherTools.working') : t('teacherTools.duplicateSelected')}
         </button>
       </TeacherToolsBulkActionBar>
 
       <CustomModal
         open={Boolean(deleteId)}
         close={() => !deletePending && setDeleteId(null)}
-        title="Delete quiz?"
-        primaryButtonText="Delete"
+        title={t('quiz.deleteTitle')}
+        primaryButtonText={t('teacherTools.delete')}
         isDelete
         loading={deletePending}
         handleSave={confirmDelete}
       >
-        <p className="py-3 text-sm text-gray-600">This removes the quiz from your session. This cannot be undone.</p>
+        <p className="py-3 text-sm text-gray-600">{t('quiz.deleteBody')}</p>
       </CustomModal>
 
       <CustomModal
         open={Boolean(archiveId)}
         close={() => !archivePending && setArchiveId(null)}
-        title="Archive quiz?"
-        primaryButtonText="Archive"
+        title={t('quiz.archiveTitle')}
+        primaryButtonText={t('teacherTools.archive')}
         loading={archivePending}
         handleSave={() => void confirmArchive()}
       >
-        <p className="py-3 text-sm text-gray-600">Archived quizzes stay in your list under the Archived tab. You can duplicate or delete later.</p>
+        <p className="py-3 text-sm text-gray-600">{t('quiz.archiveBody')}</p>
       </CustomModal>
 
       {!listReady && !listError && <TableSkeletonRows />}
 
       {listError && (
         <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-800">
-          <p className="font-semibold">No quizzes to show</p>
+          <p className="font-semibold">{t('quiz.listErrorTitle')}</p>
           <p className="mt-1 text-red-700">{listError}</p>
           <button
             type="button"
             onClick={() => bump()}
             className="mt-4 rounded-full bg-primary-600 px-4 py-2 text-xs font-semibold text-white"
           >
-            Try again
+            {t('teacherTools.tryAgain')}
           </button>
         </div>
       )}
 
       {listReady && filtered.length === 0 && (
         <div className="rounded-2xl border border-gray-200 bg-white p-10 text-center text-sm text-gray-600">
-          No quizzes match your filters.{' '}
+          {t('quiz.emptyFilters')}{' '}
           <button
             type="button"
             className="font-semibold text-primary-600 hover:underline"
             onClick={() => setFilters({ q: '', subject: '', grade: '', classKey: '', status: '', dateFrom: '', dateTo: '' })}
           >
-            Clear filters
+            {t('teacherTools.clearFilters')}
           </button>
           {' · '}
           <Link to="/teacher-tools/quiz/create" className="font-semibold text-primary-600">
-            Create a quiz
+            {t('quiz.createLink')}
           </Link>
         </div>
       )}
@@ -300,7 +302,7 @@ export default function QuizList() {
                 <th className="px-3 py-3 text-left">
                   <input
                     type="checkbox"
-                    aria-label="Select all"
+                    aria-label={t('teacherTools.ariaSelectAll')}
                     onChange={(e) => {
                       if (e.target.checked) setSelected(filtered.map((q) => q.id))
                       else setSelected([])
@@ -308,13 +310,13 @@ export default function QuizList() {
                     checked={selected.length === filtered.length && filtered.length > 0}
                   />
                 </th>
-                <th className="px-3 py-3 text-left font-semibold text-gray-700">Title</th>
-                <th className="px-3 py-3 text-left font-semibold text-gray-700">Subject</th>
-                <th className="px-3 py-3 text-left font-semibold text-gray-700">Grade</th>
-                <th className="px-3 py-3 text-left font-semibold text-gray-700">Qs</th>
-                <th className="px-3 py-3 text-left font-semibold text-gray-700">Marks</th>
-                <th className="px-3 py-3 text-left font-semibold text-gray-700">Status</th>
-                <th className="px-3 py-3 text-left font-semibold text-gray-700">Avg</th>
+                <th className="px-3 py-3 text-left font-semibold text-gray-700">{t('teacherTools.title')}</th>
+                <th className="px-3 py-3 text-left font-semibold text-gray-700">{t('teacherTools.subject')}</th>
+                <th className="px-3 py-3 text-left font-semibold text-gray-700">{t('teacherTools.grade')}</th>
+                <th className="px-3 py-3 text-left font-semibold text-gray-700">{t('teacherTools.colQs')}</th>
+                <th className="px-3 py-3 text-left font-semibold text-gray-700">{t('teacherTools.marks')}</th>
+                <th className="px-3 py-3 text-left font-semibold text-gray-700">{t('teacherTools.status')}</th>
+                <th className="px-3 py-3 text-left font-semibold text-gray-700">{t('teacherTools.avg')}</th>
                 <th className="px-3 py-3" />
               </tr>
             </thead>
@@ -343,16 +345,16 @@ export default function QuizList() {
                   <td className="px-3 py-3 text-right">
                     <TeacherToolsActionMenu
                       actions={[
-                        { key: 'edit', label: 'Edit', onClick: () => void goEdit(q.id) },
-                        { key: 'dup', label: 'Duplicate', onClick: () => void runDuplicate(q.id) },
+                        { key: 'edit', label: t('teacherTools.edit'), onClick: () => void goEdit(q.id) },
+                        { key: 'dup', label: t('teacherTools.duplicate'), onClick: () => void runDuplicate(q.id) },
                         {
                           key: 'arch',
-                          label: 'Archive',
+                          label: t('teacherTools.archive'),
                           onClick: () => setArchiveId(q.id),
                         },
                         {
                           key: 'del',
-                          label: 'Delete',
+                          label: t('teacherTools.delete'),
                           onClick: () => setDeleteId(q.id),
                         },
                       ]}

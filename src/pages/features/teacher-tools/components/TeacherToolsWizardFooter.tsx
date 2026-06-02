@@ -1,4 +1,5 @@
 import { ArrowLeft, ArrowRight, Sparkles } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 interface Props {
   isFirstStep: boolean
@@ -28,14 +29,19 @@ export function TeacherToolsWizardFooter({
   onNext,
   onGenerate,
   generating = false,
-  generateLabel = 'Generate',
+  generateLabel,
   onShowExemplar,
-  showExemplarLabel = 'Show exemplar',
+  showExemplarLabel,
   onExitToList,
-  exitLabel = 'Back to list',
+  exitLabel,
   secondaryAction,
   hideStepActions = false,
 }: Props) {
+  const { t } = useTranslation()
+  const resolvedGenerateLabel = generateLabel ?? t('teacherTools.generate')
+  const resolvedShowExemplarLabel = showExemplarLabel ?? t('teacherTools.showExemplar')
+  const resolvedExitLabel = exitLabel ?? t('teacherTools.backToList')
+
   return (
     <div className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-wrap items-center gap-2">
@@ -46,7 +52,7 @@ export function TeacherToolsWizardFooter({
             className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm font-semibold text-primary-600 hover:bg-primary-50"
           >
             <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden />
-            {exitLabel}
+            {resolvedExitLabel}
           </button>
         )}
         {onExitToList && (secondaryAction || (!hideStepActions && !isFirstStep)) && (
@@ -68,7 +74,7 @@ export function TeacherToolsWizardFooter({
             className="inline-flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back
+            {t('teacherTools.back')}
           </button>
         )}
         {!hideStepActions && onShowExemplar && (
@@ -78,7 +84,7 @@ export function TeacherToolsWizardFooter({
             className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm font-semibold text-indigo-800 hover:bg-indigo-100"
           >
             <Sparkles className="h-4 w-4" />
-            {showExemplarLabel}
+            {resolvedShowExemplarLabel}
           </button>
         )}
       </div>
@@ -92,7 +98,7 @@ export function TeacherToolsWizardFooter({
               disabled={!canGoNext}
               className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Next
+              {t('teacherTools.next')}
               <ArrowRight className="h-4 w-4" />
             </button>
           )}
@@ -106,10 +112,10 @@ export function TeacherToolsWizardFooter({
               {generating ? (
                 <>
                   <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                  Generating…
+                  {t('teacherTools.generating')}
                 </>
               ) : (
-                generateLabel
+                resolvedGenerateLabel
               )}
             </button>
           )}

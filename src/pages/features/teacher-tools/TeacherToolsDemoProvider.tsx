@@ -1,4 +1,5 @@
 /* eslint-disable react-refresh/only-export-components -- session context + mock API hook */
+import i18n from 'i18next'
 import {
   createContext,
   useContext,
@@ -445,7 +446,7 @@ export function TeacherToolsDemoProvider({ children }: { children: ReactNode }) 
 export function useTeacherToolsDemo(): TeacherToolsDemoContextValue {
   const ctx = useContext(TeacherToolsDemoContext)
   if (!ctx) {
-    throw new Error('useTeacherToolsDemo must be used within TeacherToolsDemoProvider')
+    throw new Error(i18n.t('teacherTools.demo.hookError'))
   }
   return ctx
 }

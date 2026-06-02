@@ -29,6 +29,7 @@ import {
   Users,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template'
@@ -50,6 +51,7 @@ interface LearningContract {
 }
 
 const ContentDifferentiationModule = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -303,19 +305,13 @@ Interest-based learning taps into students' passions and curiosities while maint
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 2 of 6
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('contentDifferentiationModule.module2Of6')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    35 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('contentDifferentiationModule.k5Min')}</span>
                 </div>
-                <h1 className="text-3xl font-bold">Advanced Content Differentiation</h1>
-                <p className="mt-2 text-green-100">
-                  Learn sophisticated strategies for varying what students learn based on readiness, interests, and learning profiles
-                </p>
+                <h1 className="text-3xl font-bold">{t('contentDifferentiationModule.advancedContentDifferentiation')}</h1>
+                <p className="mt-2 text-green-100">{t('contentDifferentiationModule.learnSophisticatedStrategiesForVaryingWhatStudentsLearn')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm">
@@ -342,7 +338,7 @@ Interest-based learning taps into students' passions and curiosities while maint
         {/* Lessons Sidebar */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('contentDifferentiationModule.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isCompleted = completedLessons.includes(lesson.id)
@@ -386,7 +382,7 @@ Interest-based learning taps into students' passions and curiosities while maint
             </div>
             <div className="mt-6 pt-6 border-t border-gray-200">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-gray-600">Progress</span>
+                <span className="text-xs text-gray-600">{t('contentDifferentiationModule.progress')}</span>
                 <span className="text-xs font-semibold text-gray-900">{Math.round(moduleProgress)}%</span>
               </div>
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -409,7 +405,7 @@ Interest-based learning taps into students' passions and curiosities while maint
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Video className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Video Lesson</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('contentDifferentiationModule.videoLesson')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                   </div>
@@ -435,7 +431,7 @@ Interest-based learning taps into students' passions and curiosities while maint
                 </div>
 
                 <div className="bg-green-50 rounded-lg p-6 border border-green-200">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Key Points</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('contentDifferentiationModule.keyPoints')}</h3>
                   <ul className="space-y-2">
                     {currentLessonData.content.keyPoints?.map((point: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -453,14 +449,10 @@ Interest-based learning taps into students' passions and curiosities while maint
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('contentDifferentiationModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('contentDifferentiationModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -473,7 +465,7 @@ Interest-based learning taps into students' passions and curiosities while maint
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <BookOpen className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Reading</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('contentDifferentiationModule.reading')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                   </div>
@@ -495,7 +487,7 @@ Interest-based learning taps into students' passions and curiosities while maint
 
                 {currentLessonData.content.keyTakeaways && (
                   <div className="bg-green-50 rounded-lg p-6 border border-green-200">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-3">Key Takeaways</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('contentDifferentiationModule.keyTakeaways')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyTakeaways.map((takeaway: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -514,14 +506,10 @@ Interest-based learning taps into students' passions and curiosities while maint
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('contentDifferentiationModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('contentDifferentiationModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -534,7 +522,7 @@ Interest-based learning taps into students' passions and curiosities while maint
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Zap className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Interactive Tool</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('contentDifferentiationModule.interactiveTool')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                     <p className="mt-2 text-gray-600">{currentLessonData.content.description}</p>
@@ -545,7 +533,7 @@ Interest-based learning taps into students' passions and curiosities while maint
                 </div>
 
                 <div className="bg-green-50 rounded-lg p-6 border border-green-200 mb-6">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Design Steps</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('contentDifferentiationModule.designSteps')}</h3>
                   <ol className="space-y-2">
                     {currentLessonData.content.steps?.map((step: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -567,15 +555,13 @@ Interest-based learning taps into students' passions and curiosities while maint
                       type="text"
                       value={learningContract.studentName}
                       onChange={(e) => setLearningContract({ ...learningContract, studentName: e.target.value })}
-                      placeholder="Enter student name"
+                      placeholder={t('contentDifferentiationModule.enterStudentName')}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Learning Objective *
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">{t('contentDifferentiationModule.learningObjective')}</label>
                     <textarea
                       value={learningContract.learningObjective}
                       onChange={(e) => setLearningContract({ ...learningContract, learningObjective: e.target.value })}
@@ -595,15 +581,13 @@ Interest-based learning taps into students' passions and curiosities while maint
                         value={currentContentOption}
                         onChange={(e) => setCurrentContentOption(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleAddContentOption()}
-                        placeholder="Enter a content option"
+                        placeholder={t('contentDifferentiationModule.enterAContentOption')}
                         className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                       />
                       <button
                         onClick={handleAddContentOption}
                         className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-                      >
-                        Add
-                      </button>
+                      >{t('contentDifferentiationModule.add')}</button>
                     </div>
                     <div className="flex flex-wrap gap-2 mt-2">
                       {learningContract.contentOptions.map((option, idx) => (
@@ -629,50 +613,42 @@ Interest-based learning taps into students' passions and curiosities while maint
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Timeline
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">{t('contentDifferentiationModule.timeline')}</label>
                     <input
                       type="text"
                       value={learningContract.timeline}
                       onChange={(e) => setLearningContract({ ...learningContract, timeline: e.target.value })}
-                      placeholder="e.g., 2 weeks, due by March 15th"
+                      placeholder={t('contentDifferentiationModule.eG2WeeksDueByMarch15th')}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Assessment Method
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">{t('contentDifferentiationModule.assessmentMethod')}</label>
                     <textarea
                       value={learningContract.assessmentMethod}
                       onChange={(e) => setLearningContract({ ...learningContract, assessmentMethod: e.target.value })}
-                      placeholder="How will the student demonstrate learning?"
+                      placeholder={t('contentDifferentiationModule.howWillTheStudentDemonstrateLearning')}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                       rows={2}
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Resources
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">{t('contentDifferentiationModule.resources')}</label>
                     <div className="flex gap-2 mb-2">
                       <input
                         type="text"
                         value={currentResource}
                         onChange={(e) => setCurrentResource(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleAddResource()}
-                        placeholder="Enter a resource"
+                        placeholder={t('contentDifferentiationModule.enterAResource')}
                         className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                       />
                       <button
                         onClick={handleAddResource}
                         className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-                      >
-                        Add
-                      </button>
+                      >{t('contentDifferentiationModule.add')}</button>
                     </div>
                     <div className="flex flex-wrap gap-2 mt-2">
                       {learningContract.resources.map((resource, idx) => (
@@ -698,24 +674,20 @@ Interest-based learning taps into students' passions and curiosities while maint
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Checkpoints
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">{t('contentDifferentiationModule.checkpoints')}</label>
                     <div className="flex gap-2 mb-2">
                       <input
                         type="text"
                         value={currentCheckpoint}
                         onChange={(e) => setCurrentCheckpoint(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleAddCheckpoint()}
-                        placeholder="Enter a checkpoint"
+                        placeholder={t('contentDifferentiationModule.enterACheckpoint')}
                         className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                       />
                       <button
                         onClick={handleAddCheckpoint}
                         className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-                      >
-                        Add
-                      </button>
+                      >{t('contentDifferentiationModule.add')}</button>
                     </div>
                     <div className="space-y-2 mt-2">
                       {learningContract.checkpoints.map((checkpoint, idx) => (
@@ -744,9 +716,7 @@ Interest-based learning taps into students' passions and curiosities while maint
                     onClick={handleContractSubmit}
                     className="w-full px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
                   >
-                    <FileCheck className="h-5 w-5" />
-                    Save Learning Contract
-                  </button>
+                    <FileCheck className="h-5 w-5" />{t('contentDifferentiationModule.saveLearningContract')}</button>
                 </div>
 
                 <button
@@ -756,14 +726,10 @@ Interest-based learning taps into students' passions and curiosities while maint
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('contentDifferentiationModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('contentDifferentiationModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -776,7 +742,7 @@ Interest-based learning taps into students' passions and curiosities while maint
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <FileText className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Template</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('contentDifferentiationModule.template')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                     <p className="mt-2 text-gray-600">{currentLessonData.content.description}</p>
@@ -787,7 +753,7 @@ Interest-based learning taps into students' passions and curiosities while maint
                 </div>
 
                 <div className="bg-white rounded-lg p-6 border border-gray-200">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-4">Template Sections</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('contentDifferentiationModule.templateSections')}</h3>
                   <div className="space-y-3">
                     {currentLessonData.content.sections?.map((section: string, idx: number) => (
                       <div key={idx} className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
@@ -803,18 +769,18 @@ Interest-based learning taps into students' passions and curiosities while maint
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <button className="p-4 bg-green-50 border-2 border-green-200 rounded-lg hover:bg-green-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-green-600" />
-                    <span className="text-sm font-semibold text-gray-900">Elementary Template</span>
-                    <span className="text-xs text-gray-600">Grades K-5</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('contentDifferentiationModule.elementaryTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('contentDifferentiationModule.gradesK5')}</span>
                   </button>
                   <button className="p-4 bg-green-50 border-2 border-green-200 rounded-lg hover:bg-green-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-green-600" />
-                    <span className="text-sm font-semibold text-gray-900">Middle School Template</span>
-                    <span className="text-xs text-gray-600">Grades 6-8</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('contentDifferentiationModule.middleSchoolTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('contentDifferentiationModule.grades68')}</span>
                   </button>
                   <button className="p-4 bg-green-50 border-2 border-green-200 rounded-lg hover:bg-green-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-green-600" />
-                    <span className="text-sm font-semibold text-gray-900">High School Template</span>
-                    <span className="text-xs text-gray-600">Grades 9-12</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('contentDifferentiationModule.highSchoolTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('contentDifferentiationModule.grades912')}</span>
                   </button>
                 </div>
 
@@ -825,14 +791,10 @@ Interest-based learning taps into students' passions and curiosities while maint
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('contentDifferentiationModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('contentDifferentiationModule.markAsComplete')}</>
                   )}
                 </button>
               </div>

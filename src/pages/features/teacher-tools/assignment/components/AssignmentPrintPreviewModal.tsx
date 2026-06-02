@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation, type TFunction } from 'react-i18next'
 import { Printer, X } from 'lucide-react'
 import type { AssignmentBriefTopicStub } from '../../demo/generationFromSources'
 import {
@@ -32,13 +33,23 @@ function esc(s: string): string {
 function buildAssignmentPrintHtml(
   meta: AssignmentPrintMeta,
   topics: AssignmentBriefTopicStub[],
-  layout: HandoutLayoutOpts = DEFAULT_HANDOUT_LAYOUT,
+  layout: HandoutLayoutOpts,
+  t: TFunction,
 ): string {
   const due = formatAssignmentDueDate(meta.dueAt)
-  const subLine = [meta.subject, meta.grade, `Due ${due}`, meta.assignmentType].map(esc).join(' · ')
-  const topicLine = meta.topic?.trim() ? `<p><strong>Focus:</strong> ${esc(meta.topic)}</p>` : ''
+  const subLine = [
+    meta.subject,
+    meta.grade,
+    t('assignment.printPreview.dueInline', { date: due }),
+    meta.assignmentType,
+  ]
+    .map(esc)
+    .join(' · ')
+  const topicLine = meta.topic?.trim()
+    ? `<p><strong>${esc(t('assignment.printPreview.focus'))}</strong> ${esc(meta.topic)}</p>`
+    : ''
   const srcLine = meta.sourceSummaryLine?.trim()
-    ? `<p><strong>Materials:</strong> ${esc(meta.sourceSummaryLine)}</p>`
+    ? `<p><strong>${esc(t('quiz.printPreview.materials'))}</strong> ${esc(meta.sourceSummaryLine)}</p>`
     : ''
 
   const topicsHtml = topics
@@ -71,9 +82,9 @@ function buildAssignmentPrintHtml(
 </style></head><body>
   <h1>${esc(meta.title)}</h1>
   <div class="sub"><p>${subLine}</p>${topicLine}${srcLine}</div>
-  <div class="instr"><strong>Instructions for students</strong><br/>${esc(meta.studentInstructions || '—')}</div>
-  <p class="meta-row">Name: ________________________________ &nbsp;&nbsp; Date: ________________</p>
-  ${topicsHtml || '<p class="sub">No brief sections to display.</p>'}
+  <div class="instr"><strong>${esc(t('quiz.printPreview.instructionsForStudents'))}</strong><br/>${esc(meta.studentInstructions || '—')}</div>
+  <p class="meta-row">${esc(t('assignment.printPreview.nameDateRow'))}</p>
+  ${topicsHtml || `<p class="sub">${esc(t('assignment.printPreview.noBriefSections'))}</p>`}
 </body></html>`
 }
 
@@ -87,6 +98,7 @@ type Props = {
 }
 
 export function AssignmentPrintPreviewModal({ open, onClose, meta, topics, savedLayout, onSaveLayout }: Props) {
+  const { t } = useTranslation()
   const [draftLayout, setDraftLayout] = useState<HandoutLayoutOpts>(savedLayout)
 
   useEffect(() => {
@@ -94,7 +106,7 @@ export function AssignmentPrintPreviewModal({ open, onClose, meta, topics, saved
   }, [open, savedLayout])
 
   const handlePrint = useCallback(() => {
-    const html = buildAssignmentPrintHtml(meta, topics, draftLayout)
+    const html = buildAssignmentPrintHtml(meta, topics, draftLayout, t)
     const iframe = document.createElement('iframe')
     iframe.setAttribute('style', 'position:fixed;right:0;bottom:0;width:0;height:0;border:0')
     document.body.appendChild(iframe)
@@ -112,7 +124,7 @@ export function AssignmentPrintPreviewModal({ open, onClose, meta, topics, saved
     setTimeout(() => {
       document.body.removeChild(iframe)
     }, 500)
-  }, [meta, topics, draftLayout])
+  }, [meta, topics, draftLayout, t])
 
   const handleSaveAndClose = () => {
     onSaveLayout(draftLayout)
@@ -125,16 +137,13 @@ export function AssignmentPrintPreviewModal({ open, onClose, meta, topics, saved
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <button type="button" className="absolute inset-0 bg-black/50" aria-label="Close preview" onClick={onClose} />
+      <button type="button" className="absolute inset-0 bg-black/50" aria-label={t('teacherTools.ariaClosePreview')} onClick={onClose} />
       <div className="relative flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-gray-200 bg-gray-100 shadow-2xl">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 bg-white px-5 py-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-600">Print preview</p>
-            <h2 className="text-lg font-semibold text-gray-900">Assignment — student handout</h2>
-            <p className="mt-0.5 max-w-xl text-xs text-gray-600">
-              Preview matches PDF export: assignment brief only (no quiz-style sections). Adjust spacing below, then save
-              so Export PDF uses the same layout.
-            </p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-600">{t('quiz.printPreview.kicker')}</p>
+            <h2 className="text-lg font-semibold text-gray-900">{t('assignment.printPreview.title')}</h2>
+            <p className="mt-0.5 max-w-xl text-xs text-gray-600">{t('assignment.printPreview.hint')}</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <button
@@ -143,14 +152,14 @@ export function AssignmentPrintPreviewModal({ open, onClose, meta, topics, saved
               className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-50"
             >
               <Printer className="h-4 w-4" />
-              Print (current preview)
+              {t('quiz.printPreview.printCurrent')}
             </button>
             <button
               type="button"
               onClick={handleSaveAndClose}
               className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500"
             >
-              Save layout and close
+              {t('quiz.printPreview.saveLayoutClose')}
             </button>
             <button
               type="button"
@@ -158,15 +167,15 @@ export function AssignmentPrintPreviewModal({ open, onClose, meta, topics, saved
               className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50"
             >
               <X className="h-4 w-4" />
-              Close
+              {t('teacherTools.close')}
             </button>
           </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-3 border-b border-slate-200 bg-slate-50/80 px-5 py-2.5">
-          <span className="text-xs font-semibold uppercase tracking-wide text-slate-700">Document layout</span>
+          <span className="text-xs font-semibold uppercase tracking-wide text-slate-700">{t('assignment.printPreview.documentLayout')}</span>
           <label className="flex items-center gap-1.5 text-xs text-gray-800">
-            <span className="text-gray-600">Line height</span>
+            <span className="text-gray-600">{t('quiz.printPreview.lineHeight')}</span>
             <select
               value={draftLayout.bodyLineHeight}
               onChange={(e) =>
@@ -185,7 +194,7 @@ export function AssignmentPrintPreviewModal({ open, onClose, meta, topics, saved
             </select>
           </label>
           <label className="flex items-center gap-1.5 text-xs text-gray-800">
-            <span className="text-gray-600">Space after each topic</span>
+            <span className="text-gray-600">{t('assignment.printPreview.spaceAfterTopic')}</span>
             <select
               value={draftLayout.questionGapPx}
               onChange={(e) =>
@@ -204,7 +213,7 @@ export function AssignmentPrintPreviewModal({ open, onClose, meta, topics, saved
             </select>
           </label>
           <label className="flex items-center gap-1.5 text-xs text-gray-800">
-            <span className="text-gray-600">Space between brief lines</span>
+            <span className="text-gray-600">{t('assignment.printPreview.spaceBetweenBriefLines')}</span>
             <select
               value={draftLayout.ruledLineSpacingPx}
               onChange={(e) =>
@@ -232,17 +241,28 @@ export function AssignmentPrintPreviewModal({ open, onClose, meta, topics, saved
             <h1 className="font-sans text-2xl font-bold tracking-tight text-slate-900">{meta.title}</h1>
             <div className="mt-3 font-sans text-xs leading-relaxed text-slate-600">
               <p>
-                {meta.subject} · {meta.grade} · Due {dueLabel} · {meta.assignmentType}
+                {meta.subject} · {meta.grade} · {t('assignment.printPreview.dueInline', { date: dueLabel })} ·{' '}
+                {meta.assignmentType}
               </p>
-              {meta.topic ? <p className="mt-1.5">Focus: {meta.topic}</p> : null}
-              {meta.sourceSummaryLine ? <p className="mt-1.5">Materials: {meta.sourceSummaryLine}</p> : null}
+              {meta.topic ? (
+                <p className="mt-1.5">
+                  {t('assignment.printPreview.focus')} {meta.topic}
+                </p>
+              ) : null}
+              {meta.sourceSummaryLine ? (
+                <p className="mt-1.5">
+                  {t('quiz.printPreview.materials')} {meta.sourceSummaryLine}
+                </p>
+              ) : null}
             </div>
             <div className="mt-6 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 font-sans text-xs leading-relaxed text-slate-800">
-              <span className="font-semibold text-slate-900">Instructions for students</span>
+              <span className="font-semibold text-slate-900">{t('quiz.printPreview.instructionsForStudents')}</span>
               <span className="mt-1 block whitespace-pre-wrap">{meta.studentInstructions || '—'}</span>
             </div>
             <p className="mt-6 font-sans text-[11px] text-slate-500">
-              Name: <span className="inline-block min-w-[12rem] border-b border-slate-300" /> &nbsp;&nbsp; Date:{' '}
+              {t('assignment.printPreview.nameLabel')}{' '}
+              <span className="inline-block min-w-[12rem] border-b border-slate-300" /> &nbsp;&nbsp;{' '}
+              {t('assignment.printPreview.dateLabel')}{' '}
               <span className="inline-block w-24 border-b border-slate-300" />
             </p>
 

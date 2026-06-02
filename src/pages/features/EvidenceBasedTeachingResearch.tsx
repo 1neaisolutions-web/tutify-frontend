@@ -22,6 +22,7 @@ import {
   Minus,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 const SLUG = 'evidence-based-teaching'
 
 const sidebarIcons = {
@@ -45,6 +46,7 @@ function EffectSizeGlyph({ effectSize }: { effectSize: number }) {
 }
 
 export function EvidenceBasedTeachingResearchView({ item }: { item: LearningHubSectionItem }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const c = item.researchInsightContent
   const body = (c?.payload ?? null) as EvidenceBasedTeachingBody | null
@@ -93,11 +95,11 @@ export function EvidenceBasedTeachingResearchView({ item }: { item: LearningHubS
                 </div>
                 <p className="text-gray-700 mb-4">{strategy.description}</p>
                 <div className={`bg-white rounded-lg p-4 border mb-4 ${innerBorder}`}>
-                  <p className="text-sm font-semibold text-gray-900 mb-2">Research Evidence:</p>
+                  <p className="text-sm font-semibold text-gray-900 mb-2">{t('evidenceBasedTeachingResearch.researchEvidence')}</p>
                   <p className="text-sm text-gray-700">{strategy.researchEvidence}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-900 mb-2">Practical Applications:</p>
+                  <p className="text-sm font-semibold text-gray-900 mb-2">{t('evidenceBasedTeachingResearch.practicalApplications')}</p>
                   <ul className="space-y-2">
                     {strategy.practicalApplications.map((app, appIdx) => (
                       <li key={appIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -130,9 +132,7 @@ export function EvidenceBasedTeachingResearchView({ item }: { item: LearningHubS
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Research Insight
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('evidenceBasedTeachingResearch.researchInsight')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm">{c.heroSubtitle}</span>
                   <span className="text-white/80">•</span>
@@ -174,7 +174,7 @@ export function EvidenceBasedTeachingResearchView({ item }: { item: LearningHubS
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Sections</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('evidenceBasedTeachingResearch.sections')}</h3>
             <div className="space-y-1">
               {body.sidebarNav.map((section) => {
                 const Icon = sidebarIcons[section.icon]
@@ -221,7 +221,7 @@ export function EvidenceBasedTeachingResearchView({ item }: { item: LearningHubS
                     </div>
                   </div>
                   <div className="bg-purple-50 rounded-xl p-6 border border-purple-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Findings</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('evidenceBasedTeachingResearch.keyFindings')}</h3>
                     <ul className="space-y-2">
                       {body.overview.keyFindings.map((finding, i) => (
                         <li key={i} className="flex items-start gap-2 text-gray-700">
@@ -272,7 +272,7 @@ export function EvidenceBasedTeachingResearchView({ item }: { item: LearningHubS
                   <p className="text-gray-700 mb-6">{body.implementation.lead}</p>
 
                   <div className="bg-blue-50 rounded-xl p-6 border border-blue-200 mb-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Key Principles for Implementation</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('evidenceBasedTeachingResearch.keyPrinciplesForImplementation')}</h3>
                     <div className="space-y-4">
                       {body.implementation.principles.map((principle) => (
                         <div key={principle.title} className="bg-white rounded-lg p-4 border border-blue-100">
@@ -284,7 +284,7 @@ export function EvidenceBasedTeachingResearchView({ item }: { item: LearningHubS
                   </div>
 
                   <div className="bg-purple-50 rounded-xl p-6 border border-purple-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Action Steps</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('evidenceBasedTeachingResearch.quickActionSteps')}</h3>
                     <ol className="space-y-3">
                       {body.implementation.actionSteps.map((step, idx) => (
                         <li key={idx} className="flex items-start gap-3 text-gray-700">

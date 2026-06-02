@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo, useState } from 'react';
 
 const STORAGE_KEY = 'tutify_student_study_plan_v1';
@@ -13,6 +14,7 @@ const defaultPlan = () => [
 ];
 
 const StudyPlan = () => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [plan, setPlan] = useState(() => {
     try {
@@ -48,7 +50,7 @@ const StudyPlan = () => {
     <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Study Plan</h1>
+          <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.studyPlan.title')}</h1>
           <p className="text-sm text-gray-600 dark:text-gray-300">{flatCount} blocks this week • demo AI regeneration</p>
         </div>
         <button

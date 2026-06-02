@@ -9,8 +9,10 @@ import { isEmpty, isError, validateEmail, validatePassword } from '../../../util
 import { teacherSignup, studentSignup, parentSignup } from '../../../redux/features/auth/authSlice';
 import { useSnackbar } from '../../../hooks/useSnackbar';
 import { CustomButton, CustomInput } from '../../../components/shared';
+import { useTranslation } from 'react-i18next';
 
 export const SignUp = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { toast } = useSnackbar();
@@ -52,35 +54,35 @@ export const SignUp = () => {
     let newErrors = {};
 
     // Basic validation
-    if (!formData.first_name) newErrors.first_name = 'First name is required';
-    if (!formData.last_name) newErrors.last_name = 'Last name is required';
-    if (!validateEmail(formData?.email)) newErrors.email = 'Invalid Email';
-    if (!formData.password) newErrors.password = 'Password is required';
+    if (!formData.first_name) newErrors.first_name = t('signup.validation.firstNameRequired');
+    if (!formData.last_name) newErrors.last_name = t('signup.validation.lastNameRequired');
+    if (!validateEmail(formData?.email)) newErrors.email = t('signup.validation.emailInvalid');
+    if (!formData.password) newErrors.password = t('signup.validation.passwordRequired');
     
     // Password strength validation
     const passwordValidation = validatePassword(formData.password);
     if (!passwordValidation.length) {
-      newErrors.password = 'Password must be at least 10 characters';
+      newErrors.password = t('signup.validation.passwordMinLength');
     } else if (!passwordValidation.upper || !passwordValidation.lower || !passwordValidation.number || !passwordValidation.specialChar) {
-      newErrors.password = 'Password must contain uppercase, lowercase, number, and special character';
+      newErrors.password = t('signup.validation.passwordComplexity');
     }
 
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = t('signup.validation.passwordMismatch');
     }
 
     // Role-specific validation
     // School code is only required for school accounts (not individual accounts)
     if (!isIndividualAccount) {
       if (selectedRole === 'teacher' && !formData.school_code) {
-        newErrors.school_code = 'School code is required for school accounts';
+        newErrors.school_code = t('signup.validation.schoolCodeRequired');
       }
       if (selectedRole === 'student' && !formData.school_code) {
-        newErrors.school_code = 'School code is required for school accounts';
+        newErrors.school_code = t('signup.validation.schoolCodeRequired');
       }
     }
     if (selectedRole === 'parent' && !formData.student_code) {
-      newErrors.student_code = 'Student code is required';
+      newErrors.student_code = t('signup.validation.studentCodeRequired');
     }
 
     if (isError(newErrors)) {
@@ -120,15 +122,15 @@ export const SignUp = () => {
 
       if (result?.meta?.requestStatus === 'fulfilled') {
         setLoading(false);
-        toast.success('Account created successfully! Please check your email for verification.');
+        toast.success(t('snackbar.signup.success'));
         navigate('/login');
       } else {
         setLoading(false);
-        const errorMessage = result?.payload || 'Signup failed. Please try again.';
+        const errorMessage = result?.payload || t('signup.validation.signupFailed');
         // Check if user already exists - provide helpful message
         if (errorMessage.toLowerCase().includes('user already exists') || 
             errorMessage.toLowerCase().includes('already exists')) {
-          toast.error('This email is already registered. Please login instead or use a different email.');
+          toast.error(t('snackbar.signup.emailExists'));
         } else {
           toast.error(errorMessage);
         }
@@ -136,7 +138,7 @@ export const SignUp = () => {
     } catch (err) {
       setLoading(false);
       console.error('Signup failed:', err);
-      toast.error('An error occurred. Please try again.');
+      toast.error(t('snackbar.genericError'));
     }
   };
 
@@ -146,8 +148,8 @@ export const SignUp = () => {
         <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-full mb-4">
           <GraduationCap className="w-8 h-8 text-white" />
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h1>
-        <p className="text-gray-600">Join Teacher Assistant today</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('signup.title')}</h1>
+        <p className="text-gray-600">{t('signup.subtitle')}</p>
       </div>
 
       <div className="card">
@@ -155,7 +157,7 @@ export const SignUp = () => {
           {/* Role Selection */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              I am a
+              {t('signup.roleSelection.label')}
             </label>
             <div className="grid grid-cols-3 gap-3">
               {['teacher', 'student', 'parent'].map((role) => (
@@ -175,7 +177,7 @@ export const SignUp = () => {
                       : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                   }`}
                 >
-                  {role.charAt(0).toUpperCase() + role.slice(1)}
+                  {t(`signup.roles.${role}`)}
                 </button>
               ))}
             </div>
@@ -199,55 +201,55 @@ export const SignUp = () => {
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />
                 <span className="text-sm text-gray-700">
-                  Create individual account (without school)
+                  {t('signup.individualAccount.label')}
                 </span>
               </label>
               <p className="mt-1 text-xs text-gray-500 ml-6">
                 {isIndividualAccount 
-                  ? 'Your account will be created as an individual account without school association.'
-                  : 'Select a school to join by entering the school code below.'}
+                  ? t('signup.individualAccount.descriptionIndividual')
+                  : t('signup.individualAccount.descriptionSchool')}
               </p>
             </div>
           )}
 
           <CustomInput
-            label="First Name"
+            label={t('signup.fields.firstName')}
             name="first_name"
             type="text"
             value={formData.first_name}
             onChange={handleChange}
-            placeholder="John"
+            placeholder={t('signup.placeholders.firstName')}
             error={!!errors.first_name}
             errorMsg={errors.first_name}
             required
           />
 
           <CustomInput
-            label="Last Name"
+            label={t('signup.fields.lastName')}
             name="last_name"
             type="text"
             value={formData.last_name}
             onChange={handleChange}
-            placeholder="Doe"
+            placeholder={t('signup.placeholders.lastName')}
             error={!!errors.last_name}
             errorMsg={errors.last_name}
             required
           />
 
           <CustomInput
-            label="Email Address"
+            label={t('signup.fields.email')}
             name="email"
             type="email"
             value={formData.email}
             onChange={handleChange}
-            placeholder="you@example.com"
+            placeholder={t('login.emailPlaceholder')}
             error={!!errors.email}
             errorMsg={errors.email}
             required
           />
 
           <CustomInput
-            label="Phone (Optional)"
+            label={t('signup.fields.phoneOptional')}
             name="phone"
             type="text"
             value={formData.phone}
@@ -259,12 +261,12 @@ export const SignUp = () => {
 
           {selectedRole === 'teacher' && !isIndividualAccount && (
             <CustomInput
-              label="School Code"
+              label={t('signup.fields.schoolCode')}
               name="school_code"
               type="text"
               value={formData.school_code}
               onChange={handleChange}
-              placeholder="Enter school code"
+              placeholder={t('signup.fields.schoolCodePlaceholder')}
               error={!!errors.school_code}
               errorMsg={errors.school_code}
               required
@@ -274,28 +276,28 @@ export const SignUp = () => {
           {selectedRole === 'student' && !isIndividualAccount && (
             <>
               <CustomInput
-                label="School Code"
+                label={t('signup.fields.schoolCode')}
                 name="school_code"
                 type="text"
                 value={formData.school_code}
                 onChange={handleChange}
-                placeholder="Enter school code"
+                placeholder={t('signup.fields.schoolCodePlaceholder')}
                 error={!!errors.school_code}
                 errorMsg={errors.school_code}
                 required
               />
               <CustomInput
-                label="Student ID (Optional)"
+                label={t('signup.fields.studentId')}
                 name="student_id"
                 type="text"
                 value={formData.student_id}
                 onChange={handleChange}
-                placeholder="Enter student ID"
+                placeholder={t('signup.fields.studentIdPlaceholder')}
                 error={!!errors.student_id}
                 errorMsg={errors.student_id}
               />
               <CustomInput
-                label="Parent Email (Optional)"
+                label={t('signup.fields.parentEmail')}
                 name="parent_email"
                 type="email"
                 value={formData.parent_email}
@@ -309,12 +311,12 @@ export const SignUp = () => {
 
           {selectedRole === 'parent' && (
             <CustomInput
-              label="Student Code"
+              label={t('signup.fields.studentCode')}
               name="student_code"
               type="text"
               value={formData.student_code}
               onChange={handleChange}
-              placeholder="Enter student code"
+              placeholder={t('signup.fields.studentCodePlaceholder')}
               error={!!errors.student_code}
               errorMsg={errors.student_code}
               required
@@ -322,25 +324,25 @@ export const SignUp = () => {
           )}
 
           <CustomInput
-            label="Password"
+            label={t('signup.fields.password')}
             name="password"
             type="password"
             value={formData.password}
             onChange={handleChange}
-            placeholder="••••••••"
+            placeholder={t('resetPassword.passwordPlaceholder')}
             error={!!errors.password}
             errorMsg={errors.password}
             required
           />
-          <p className="mt-1 text-xs text-gray-500">Must be at least 10 characters with uppercase, lowercase, number, and special character</p>
+          <p className="mt-1 text-xs text-gray-500">{t('signup.passwordHint')}</p>
 
           <CustomInput
-            label="Confirm Password"
+            label={t('signup.fields.confirmPassword')}
             name="confirmPassword"
             type="password"
             value={formData.confirmPassword}
             onChange={handleChange}
-            placeholder="••••••••"
+            placeholder={t('resetPassword.passwordPlaceholder')}
             error={!!errors.confirmPassword}
             errorMsg={errors.confirmPassword}
             required
@@ -351,19 +353,19 @@ export const SignUp = () => {
             disabled={loading}
             className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Creating account...' : 'Create Account'}
+            {loading ? t('signup.creatingAccount') : t('signup.createAccount')}
           </button>
         </form>
 
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
-            Already have an account?{' '}
+            {t('signup.entry.alreadyHaveAccount')}{' '}
             <button
               type="button"
               onClick={() => navigate('/login')}
               className="text-primary-600 hover:text-primary-700 font-medium"
             >
-              Sign in
+              {t('signup.entry.signIn')}
             </button>
           </p>
         </div>

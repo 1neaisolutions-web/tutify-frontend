@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Calculator, Sparkles, RefreshCw, Download } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 type ScenarioType = 'event' | 'business' | 'personal_finance' | 'trip' | 'school_project'
 type BudgetDifficulty = 'easy' | 'moderate' | 'advanced'
 type OutputFormat = 'structured_json' | 'teacher_text'
@@ -89,6 +90,7 @@ const sampleBudgetChallenge: BudgetChallengeOutput = {
 }
 
 const BudgetMasterChallenge = () => {
+  const { t } = useTranslation()
   const [inputs, setInputs] = useState<BudgetChallengeInputs>({
     grade: 8,
     scenario_type: 'school_project',
@@ -202,10 +204,8 @@ const BudgetMasterChallenge = () => {
             <Calculator className="w-6 h-6 text-primary-600" />
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold text-gray-900">Budget Master Challenge</h1>
-            <p className="text-sm text-gray-600 mt-0.5">
-              Design budget simulations that strengthen financial literacy and decision-making
-            </p>
+            <h1 className="text-xl font-bold text-gray-900">{t('budgetMasterChallenge.budgetMasterChallenge')}</h1>
+            <p className="text-sm text-gray-600 mt-0.5">{t('budgetMasterChallenge.designBudgetSimulationsThatStrengthenFinancialLiteracyA')}</p>
           </div>
         </div>
       </div>
@@ -215,13 +215,12 @@ const BudgetMasterChallenge = () => {
           <div className="card">
             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
               <Sparkles className="w-5 h-5 text-primary-600" />
-              <span>Challenge Inputs</span>
+              <span>{t('budgetMasterChallenge.challengeInputs')}</span>
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Grade <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('budgetMasterChallenge.grade2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -230,14 +229,13 @@ const BudgetMasterChallenge = () => {
                   value={inputs.grade}
                   onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
                   className="input-field"
-                  placeholder="Enter grade (1-12)"
+                  placeholder={t('common.gradePlaceholder')}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Scenario Type <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('budgetMasterChallenge.scenarioType')}<span className="text-red-500">*</span>
                 </label>
                 <select
                   value={inputs.scenario_type}
@@ -247,18 +245,17 @@ const BudgetMasterChallenge = () => {
                   className="input-field"
                   required
                 >
-                  <option value="">Select scenario type</option>
-                  <option value="event">Event</option>
-                  <option value="business">Business</option>
-                  <option value="personal_finance">Personal Finance</option>
-                  <option value="trip">Trip</option>
-                  <option value="school_project">School Project</option>
+                  <option value="">{t('budgetMasterChallenge.selectScenarioType')}</option>
+                  <option value="event">{t('budgetMasterChallenge.event')}</option>
+                  <option value="business">{t('budgetMasterChallenge.business')}</option>
+                  <option value="personal_finance">{t('budgetMasterChallenge.personalFinance')}</option>
+                  <option value="trip">{t('budgetMasterChallenge.trip')}</option>
+                  <option value="school_project">{t('budgetMasterChallenge.schoolProject')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Budget Limit <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('budgetMasterChallenge.budgetLimit2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -272,18 +269,18 @@ const BudgetMasterChallenge = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Currency</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('budgetMasterChallenge.currency')}</label>
                 <input
                   type="text"
                   value={inputs.currency}
                   onChange={(e) => handleInputChange('currency', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., USD"
+                  placeholder={t('budgetMasterChallenge.eGUsd')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Difficulty</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('budgetMasterChallenge.difficulty2')}</label>
                 <select
                   value={inputs.difficulty}
                   onChange={(e) =>
@@ -292,20 +289,20 @@ const BudgetMasterChallenge = () => {
                   className="input-field"
                 >
                   <option value="">Select difficulty (optional)</option>
-                  <option value="easy">Easy</option>
-                  <option value="moderate">Moderate</option>
-                  <option value="advanced">Advanced</option>
+                  <option value="easy">{t('budgetMasterChallenge.easy')}</option>
+                  <option value="moderate">{t('budgetMasterChallenge.moderate')}</option>
+                  <option value="advanced">{t('budgetMasterChallenge.advanced')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('budgetMasterChallenge.duration2')}</label>
                 <input
                   type="text"
                   value={inputs.duration}
                   onChange={(e) => handleInputChange('duration', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., PT40M"
+                  placeholder={t('budgetMasterChallenge.eGPt40m')}
                 />
               </div>
 
@@ -317,24 +314,22 @@ const BudgetMasterChallenge = () => {
                   onChange={(e) => handleInputChange('include_extensions', e.target.checked)}
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />
-                <label htmlFor="include-extensions" className="ml-2 text-sm text-gray-700">
-                  Include reflection and extension challenge
-                </label>
+                <label htmlFor="include-extensions" className="ml-2 text-sm text-gray-700">{t('budgetMasterChallenge.includeReflectionAndExtensionChallenge')}</label>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('budgetMasterChallenge.language2')}</label>
                 <input
                   type="text"
                   value={inputs.language}
                   onChange={(e) => handleInputChange('language', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., en-US"
+                  placeholder={t('budgetMasterChallenge.eGEnUs')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Output Format</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('budgetMasterChallenge.outputFormat')}</label>
                 <select
                   value={inputs.output_format}
                   onChange={(e) =>
@@ -346,8 +341,8 @@ const BudgetMasterChallenge = () => {
                   className="input-field"
                 >
                   <option value="">Select output format (optional)</option>
-                  <option value="teacher_text">Teacher Text</option>
-                  <option value="structured_json">Structured JSON</option>
+                  <option value="teacher_text">{t('budgetMasterChallenge.teacherText')}</option>
+                  <option value="structured_json">{t('budgetMasterChallenge.structuredJson')}</option>
                 </select>
               </div>
 
@@ -359,12 +354,12 @@ const BudgetMasterChallenge = () => {
                 {isGenerating ? (
                   <>
                     <RefreshCw className="w-5 h-5 animate-spin" />
-                    <span>Generating...</span>
+                    <span>{t('budgetMasterChallenge.generating')}</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-5 h-5" />
-                    <span>Generate Budget Challenge</span>
+                    <span>{t('budgetMasterChallenge.generateBudgetChallenge')}</span>
                   </>
                 )}
               </button>
@@ -376,18 +371,18 @@ const BudgetMasterChallenge = () => {
           {output ? (
             <div className="card">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Generated Challenge Plan</h2>
+                <h2 className="text-lg font-semibold text-gray-900">{t('budgetMasterChallenge.generatedChallengePlan')}</h2>
                 <div className="flex gap-2">
                   <button className="btn-secondary flex items-center space-x-2">
                     <Download className="w-4 h-4" />
-                    <span>Download</span>
+                    <span>{t('budgetMasterChallenge.download')}</span>
                   </button>
                   <button
                     onClick={() => setOutput(null)}
                     className="btn-secondary flex items-center space-x-2"
                   >
                     <RefreshCw className="w-4 h-4" />
-                    <span>Reset</span>
+                    <span>{t('budgetMasterChallenge.reset')}</span>
                   </button>
                 </div>
               </div>
@@ -397,27 +392,27 @@ const BudgetMasterChallenge = () => {
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">{output.title}</h3>
                   <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                     <span>
-                      <strong>Grade:</strong> {output.grade}
+                      <strong>{t('budgetMasterChallenge.grade')}</strong> {output.grade}
                     </span>
                     <span>
-                      <strong>Scenario:</strong> {output.scenario_type.replace(/_/g, ' ')}
+                      <strong>{t('budgetMasterChallenge.scenario')}</strong> {output.scenario_type.replace(/_/g, ' ')}
                     </span>
                     <span>
-                      <strong>Budget Limit:</strong> {output.budget_limit}
+                      <strong>{t('budgetMasterChallenge.budgetLimit')}</strong> {output.budget_limit}
                     </span>
                     {output.difficulty && (
                       <span>
-                        <strong>Difficulty:</strong> {output.difficulty}
+                        <strong>{t('budgetMasterChallenge.difficulty')}</strong> {output.difficulty}
                       </span>
                     )}
                     {output.duration && (
                       <span>
-                        <strong>Duration:</strong> {output.duration}
+                        <strong>{t('budgetMasterChallenge.duration')}</strong> {output.duration}
                       </span>
                     )}
                     {output.language && (
                       <span>
-                        <strong>Language:</strong> {output.language}
+                        <strong>{t('budgetMasterChallenge.language')}</strong> {output.language}
                       </span>
                     )}
                   </div>
@@ -425,7 +420,7 @@ const BudgetMasterChallenge = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Planning Steps</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('budgetMasterChallenge.planningSteps')}</h4>
                   <ol className="list-decimal list-inside space-y-1 text-sm text-gray-700">
                     {output.planning_steps.map((step, index) => (
                       <li key={index}>{step}</li>
@@ -434,7 +429,7 @@ const BudgetMasterChallenge = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Suggested Budget Items</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('budgetMasterChallenge.suggestedBudgetItems')}</h4>
                   <div className="space-y-3">
                     {output.required_items.map((item, index) => (
                       <div key={index} className="bg-gray-50 rounded-lg p-4">
@@ -449,7 +444,7 @@ const BudgetMasterChallenge = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Decision Points</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('budgetMasterChallenge.decisionPoints')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.decision_points.map((point, index) => (
                       <li key={index}>{point}</li>
@@ -459,7 +454,7 @@ const BudgetMasterChallenge = () => {
 
                 {output.reflection_tasks && (
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Reflection Tasks</h4>
+                    <h4 className="font-semibold text-gray-900 mb-2">{t('budgetMasterChallenge.reflectionTasks')}</h4>
                     <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                       {output.reflection_tasks.map((task, index) => (
                         <li key={index}>{task}</li>
@@ -470,7 +465,7 @@ const BudgetMasterChallenge = () => {
 
                 {output.extension_challenge && (
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Extension Challenge</h4>
+                    <h4 className="font-semibold text-gray-900 mb-2">{t('budgetMasterChallenge.extensionChallenge')}</h4>
                     <p className="text-sm text-gray-700">{output.extension_challenge}</p>
                   </div>
                 )}
@@ -480,12 +475,8 @@ const BudgetMasterChallenge = () => {
             <div className="card">
               <div className="text-center py-12">
                 <Calculator className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Your budget challenge will appear here
-                </h3>
-                <p className="text-gray-600">
-                  Fill in the inputs and click "Generate Budget Challenge" to preview the activity.
-                </p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('budgetMasterChallenge.yourBudgetChallengeWillAppearHere')}</h3>
+                <p className="text-gray-600">{t('budgetMasterChallenge.fillInTheInputsAndClickGenerateBudgetChallengeTo')}</p>
               </div>
             </div>
           )}

@@ -183,7 +183,7 @@ const studentMenu = [
 ];
 
 const parentMenu = [
-  { path: '/parent', text: 'Parent', icon: Users },
+  { path: '/parent', text: 'Parent', i18nKey: 'nav.parent', icon: Users },
 ];
 
 export const sideMenuRoutes = (role) => {

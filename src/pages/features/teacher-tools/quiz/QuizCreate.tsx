@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams, useLocation, useSearchParams } from 'react-router-dom'
 import {
@@ -79,6 +80,7 @@ function totalMarksFromStubs(stubs: QuizQuestionStub[]): number {
 }
 
 export default function QuizCreate() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const [searchParams] = useSearchParams()
@@ -112,12 +114,10 @@ export default function QuizCreate() {
   const [questionLoadingId, setQuestionLoadingId] = useState<string | null>(null)
   const [isRegeneratingAll, setIsRegeneratingAll] = useState(false)
 
-  const [title, setTitle] = useState('Topic check quiz')
+  const [title, setTitle] = useState(() => t('quiz.defaultTitle'))
   const [subject, setSubject] = useState<string>(SUBJECTS[0])
   const [grade, setGrade] = useState<string>(GRADES[0])
-  const [studentInstructions, setStudentInstructions] = useState(
-    'Answer all questions. Show working where appropriate.'
-  )
+  const [studentInstructions, setStudentInstructions] = useState(() => t('quiz.defaultInstructions'))
   const [teacherNotes, setTeacherNotes] = useState('')
   const [timeLimit, setTimeLimit] = useState(30)
   const [questionCount, setQuestionCount] = useState(10)
@@ -356,7 +356,7 @@ export default function QuizCreate() {
     setBuildErrors([])
     subWizard.unlockAllSteps()
     setPhase('review')
-    toast.success('Exemplar loaded — edit or regenerate anytime.')
+    toast.success(t('teacherTools.toastExemplarLoaded'))
   }, [rag, subWizard, toast, enterExemplarPreview])
 
   useEffect(() => {
@@ -373,7 +373,7 @@ export default function QuizCreate() {
     if (topic) setTemplateScopeHint(topic)
     if (searchParams.get('fromTemplate') && !templateToastRef.current) {
       templateToastRef.current = true
-      toast.success('Prefilled from template')
+      toast.success(t('teacherTools.toastPrefilledTemplate'))
     }
   }, [isEdit, searchParams, toast])
 
@@ -388,7 +388,7 @@ export default function QuizCreate() {
       const q = await api.getQuiz(quizId)
       if (cancelled) return
       if (!q) {
-        toast.error('Quiz not found')
+        toast.error(t('quiz.toastNotFound'))
         navigate('/teacher-tools/quiz')
         return
       }
@@ -498,7 +498,7 @@ export default function QuizCreate() {
     })
     if (!v.ok) {
       setBuildErrors(v.errors)
-      toast.error('Fix the highlighted fields to generate.')
+      toast.error(t('teacherTools.toastFixFields'))
       return
     }
     setBuildErrors([])
@@ -534,14 +534,14 @@ export default function QuizCreate() {
         setStubs(genResult.quiz.questionStubs as any)
         setLastCriteria(crit)
         setPhase('review')
-        toast.success('Questions generated — review below.')
+        toast.success(t('quiz.toastQuestionsGenerated'))
         refreshCredits()
         return
       }
 
       const payload = {
         id: '',
-        title: title.trim() || 'Untitled quiz',
+        title: title.trim() || t('quiz.untitled'),
         subject,
         grade,
         classes: [classKeyForGrade(grade)],
@@ -591,7 +591,7 @@ export default function QuizCreate() {
       setStubs(genResult.quiz.questionStubs as any)
       setLastCriteria(crit)
       setPhase('review')
-      toast.success('Questions generated — review below.')
+      toast.success(t('quiz.toastQuestionsGenerated'))
       refreshCredits()
     } catch (e) {
       const credit = parseCreditError(e)
@@ -600,8 +600,8 @@ export default function QuizCreate() {
         setGenerationError(null)
         return
       }
-      setGenerationError('Generation failed. Adjust sources and try again.')
-      toast.error('Could not generate questions.')
+      setGenerationError(t('quiz.generationFailed'))
+      toast.error(t('quiz.toastGenerateFailed'))
       console.error('Quiz generation failed:', e)
     } finally {
       window.clearInterval(steps)
@@ -631,7 +631,7 @@ export default function QuizCreate() {
   const regenerateAll = useCallback(() => {
     ;(async () => {
       if (!liveQuizId) {
-        toast.error('Quiz is not ready yet. Generate once to create it.')
+        toast.error(t('quiz.toastQuizNotReady'))
         return
       }
       if (generating || questionLoadingId || isRegeneratingAll) return
@@ -653,7 +653,7 @@ export default function QuizCreate() {
         setStubs(genResult.quiz.questionStubs as any)
         const crit = lastCriteria ?? buildCriteria(liveQuizId)
         setLastCriteria(crit)
-        toast.success('Question set regenerated.')
+        toast.success(t('quiz.toastSetRegenerated'))
         refreshCredits()
       } catch (e) {
         const credit = parseCreditError(e)
@@ -662,7 +662,7 @@ export default function QuizCreate() {
           return
         }
         console.error('Regenerate all failed:', e)
-        toast.error('Could not regenerate question set')
+        toast.error(t('quiz.toastSetRegenFailed'))
       } finally {
         setIsRegeneratingAll(false)
       }
@@ -692,7 +692,7 @@ export default function QuizCreate() {
     (index: number) => {
       ;(async () => {
         if (!liveQuizId) {
-          toast.error('Quiz is not ready yet. Generate once to create it.')
+          toast.error(t('quiz.toastQuizNotReady'))
           return
         }
         if (generating || questionLoadingId || isRegeneratingAll) return
@@ -711,9 +711,9 @@ export default function QuizCreate() {
             typeof nextStub.prompt === 'string' &&
             nextStub.prompt.trim() === prevPrompt
           ) {
-            toast.warning('The model returned the same wording. Try again or edit the question.')
+            toast.warning(t('quiz.toastSameWording'))
           } else {
-            toast.success('Question regenerated.')
+            toast.success(t('quiz.toastQuestionRegenerated'))
           }
           refreshCredits()
         } catch (e) {
@@ -723,7 +723,7 @@ export default function QuizCreate() {
             return
           }
           console.error('Question regeneration failed:', e)
-          toast.error('Could not regenerate question')
+          toast.error(t('quiz.toastQuestionRegenFailed'))
         } finally {
           setQuestionLoadingId(null)
         }
@@ -750,7 +750,7 @@ export default function QuizCreate() {
         setStubs(updated.questionStubs as any)
       } catch (e) {
         console.error('Reorder failed:', e)
-        toast.error('Could not reorder questions')
+        toast.error(t('quiz.toastReorderFailed'))
       } finally {
         setQuestionLoadingId(null)
       }
@@ -767,10 +767,10 @@ export default function QuizCreate() {
         try {
           const updated = await apiDeleteQuestion(liveQuizId, qid)
           setStubs(updated.questionStubs as any)
-          toast.success('Question removed')
+          toast.success(t('quiz.toastQuestionRemoved'))
         } catch (e) {
           console.error('Question delete failed:', e)
-          toast.error('Could not remove question')
+          toast.error(t('quiz.toastQuestionRemoveFailed'))
         } finally {
           setQuestionLoadingId(null)
         }
@@ -784,7 +784,7 @@ export default function QuizCreate() {
       ;(async () => {
         if (!liveQuizId) return
         if (stubs.length >= QUESTION_COUNT.max) {
-          toast.error(`Each quiz supports at most ${QUESTION_COUNT.max} questions.`)
+          toast.error(t('quiz.toastMaxQuestions', { max: QUESTION_COUNT.max }))
           return
         }
         try {
@@ -796,10 +796,10 @@ export default function QuizCreate() {
             response_lines: stub.responseLines,
           })
           setStubs(updated.questionStubs as any)
-          toast.success('Question added to the set')
+          toast.success(t('quiz.toastQuestionAdded'))
         } catch (e) {
           console.error('Add question failed:', e)
-          toast.error('Could not add question')
+          toast.error(t('exam.toastAddFailed'))
         }
       })()
     },
@@ -816,7 +816,7 @@ export default function QuizCreate() {
     const nextLayout = { ...DEFAULT_HANDOUT_LAYOUT, ...layout }
     handoutLayoutRef.current = nextLayout
     setHandoutLayout(nextLayout)
-    toast.success('Handout spacing saved. PDF export and print use these settings.')
+    toast.success(t('assignment.toastHandoutSaved'))
   }, [toast])
 
   const handleMixModeChange = useCallback(
@@ -843,11 +843,11 @@ export default function QuizCreate() {
 
   const handleSaveDraft = useCallback(async () => {
     if (isExemplarPreview) {
-      toast.error('Generate your quiz first — exemplar preview is not saved.')
+      toast.error(t('teacherTools.toastExemplarNotSaved'))
       return
     }
     if (stubs.length === 0) {
-      toast.error('Generate at least one question before saving a draft.')
+      toast.error(t('quiz.toastDraftNeedsQuestions'))
       return
     }
     setSaveDraftPending(true)
@@ -857,7 +857,7 @@ export default function QuizCreate() {
         status: 'draft',
         handoutLayout: handoutLayoutRef.current ?? null,
       })
-      toast.success('Draft saved')
+      toast.success(t('teacherTools.toastDraftSaved'))
       navigate('/teacher-tools/quiz')
     } finally {
       setSaveDraftPending(false)
@@ -866,11 +866,11 @@ export default function QuizCreate() {
 
   const handlePublish = useCallback(async () => {
     if (isExemplarPreview) {
-      toast.error('Generate your quiz first — exemplar preview cannot be published.')
+      toast.error(t('teacherTools.toastExemplarCannotPublish'))
       return
     }
     if (stubs.length === 0) {
-      toast.error('Add questions before publishing.')
+      toast.error(t('quiz.toastPublishNeedsQuestions'))
       return
     }
     setPublishPending(true)
@@ -880,7 +880,7 @@ export default function QuizCreate() {
         status: 'published',
         handoutLayout: handoutLayoutRef.current ?? null,
       })
-      toast.success('Quiz published')
+      toast.success(t('quiz.toastPublished'))
       navigate('/teacher-tools/quiz')
     } finally {
       setPublishPending(false)
@@ -892,7 +892,7 @@ export default function QuizCreate() {
     const activeLayout = handoutLayoutRef.current
     const q: DemoQuiz = {
       id: isEdit && quizId ? quizId : 'export',
-      title: title.trim() || 'Quiz',
+      title: title.trim() || t('quiz.fallbackTitle'),
       subject,
       grade,
       classes: [classKeyForGrade(grade)],
@@ -914,9 +914,9 @@ export default function QuizCreate() {
     }
     try {
       downloadQuizPdf(q, `${title.replace(/\s+/g, '-').slice(0, 32)}-quiz.pdf`)
-      toast.success('PDF downloaded')
+      toast.success(t('teacherTools.toastPdfDownloaded'))
     } catch {
-      toast.error('Could not generate PDF')
+      toast.error(t('teacherTools.toastPdfFailed'))
     }
   }, [rag, title, subject, grade, timeLimit, stubs, studentInstructions, difficulty, isEdit, quizId, toast])
 
@@ -935,7 +935,7 @@ export default function QuizCreate() {
       <div className="min-h-[40vh] space-y-3 p-8">
         <div className="h-4 w-48 animate-pulse rounded bg-gray-200" />
         <div className="h-32 max-w-xl animate-pulse rounded-2xl bg-gray-100" />
-        <p className="text-sm text-gray-600">Loading quiz…</p>
+        <p className="text-sm text-gray-600">{t('quiz.loading')}</p>
       </div>
     )
   }
@@ -959,7 +959,7 @@ export default function QuizCreate() {
       onGenerate={() => {
         if (!fullBuildValidation.ok) {
           setBuildErrors(fullBuildValidation.errors)
-          toast.error('Fix the highlighted fields to generate.')
+          toast.error(t('teacherTools.toastFixFields'))
           return
         }
         setBuildErrors([])
@@ -967,17 +967,17 @@ export default function QuizCreate() {
       }}
       generating={generating}
       generateLabel={
-        rag.generateWithoutSources ? 'Generate without sources' : 'Generate from selected materials'
+        rag.generateWithoutSources ? t('quiz.generateWithoutSources') : t('quiz.generateWithSources')
       }
       onShowExemplar={handleShowExemplar}
       onExitToList={handleExitToList}
-      exitLabel="Back to quiz list"
+      exitLabel={t('quiz.exitLabel')}
     />
   )
 
   const reviewFooter = (
     <TeacherToolsCreateReviewFooter
-      exitLabel="Back to quiz list"
+      exitLabel={t('quiz.exitLabel')}
       onExitToList={handleExitToList}
       onEditRequirements={handleBackToConfigure}
       publish={{
@@ -991,7 +991,7 @@ export default function QuizCreate() {
         onPublish: handlePublish,
         publishPending,
         publishDisabled: stubs.length === 0 || isExemplarPreview,
-        publishLabel: isEdit ? 'Save changes' : 'Publish quiz',
+        publishLabel: isEdit ? t('quiz.saveChanges') : t('quiz.publishQuiz'),
       }}
     />
   )
@@ -1003,12 +1003,12 @@ export default function QuizCreate() {
         <>
           <TeacherToolsPageHeader
             variant="compact"
-            title={isEdit ? 'Edit quiz' : 'Create quiz'}
-            subtitle="Choose catalog sources, define retrieval scope, run generation, then review and publish."
+            title={isEdit ? t('quiz.editTitle') : t('quiz.createTitle')}
+            subtitle={t('quiz.createSubtitle')}
             breadcrumbs={[
-              { label: 'Teacher Tools', to: '/teacher-tools' },
-              { label: 'Quiz', to: '/teacher-tools/quiz' },
-              { label: isEdit ? 'Edit' : 'Create' },
+              { label: t('teacherTools.breadcrumbTeacherTools'), to: '/teacher-tools' },
+              { label: t('quiz.breadcrumb'), to: '/teacher-tools/quiz' },
+              { label: isEdit ? t('teacherTools.breadcrumbEdit') : t('teacherTools.breadcrumbCreate') },
             ]}
           />
           <div className="px-0 pb-2">
@@ -1018,7 +1018,7 @@ export default function QuizCreate() {
               primaryMaxReachable={topMaxReachable}
               onPrimaryStepClick={(i) => {
                 if (i === 1 && stubs.length === 0) {
-                  toast.error('Generate questions before opening review.')
+                  toast.error(t('quiz.toastReviewNeedsGenerate'))
                   return
                 }
                 if (i === 0) handleBackToConfigure()
@@ -1041,7 +1041,7 @@ export default function QuizCreate() {
         <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
           {generationError}
           <button type="button" className="ml-3 font-semibold underline" onClick={() => setGenerationError(null)}>
-            Dismiss
+            {t('teacherTools.dismiss')}
           </button>
         </div>
       )}
@@ -1147,7 +1147,7 @@ export default function QuizCreate() {
                 setStubs(updated.questionStubs as any)
               } catch (e) {
                 console.error('Question edit failed:', e)
-                toast.error('Could not update question')
+                toast.error(t('worksheet.toastQuestionUpdateFailed'))
               } finally {
                 setQuestionLoadingId(null)
               }
@@ -1169,8 +1169,8 @@ export default function QuizCreate() {
       <CustomModal
         open={discardOpen}
         close={cancelDiscard}
-        title="Leave without saving?"
-        primaryButtonText="Leave"
+        title={t('teacherTools.leaveTitle')}
+        primaryButtonText={t('teacherTools.leave')}
         isDelete
         handleSave={confirmDiscard}
       >

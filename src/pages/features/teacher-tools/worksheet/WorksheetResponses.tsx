@@ -1,22 +1,24 @@
 import { Link, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { TeacherToolsPageHeader, TeacherToolsStatusBadge, Phase2Section } from '../components'
 import { demoStudents } from '../demo/teacherToolsDemoData'
 import { useGetWorksheetQuery } from '../../../../redux/features/teacherTools/worksheet/worksheetApiSlice'
 
 export default function WorksheetResponses() {
+  const { t } = useTranslation()
   const { worksheetId } = useParams()
   const { data: w, isLoading, isError } = useGetWorksheetQuery(worksheetId ?? '', { skip: !worksheetId })
 
   if (isLoading && !w) {
-    return <div className="p-6 text-sm text-gray-600">Loading…</div>
+    return <div className="p-6 text-sm text-gray-600">{t('common.loading')}</div>
   }
 
   if (isError || !w) {
     return (
       <div className="space-y-4 p-6">
-        <p className="text-sm text-gray-700">Worksheet not found.</p>
+        <p className="text-sm text-gray-700">{t('worksheet.detail.notFound')}</p>
         <Link to="/teacher-tools/worksheet" className="text-sm font-semibold text-primary-600">
-          ← Back to worksheets
+          {t('worksheet.detail.backToList')}
         </Link>
       </div>
     )
@@ -27,30 +29,30 @@ export default function WorksheetResponses() {
   return (
     <div className="space-y-6">
       <TeacherToolsPageHeader
-        title={`Responses · ${w.title}`}
+        title={`${t('worksheet.responses.titlePrefix')} ${w.title}`}
         breadcrumbs={[
-          { label: 'Teacher Tools', to: '/teacher-tools' },
-          { label: 'Worksheet', to: '/teacher-tools/worksheet' },
+          { label: t('teacherTools.breadcrumbTeacherTools'), to: '/teacher-tools' },
+          { label: t('worksheet.breadcrumb'), to: '/teacher-tools/worksheet' },
           { label: w.title, to: `/teacher-tools/worksheet/${w.id}` },
-          { label: 'Responses' },
+          { label: t('worksheet.detail.tabResponses') },
         ]}
       />
       <p className="text-sm text-gray-600">
         {f === 'printable_pdf'
-          ? 'Printable worksheet: distribution history and download counts (preview).'
+          ? t('worksheet.responses.formatPrintableDesc')
           : f === 'both'
-            ? 'Hybrid worksheet: printable distribution plus digital completion (preview).'
-            : 'Digital worksheet: per-student completion and scoring (preview).'}
+            ? t('worksheet.responses.formatHybridDesc')
+            : t('worksheet.responses.formatDigitalDesc')}
       </p>
-      <Phase2Section title="Worksheet responses" footnote="Device sync and auto-grading connectors launch in Phase 2.">
+      <Phase2Section title={t('worksheet.responses.phase2Title')} footnote={t('worksheet.responses.phase2Footnote')}>
         <div className="overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm">
           <table className="min-w-full text-sm">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-3 py-3 text-left">Student</th>
-                <th className="px-3 py-3 text-left">Status</th>
-                <th className="px-3 py-3 text-left">Time</th>
-                <th className="px-3 py-3 text-left">Score</th>
+                <th className="px-3 py-3 text-left">{t('quiz.submissions.colStudent')}</th>
+                <th className="px-3 py-3 text-left">{t('teacherTools.status')}</th>
+                <th className="px-3 py-3 text-left">{t('worksheet.responses.colTime')}</th>
+                <th className="px-3 py-3 text-left">{t('quiz.submissions.colScore')}</th>
               </tr>
             </thead>
             <tbody>
@@ -60,7 +62,7 @@ export default function WorksheetResponses() {
                   <td className="px-3 py-3">
                     <TeacherToolsStatusBadge kind="submission" value={i % 2 === 0 ? 'graded' : 'submitted'} />
                   </td>
-                  <td className="px-3 py-3">{12 + i} min</td>
+                  <td className="px-3 py-3">{t('worksheet.responses.durationMinutes', { count: 12 + i })}</td>
                   <td className="px-3 py-3">
                     {f === 'interactive_digital' || f === 'both' ? `${80 + i}%` : '—'}
                   </td>
@@ -71,7 +73,7 @@ export default function WorksheetResponses() {
         </div>
       </Phase2Section>
       <Link to={`/teacher-tools/worksheet/${w.id}`} className="text-sm font-semibold text-primary-600">
-        ← Back
+        {t('teacherTools.back')}
       </Link>
     </div>
   )

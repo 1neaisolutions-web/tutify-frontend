@@ -1,8 +1,10 @@
+import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo, useState } from 'react';
 
 const STORAGE_KEY = 'tutify_student_pixgen_history_v1';
 
 const StudentPixGen = () => {
+  const { t } = useTranslation();
   const [prompt, setPrompt] = useState('');
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState(() => {
@@ -42,8 +44,8 @@ const StudentPixGen = () => {
   return (
     <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">AI Image Studio (PixGen)</h1>
-        <p className="text-sm text-gray-600 dark:text-gray-300">School-safe demo generation • {count} images</p>
+        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.pixGen.title')}</h1>
+        <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.common.imagesCount', { count })}</p>
       </div>
 
       <div className="px-6 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -54,7 +56,7 @@ const StudentPixGen = () => {
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 className="flex-1 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 px-3 py-2 text-sm text-gray-900 dark:text-gray-100"
-                placeholder="Describe an educational visual… (e.g., 'labeled diagram of a plant cell')"
+                placeholder={t('studentPanel.pixGen.placeholder')}
               />
               <button
                 type="button"
@@ -70,20 +72,20 @@ const StudentPixGen = () => {
               {latest ? (
                 <img src={latest.url} alt={latest.prompt} className="w-full h-auto" />
               ) : (
-                <div className="p-10 text-center text-sm text-gray-600 dark:text-gray-300">Generate your first image.</div>
+                <div className="p-10 text-center text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.pixGen.emptyCanvas')}</div>
               )}
             </div>
 
-            {latest ? <p className="mt-3 text-sm text-gray-700 dark:text-gray-200">Prompt: {latest.prompt}</p> : null}
+            {latest ? <p className="mt-3 text-sm text-gray-700 dark:text-gray-200">{t('studentPanel.common.promptLabel', { prompt: latest.prompt })}</p> : null}
           </div>
         </div>
 
         <div className="lg:col-span-1">
           <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4">
-            <h2 className="font-semibold text-gray-900 dark:text-gray-100">History</h2>
+            <h2 className="font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.pixGen.history.title')}</h2>
             <div className="mt-3 space-y-3 max-h-[520px] overflow-y-auto">
               {history.length === 0 ? (
-                <p className="text-sm text-gray-600 dark:text-gray-300">No images yet.</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.pixGen.history.empty')}</p>
               ) : (
                 history.map((h) => (
                   <button

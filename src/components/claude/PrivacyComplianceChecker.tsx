@@ -1,4 +1,5 @@
 import { Shield, CheckCircle2, AlertTriangle, Lock, Eye, X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { PrivacyComplianceStatus } from '../../types/claude'
 
 interface PrivacyComplianceCheckerProps {
@@ -7,18 +8,20 @@ interface PrivacyComplianceCheckerProps {
 }
 
 const PrivacyComplianceChecker = ({ complianceStatus, onClose }: PrivacyComplianceCheckerProps) => {
+  const { t } = useTranslation()
+  const allCompliant = complianceStatus.ferpaCompliant && complianceStatus.coppaCompliant
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col">
-        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-green-50 to-blue-50">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-green-500 to-blue-600">
               <Shield className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Privacy Compliance Checker</h2>
-              <p className="text-sm text-gray-600">FERPA & COPPA compliance verification</p>
+              <h2 className="text-xl font-bold text-gray-900">{t('claude.privacy.title')}</h2>
+              <p className="text-sm text-gray-600">{t('claude.privacy.subtitle')}</p>
             </div>
           </div>
           <button
@@ -29,14 +32,10 @@ const PrivacyComplianceChecker = ({ complianceStatus, onClose }: PrivacyComplian
           </button>
         </div>
 
-        {/* Content */}
         <div className="flex-1 overflow-y-auto p-6 space-y-4">
-          {/* Compliance Status Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className={`p-5 rounded-xl border-2 ${
-              complianceStatus.ferpaCompliant
-                ? 'border-green-300 bg-green-50'
-                : 'border-red-300 bg-red-50'
+              complianceStatus.ferpaCompliant ? 'border-green-300 bg-green-50' : 'border-red-300 bg-red-50'
             }`}>
               <div className="flex items-center gap-3 mb-2">
                 {complianceStatus.ferpaCompliant ? (
@@ -44,19 +43,17 @@ const PrivacyComplianceChecker = ({ complianceStatus, onClose }: PrivacyComplian
                 ) : (
                   <AlertTriangle className="h-6 w-6 text-red-600" />
                 )}
-                <div className="font-bold text-gray-900">FERPA Compliance</div>
+                <div className="font-bold text-gray-900">{t('claude.privacy.ferpa.title')}</div>
               </div>
               <div className="text-sm text-gray-600">
                 {complianceStatus.ferpaCompliant
-                  ? 'Student data is protected according to FERPA regulations'
-                  : 'FERPA compliance issues detected'}
+                  ? t('claude.privacy.ferpa.pass')
+                  : t('claude.privacy.ferpa.fail')}
               </div>
             </div>
 
             <div className={`p-5 rounded-xl border-2 ${
-              complianceStatus.coppaCompliant
-                ? 'border-green-300 bg-green-50'
-                : 'border-red-300 bg-red-50'
+              complianceStatus.coppaCompliant ? 'border-green-300 bg-green-50' : 'border-red-300 bg-red-50'
             }`}>
               <div className="flex items-center gap-3 mb-2">
                 {complianceStatus.coppaCompliant ? (
@@ -64,19 +61,17 @@ const PrivacyComplianceChecker = ({ complianceStatus, onClose }: PrivacyComplian
                 ) : (
                   <AlertTriangle className="h-6 w-6 text-red-600" />
                 )}
-                <div className="font-bold text-gray-900">COPPA Compliance</div>
+                <div className="font-bold text-gray-900">{t('claude.privacy.coppa.title')}</div>
               </div>
               <div className="text-sm text-gray-600">
                 {complianceStatus.coppaCompliant
-                  ? 'Compliant with COPPA regulations for students under 13'
-                  : 'COPPA compliance issues detected'}
+                  ? t('claude.privacy.coppa.pass')
+                  : t('claude.privacy.coppa.fail')}
               </div>
             </div>
 
             <div className={`p-5 rounded-xl border-2 ${
-              complianceStatus.dataMinimized
-                ? 'border-green-300 bg-green-50'
-                : 'border-amber-300 bg-amber-50'
+              complianceStatus.dataMinimized ? 'border-green-300 bg-green-50' : 'border-amber-300 bg-amber-50'
             }`}>
               <div className="flex items-center gap-3 mb-2">
                 {complianceStatus.dataMinimized ? (
@@ -84,19 +79,17 @@ const PrivacyComplianceChecker = ({ complianceStatus, onClose }: PrivacyComplian
                 ) : (
                   <AlertTriangle className="h-6 w-6 text-amber-600" />
                 )}
-                <div className="font-bold text-gray-900">Data Minimization</div>
+                <div className="font-bold text-gray-900">{t('claude.privacy.dataMinimization.title')}</div>
               </div>
               <div className="text-sm text-gray-600">
                 {complianceStatus.dataMinimized
-                  ? 'Only necessary data is collected'
-                  : 'Consider minimizing data collection'}
+                  ? t('claude.privacy.dataMinimization.pass')
+                  : t('claude.privacy.dataMinimization.warn')}
               </div>
             </div>
 
             <div className={`p-5 rounded-xl border-2 ${
-              complianceStatus.secureHandling
-                ? 'border-green-300 bg-green-50'
-                : 'border-red-300 bg-red-50'
+              complianceStatus.secureHandling ? 'border-green-300 bg-green-50' : 'border-red-300 bg-red-50'
             }`}>
               <div className="flex items-center gap-3 mb-2">
                 {complianceStatus.secureHandling ? (
@@ -104,22 +97,21 @@ const PrivacyComplianceChecker = ({ complianceStatus, onClose }: PrivacyComplian
                 ) : (
                   <AlertTriangle className="h-6 w-6 text-red-600" />
                 )}
-                <div className="font-bold text-gray-900">Secure Handling</div>
+                <div className="font-bold text-gray-900">{t('claude.privacy.secureHandling.title')}</div>
               </div>
               <div className="text-sm text-gray-600">
                 {complianceStatus.secureHandling
-                  ? 'Data is handled securely with encryption'
-                  : 'Security issues detected'}
+                  ? t('claude.privacy.secureHandling.pass')
+                  : t('claude.privacy.secureHandling.fail')}
               </div>
             </div>
           </div>
 
-          {/* Issues */}
           {complianceStatus.issues.length > 0 && (
             <div className="p-5 rounded-xl border-2 border-red-200 bg-red-50">
               <div className="flex items-center gap-2 mb-3">
                 <AlertTriangle className="h-5 w-5 text-red-600" />
-                <div className="font-bold text-gray-900">Issues Detected</div>
+                <div className="font-bold text-gray-900">{t('claude.privacy.issues.title')}</div>
               </div>
               <ul className="space-y-2">
                 {complianceStatus.issues.map((issue, idx) => (
@@ -132,12 +124,11 @@ const PrivacyComplianceChecker = ({ complianceStatus, onClose }: PrivacyComplian
             </div>
           )}
 
-          {/* Recommendations */}
           {complianceStatus.recommendations.length > 0 && (
             <div className="p-5 rounded-xl border-2 border-blue-200 bg-blue-50">
               <div className="flex items-center gap-2 mb-3">
                 <Eye className="h-5 w-5 text-blue-600" />
-                <div className="font-bold text-gray-900">Recommendations</div>
+                <div className="font-bold text-gray-900">{t('claude.common.recommendations')}</div>
               </div>
               <ul className="space-y-2">
                 {complianceStatus.recommendations.map((rec, idx) => (
@@ -150,41 +141,33 @@ const PrivacyComplianceChecker = ({ complianceStatus, onClose }: PrivacyComplian
             </div>
           )}
 
-          {/* Overall Status */}
           <div className={`p-5 rounded-xl border-2 ${
-            complianceStatus.ferpaCompliant && complianceStatus.coppaCompliant
-              ? 'border-green-300 bg-green-50'
-              : 'border-amber-300 bg-amber-50'
+            allCompliant ? 'border-green-300 bg-green-50' : 'border-amber-300 bg-amber-50'
           }`}>
             <div className="flex items-center gap-3">
-              {complianceStatus.ferpaCompliant && complianceStatus.coppaCompliant ? (
+              {allCompliant ? (
                 <CheckCircle2 className="h-8 w-8 text-green-600" />
               ) : (
                 <AlertTriangle className="h-8 w-8 text-amber-600" />
               )}
               <div>
                 <div className="font-bold text-gray-900 text-lg">
-                  {complianceStatus.ferpaCompliant && complianceStatus.coppaCompliant
-                    ? 'Compliant'
-                    : 'Review Required'}
+                  {allCompliant ? t('claude.privacy.overall.compliant') : t('claude.privacy.overall.reviewRequired')}
                 </div>
                 <div className="text-sm text-gray-600">
-                  {complianceStatus.ferpaCompliant && complianceStatus.coppaCompliant
-                    ? 'All privacy compliance checks passed'
-                    : 'Please review and address the issues above'}
+                  {allCompliant ? t('claude.privacy.overall.passMessage') : t('claude.privacy.overall.failMessage')}
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Footer */}
         <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50">
           <button
             onClick={onClose}
             className="px-6 py-2 bg-gradient-to-r from-green-500 to-blue-600 text-white rounded-lg hover:from-green-600 hover:to-blue-700 transition shadow-md"
           >
-            Close
+            {t('claude.common.close')}
           </button>
         </div>
       </div>
@@ -193,6 +176,3 @@ const PrivacyComplianceChecker = ({ complianceStatus, onClose }: PrivacyComplian
 }
 
 export default PrivacyComplianceChecker
-
-
-

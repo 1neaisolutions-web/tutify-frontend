@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Copy, ExternalLink, Pin, PinOff, Trash2 } from 'lucide-react'
 
 import type { HistoryItem } from '../../../api/historyApi'
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export function HistoryCardMenu({ item, onOpenEdit, onDuplicate, onTogglePin, onDelete, onClose }: Props) {
+  const { t } = useTranslation()
   const menuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -34,20 +36,20 @@ export function HistoryCardMenu({ item, onOpenEdit, onDuplicate, onTogglePin, on
       className="absolute bottom-8 right-0 z-30 min-w-[160px] rounded-xl border border-gray-100 bg-white py-1 shadow-xl"
     >
       <button type="button" onClick={onOpenEdit} className={MENU_ITEM_CLASS}>
-        <ExternalLink className="h-4 w-4" /> Open
+        <ExternalLink className="h-4 w-4" /> {t('historyPage.menu.open')}
       </button>
       {canDuplicate && (
         <button type="button" onClick={onDuplicate} className={MENU_ITEM_CLASS}>
-          <Copy className="h-4 w-4" /> Duplicate
+          <Copy className="h-4 w-4" /> {t('history.duplicate')}
         </button>
       )}
       <button type="button" onClick={onTogglePin} className={MENU_ITEM_CLASS}>
         {item.pinned ? <PinOff className="h-4 w-4" /> : <Pin className="h-4 w-4" />}
-        {item.pinned ? 'Unpin' : 'Pin'}
+        {item.pinned ? t('historyPage.menu.unpin') : t('historyPage.menu.pin')}
       </button>
       <div className="my-1 border-t border-gray-100" />
       <button type="button" onClick={onDelete} className={`${MENU_ITEM_CLASS} text-red-600 hover:bg-red-50`}>
-        <Trash2 className="h-4 w-4" /> Delete
+        <Trash2 className="h-4 w-4" /> {t('history.delete')}
       </button>
     </div>
   )

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Plus } from 'lucide-react'
 import {
@@ -28,14 +29,24 @@ import { CustomModal } from '../../../../components/shared/CustomModal'
 
 const tabs = ['All', 'Draft', 'Published', 'Printable', 'Digital', 'Archived'] as const
 
-function formatLabelForRow(w: WorksheetApiItem): string {
+const WORKSHEET_TAB_KEYS: Record<(typeof tabs)[number], string> = {
+  All: 'teacherTools.tabAll',
+  Draft: 'teacherTools.tabDraft',
+  Published: 'teacherTools.tabPublished',
+  Printable: 'worksheet.tabPrintable',
+  Digital: 'worksheet.tabDigital',
+  Archived: 'teacherTools.tabArchived',
+}
+
+function formatLabelForRow(w: WorksheetApiItem, t: (key: string) => string): string {
   const f = w.outputFormat
-  if (f === 'printable_pdf') return 'Printable'
-  if (f === 'both') return 'Both'
-  return 'Digital'
+  if (f === 'printable_pdf') return t('worksheet.formatPrintable')
+  if (f === 'both') return t('worksheet.formatBoth')
+  return t('worksheet.formatDigital')
 }
 
 export default function WorksheetList() {
+  const { t } = useTranslation()
   const { toast } = useSnackbar()
   const navigate = useNavigate()
   const location = useLocation()
@@ -119,11 +130,11 @@ export default function WorksheetList() {
     setArchivePending(true)
     try {
       await patchWorksheet({ id: archiveId, patch: { status: 'archived' } }).unwrap()
-      toast.success('Worksheet archived')
+      toast.success(t('worksheet.toastArchived'))
       setArchiveId(null)
       bump()
     } catch {
-      toast.error('Could not archive worksheet')
+      toast.error(t('worksheet.toastArchiveFailed'))
     } finally {
       setArchivePending(false)
     }
@@ -134,11 +145,11 @@ export default function WorksheetList() {
     setDeletePending(true)
     try {
       await deleteWorksheet(deleteId).unwrap()
-      toast.success('Worksheet deleted')
+      toast.success(t('worksheet.toastDeleted'))
       setDeleteId(null)
       bump()
     } catch {
-      toast.error('Could not delete worksheet')
+      toast.error(t('worksheet.toastDeleteFailed'))
     } finally {
       setDeletePending(false)
     }
@@ -147,25 +158,25 @@ export default function WorksheetList() {
   const runDuplicate = async (id: string) => {
     try {
       await duplicateWorksheet(id).unwrap()
-      toast.success('Worksheet duplicated')
+      toast.success(t('worksheet.toastDuplicated'))
       bump()
     } catch {
-      toast.error('Could not duplicate')
+      toast.error(t('teacherTools.toastDuplicateFailed'))
     }
   }
 
   return (
     <div className="space-y-6">
       <TeacherToolsPageHeader
-        title="Worksheets"
-        subtitle="Printable packs and interactive practice with topic-aware blocks."
-        breadcrumbs={[{ label: 'Teacher Tools', to: '/teacher-tools' }, { label: 'Worksheet' }]}
+        title={t('worksheet.title')}
+        subtitle={t('worksheet.listSubtitle')}
+        breadcrumbs={[{ label: t('teacherTools.breadcrumbTeacherTools'), to: '/teacher-tools' }, { label: t('worksheet.breadcrumb') }]}
         actions={
           <Link
             to="/teacher-tools/worksheet/create"
             className="inline-flex items-center gap-2 rounded-full bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-500"
           >
-            <Plus className="h-4 w-4" /> Create Worksheet
+            <Plus className="h-4 w-4" /> {t('teacherTools.createWorksheet')}
           </Link>
         }
       />
@@ -186,16 +197,16 @@ export default function WorksheetList() {
       )}
 
       <div className="flex flex-wrap gap-2">
-        {tabs.map((t) => (
+        {tabs.map((tabItem) => (
           <button
-            key={t}
+            key={tabItem}
             type="button"
-            onClick={() => setTab(t)}
+            onClick={() => setTab(tabItem)}
             className={`rounded-full px-3 py-1.5 text-xs font-semibold ${
-              tab === t ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              tab === tabItem ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            {t}
+            {t(WORKSHEET_TAB_KEYS[tabItem])}
           </button>
         ))}
       </div>
@@ -211,72 +222,72 @@ export default function WorksheetList() {
               for (const id of selected) {
                 await duplicateWorksheet(id).unwrap()
               }
-              toast.success('Duplicated selected')
+              toast.success(t('teacherTools.toastBulkDuplicated'))
               setSelected([])
               bump()
             } catch {
-              toast.error('Bulk duplicate failed')
+              toast.error(t('worksheet.toastBulkDuplicateFailed'))
             } finally {
               setBulkPending(false)
             }
           }}
         >
-          {bulkPending ? 'Working…' : 'Duplicate selected'}
+          {bulkPending ? t('teacherTools.working') : t('teacherTools.duplicateSelected')}
         </button>
       </TeacherToolsBulkActionBar>
 
       <CustomModal
         open={Boolean(deleteId)}
         close={() => !deletePending && setDeleteId(null)}
-        title="Delete worksheet?"
-        primaryButtonText="Delete"
+        title={t('worksheet.deleteTitle')}
+        primaryButtonText={t('teacherTools.delete')}
         isDelete
         loading={deletePending}
         handleSave={confirmDelete}
       >
-        <p className="py-3 text-sm text-gray-600">This removes the worksheet from your session. This cannot be undone.</p>
+        <p className="py-3 text-sm text-gray-600">{t('worksheet.deleteBody')}</p>
       </CustomModal>
 
       <CustomModal
         open={Boolean(archiveId)}
         close={() => !archivePending && setArchiveId(null)}
-        title="Archive worksheet?"
-        primaryButtonText="Archive"
+        title={t('worksheet.archiveTitle')}
+        primaryButtonText={t('teacherTools.archive')}
         loading={archivePending}
         handleSave={() => void confirmArchive()}
       >
-        <p className="py-3 text-sm text-gray-600">Archived worksheets stay under the Archived tab. You can duplicate or delete later.</p>
+        <p className="py-3 text-sm text-gray-600">{t('worksheet.archiveBody')}</p>
       </CustomModal>
 
       {(isLoading && !data) && !listError && <TableSkeletonRows />}
 
       {listError && (
         <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-800">
-          <p className="font-semibold">No worksheets to show</p>
+          <p className="font-semibold">{t('worksheet.listErrorTitle')}</p>
           <p className="mt-1 text-red-700">{listError}</p>
           <button
             type="button"
             onClick={() => bump()}
             className="mt-4 rounded-full bg-primary-600 px-4 py-2 text-xs font-semibold text-white"
           >
-            Try again
+            {t('teacherTools.tryAgain')}
           </button>
         </div>
       )}
 
       {listReady && !listError && filtered.length === 0 && (
         <div className="rounded-2xl border border-gray-200 bg-white p-10 text-center text-sm text-gray-600">
-          No worksheets match your filters.{' '}
+          {t('worksheet.emptyFilters')}{' '}
           <button
             type="button"
             className="font-semibold text-primary-600 hover:underline"
             onClick={() => setFilters({ q: '', subject: '', grade: '', classKey: '', status: '', dateFrom: '', dateTo: '' })}
           >
-            Clear filters
+            {t('teacherTools.clearFilters')}
           </button>
           {' · '}
           <Link to="/teacher-tools/worksheet/create" className="font-semibold text-primary-600">
-            Create worksheet
+            {t('worksheet.createLink')}
           </Link>
         </div>
       )}
@@ -289,7 +300,7 @@ export default function WorksheetList() {
                 <th className="px-3 py-3 text-left">
                   <input
                     type="checkbox"
-                    aria-label="Select all"
+                    aria-label={t('teacherTools.ariaSelectAll')}
                     onChange={(e) => {
                       if (e.target.checked) setSelected(filtered.map((w) => w.id))
                       else setSelected([])
@@ -297,10 +308,10 @@ export default function WorksheetList() {
                     checked={selected.length === filtered.length && filtered.length > 0}
                   />
                 </th>
-                <th className="px-3 py-3 text-left font-semibold text-gray-700">Title</th>
-                <th className="px-3 py-3 text-left font-semibold text-gray-700">Topic</th>
-                <th className="px-3 py-3 text-left font-semibold text-gray-700">Format</th>
-                <th className="px-3 py-3 text-left font-semibold text-gray-700">Status</th>
+                <th className="px-3 py-3 text-left font-semibold text-gray-700">{t('teacherTools.title')}</th>
+                <th className="px-3 py-3 text-left font-semibold text-gray-700">{t('worksheet.colTopic')}</th>
+                <th className="px-3 py-3 text-left font-semibold text-gray-700">{t('worksheet.colFormat')}</th>
+                <th className="px-3 py-3 text-left font-semibold text-gray-700">{t('teacherTools.status')}</th>
                 <th className="px-3 py-3" />
               </tr>
             </thead>
@@ -317,23 +328,23 @@ export default function WorksheetList() {
                     {w.sourceSummary && <p className="mt-0.5 text-xs font-normal text-gray-500 line-clamp-1">{w.sourceSummary}</p>}
                   </td>
                   <td className="px-3 py-3 text-gray-600">{w.topic}</td>
-                  <td className="px-3 py-3 text-gray-600">{formatLabelForRow(w)}</td>
+                  <td className="px-3 py-3 text-gray-600">{formatLabelForRow(w, t)}</td>
                   <td className="px-3 py-3">
                     <TeacherToolsStatusBadge kind="content" value={w.status} />
                   </td>
                   <td className="px-3 py-3 text-right">
                     <TeacherToolsActionMenu
                       actions={[
-                        { key: 'edit', label: 'Edit', onClick: () => goEdit(w.id) },
-                        { key: 'dup', label: 'Duplicate', onClick: () => void runDuplicate(w.id) },
+                        { key: 'edit', label: t('teacherTools.edit'), onClick: () => goEdit(w.id) },
+                        { key: 'dup', label: t('teacherTools.duplicate'), onClick: () => void runDuplicate(w.id) },
                         {
                           key: 'arch',
-                          label: 'Archive',
+                          label: t('teacherTools.archive'),
                           onClick: () => setArchiveId(w.id),
                         },
                         {
                           key: 'del',
-                          label: 'Delete',
+                          label: t('teacherTools.delete'),
                           onClick: () => setDeleteId(w.id),
                         },
                       ]}

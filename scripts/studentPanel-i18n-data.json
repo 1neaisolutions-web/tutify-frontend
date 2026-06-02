@@ -1,0 +1,81 @@
+{
+  "studentPanel": {
+    "common": {
+      "back": { "en": "Back", "es": "Atrás", "fr": "Retour", "pt": "Voltar", "de": "Zurück" },
+      "cancel": { "en": "Cancel", "es": "Cancelar", "fr": "Annuler", "pt": "Cancelar", "de": "Abbrechen" },
+      "save": { "en": "Save", "es": "Guardar", "fr": "Enregistrer", "pt": "Salvar", "de": "Speichern" },
+      "delete": { "en": "Delete", "es": "Eliminar", "fr": "Supprimer", "pt": "Excluir", "de": "Löschen" },
+      "submit": { "en": "Submit", "es": "Enviar", "fr": "Soumettre", "pt": "Enviar", "de": "Absenden" },
+      "edit": { "en": "Edit", "es": "Editar", "fr": "Modifier", "pt": "Editar", "de": "Bearbeiten" },
+      "new": { "en": "New", "es": "Nuevo", "fr": "Nouveau", "pt": "Novo", "de": "Neu" },
+      "exit": { "en": "Exit", "es": "Salir", "fr": "Quitter", "pt": "Sair", "de": "Beenden" },
+      "done": { "en": "Done", "es": "Listo", "fr": "Terminé", "pt": "Concluído", "de": "Fertig" },
+      "open": { "en": "Open", "es": "Abrir", "fr": "Ouvrir", "pt": "Abrir", "de": "Öffnen" },
+      "hide": { "en": "Hide", "es": "Ocultar", "fr": "Masquer", "pt": "Ocultar", "de": "Ausblenden" },
+      "stop": { "en": "Stop", "es": "Detener", "fr": "Arrêter", "pt": "Parar", "de": "Stopp" },
+      "send": { "en": "Send", "es": "Enviar", "fr": "Envoyer", "pt": "Enviar", "de": "Senden" },
+      "close": { "en": "Close", "es": "Cerrar", "fr": "Fermer", "pt": "Fechar", "de": "Schließen" },
+      "generate": { "en": "Generate", "es": "Generar", "fr": "Générer", "pt": "Gerar", "de": "Generieren" },
+      "regenerate": { "en": "Regenerate", "es": "Regenerar", "fr": "Régénérer", "pt": "Regenerar", "de": "Neu generieren" },
+      "generating": { "en": "Generating…", "es": "Generando…", "fr": "Génération…", "pt": "Gerando…", "de": "Wird generiert…" },
+      "thinking": { "en": "Thinking…", "es": "Pensando…", "fr": "Réflexion…", "pt": "Pensando…", "de": "Denke nach…" },
+      "solving": { "en": "Solving…", "es": "Resolviendo…", "fr": "Résolution…", "pt": "Resolvendo…", "de": "Löse…" },
+      "summarising": { "en": "Summarising…", "es": "Resumiendo…", "fr": "Résumé…", "pt": "Resumindo…", "de": "Zusammenfassen…" },
+      "explaining": { "en": "Explaining…", "es": "Explicando…", "fr": "Explication…", "pt": "Explicando…", "de": "Erkläre…" },
+      "submitting": { "en": "Submitting…", "es": "Enviando…", "fr": "Envoi…", "pt": "Enviando…", "de": "Wird gesendet…" },
+      "regenerating": { "en": "Regenerating…", "es": "Regenerando…", "fr": "Régénération…", "pt": "Regenerando…", "de": "Wird neu generiert…" },
+      "notFound": { "en": "Not found.", "es": "No encontrado.", "fr": "Introuvable.", "pt": "Não encontrado.", "de": "Nicht gefunden." },
+      "noDueDate": { "en": "No due date", "es": "Sin fecha límite", "fr": "Pas de date limite", "pt": "Sem prazo", "de": "Kein Fälligkeitsdatum" },
+      "due": { "en": "Due: {{date}}", "es": "Vence: {{date}}", "fr": "Échéance : {{date}}", "pt": "Prazo: {{date}}", "de": "Fällig: {{date}}" },
+      "completed": { "en": "Completed", "es": "Completado", "fr": "Terminé", "pt": "Concluído", "de": "Abgeschlossen" },
+      "openStatus": { "en": "Open", "es": "Abierto", "fr": "Ouvert", "pt": "Aberto", "de": "Offen" },
+      "sorryError": { "en": "Sorry — something went wrong. {{message}}", "es": "Lo sentimos — algo salió mal. {{message}}", "fr": "Désolé — une erreur s'est produite. {{message}}", "pt": "Desculpe — algo deu errado. {{message}}", "de": "Entschuldigung — etwas ist schiefgelaufen. {{message}}" },
+      "failedGeneric": { "en": "Failed to load. {{message}}", "es": "Error al cargar. {{message}}", "fr": "Échec du chargement. {{message}}", "pt": "Falha ao carregar. {{message}}", "de": "Laden fehlgeschlagen. {{message}}" },
+      "emDash": { "en": "—", "es": "—", "fr": "—", "pt": "—", "de": "—" }
+    },
+    "copilot": {
+      "title": { "en": "AI Copilot", "es": "Copiloto IA", "fr": "Copilote IA", "pt": "Copiloto IA", "de": "KI-Copilot" },
+      "subtitle": { "en": "Ask anything. Switch modes for explain / summarise / practice.", "es": "Pregunta lo que quieras. Cambia de modo para explicar / resumir / practicar.", "fr": "Posez vos questions. Changez de mode pour expliquer / résumer / pratiquer.", "pt": "Pergunte qualquer coisa. Troque de modo para explicar / resumir / praticar.", "de": "Fragen Sie alles. Wechseln Sie den Modus zum Erklären / Zusammenfassen / Üben." },
+      "empty": {
+        "title": { "en": "Try a starter prompt", "es": "Prueba un mensaje inicial", "fr": "Essayez une suggestion", "pt": "Experimente um prompt inicial", "de": "Probieren Sie einen Startprompt" },
+        "subtitle": { "en": "This is a demo-ready AI flow with simulated streaming.", "es": "Flujo de IA listo para demo con transmisión simulada.", "fr": "Flux IA de démonstration avec streaming simulé.", "pt": "Fluxo de IA pronto para demo com streaming simulado.", "de": "Demo-fähiger KI-Ablauf mit simuliertem Streaming." }
+      },
+      "prompts": {
+        "newton": { "en": "Help me understand Newton's 3rd Law", "es": "Ayúdame a entender la tercera ley de Newton", "fr": "Aidez-moi à comprendre la 3e loi de Newton", "pt": "Ajude-me a entender a 3ª lei de Newton", "de": "Hilf mir, Newtons 3. Gesetz zu verstehen" },
+        "summariseNotes": { "en": "Summarise these notes and give me 5 key points", "es": "Resume estas notas y dame 5 puntos clave", "fr": "Résumez ces notes et donnez-moi 5 points clés", "pt": "Resuma estas notas e me dê 5 pontos principais", "de": "Fasse diese Notizen zusammen und gib mir 5 Kernpunkte" },
+        "photosynthesis": { "en": "Generate 3 practice questions on photosynthesis", "es": "Genera 3 preguntas de práctica sobre fotosíntesis", "fr": "Générez 3 questions d'entraînement sur la photosynthèse", "pt": "Gere 3 questões de prática sobre fotossíntese", "de": "Erstelle 3 Übungsfragen zur Photosynthese" },
+        "studyPlan": { "en": "What should I study for tomorrow? Build a quick plan.", "es": "¿Qué debo estudiar para mañana? Crea un plan rápido.", "fr": "Que dois-je étudier pour demain ? Créez un plan rapide.", "pt": "O que devo estudar para amanhã? Monte um plano rápido.", "de": "Was soll ich morgen lernen? Erstelle einen schnellen Plan." }
+      },
+      "modes": {
+        "qa": { "en": "Q&A", "es": "Preguntas", "fr": "Q&R", "pt": "Perguntas", "de": "Fragen" },
+        "explain": { "en": "Explain", "es": "Explicar", "fr": "Expliquer", "pt": "Explicar", "de": "Erklären" },
+        "summarise": { "en": "Summarise", "es": "Resumir", "fr": "Résumer", "pt": "Resumir", "de": "Zusammenfassen" },
+        "practice": { "en": "Practice", "es": "Practicar", "fr": "Pratiquer", "pt": "Praticar", "de": "Üben" },
+        "translate": { "en": "Translate", "es": "Traducir", "fr": "Traduire", "pt": "Traduzir", "de": "Übersetzen" }
+      },
+      "input": {
+        "placeholder": { "en": "Type a message…", "es": "Escribe un mensaje…", "fr": "Tapez un message…", "pt": "Digite uma mensagem…", "de": "Nachricht eingeben…" },
+        "tip": { "en": "Tip: Press Ctrl/⌘ + Enter to send.", "es": "Consejo: Ctrl/⌘ + Enter para enviar.", "fr": "Astuce : Ctrl/⌘ + Entrée pour envoyer.", "pt": "Dica: Ctrl/⌘ + Enter para enviar.", "de": "Tipp: Strg/⌘ + Eingabe zum Senden." }
+      },
+      "typing": { "en": "Thinking…", "es": "Pensando…", "fr": "Réflexion…", "pt": "Pensando…", "de": "Denke nach…" }
+    }
+  },
+  "signup": {
+    "validation": {
+      "emailRequired": { "en": "Email is required", "es": "El correo es obligatorio", "fr": "L'e-mail est requis", "pt": "O e-mail é obrigatório", "de": "E-Mail ist erforderlich" },
+      "passwordRequired": { "en": "Password is required", "es": "La contraseña es obligatoria", "fr": "Le mot de passe est requis", "pt": "A senha é obrigatória", "de": "Passwort ist erforderlich" },
+      "passwordMinLength": { "en": "Password must be at least 10 characters", "es": "La contraseña debe tener al menos 10 caracteres", "fr": "Le mot de passe doit contenir au moins 10 caractères", "pt": "A senha deve ter pelo menos 10 caracteres", "de": "Das Passwort muss mindestens 10 Zeichen haben" },
+      "passwordsMismatch": { "en": "Passwords do not match", "es": "Las contraseñas no coinciden", "fr": "Les mots de passe ne correspondent pas", "pt": "As senhas não coincidem", "de": "Passwörter stimmen nicht überein" },
+      "firstNameRequired": { "en": "First name is required", "es": "El nombre es obligatorio", "fr": "Le prénom est requis", "pt": "O nome é obrigatório", "de": "Vorname ist erforderlich" },
+      "lastNameRequired": { "en": "Last name is required", "es": "El apellido es obligatorio", "fr": "Le nom est requis", "pt": "O sobrenome é obrigatório", "de": "Nachname ist erforderlich" },
+      "organizationNameRequired": { "en": "Organization name is required", "es": "El nombre de la organización es obligatorio", "fr": "Le nom de l'organisation est requis", "pt": "O nome da organização é obrigatório", "de": "Organisationsname ist erforderlich" },
+      "institutionNameRequired": { "en": "Institution name is required", "es": "El nombre de la institución es obligatorio", "fr": "Le nom de l'établissement est requis", "pt": "O nome da instituição é obrigatório", "de": "Name der Institution ist erforderlich" },
+      "institutionAdminEmailRequired": { "en": "Institution admin email is required", "es": "El correo del administrador de la institución es obligatorio", "fr": "L'e-mail de l'administrateur de l'établissement est requis", "pt": "O e-mail do administrador da instituição é obrigatório", "de": "E-Mail des Institutionsadministrators ist erforderlich" }
+    }
+  },
+  "shared": {
+    "selectDropdown": {
+      "placeholder": { "en": "Click to select", "es": "Haz clic para seleccionar", "fr": "Cliquez pour sélectionner", "pt": "Clique para selecionar", "de": "Klicken zum Auswählen" }
+    }
+  }
+}

@@ -51,11 +51,13 @@ import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
 
+import { useTranslation } from 'react-i18next'
 const MARKETING_STRATEGIST_SLUG = 'marketing-branding-strategist'
 
 type TabType = 'marketing-concepts' | 'branding' | 'digital-marketing' | 'market-research' | 'campaigns' | 'standards' | 'resources'
 
 const MarketingBrandingStrategist = () => {
+  const { t } = useTranslation()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const [activeTab, setActiveTab] = useState<TabType>('marketing-concepts')
   const [gradeLevel, setGradeLevel] = useState('High School (9-12)')
@@ -298,13 +300,13 @@ const MarketingBrandingStrategist = () => {
   }
 
   const tabs = [
-    { id: 'marketing-concepts' as TabType, label: 'Marketing Concepts', icon: BookOpen },
-    { id: 'branding' as TabType, label: 'Branding', icon: Palette },
-    { id: 'digital-marketing' as TabType, label: 'Digital Marketing', icon: Zap },
-    { id: 'market-research' as TabType, label: 'Market Research', icon: Search },
-    { id: 'campaigns' as TabType, label: 'Campaigns', icon: Megaphone },
-    { id: 'standards' as TabType, label: 'Standards', icon: CheckCircle },
-    { id: 'resources' as TabType, label: 'Resources', icon: FileText },
+    { id: 'marketing-concepts' as TabType, label: t('marketingBrandingStrategist.tabs.marketing-concepts'), icon: BookOpen },
+    { id: 'branding' as TabType, label: t('marketingBrandingStrategist.tabs.branding'), icon: Palette },
+    { id: 'digital-marketing' as TabType, label: t('marketingBrandingStrategist.tabs.digital-marketing'), icon: Zap },
+    { id: 'market-research' as TabType, label: t('marketingBrandingStrategist.tabs.market-research'), icon: Search },
+    { id: 'campaigns' as TabType, label: t('marketingBrandingStrategist.tabs.campaigns'), icon: Megaphone },
+    { id: 'standards' as TabType, label: t('marketingBrandingStrategist.tabs.standards'), icon: CheckCircle },
+    { id: 'resources' as TabType, label: t('marketingBrandingStrategist.tabs.resources'), icon: FileText },
   ]
   // Exclude last sub-chatbot from UI; data still from backend for rest
   const visibleTabs = tabs.slice(0, -1)
@@ -329,29 +331,23 @@ const MarketingBrandingStrategist = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-3xl font-bold">Marketing & Branding Strategist</h1>
+                  <h1 className="text-3xl font-bold">{t('marketingBrandingStrategist.marketingBrandingStrategist')}</h1>
                   <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
                     <Star className="h-3 w-3" /> 4.8★
                   </span>
                   <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" /> Premium
-                  </span>
+                    <Lock className="inline h-3 w-3 mr-1" />{t('marketingBrandingStrategist.premium')}</span>
                   <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
-                    <Globe className="inline h-3 w-3 mr-1" /> International Standards
-                  </span>
+                    <Globe className="inline h-3 w-3 mr-1" />{t('marketingBrandingStrategist.internationalStandards')}</span>
                 </div>
-                <p className="mt-2 text-pink-100">
-                  Comprehensive marketing and branding education aligned with international standards (AMA, CIM, IAA, ESOMAR, GDPR). 
-                  Help students master marketing fundamentals, branding strategies, digital marketing channels, and market research 
-                  through evidence-based pedagogy and global best practices.
-                </p>
+                <p className="mt-2 text-blue-100">{t('marketingBrandingStrategist.heroDescription')}</p>
               </div>
             </div>
             
             {/* Quick Settings */}
             <div className="flex flex-wrap gap-4 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Grade Level:</label>
+                <label className="text-sm font-medium">{t('marketingBrandingStrategist.gradeLevel')}</label>
                 <select
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
@@ -397,13 +393,8 @@ const MarketingBrandingStrategist = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-pink-50 to-rose-50 rounded-xl p-6 border border-pink-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <BookOpen className="h-6 w-6 text-pink-600" />
-                  Marketing Fundamentals
-                </h2>
-                <p className="text-gray-700 mb-4">
-                  Explore core marketing concepts tailored to different grade levels. Each concept includes key principles, 
-                  examples, activities, and real-world applications.
-                </p>
+                  <BookOpen className="h-6 w-6 text-pink-600" />{t('marketingBrandingStrategist.marketingFundamentals')}</h2>
+                <p className="text-gray-700 mb-4">{t('marketingBrandingStrategist.exploreCoreMarketingConceptsTailoredToDifferentGradeLev')}</p>
                 <button
                   onClick={handleLoadMarketingConcepts}
                   disabled={isGenerating}
@@ -411,14 +402,10 @@ const MarketingBrandingStrategist = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('marketingBrandingStrategist.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load Marketing Concepts
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('marketingBrandingStrategist.loadMarketingConcepts')}</>
                   )}
                 </button>
               </div>
@@ -454,7 +441,7 @@ const MarketingBrandingStrategist = () => {
                         {selectedConcept?.id === concept.id && (
                           <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Key Principles</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.keyPrinciples')}</h4>
                               <ul className="list-disc list-inside space-y-1 text-gray-700">
                                 {concept.keyPrinciples.map((principle, i) => (
                                   <li key={i}>{principle}</li>
@@ -464,7 +451,7 @@ const MarketingBrandingStrategist = () => {
 
                             <div className="grid md:grid-cols-2 gap-4">
                               <div>
-                                <h4 className="font-semibold text-gray-900 mb-2">Examples</h4>
+                                <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.examples')}</h4>
                                 <ul className="list-disc list-inside space-y-1 text-gray-700">
                                   {concept.examples.map((example, i) => (
                                     <li key={i}>{example}</li>
@@ -472,7 +459,7 @@ const MarketingBrandingStrategist = () => {
                                 </ul>
                               </div>
                               <div>
-                                <h4 className="font-semibold text-gray-900 mb-2">Activities</h4>
+                                <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.activities')}</h4>
                                 <ul className="list-disc list-inside space-y-1 text-gray-700">
                                   {concept.activities.map((activity, i) => (
                                     <li key={i}>{activity}</li>
@@ -482,7 +469,7 @@ const MarketingBrandingStrategist = () => {
                             </div>
 
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Tools</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.tools')}</h4>
                               <div className="flex flex-wrap gap-2">
                                 {concept.tools.map((tool, i) => (
                                   <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -493,7 +480,7 @@ const MarketingBrandingStrategist = () => {
                             </div>
 
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Real-World Applications</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.realWorldApplications')}</h4>
                               <ul className="list-disc list-inside space-y-1 text-gray-700">
                                 {concept.realWorldApplications.map((app, i) => (
                                   <li key={i}>{app}</li>
@@ -514,12 +501,8 @@ const MarketingBrandingStrategist = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Palette className="h-6 w-6 text-purple-600" />
-                  Branding Strategies
-                </h2>
-                <p className="text-gray-700 mb-4">
-                  Explore comprehensive branding strategies including positioning, storytelling, and rebranding approaches.
-                </p>
+                  <Palette className="h-6 w-6 text-purple-600" />{t('marketingBrandingStrategist.brandingStrategies')}</h2>
+                <p className="text-gray-700 mb-4">{t('marketingBrandingStrategist.exploreComprehensiveBrandingStrategiesIncludingPosition')}</p>
                 <button
                   onClick={handleLoadBrandingStrategies}
                   disabled={isGenerating}
@@ -527,14 +510,10 @@ const MarketingBrandingStrategist = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('marketingBrandingStrategist.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load Branding Strategies
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('marketingBrandingStrategist.loadBrandingStrategies')}</>
                   )}
                 </button>
               </div>
@@ -558,7 +537,7 @@ const MarketingBrandingStrategist = () => {
                       {selectedStrategy?.id === strategy.id && (
                         <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Components</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.components')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {strategy.components.map((component, i) => (
                                 <li key={i}>{component}</li>
@@ -567,7 +546,7 @@ const MarketingBrandingStrategist = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Implementation Steps</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.implementationSteps')}</h4>
                             <ol className="list-decimal list-inside space-y-1 text-gray-700">
                               {strategy.steps.map((step, i) => (
                                 <li key={i}>{step}</li>
@@ -577,7 +556,7 @@ const MarketingBrandingStrategist = () => {
 
                           <div className="grid md:grid-cols-2 gap-4">
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Benefits</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.benefits')}</h4>
                               <ul className="list-disc list-inside space-y-1 text-gray-700">
                                 {strategy.benefits.map((benefit, i) => (
                                   <li key={i}>{benefit}</li>
@@ -585,7 +564,7 @@ const MarketingBrandingStrategist = () => {
                               </ul>
                             </div>
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Best Practices</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.bestPractices')}</h4>
                               <ul className="list-disc list-inside space-y-1 text-gray-700">
                                 {strategy.bestPractices.map((practice, i) => (
                                   <li key={i}>{practice}</li>
@@ -595,7 +574,7 @@ const MarketingBrandingStrategist = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Examples</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.examples')}</h4>
                             <div className="flex flex-wrap gap-2">
                               {strategy.examples.map((example, i) => (
                                 <span key={i} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
@@ -618,12 +597,8 @@ const MarketingBrandingStrategist = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Zap className="h-6 w-6 text-blue-600" />
-                  Digital Marketing Channels
-                </h2>
-                <p className="text-gray-700 mb-4">
-                  Explore various digital marketing channels, platforms, best practices, and metrics for each channel.
-                </p>
+                  <Zap className="h-6 w-6 text-blue-600" />{t('marketingBrandingStrategist.digitalMarketingChannels')}</h2>
+                <p className="text-gray-700 mb-4">{t('marketingBrandingStrategist.exploreVariousDigitalMarketingChannelsPlatformsBestPrac')}</p>
                 <button
                   onClick={handleLoadDigitalChannels}
                   disabled={isGenerating}
@@ -631,14 +606,10 @@ const MarketingBrandingStrategist = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('marketingBrandingStrategist.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load Digital Channels
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('marketingBrandingStrategist.loadDigitalChannels')}</>
                   )}
                 </button>
               </div>
@@ -662,7 +633,7 @@ const MarketingBrandingStrategist = () => {
                       {selectedChannel?.id === channel.id && (
                         <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Platforms</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.platforms')}</h4>
                             <div className="flex flex-wrap gap-2">
                               {channel.platforms.map((platform, i) => (
                                 <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -674,7 +645,7 @@ const MarketingBrandingStrategist = () => {
 
                           <div className="grid md:grid-cols-2 gap-4">
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Best Practices</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.bestPractices')}</h4>
                               <ul className="list-disc list-inside space-y-1 text-gray-700">
                                 {channel.bestPractices.map((practice, i) => (
                                   <li key={i}>{practice}</li>
@@ -682,7 +653,7 @@ const MarketingBrandingStrategist = () => {
                               </ul>
                             </div>
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Key Metrics</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.keyMetrics')}</h4>
                               <ul className="list-disc list-inside space-y-1 text-gray-700">
                                 {channel.metrics.map((metric, i) => (
                                   <li key={i}>{metric}</li>
@@ -692,7 +663,7 @@ const MarketingBrandingStrategist = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Tools</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.tools')}</h4>
                             <div className="flex flex-wrap gap-2">
                               {channel.tools.map((tool, i) => (
                                 <span key={i} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
@@ -715,12 +686,8 @@ const MarketingBrandingStrategist = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Search className="h-6 w-6 text-green-600" />
-                  Market Research Methods
-                </h2>
-                <p className="text-gray-700 mb-4">
-                  Explore various market research methodologies, tools, and best practices for gathering consumer insights.
-                </p>
+                  <Search className="h-6 w-6 text-green-600" />{t('marketingBrandingStrategist.marketResearchMethods')}</h2>
+                <p className="text-gray-700 mb-4">{t('marketingBrandingStrategist.exploreVariousMarketResearchMethodologiesToolsAndBestPr')}</p>
                 <button
                   onClick={handleLoadResearchMethods}
                   disabled={isGenerating}
@@ -728,14 +695,10 @@ const MarketingBrandingStrategist = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('marketingBrandingStrategist.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load Research Methods
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('marketingBrandingStrategist.loadResearchMethods')}</>
                   )}
                 </button>
               </div>
@@ -759,7 +722,7 @@ const MarketingBrandingStrategist = () => {
                       {selectedMethod?.id === method.id && (
                         <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Use Cases</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.useCases')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {method.useCases.map((useCase, i) => (
                                 <li key={i}>{useCase}</li>
@@ -768,7 +731,7 @@ const MarketingBrandingStrategist = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Steps</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.steps')}</h4>
                             <ol className="list-decimal list-inside space-y-1 text-gray-700">
                               {method.steps.map((step, i) => (
                                 <li key={i}>{step}</li>
@@ -778,7 +741,7 @@ const MarketingBrandingStrategist = () => {
 
                           <div className="grid md:grid-cols-2 gap-4">
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Advantages</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.advantages')}</h4>
                               <ul className="list-disc list-inside space-y-1 text-gray-700">
                                 {method.advantages.map((advantage, i) => (
                                   <li key={i}>{advantage}</li>
@@ -786,7 +749,7 @@ const MarketingBrandingStrategist = () => {
                               </ul>
                             </div>
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Limitations</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.limitations')}</h4>
                               <ul className="list-disc list-inside space-y-1 text-gray-700">
                                 {method.limitations.map((limitation, i) => (
                                   <li key={i}>{limitation}</li>
@@ -796,7 +759,7 @@ const MarketingBrandingStrategist = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Tools</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.tools')}</h4>
                             <div className="flex flex-wrap gap-2">
                               {method.tools.map((tool, i) => (
                                 <span key={i} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
@@ -819,43 +782,35 @@ const MarketingBrandingStrategist = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6 border border-orange-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Megaphone className="h-6 w-6 text-orange-600" />
-                  Marketing Campaign Generator
-                </h2>
+                  <Megaphone className="h-6 w-6 text-orange-600" />{t('marketingBrandingStrategist.marketingCampaignGenerator')}</h2>
                 <div className="grid md:grid-cols-3 gap-4 mb-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Product/Service
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('marketingBrandingStrategist.productService')}</label>
                     <input
                       type="text"
                       value={product}
                       onChange={(e) => setProduct(e.target.value)}
-                      placeholder="e.g., New smartphone"
+                      placeholder={t('marketingBrandingStrategist.eGNewSmartphone')}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Target Audience
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('marketingBrandingStrategist.targetAudience')}</label>
                     <input
                       type="text"
                       value={targetAudience}
                       onChange={(e) => setTargetAudience(e.target.value)}
-                      placeholder="e.g., Young professionals"
+                      placeholder={t('marketingBrandingStrategist.eGYoungProfessionals')}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Primary Objective
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('marketingBrandingStrategist.primaryObjective')}</label>
                     <input
                       type="text"
                       value={objective}
                       onChange={(e) => setObjective(e.target.value)}
-                      placeholder="e.g., Increase brand awareness"
+                      placeholder={t('marketingBrandingStrategist.eGIncreaseBrandAwareness')}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
                     />
                   </div>
@@ -867,14 +822,10 @@ const MarketingBrandingStrategist = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Generating...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('marketingBrandingStrategist.generating')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Generate Campaign Plan
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('marketingBrandingStrategist.generateCampaignPlan')}</>
                   )}
                 </button>
               </div>
@@ -900,7 +851,7 @@ const MarketingBrandingStrategist = () => {
 
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Objectives</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.objectives')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {generatedCampaign.objectives.map((obj, i) => (
                           <li key={i}>{obj}</li>
@@ -909,7 +860,7 @@ const MarketingBrandingStrategist = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Channels</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.channels')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {generatedCampaign.channels.map((channel, i) => (
                           <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -920,7 +871,7 @@ const MarketingBrandingStrategist = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Key Messages</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.keyMessages')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {generatedCampaign.keyMessages.map((message, i) => (
                           <li key={i}>{message}</li>
@@ -929,7 +880,7 @@ const MarketingBrandingStrategist = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Tactics</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.tactics')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {generatedCampaign.tactics.map((tactic, i) => (
                           <li key={i}>{tactic}</li>
@@ -938,7 +889,7 @@ const MarketingBrandingStrategist = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Success Metrics</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.successMetrics')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {generatedCampaign.successMetrics.map((metric, i) => (
                           <li key={i}>{metric}</li>
@@ -956,12 +907,8 @@ const MarketingBrandingStrategist = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 border border-indigo-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <CheckCircle className="h-6 w-6 text-indigo-600" />
-                  International Marketing Standards
-                </h2>
-                <p className="text-gray-700 mb-4">
-                  Access comprehensive international standards for marketing education from leading organizations worldwide.
-                </p>
+                  <CheckCircle className="h-6 w-6 text-indigo-600" />{t('marketingBrandingStrategist.internationalMarketingStandards')}</h2>
+                <p className="text-gray-700 mb-4">{t('marketingBrandingStrategist.accessComprehensiveInternationalStandardsForMarketingEd')}</p>
                 <button
                   onClick={handleLoadStandards}
                   disabled={isGenerating}
@@ -969,14 +916,10 @@ const MarketingBrandingStrategist = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('marketingBrandingStrategist.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load All Standards
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('marketingBrandingStrategist.loadAllStandards')}</>
                   )}
                 </button>
               </div>
@@ -1008,7 +951,7 @@ const MarketingBrandingStrategist = () => {
                       {selectedStandard?.id === standard.id && (
                         <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Key Components</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('marketingBrandingStrategist.keyComponents')}</h4>
                             <div className="flex flex-wrap gap-2">
                               {standard.keyComponents.map((component, i) => (
                                 <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -1019,14 +962,14 @@ const MarketingBrandingStrategist = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-3">Competencies</h4>
+                            <h4 className="font-semibold text-gray-900 mb-3">{t('marketingBrandingStrategist.competencies')}</h4>
                             <div className="space-y-3">
                               {standard.competencies.map((competency, i) => (
                                 <div key={i} className="border-l-4 border-indigo-500 pl-4">
                                   <h5 className="font-semibold text-gray-900">{competency.competency}</h5>
                                   <p className="text-sm text-gray-700 mt-1">{competency.description}</p>
                                   <div className="mt-2">
-                                    <span className="text-xs font-medium text-gray-700">Indicators:</span>
+                                    <span className="text-xs font-medium text-gray-700">{t('marketingBrandingStrategist.indicators')}</span>
                                     <ul className="list-disc list-inside space-y-1 text-sm text-gray-700 mt-1">
                                       {competency.indicators.map((indicator, j) => (
                                         <li key={j}>{indicator}</li>
@@ -1051,111 +994,99 @@ const MarketingBrandingStrategist = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl p-6 border border-gray-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <FileText className="h-6 w-6 text-gray-600" />
-                  Marketing & Branding Resources
-                </h2>
-                <p className="text-gray-600">
-                  Curated resources for marketing concepts, branding strategies, digital marketing, and market research.
-                </p>
+                  <FileText className="h-6 w-6 text-gray-600" />{t('marketingBrandingStrategist.marketingBrandingResources')}</h2>
+                <p className="text-gray-600">{t('marketingBrandingStrategist.curatedResourcesForMarketingConceptsBrandingStrategiesD')}</p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <BookOpen className="h-5 w-5 text-pink-600" />
-                    Marketing Fundamentals
-                  </h3>
+                    <BookOpen className="h-5 w-5 text-pink-600" />{t('marketingBrandingStrategist.marketingFundamentals')}</h3>
                   <ul className="space-y-2 text-gray-700">
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-pink-600" />
-                      <span>AMA Marketing Education</span>
+                      <span>{t('marketingBrandingStrategist.amaMarketingEducation')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-pink-600" />
-                      <span>CIM Marketing Resources</span>
+                      <span>{t('marketingBrandingStrategist.cimMarketingResources')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-pink-600" />
-                      <span>Marketing Case Studies</span>
+                      <span>{t('marketingBrandingStrategist.marketingCaseStudies')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-pink-600" />
-                      <span>Marketing Tools & Templates</span>
+                      <span>{t('marketingBrandingStrategist.marketingToolsTemplates')}</span>
                     </li>
                   </ul>
                 </div>
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <Palette className="h-5 w-5 text-purple-600" />
-                    Branding Resources
-                  </h3>
+                    <Palette className="h-5 w-5 text-purple-600" />{t('marketingBrandingStrategist.brandingResources')}</h3>
                   <ul className="space-y-2 text-gray-700">
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-purple-600" />
-                      <span>Brand Strategy Guides</span>
+                      <span>{t('marketingBrandingStrategist.brandStrategyGuides')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-purple-600" />
-                      <span>Brand Identity Design Tools</span>
+                      <span>{t('marketingBrandingStrategist.brandIdentityDesignTools')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-purple-600" />
-                      <span>Brand Storytelling Examples</span>
+                      <span>{t('marketingBrandingStrategist.brandStorytellingExamples')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-purple-600" />
-                      <span>Rebranding Case Studies</span>
+                      <span>{t('marketingBrandingStrategist.rebrandingCaseStudies')}</span>
                     </li>
                   </ul>
                 </div>
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <Zap className="h-5 w-5 text-blue-600" />
-                    Digital Marketing Tools
-                  </h3>
+                    <Zap className="h-5 w-5 text-blue-600" />{t('marketingBrandingStrategist.digitalMarketingTools')}</h3>
                   <ul className="space-y-2 text-gray-700">
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-blue-600" />
-                      <span>Google Analytics Academy</span>
+                      <span>{t('marketingBrandingStrategist.googleAnalyticsAcademy')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-blue-600" />
-                      <span>Social Media Marketing Guides</span>
+                      <span>{t('marketingBrandingStrategist.socialMediaMarketingGuides')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-blue-600" />
-                      <span>SEO Best Practices</span>
+                      <span>{t('marketingBrandingStrategist.seoBestPractices')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-blue-600" />
-                      <span>Email Marketing Platforms</span>
+                      <span>{t('marketingBrandingStrategist.emailMarketingPlatforms')}</span>
                     </li>
                   </ul>
                 </div>
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <Search className="h-5 w-5 text-green-600" />
-                    Market Research Tools
-                  </h3>
+                    <Search className="h-5 w-5 text-green-600" />{t('marketingBrandingStrategist.marketResearchTools')}</h3>
                   <ul className="space-y-2 text-gray-700">
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-green-600" />
-                      <span>ESOMAR Research Resources</span>
+                      <span>{t('marketingBrandingStrategist.esomarResearchResources')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-green-600" />
-                      <span>Survey Platforms</span>
+                      <span>{t('marketingBrandingStrategist.surveyPlatforms')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-green-600" />
-                      <span>Data Analysis Tools</span>
+                      <span>{t('marketingBrandingStrategist.dataAnalysisTools')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-green-600" />
-                      <span>Research Methodology Guides</span>
+                      <span>{t('marketingBrandingStrategist.researchMethodologyGuides')}</span>
                     </li>
                   </ul>
                 </div>

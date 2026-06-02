@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Table from '@mui/material/Table';
 import { Box } from '@mui/material';
 import TableContainer from '@mui/material/TableContainer';
@@ -19,6 +20,7 @@ export const CustomTable = ({
   centerHeaderColumnName,
   noHeader,
 }) => {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedIds, setSelectedIds] = useState([]);
   const [page, setPage] = useState(
@@ -149,6 +151,12 @@ export const CustomTable = ({
           rowsPerPage={rowsPerPage}
           onRowsPerPageChange={handleChangeRowsPerPage}
           rowsPerPageOptions={[20, 50, 100]}
+          labelRowsPerPage={t('table.rowsPerPage')}
+          labelDisplayedRows={({ from, to, count }) =>
+            `${from}–${to} ${t('table.of')} ${
+              count !== -1 ? count : `more than ${to}`
+            }`
+          }
         />
       )}
     </Box>

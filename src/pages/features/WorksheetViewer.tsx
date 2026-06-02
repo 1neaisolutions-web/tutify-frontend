@@ -8,7 +8,9 @@ import { getWorksheet, Worksheet } from '../../api/contentIngestion'
 import { WorksheetDisplay } from '../../components/contentIngestion/WorksheetDisplay'
 import { useSnackbar } from '../../hooks/useSnackbar'
 
+import { useTranslation } from 'react-i18next'
 export const WorksheetViewer = () => {
+  const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const [searchParams] = useSearchParams()
   const [worksheet, setWorksheet] = useState<Worksheet | null>(null)
@@ -50,7 +52,7 @@ export const WorksheetViewer = () => {
     return (
       <div className="min-h-screen bg-gray-50 p-6">
         <div className="max-w-4xl mx-auto">
-          <p className="text-gray-600">Worksheet not found</p>
+          <p className="text-gray-600">{t('worksheetViewerPage.worksheetNotFound')}</p>
         </div>
       </div>
     )
@@ -60,7 +62,7 @@ export const WorksheetViewer = () => {
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-4xl mx-auto">
         <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900">Worksheet</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{t('worksheetViewerPage.worksheet')}</h1>
           <div className="flex space-x-3">
             <button
               onClick={() => setShowAnswers(!showAnswers)}
@@ -69,12 +71,12 @@ export const WorksheetViewer = () => {
               {showAnswers ? (
                 <>
                   <EyeOff className="w-4 h-4" />
-                  <span>Hide Answers</span>
+                  <span>{t('worksheetViewerPage.hideAnswers')}</span>
                 </>
               ) : (
                 <>
                   <Eye className="w-4 h-4" />
-                  <span>Show Answers</span>
+                  <span>{t('worksheetViewerPage.showAnswers')}</span>
                 </>
               )}
             </button>
@@ -83,7 +85,7 @@ export const WorksheetViewer = () => {
               className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
             >
               <Printer className="w-4 h-4" />
-              <span>Print</span>
+              <span>{t('worksheetViewerPage.print')}</span>
             </button>
           </div>
         </div>

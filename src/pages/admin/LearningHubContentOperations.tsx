@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   AlertCircle,
@@ -108,7 +109,62 @@ function countArray(v: unknown): number {
 }
 
 const LearningHubContentOperations = () => {
+  const { t } = useTranslation()
   const dispatch = useDispatch()
+
+  const jobStatuses = useMemo(
+    () => [
+      { value: '', label: t('admin.learningHubOps.allStatuses') },
+      { value: 'pending', label: t('admin.learningHubOps.pending') },
+      { value: 'running', label: t('admin.learningHubOps.running') },
+      { value: 'reviewing', label: t('admin.learningHubOps.reviewing') },
+      { value: 'awaiting_human_approval', label: t('admin.learningHubOps.awaitingApproval') },
+      { value: 'publishing', label: t('admin.learningHubOps.publishing') },
+      { value: 'completed', label: t('admin.learningHubOps.completed') },
+      { value: 'failed', label: t('admin.learningHubOps.failed') },
+      { value: 'rejected', label: t('admin.learningHubOps.rejected') },
+    ],
+    [t],
+  )
+
+  const contentTypes = useMemo(
+    () => [
+      { value: '', label: t('admin.learningHubOps.allTypes') },
+      { value: 'micro_course', label: t('admin.learningHubOps.microCourse') },
+      { value: 'ai_guided_tutorial', label: t('admin.learningHubOps.aiGuidedTutorial') },
+      { value: 'learning_path', label: t('admin.learningHubOps.learningPath') },
+    ],
+    [t],
+  )
+
+  const registryStatuses = useMemo(
+    () => [
+      { value: 'published', label: t('admin.learningHubOps.published') },
+      { value: '', label: t('admin.learningHubOps.allStatuses') },
+      { value: 'draft', label: t('admin.learningHubOps.draft') },
+    ],
+    [t],
+  )
+
+  const registrySourceTypes = useMemo(
+    () => [
+      { value: '', label: t('admin.learningHubOps.allSourceTypes') },
+      { value: 'starter_seed', label: t('admin.learningHubOps.starterSeed') },
+      { value: 'content_factory', label: t('admin.learningHubOps.generatedFactory') },
+    ],
+    [t],
+  )
+
+  const jobOpsQuick = useMemo(
+    () => [
+      { status: '', label: t('admin.learningHubOps.allStatuses') },
+      { status: 'awaiting_human_approval', label: t('admin.learningHubOps.needsApproval') },
+      { status: 'failed', label: t('admin.learningHubOps.failed') },
+      { status: 'running', label: t('admin.learningHubOps.running') },
+      { status: 'pending', label: t('admin.learningHubOps.pending') },
+    ],
+    [t],
+  )
   const user = useSelector((state: { auth?: { user?: { role?: string } } }) => state.auth?.user)
   const role = user?.role || ''
   const canReview = role === 'super_admin' || role === 'org_admin'
@@ -337,7 +393,7 @@ const LearningHubContentOperations = () => {
         <div className="flex items-center gap-2">
           <BookOpen className="h-8 w-8 text-amber-600" />
           <div>
-            <h1 className="text-xl font-semibold text-gray-900">Learning Hub content operations</h1>
+            <h1 className="text-xl font-semibold text-gray-900">{t('admin.learningHubOps.title')}</h1>
             <p className="text-sm text-gray-600">
               Monitor generation jobs, approvals, and published registry content.
             </p>
@@ -379,8 +435,8 @@ const LearningHubContentOperations = () => {
       {/* Generate micro-course (admin trigger) */}
       <section className="rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div className="border-b border-gray-100 px-4 py-3">
-          <h2 className="text-sm font-semibold text-gray-900">Request AI micro-course generation</h2>
-          <p className="text-xs text-gray-500">Creates a content factory job and runs the pipeline to completion.</p>
+          <h2 className="text-sm font-semibold text-gray-900">{t('admin.learningHubOps.requestGeneration')}</h2>
+          <p className="text-xs text-gray-500">{t('admin.learningHubOps.requestHint')}</p>
         </div>
         <div className="flex flex-wrap gap-3 border-b border-gray-100 px-4 py-3">
           <select
@@ -529,7 +585,7 @@ const LearningHubContentOperations = () => {
           </div>
         )}
         <div className="flex flex-wrap gap-2 border-b border-gray-100 px-4 py-2">
-          {JOB_OPS_QUICK.map((q) => {
+          {jobOpsQuick.map((q) => {
             const active = (jobFilters.status || '') === q.status
             return (
               <button
@@ -553,7 +609,7 @@ const LearningHubContentOperations = () => {
             value={jobFilters.status}
             onChange={(e) => dispatch(setJobFilters({ status: e.target.value }))}
           >
-            {JOB_STATUSES.map((o) => (
+            {jobStatuses.map((o) => (
               <option key={o.value || 'all'} value={o.value}>
                 {o.label}
               </option>
@@ -564,7 +620,7 @@ const LearningHubContentOperations = () => {
             value={jobFilters.content_type}
             onChange={(e) => dispatch(setJobFilters({ content_type: e.target.value }))}
           >
-            {CONTENT_TYPES.map((o) => (
+            {contentTypes.map((o) => (
               <option key={o.value || 'all'} value={o.value}>
                 {o.label}
               </option>
@@ -937,7 +993,7 @@ const LearningHubContentOperations = () => {
             value={registryFilters.status}
             onChange={(e) => dispatch(setRegistryFilters({ status: e.target.value }))}
           >
-            {REGISTRY_STATUSES.map((o) => (
+            {registryStatuses.map((o) => (
               <option key={o.value || 'all'} value={o.value}>
                 {o.label}
               </option>
@@ -948,7 +1004,7 @@ const LearningHubContentOperations = () => {
             value={registryFilters.content_type}
             onChange={(e) => dispatch(setRegistryFilters({ content_type: e.target.value }))}
           >
-            {CONTENT_TYPES.map((o) => (
+            {contentTypes.map((o) => (
               <option key={`r-${o.value || 'all'}`} value={o.value}>
                 {o.label}
               </option>
@@ -959,7 +1015,7 @@ const LearningHubContentOperations = () => {
             value={registryFilters.source_type}
             onChange={(e) => dispatch(setRegistryFilters({ source_type: e.target.value }))}
           >
-            {REGISTRY_SOURCE_TYPES.map((o) => (
+            {registrySourceTypes.map((o) => (
               <option key={o.value || 'all-src'} value={o.value}>
                 {o.label}
               </option>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 const exams = [
@@ -5,20 +6,21 @@ const exams = [
 ];
 
 const ExamCenter = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
     <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Exams</h1>
-        <p className="text-sm text-gray-600 dark:text-gray-300">Prepare, take, and reflect (demo scaffolding).</p>
+        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.exam.title')}</h1>
+        <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.exam.subtitle')}</p>
       </div>
 
       <div className="px-6 py-6 max-w-3xl space-y-4">
         {exams.map((e) => (
           <div key={e.id} className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4">
             <h2 className="font-semibold text-gray-900 dark:text-gray-100">{e.title}</h2>
-            <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">Starts: {new Date(e.startsAt).toLocaleString()}</p>
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.common.startsAt', { date: new Date(e.startsAt).toLocaleString() })}</p>
             <div className="mt-4 flex flex-wrap gap-2">
               <button
                 type="button"

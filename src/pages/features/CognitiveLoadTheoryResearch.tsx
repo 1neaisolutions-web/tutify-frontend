@@ -25,6 +25,7 @@ import {
   Layers,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface CognitiveLoadType {
   type: string
   description: string
@@ -42,6 +43,7 @@ interface DesignPrinciple {
 const COGNITIVE_SLUG = 'cognitive-load-research'
 
 function CognitiveLoadTheoryResearchInner() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [activeSection, setActiveSection] = useState<'overview' | 'types' | 'principles' | 'strategies' | 'implementation'>('overview')
 
@@ -164,28 +166,19 @@ function CognitiveLoadTheoryResearchInner() {
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition"
           >
             <ArrowLeft className="h-5 w-5" />
-            <span className="text-sm font-semibold">Back to Learning Hub</span>
+            <span className="text-sm font-semibold">{t('cognitiveLoadTheoryResearch.backToLearningHub')}</span>
           </button>
           <div className="bg-white rounded-3xl shadow-xl p-8 border border-blue-100">
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-4">
-                  <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold uppercase tracking-wide">
-                    Learning science
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold uppercase tracking-wide">{t('cognitiveLoadTheoryResearch.learningScience')}</span>
                   <span className="text-gray-400">•</span>
                   <span className="text-sm text-gray-600 flex items-center gap-1">
-                    <Clock className="h-4 w-4" />
-                    7 min read
-                  </span>
+                    <Clock className="h-4 w-4" />{t('cognitiveLoadTheoryResearch.kMinRead')}</span>
                 </div>
-                <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                  Cognitive Load Theory: Optimizing Learning
-                </h1>
-                <p className="text-lg text-gray-700 leading-relaxed">
-                  Understanding how students process information and designing lessons that reduce cognitive overload. 
-                  Based on John Sweller's research on working memory and instructional design.
-                </p>
+                <h1 className="text-4xl font-bold text-gray-900 mb-4">{t('cognitiveLoadTheoryResearch.cognitiveLoadTheoryOptimizingLearning')}</h1>
+                <p className="text-lg text-gray-700 leading-relaxed">{t('cognitiveLoadTheoryResearch.understandingHowStudentsProcessInformationAndDesigningL')}</p>
               </div>
               <div className="flex items-center gap-2 ml-6">
                 <button className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition">
@@ -233,37 +226,31 @@ function CognitiveLoadTheoryResearchInner() {
             <div className="space-y-6">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Brain className="h-6 w-6 text-blue-600" />
-                  What is Cognitive Load Theory?
-                </h2>
+                  <Brain className="h-6 w-6 text-blue-600" />{t('cognitiveLoadTheoryResearch.whatIsCognitiveLoadTheory')}</h2>
                 <div className="prose max-w-none text-gray-700 space-y-4">
-                  <p>
-                    Cognitive Load Theory, developed by John Sweller, explains how our working memory processes information. 
-                    Working memory has limited capacity—we can only hold about 7±2 items at once. When this capacity is exceeded, 
-                    learning suffers.
-                  </p>
+                  <p>{t('cognitiveLoadTheoryResearch.cognitiveLoadTheoryDevelopedByJohnSwellerExplainsHowOur')}</p>
                   <div className="bg-blue-50 rounded-xl p-6 border border-blue-200 mt-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Concepts</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('cognitiveLoadTheoryResearch.keyConcepts')}</h3>
                     <ul className="space-y-3">
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold text-gray-900">Working Memory</p>
-                          <p className="text-sm text-gray-700">Limited capacity system that processes new information</p>
+                          <p className="font-semibold text-gray-900">{t('cognitiveLoadTheoryResearch.workingMemory')}</p>
+                          <p className="text-sm text-gray-700">{t('cognitiveLoadTheoryResearch.limitedCapacitySystemThatProcessesNewInformation')}</p>
                         </div>
                       </li>
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold text-gray-900">Long-Term Memory</p>
+                          <p className="font-semibold text-gray-900">{t('cognitiveLoadTheoryResearch.longTermMemory')}</p>
                           <p className="text-sm text-gray-700">Unlimited storage for organized knowledge (schemas)</p>
                         </div>
                       </li>
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold text-gray-900">Schema Construction</p>
-                          <p className="text-sm text-gray-700">Process of organizing information into meaningful patterns</p>
+                          <p className="font-semibold text-gray-900">{t('cognitiveLoadTheoryResearch.schemaConstruction')}</p>
+                          <p className="text-sm text-gray-700">{t('cognitiveLoadTheoryResearch.processOfOrganizingInformationIntoMeaningfulPatterns')}</p>
                         </div>
                       </li>
                     </ul>
@@ -273,33 +260,31 @@ function CognitiveLoadTheoryResearchInner() {
 
               <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl border border-indigo-200 p-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Target className="h-6 w-6 text-indigo-600" />
-                  The Goal: Optimize Cognitive Load
-                </h2>
+                  <Target className="h-6 w-6 text-indigo-600" />{t('cognitiveLoadTheoryResearch.theGoalOptimizeCognitiveLoad')}</h2>
                 <div className="grid md:grid-cols-3 gap-4">
                   <div className="bg-white rounded-xl p-6 border border-indigo-200">
                     <div className="flex items-center gap-2 mb-3">
                       <AlertTriangle className="h-5 w-5 text-red-600" />
-                      <h3 className="font-semibold text-gray-900">Reduce</h3>
+                      <h3 className="font-semibold text-gray-900">{t('cognitiveLoadTheoryResearch.reduce')}</h3>
                     </div>
-                    <p className="text-sm text-gray-700 mb-2">Extraneous Load</p>
-                    <p className="text-xs text-gray-600">Eliminate unnecessary mental effort from poor design</p>
+                    <p className="text-sm text-gray-700 mb-2">{t('cognitiveLoadTheoryResearch.extraneousLoad')}</p>
+                    <p className="text-xs text-gray-600">{t('cognitiveLoadTheoryResearch.eliminateUnnecessaryMentalEffortFromPoorDesign')}</p>
                   </div>
                   <div className="bg-white rounded-xl p-6 border border-indigo-200">
                     <div className="flex items-center gap-2 mb-3">
                       <Layers className="h-5 w-5 text-blue-600" />
-                      <h3 className="font-semibold text-gray-900">Manage</h3>
+                      <h3 className="font-semibold text-gray-900">{t('cognitiveLoadTheoryResearch.manage')}</h3>
                     </div>
-                    <p className="text-sm text-gray-700 mb-2">Intrinsic Load</p>
-                    <p className="text-xs text-gray-600">Break down complex content appropriately</p>
+                    <p className="text-sm text-gray-700 mb-2">{t('cognitiveLoadTheoryResearch.intrinsicLoad')}</p>
+                    <p className="text-xs text-gray-600">{t('cognitiveLoadTheoryResearch.breakDownComplexContentAppropriately')}</p>
                   </div>
                   <div className="bg-white rounded-xl p-6 border border-indigo-200">
                     <div className="flex items-center gap-2 mb-3">
                       <TrendingUp className="h-5 w-5 text-green-600" />
-                      <h3 className="font-semibold text-gray-900">Increase</h3>
+                      <h3 className="font-semibold text-gray-900">{t('cognitiveLoadTheoryResearch.increase')}</h3>
                     </div>
-                    <p className="text-sm text-gray-700 mb-2">Germane Load</p>
-                    <p className="text-xs text-gray-600">Encourage deep processing and schema construction</p>
+                    <p className="text-sm text-gray-700 mb-2">{t('cognitiveLoadTheoryResearch.germaneLoad')}</p>
+                    <p className="text-xs text-gray-600">{t('cognitiveLoadTheoryResearch.encourageDeepProcessingAndSchemaConstruction')}</p>
                   </div>
                 </div>
               </div>
@@ -309,7 +294,7 @@ function CognitiveLoadTheoryResearchInner() {
           {activeSection === 'types' && (
             <div className="space-y-6">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Three Types of Cognitive Load</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('cognitiveLoadTheoryResearch.threeTypesOfCognitiveLoad')}</h2>
                 <div className="space-y-6">
                   {cognitiveLoadTypes.map((load, idx) => (
                     <div key={idx} className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition">
@@ -326,7 +311,7 @@ function CognitiveLoadTheoryResearchInner() {
                       </div>
                       <div className="grid md:grid-cols-2 gap-4">
                         <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                          <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">Examples</p>
+                          <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">{t('cognitiveLoadTheoryResearch.examples')}</p>
                           <ul className="space-y-1">
                             {load.examples.map((example, exIdx) => (
                               <li key={exIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -337,7 +322,7 @@ function CognitiveLoadTheoryResearchInner() {
                           </ul>
                         </div>
                         <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                          <p className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-2">Strategies</p>
+                          <p className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-2">{t('cognitiveLoadTheoryResearch.strategies')}</p>
                           <ul className="space-y-1">
                             {load.strategies.map((strategy, stIdx) => (
                               <li key={stIdx} className="flex items-start gap-2 text-sm text-blue-700">
@@ -358,7 +343,7 @@ function CognitiveLoadTheoryResearchInner() {
           {activeSection === 'principles' && (
             <div className="space-y-6">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Instructional Design Principles</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('cognitiveLoadTheoryResearch.instructionalDesignPrinciples')}</h2>
                 <div className="space-y-6">
                   {designPrinciples.map((principle, idx) => (
                     <div key={idx} className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition">
@@ -370,7 +355,7 @@ function CognitiveLoadTheoryResearchInner() {
                           <h3 className="text-lg font-semibold text-gray-900 mb-2">{principle.principle}</h3>
                           <p className="text-gray-700 mb-4">{principle.description}</p>
                           <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                            <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">Examples</p>
+                            <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">{t('cognitiveLoadTheoryResearch.examples')}</p>
                             <ul className="space-y-2">
                               {principle.examples.map((example, exIdx) => (
                                 <li key={exIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -381,7 +366,7 @@ function CognitiveLoadTheoryResearchInner() {
                             </ul>
                           </div>
                           <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
-                            <p className="text-xs font-semibold text-blue-800 mb-1">Impact</p>
+                            <p className="text-xs font-semibold text-blue-800 mb-1">{t('cognitiveLoadTheoryResearch.impact')}</p>
                             <p className="text-sm text-blue-700">{principle.impact}</p>
                           </div>
                         </div>
@@ -396,34 +381,32 @@ function CognitiveLoadTheoryResearchInner() {
           {activeSection === 'strategies' && (
             <div className="space-y-6">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Practical Strategies</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('cognitiveLoadTheoryResearch.practicalStrategies')}</h2>
                 
                 <div className="space-y-6">
                   <div className="bg-red-50 rounded-xl p-6 border border-red-200">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                      <AlertTriangle className="h-5 w-5 text-red-600" />
-                      Reduce Extraneous Load
-                    </h3>
+                      <AlertTriangle className="h-5 w-5 text-red-600" />{t('cognitiveLoadTheoryResearch.reduceExtraneousLoad')}</h3>
                     <ul className="space-y-3">
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold text-gray-900">Simplify Visuals</p>
-                          <p className="text-sm text-gray-700">Remove decorative elements, use clear fonts, limit colors</p>
+                          <p className="font-semibold text-gray-900">{t('cognitiveLoadTheoryResearch.simplifyVisuals')}</p>
+                          <p className="text-sm text-gray-700">{t('cognitiveLoadTheoryResearch.removeDecorativeElementsUseClearFontsLimitColors')}</p>
                         </div>
                       </li>
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold text-gray-900">Integrate Information</p>
-                          <p className="text-sm text-gray-700">Place labels on diagrams, combine related content spatially</p>
+                          <p className="font-semibold text-gray-900">{t('cognitiveLoadTheoryResearch.integrateInformation')}</p>
+                          <p className="text-sm text-gray-700">{t('cognitiveLoadTheoryResearch.placeLabelsOnDiagramsCombineRelatedContentSpatially')}</p>
                         </div>
                       </li>
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold text-gray-900">Eliminate Redundancy</p>
-                          <p className="text-sm text-gray-700">Don't repeat information in multiple formats</p>
+                          <p className="font-semibold text-gray-900">{t('cognitiveLoadTheoryResearch.eliminateRedundancy')}</p>
+                          <p className="text-sm text-gray-700">{t('cognitiveLoadTheoryResearch.donTRepeatInformationInMultipleFormats')}</p>
                         </div>
                       </li>
                     </ul>
@@ -431,29 +414,27 @@ function CognitiveLoadTheoryResearchInner() {
 
                   <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                      <Layers className="h-5 w-5 text-blue-600" />
-                      Manage Intrinsic Load
-                    </h3>
+                      <Layers className="h-5 w-5 text-blue-600" />{t('cognitiveLoadTheoryResearch.manageIntrinsicLoad')}</h3>
                     <ul className="space-y-3">
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold text-gray-900">Chunk Information</p>
-                          <p className="text-sm text-gray-700">Break complex topics into smaller, manageable pieces</p>
+                          <p className="font-semibold text-gray-900">{t('cognitiveLoadTheoryResearch.chunkInformation')}</p>
+                          <p className="text-sm text-gray-700">{t('cognitiveLoadTheoryResearch.breakComplexTopicsIntoSmallerManageablePieces')}</p>
                         </div>
                       </li>
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold text-gray-900">Sequence Carefully</p>
-                          <p className="text-sm text-gray-700">Start simple, build complexity gradually</p>
+                          <p className="font-semibold text-gray-900">{t('cognitiveLoadTheoryResearch.sequenceCarefully')}</p>
+                          <p className="text-sm text-gray-700">{t('cognitiveLoadTheoryResearch.startSimpleBuildComplexityGradually')}</p>
                         </div>
                       </li>
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold text-gray-900">Use Worked Examples</p>
-                          <p className="text-sm text-gray-700">Show complete solutions before asking students to solve</p>
+                          <p className="font-semibold text-gray-900">{t('cognitiveLoadTheoryResearch.useWorkedExamples')}</p>
+                          <p className="text-sm text-gray-700">{t('cognitiveLoadTheoryResearch.showCompleteSolutionsBeforeAskingStudentsToSolve')}</p>
                         </div>
                       </li>
                     </ul>
@@ -461,29 +442,27 @@ function CognitiveLoadTheoryResearchInner() {
 
                   <div className="bg-green-50 rounded-xl p-6 border border-green-200">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                      <TrendingUp className="h-5 w-5 text-green-600" />
-                      Increase Germane Load
-                    </h3>
+                      <TrendingUp className="h-5 w-5 text-green-600" />{t('cognitiveLoadTheoryResearch.increaseGermaneLoad')}</h3>
                     <ul className="space-y-3">
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold text-gray-900">Encourage Connections</p>
-                          <p className="text-sm text-gray-700">Help students link new information to prior knowledge</p>
+                          <p className="font-semibold text-gray-900">{t('cognitiveLoadTheoryResearch.encourageConnections')}</p>
+                          <p className="text-sm text-gray-700">{t('cognitiveLoadTheoryResearch.helpStudentsLinkNewInformationToPriorKnowledge')}</p>
                         </div>
                       </li>
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold text-gray-900">Use Varied Examples</p>
-                          <p className="text-sm text-gray-700">Present concepts in different contexts to build robust schemas</p>
+                          <p className="font-semibold text-gray-900">{t('cognitiveLoadTheoryResearch.useVariedExamples')}</p>
+                          <p className="text-sm text-gray-700">{t('cognitiveLoadTheoryResearch.presentConceptsInDifferentContextsToBuildRobustSchemas')}</p>
                         </div>
                       </li>
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold text-gray-900">Promote Reflection</p>
-                          <p className="text-sm text-gray-700">Encourage students to think about their thinking</p>
+                          <p className="font-semibold text-gray-900">{t('cognitiveLoadTheoryResearch.promoteReflection')}</p>
+                          <p className="text-sm text-gray-700">{t('cognitiveLoadTheoryResearch.encourageStudentsToThinkAboutTheirThinking')}</p>
                         </div>
                       </li>
                     </ul>
@@ -496,35 +475,35 @@ function CognitiveLoadTheoryResearchInner() {
           {activeSection === 'implementation' && (
             <div className="space-y-6">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Implementation Guide</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('cognitiveLoadTheoryResearch.implementationGuide')}</h2>
                 
                 <div className="space-y-6">
                   <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Lesson Design Checklist</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('cognitiveLoadTheoryResearch.lessonDesignChecklist')}</h3>
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="bg-white rounded-lg p-4 border border-blue-200">
-                        <p className="text-sm font-semibold text-gray-900 mb-2">Before Teaching</p>
+                        <p className="text-sm font-semibold text-gray-900 mb-2">{t('cognitiveLoadTheoryResearch.beforeTeaching')}</p>
                         <ul className="space-y-1 text-sm text-gray-700">
                           <li className="flex items-start gap-2">
                             <CheckCircle2 className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                            <span>Simplify visuals and remove clutter</span>
+                            <span>{t('cognitiveLoadTheoryResearch.simplifyVisualsAndRemoveClutter')}</span>
                           </li>
                           <li className="flex items-start gap-2">
                             <CheckCircle2 className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                            <span>Chunk content into manageable pieces</span>
+                            <span>{t('cognitiveLoadTheoryResearch.chunkContentIntoManageablePieces')}</span>
                           </li>
                           <li className="flex items-start gap-2">
                             <CheckCircle2 className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                            <span>Prepare worked examples</span>
+                            <span>{t('cognitiveLoadTheoryResearch.prepareWorkedExamples')}</span>
                           </li>
                           <li className="flex items-start gap-2">
                             <CheckCircle2 className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                            <span>Integrate text and visuals spatially</span>
+                            <span>{t('cognitiveLoadTheoryResearch.integrateTextAndVisualsSpatially')}</span>
                           </li>
                         </ul>
                       </div>
                       <div className="bg-white rounded-lg p-4 border border-blue-200">
-                        <p className="text-sm font-semibold text-gray-900 mb-2">During Teaching</p>
+                        <p className="text-sm font-semibold text-gray-900 mb-2">{t('cognitiveLoadTheoryResearch.duringTeaching')}</p>
                         <ul className="space-y-1 text-sm text-gray-700">
                           <li className="flex items-start gap-2">
                             <CheckCircle2 className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
@@ -532,15 +511,15 @@ function CognitiveLoadTheoryResearchInner() {
                           </li>
                           <li className="flex items-start gap-2">
                             <CheckCircle2 className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                            <span>Present one concept at a time</span>
+                            <span>{t('cognitiveLoadTheoryResearch.presentOneConceptAtATime')}</span>
                           </li>
                           <li className="flex items-start gap-2">
                             <CheckCircle2 className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                            <span>Pause for processing time</span>
+                            <span>{t('cognitiveLoadTheoryResearch.pauseForProcessingTime')}</span>
                           </li>
                           <li className="flex items-start gap-2">
                             <CheckCircle2 className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                            <span>Help students make connections</span>
+                            <span>{t('cognitiveLoadTheoryResearch.helpStudentsMakeConnections')}</span>
                           </li>
                         </ul>
                       </div>
@@ -548,23 +527,23 @@ function CognitiveLoadTheoryResearchInner() {
                   </div>
 
                   <div className="bg-white rounded-xl p-6 border border-gray-200">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">Quick Wins</h3>
+                    <h3 className="text-xl font-bold text-gray-900 mb-4">{t('cognitiveLoadTheoryResearch.quickWins')}</h3>
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                        <p className="text-sm font-semibold text-blue-900 mb-2">Start Today</p>
-                        <p className="text-sm text-blue-700">Simplify one slide or handout by removing unnecessary elements</p>
+                        <p className="text-sm font-semibold text-blue-900 mb-2">{t('cognitiveLoadTheoryResearch.startToday')}</p>
+                        <p className="text-sm text-blue-700">{t('cognitiveLoadTheoryResearch.simplifyOneSlideOrHandoutByRemovingUnnecessaryElements')}</p>
                       </div>
                       <div className="bg-indigo-50 rounded-lg p-4 border border-indigo-200">
-                        <p className="text-sm font-semibold text-indigo-900 mb-2">This Week</p>
-                        <p className="text-sm text-indigo-700">Integrate labels directly onto diagrams instead of using a key</p>
+                        <p className="text-sm font-semibold text-indigo-900 mb-2">{t('cognitiveLoadTheoryResearch.thisWeek')}</p>
+                        <p className="text-sm text-indigo-700">{t('cognitiveLoadTheoryResearch.integrateLabelsDirectlyOntoDiagramsInsteadOfUsingAKey')}</p>
                       </div>
                       <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
-                        <p className="text-sm font-semibold text-purple-900 mb-2">This Month</p>
-                        <p className="text-sm text-purple-700">Create worked examples for complex problem types</p>
+                        <p className="text-sm font-semibold text-purple-900 mb-2">{t('cognitiveLoadTheoryResearch.thisMonth')}</p>
+                        <p className="text-sm text-purple-700">{t('cognitiveLoadTheoryResearch.createWorkedExamplesForComplexProblemTypes')}</p>
                       </div>
                       <div className="bg-pink-50 rounded-lg p-4 border border-pink-200">
-                        <p className="text-sm font-semibold text-pink-900 mb-2">Ongoing</p>
-                        <p className="text-sm text-pink-700">Monitor student understanding and adjust pacing</p>
+                        <p className="text-sm font-semibold text-pink-900 mb-2">{t('cognitiveLoadTheoryResearch.ongoing')}</p>
+                        <p className="text-sm text-pink-700">{t('cognitiveLoadTheoryResearch.monitorStudentUnderstandingAndAdjustPacing')}</p>
                       </div>
                     </div>
                   </div>

@@ -8,8 +8,10 @@ import { AuthLayout } from '../../../components/Auth/AuthLayout';
 import { verifyEmail, resendVerification } from '../../../redux/features/auth/authSlice';
 import { useSnackbar } from '../../../hooks/useSnackbar';
 import { CustomButton } from '../../../components/shared';
+import { useTranslation } from 'react-i18next';
 
 export const VerifyEmail = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { toast } = useSnackbar();
@@ -33,7 +35,7 @@ export const VerifyEmail = () => {
     if (token) {
       handleVerify(token);
     } else {
-      setError('Invalid verification token');
+      setError(t('verifyEmail.invalidToken'));
       setVerifying(false);
       setLoading(false);
     }
@@ -46,13 +48,13 @@ export const VerifyEmail = () => {
 
       if (result?.meta?.requestStatus === 'fulfilled') {
         setVerified(true);
-        toast.success('Email verified successfully!');
+        toast.success(t('snackbar.verifyEmail.success'));
       } else {
-        setError(result?.payload || 'Verification failed. The token may be invalid or expired.');
+        setError(result?.payload || t('verifyEmail.verificationFailed'));
       }
     } catch (err) {
       console.error('Verify email failed:', err);
-      setError('An error occurred during verification.');
+      setError(t('verifyEmail.verificationError'));
     } finally {
       setLoading(false);
       setVerifying(false);
@@ -61,7 +63,7 @@ export const VerifyEmail = () => {
 
   const handleResend = async () => {
     if (!email) {
-      toast.error('Email address is required');
+      toast.error(t('snackbar.verifyEmail.emailRequired'));
       return;
     }
 
@@ -70,13 +72,13 @@ export const VerifyEmail = () => {
       const result = await dispatch(resendVerification(email));
 
       if (result?.meta?.requestStatus === 'fulfilled') {
-        toast.success('Verification email sent! Please check your inbox.');
+        toast.success(t('snackbar.verifyEmail.resendSuccess'));
       } else {
-        toast.error(result?.payload || 'Failed to resend verification email.');
+        toast.error(result?.payload || t('snackbar.verifyEmail.resendError'));
       }
     } catch (err) {
       console.error('Resend verification failed:', err);
-      toast.error('An error occurred. Please try again.');
+      toast.error(t('snackbar.genericError'));
     } finally {
       setResending(false);
     }
@@ -89,11 +91,11 @@ export const VerifyEmail = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-full mb-4">
             <GraduationCap className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Verifying Email</h1>
-          <p className="text-gray-600">Please wait...</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('verifyEmail.verifyingTitle')}</h1>
+          <p className="text-gray-600">{t('verifyEmail.verifyingSubtitle')}</p>
         </div>
         <div className="card text-center">
-          <p className="text-gray-600">Verifying your email address...</p>
+          <p className="text-gray-600">{t('verifyEmail.verifyingMessage')}</p>
         </div>
       </AuthLayout>
     );
@@ -106,15 +108,15 @@ export const VerifyEmail = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
             <CheckCircle className="w-8 h-8 text-green-600" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Email Verified</h1>
-          <p className="text-gray-600">Your email has been verified successfully!</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('verifyEmail.successTitle')}</h1>
+          <p className="text-gray-600">{t('verifyEmail.successMessage')}</p>
         </div>
         <div className="card text-center">
           <p className="text-gray-600 mb-6">
-            You can now log in to your account.
+            {t('verifyEmail.successSubtitle')}
           </p>
           <Link to="/login" className="btn-primary inline-block">
-            Go to Login
+            {t('verifyEmail.goToLogin')}
           </Link>
         </div>
       </AuthLayout>
@@ -127,13 +129,13 @@ export const VerifyEmail = () => {
         <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4">
           <XCircle className="w-8 h-8 text-red-600" />
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Verification Failed</h1>
-        <p className="text-gray-600">{error || 'Unable to verify your email address.'}</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('verifyEmail.failedTitle')}</h1>
+        <p className="text-gray-600">{error || t('verifyEmail.failedMessage')}</p>
       </div>
 
       <div className="card text-center">
         <p className="text-gray-600 mb-6">
-          {error || 'The verification link may have expired or is invalid.'}
+          {error || t('verifyEmail.expiredMessage')}
         </p>
         <div className="space-y-3">
           <button
@@ -142,10 +144,10 @@ export const VerifyEmail = () => {
             disabled={resending || !email}
             className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {resending ? 'Sending...' : 'Resend Verification Email'}
+            {resending ? t('verifyEmail.resending') : t('verifyEmail.resendButton')}
           </button>
           <Link to="/login" className="block text-sm text-primary-600 hover:text-primary-700 font-medium">
-            Back to Login
+            {t('verifyEmail.backToLogin')}
           </Link>
         </div>
       </div>

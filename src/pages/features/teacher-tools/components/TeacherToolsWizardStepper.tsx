@@ -1,4 +1,5 @@
 import { Check } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 interface Props {
   steps: string[]
@@ -14,10 +15,11 @@ export function TeacherToolsWizardStepper({
   maxReachableStep,
   onStepClick,
 }: Props) {
+  const { t } = useTranslation()
   const maxReachable = maxReachableStep ?? steps.length - 1
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-wrap items-center gap-2" role="group" aria-label={t('teacherTools.ariaConfigureSteps')}>
       {steps.map((label, i) => {
         const done = i < current
         const active = i === current

@@ -1,0 +1,318 @@
+{
+  "common": {
+    "loading": "加载中…",
+    "cancel": "取消推荐",
+    "search": "站内搜索",
+    "addNew": "新增",
+    "save": "保存",
+    "upload": "上传",
+    "delete": "删除",
+    "export": "导出",
+    "all": "全系",
+    "back": "回到",
+    "comingSoon": "即将开放，敬请期待",
+    "comingSoonHint": "此功能尚未可用",
+    "noDataFound": "没找到数据",
+    "noDataFoundHint": "请尝试调整筛选条件或搜索。",
+    "retry": "再接再厉",
+    "showLess": "收起",
+    "showMore": "顯示更多"
+  },
+  "app": {
+    "name": "教师助理",
+    "studentName": ""
+  },
+  "languageDropdown": {
+    "loading": "正在加载语言",
+    "placeholder": "选择语言",
+    "searchPlaceholder": "搜索语言",
+    "listLabel": "语言",
+    "noMatch": "没有与「__ PH0 __」匹配的语言",
+    "count": "__ PH0 __种语言",
+    "count_one": "__ PH0 __语言",
+    "count_other": "__ PH0 __种语言",
+    "countAvailable": "可用",
+    "countMatch": "匹配「__ PH0 __」"
+  },
+  "layout": {
+    "activateCredits": "激活消费金",
+    "credits": "信用",
+    "messages": "留言",
+    "notifications": "消息",
+    "newCount": "__ PH0 __ NEW",
+    "noMessages": "没有私信",
+    "noMessagesHint": "当您收到消息时，它们将显示在此处。",
+    "noNotifications": "不要通知",
+    "noNotificationsHint": "当您有更新时，它们将显示在此处。",
+    "viewAllMessages": "查看所有消息",
+    "viewAllNotifications": "查看全部通知",
+    "signOut": "Sign out",
+    "signingOut": "Signing out…",
+    "allCaughtUp": "You're all caught up",
+    "noNewNotifications": "No new notifications",
+    "noNotificationsYet": "No notifications yet",
+    "notificationsEmptyHint": "When you have updates, they will appear here."
+  },
+  "settings": {
+    "tabs": {
+      "general": "General",
+      "notifications": "Notifications",
+      "plan": "Plan & credits",
+      "integrations": "Integrations",
+      "developer": "Developer",
+      "export": "Export"
+    },
+    "general": {
+      "title": "General preferences",
+      "language": {
+        "label": "Language",
+        "change": "Change",
+        "uiFallback": "The interface is shown in English. Your preference ({{language}}) is saved for your profile and dates."
+      },
+      "timezone": {
+        "label": "Time zone",
+        "adjust": "Adjust",
+        "currentTime": "Current time",
+        "noMatch": "No time zones match your search"
+      },
+      "theme": {
+        "label": "Interface theme",
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System",
+        "followsDevice": " (follows device)"
+      },
+      "syncSaving": "Saving…",
+      "syncSaved": "Saved",
+      "syncError": "Failed to save"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "productUpdates": "Product updates",
+      "lessonReminders": "Lesson reminders",
+      "weeklyInsights": "Weekly insights",
+      "channels": {
+        "emailAndApp": "Email and app",
+        "emailOnly": "Email only",
+        "appOnly": "App only"
+      },
+      "currentChannel": "Current channel: {{channel}}",
+      "edit": "Edit",
+      "manageDefaults": "Manage notification defaults"
+    },
+    "integrations": {
+      "title": "Integrations",
+      "addNew": "Add new integration",
+      "status": {
+        "connected": "Connected",
+        "available": "Available",
+        "comingSoon": "Coming soon"
+      },
+      "googleClassroom": {
+        "name": "Google Classroom",
+        "description": "Sync assignments and rosters automatically."
+      },
+      "microsoftTeams": {
+        "name": "Microsoft Teams",
+        "description": "Enable Teams meetings and assignment syncing."
+      },
+      "canvasLms": {
+        "name": "Canvas LMS",
+        "description": "Direct gradebook integration for Canvas users."
+      }
+    },
+    "developer": {
+      "title": "API & developer access",
+      "connectedApps": "Connected apps",
+      "connectedAppsDesc": "3 apps have access to your teaching workspace.",
+      "manageTokens": "Manage API tokens"
+    },
+    "export": {
+      "title": "Export & backup",
+      "downloadData": "Download workspace data",
+      "downloadDataDesc": "Templates, assessments, and chat history",
+      "scheduleBackups": "Schedule weekly backups"
+    },
+    "plan": {
+      "yourCredits": "Your credits",
+      "memberSince": "Member since {{date}}",
+      "activateCode": "+ Activate code",
+      "creditsRemaining": "/ {{total}} credits",
+      "remainingPct": "{{pct}}% remaining",
+      "expires": "Expires {{date}}",
+      "autoRenewing": "Auto-renewing",
+      "noActiveCredits": "No active credits. Activate a code to get started.",
+      "activateCreditsLink": "Activate credits →",
+      "usageBreakdown": "Usage breakdown",
+      "last30Days": "Last 30 days",
+      "activity": "Activity",
+      "activityFallback": "Activity",
+      "left": "{{count}} left"
+    }
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "teacherTools": "Teacher Tools",
+    "teacherToolsOverview": "Overview",
+    "teacherToolsAnalytics": "Analytics",
+    "quiz": "Quiz",
+    "assignment": "Assignment",
+    "worksheet": "Worksheet",
+    "exams": "Exams",
+    "templates": "Templates Library",
+    "chatbots": "Specialized Chatbots",
+    "youtubeQuiz": "YouTube Quiz Generator",
+    "pixgen": "PixGen (AI Media Studio)",
+    "learningHub": "Professional Learning Hub",
+    "personalization": "Personalization",
+    "administration": "Administration",
+    "reporting": "Reporting",
+    "assessment": "Assessment",
+    "contentManagement": "Content Management",
+    "history": "History",
+    "analytics": "Analytics",
+    "useCases": "Explore Use Cases",
+    "profile": "Profile",
+    "settings": "Settings",
+    "accessCodes": "Access Codes",
+    "contentPacks": "Content Packs",
+    "documents": "Documents",
+    "learningHubContent": "Learning Hub Content",
+    "organization": "Organization",
+    "parent": "Parent",
+    "school": "School",
+    "uploadDocument": "Upload Document"
+  },
+  "workspace": {
+    "fallbackName": "Workspace",
+    "scopeType": {
+      "institution": "Institution",
+      "organization": "Organization",
+      "personal": "Personal"
+    },
+    "switcher": {
+      "title": "Switch Workspace",
+      "active": "Active"
+    }
+  },
+  "login": {
+    "subtitle": "Sign in to your account",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "signIn": "Sign in",
+    "signingIn": "Signing in…",
+    "noAccount": "Don't have an account?",
+    "signUpLink": "Sign up",
+    "error": "Failed to sign in. Please check your credentials."
+  },
+  "teacherTools": {
+    "breadcrumbTeacherTools": "Teacher Tools",
+    "breadcrumbTemplates": "Templates",
+    "edit": "Edit",
+    "duplicate": "Duplicate",
+    "archive": "Archive",
+    "delete": "Delete",
+    "toolAssign": "Assign",
+    "toolSheet": "Sheet",
+    "toolExam": "Exam",
+    "range7d": "Last 7 days",
+    "range30d": "Last 30 days",
+    "rangeAll": "All time",
+    "previewData": "Preview data",
+    "previewDataHint": "— Real results will appear here after students submit.",
+    "statContentCreated": "Content created",
+    "overview": {
+      "kpiTotalActive": "Total active items",
+      "kpiScheduledWeek": "Scheduled this week",
+      "kpiPendingDrafts": "Pending drafts",
+      "kpiPublished": "Published items",
+      "kpiAvgQuizScore": "Avg quiz score",
+      "kpiQuizzesTaken": "Quizzes taken"
+    }
+  },
+  "quiz": {
+    "breadcrumb": "Quiz"
+  },
+  "assignment": {
+    "breadcrumb": "Assignment"
+  },
+  "worksheet": {
+    "breadcrumb": "Worksheet"
+  },
+  "exam": {
+    "breadcrumb": "Exams",
+    "detail": {
+      "tabs": {
+        "analytics": "Analytics",
+        "results": "Results",
+        "candidates": "Candidates"
+      }
+    },
+    "statMarks": "marks"
+  },
+  "status": {
+    "draft": "Draft",
+    "published": "Published",
+    "active": "Active",
+    "closed": "Closed",
+    "graded": "Graded",
+    "submitted": "Submitted",
+    "pending": "Pending",
+    "archived": "Archived",
+    "completed": "Completed",
+    "upcoming": "Upcoming",
+    "ongoing": "Ongoing",
+    "cancelled": "Cancelled",
+    "late": "Late",
+    "onTime": "On time"
+  },
+  "dashboard": {
+    "recentActivity": "最近活动",
+    "viewAll": "查看全部",
+    "teacherToolsOverview": "教师工具概览",
+    "greetingMorning": "早上好，{{name}}",
+    "greetingAfternoon": "下午好，{{name}}",
+    "greetingEvening": "晚上好，{{name}}",
+    "defaultName": "老师",
+    "workspaceReady": "您的工作区已就绪。",
+    "activeContent": "工作区中有 {{count}} 个活跃项目",
+    "createFirstQuiz": "创建您的第一个测验以开始。",
+    "createFirstQuizCta": "创建测验",
+    "totalContent": "总内容",
+    "thisWeek": "本周",
+    "draftBacklog": "待处理草稿",
+    "published": "已发布",
+    "dayStreak": "连续天数",
+    "upcomingDeadlines": "即将到期",
+    "noDeadlines": "没有即将到期的任务",
+    "noActivity": "没有最近活动",
+    "draftsToFinish": "待完成的草稿",
+    "all": "全部",
+    "noDrafts": "没有草稿",
+    "coreWorkflows": "核心工作流",
+    "dueToday": "今天到期",
+    "dueInDays": "{{count}} 天后到期",
+    "dueSoon": "即将到期：{{title}}",
+    "continueDraft": "继续草稿：{{title}}",
+    "tools": {
+      "quiz": "测验",
+      "assignment": "作业",
+      "worksheet": "工作表",
+      "exam": "考试"
+    }
+  },
+  "tenantSelection": {
+    "title": "Select workspace",
+    "subtitle": "Choose a workspace to continue",
+    "workspace": "Workspace",
+    "signingIn": "Signing in…",
+    "scope": {
+      "institution": "Institution",
+      "organization": "Organization",
+      "personalWorkspace": "Personal Workspace"
+    }
+  }
+}

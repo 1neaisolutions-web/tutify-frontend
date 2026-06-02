@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Users, Sparkles, RefreshCw, Download } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 type IcebreakerGoal = 'team_building' | 'focus_reset' | 'energy_boost' | 'get_to_know_each_other'
 type IcebreakerContext = 'start_of_term' | 'after_break' | 'before_exam'
 
@@ -93,6 +94,7 @@ const sampleIcebreaker: IcebreakerOutput = {
 }
 
 const IcebreakerIdeaGenerator = () => {
+  const { t } = useTranslation()
   const [inputs, setInputs] = useState<IcebreakerInputs>({
     grade: 6,
     group_size: 25,
@@ -195,10 +197,8 @@ const IcebreakerIdeaGenerator = () => {
             <Users className="w-6 h-6 text-primary-600" />
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold text-gray-900">Icebreaker & Engagement Generator</h1>
-            <p className="text-sm text-gray-600 mt-0.5">
-              Generate quick community-building activities tailored to your class
-            </p>
+            <h1 className="text-xl font-bold text-gray-900">{t('icebreakerIdeaGenerator.icebreakerEngagementGenerator')}</h1>
+            <p className="text-sm text-gray-600 mt-0.5">{t('icebreakerIdeaGenerator.generateQuickCommunityBuildingActivitiesTailoredToYourC')}</p>
           </div>
         </div>
       </div>
@@ -208,13 +208,12 @@ const IcebreakerIdeaGenerator = () => {
           <div className="card">
             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
               <Sparkles className="w-5 h-5 text-primary-600" />
-              <span>Activity Inputs</span>
+              <span>{t('icebreakerIdeaGenerator.activityInputs')}</span>
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Grade <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('icebreakerIdeaGenerator.grade2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -223,14 +222,13 @@ const IcebreakerIdeaGenerator = () => {
                   value={inputs.grade}
                   onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
                   className="input-field"
-                  placeholder="Enter grade (1-12)"
+                  placeholder={t('common.gradePlaceholder')}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Group Size <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('icebreakerIdeaGenerator.groupSize2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -240,25 +238,25 @@ const IcebreakerIdeaGenerator = () => {
                     handleInputChange('group_size', Math.max(1, parseInt(e.target.value) || ''))
                   }
                   className="input-field"
-                  placeholder="Number of students"
+                  placeholder={t('icebreakerIdeaGenerator.numberOfStudents')}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Time Available</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('icebreakerIdeaGenerator.timeAvailable')}</label>
                 <input
                   type="text"
                   value={inputs.time_available}
                   onChange={(e) => handleInputChange('time_available', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., PT10M"
+                  placeholder={t('icebreakerIdeaGenerator.eGPt10m')}
                 />
                 <p className="mt-1 text-xs text-gray-500">Use ISO 8601 duration (e.g., PT10M).</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Goal</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('icebreakerIdeaGenerator.goal2')}</label>
                 <select
                   value={inputs.goal}
                   onChange={(e) =>
@@ -267,15 +265,15 @@ const IcebreakerIdeaGenerator = () => {
                   className="input-field"
                 >
                   <option value="">Select goal (optional)</option>
-                  <option value="team_building">Team Building</option>
-                  <option value="focus_reset">Focus Reset</option>
-                  <option value="energy_boost">Energy Boost</option>
-                  <option value="get_to_know_each_other">Get to Know Each Other</option>
+                  <option value="team_building">{t('icebreakerIdeaGenerator.teamBuilding')}</option>
+                  <option value="focus_reset">{t('icebreakerIdeaGenerator.focusReset')}</option>
+                  <option value="energy_boost">{t('icebreakerIdeaGenerator.energyBoost')}</option>
+                  <option value="get_to_know_each_other">{t('icebreakerIdeaGenerator.getToKnowEachOther')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Context</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('icebreakerIdeaGenerator.context2')}</label>
                 <select
                   value={inputs.context}
                   onChange={(e) =>
@@ -287,20 +285,20 @@ const IcebreakerIdeaGenerator = () => {
                   className="input-field"
                 >
                   <option value="">Select context (optional)</option>
-                  <option value="start_of_term">Start of Term</option>
-                  <option value="after_break">After Break</option>
-                  <option value="before_exam">Before Exam</option>
+                  <option value="start_of_term">{t('icebreakerIdeaGenerator.startOfTerm')}</option>
+                  <option value="after_break">{t('icebreakerIdeaGenerator.afterBreak')}</option>
+                  <option value="before_exam">{t('icebreakerIdeaGenerator.beforeExam')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('icebreakerIdeaGenerator.language2')}</label>
                 <input
                   type="text"
                   value={inputs.language}
                   onChange={(e) => handleInputChange('language', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., en-US"
+                  placeholder={t('icebreakerIdeaGenerator.eGEnUs')}
                 />
               </div>
 
@@ -312,12 +310,12 @@ const IcebreakerIdeaGenerator = () => {
                 {isGenerating ? (
                   <>
                     <RefreshCw className="w-5 h-5 animate-spin" />
-                    <span>Generating...</span>
+                    <span>{t('icebreakerIdeaGenerator.generating')}</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-5 h-5" />
-                    <span>Generate Idea</span>
+                    <span>{t('icebreakerIdeaGenerator.generateIdea')}</span>
                   </>
                 )}
               </button>
@@ -329,18 +327,18 @@ const IcebreakerIdeaGenerator = () => {
           {output ? (
             <div className="card">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Generated Activity</h2>
+                <h2 className="text-lg font-semibold text-gray-900">{t('icebreakerIdeaGenerator.generatedActivity')}</h2>
                 <div className="flex gap-2">
                   <button className="btn-secondary flex items-center space-x-2">
                     <Download className="w-4 h-4" />
-                    <span>Download</span>
+                    <span>{t('icebreakerIdeaGenerator.download')}</span>
                   </button>
                   <button
                     onClick={() => setOutput(null)}
                     className="btn-secondary flex items-center space-x-2"
                   >
                     <RefreshCw className="w-4 h-4" />
-                    <span>Reset</span>
+                    <span>{t('icebreakerIdeaGenerator.reset')}</span>
                   </button>
                 </div>
               </div>
@@ -350,29 +348,29 @@ const IcebreakerIdeaGenerator = () => {
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">{output.title}</h3>
                   <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                     <span>
-                      <strong>Grade:</strong> {output.grade}
+                      <strong>{t('icebreakerIdeaGenerator.grade')}</strong> {output.grade}
                     </span>
                     <span>
-                      <strong>Group Size:</strong> {output.group_size}
+                      <strong>{t('icebreakerIdeaGenerator.groupSize')}</strong> {output.group_size}
                     </span>
                     {output.goal && (
                       <span>
-                        <strong>Goal:</strong> {output.goal.replace(/_/g, ' ')}
+                        <strong>{t('icebreakerIdeaGenerator.goal')}</strong> {output.goal.replace(/_/g, ' ')}
                       </span>
                     )}
                     {output.context && (
                       <span>
-                        <strong>Context:</strong> {output.context.replace(/_/g, ' ')}
+                        <strong>{t('icebreakerIdeaGenerator.context')}</strong> {output.context.replace(/_/g, ' ')}
                       </span>
                     )}
                     {output.time_available && (
                       <span>
-                        <strong>Time:</strong> {output.time_available}
+                        <strong>{t('icebreakerIdeaGenerator.time')}</strong> {output.time_available}
                       </span>
                     )}
                     {output.language && (
                       <span>
-                        <strong>Language:</strong> {output.language}
+                        <strong>{t('icebreakerIdeaGenerator.language')}</strong> {output.language}
                       </span>
                     )}
                   </div>
@@ -380,7 +378,7 @@ const IcebreakerIdeaGenerator = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Materials</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('icebreakerIdeaGenerator.materials')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.materials.map((material, index) => (
                       <li key={index}>{material}</li>
@@ -389,7 +387,7 @@ const IcebreakerIdeaGenerator = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Steps</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('icebreakerIdeaGenerator.steps')}</h4>
                   <div className="space-y-3">
                     {output.steps.map((step, index) => (
                       <div key={index} className="bg-gray-50 rounded-lg p-4">
@@ -406,7 +404,7 @@ const IcebreakerIdeaGenerator = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Prompts</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('icebreakerIdeaGenerator.prompts')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.prompts.map((prompt, index) => (
                       <li key={index}>{prompt}</li>
@@ -415,10 +413,10 @@ const IcebreakerIdeaGenerator = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Differentiation</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('icebreakerIdeaGenerator.differentiation')}</h4>
                   <div className="space-y-3 text-sm text-gray-700">
                     <div>
-                      <h5 className="font-medium text-gray-800 mb-1">Support</h5>
+                      <h5 className="font-medium text-gray-800 mb-1">{t('icebreakerIdeaGenerator.support')}</h5>
                       <ul className="list-disc list-inside space-y-1">
                         {output.differentiation.support.map((item, index) => (
                           <li key={index}>{item}</li>
@@ -426,7 +424,7 @@ const IcebreakerIdeaGenerator = () => {
                       </ul>
                     </div>
                     <div>
-                      <h5 className="font-medium text-gray-800 mb-1">Extension</h5>
+                      <h5 className="font-medium text-gray-800 mb-1">{t('icebreakerIdeaGenerator.extension')}</h5>
                       <ul className="list-disc list-inside space-y-1">
                         {output.differentiation.extension.map((item, index) => (
                           <li key={index}>{item}</li>
@@ -437,7 +435,7 @@ const IcebreakerIdeaGenerator = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Reflection</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('icebreakerIdeaGenerator.reflection')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.reflection.map((item, index) => (
                       <li key={index}>{item}</li>
@@ -450,12 +448,8 @@ const IcebreakerIdeaGenerator = () => {
             <div className="card">
               <div className="text-center py-12">
                 <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Your icebreaker idea will appear here
-                </h3>
-                <p className="text-gray-600">
-                  Fill in the activity inputs and click "Generate Idea" to preview an engagement activity.
-                </p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('icebreakerIdeaGenerator.yourIcebreakerIdeaWillAppearHere')}</h3>
+                <p className="text-gray-600">{t('icebreakerIdeaGenerator.fillInTheActivityInputsAndClickGenerateIdeaTo')}</p>
               </div>
             </div>
           )}

@@ -1,4 +1,5 @@
 import { X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 interface Props {
   open: boolean
@@ -9,13 +10,14 @@ interface Props {
 }
 
 export function TeacherToolsSideReviewDrawer({ open, title, onClose, children, footer }: Props) {
+  const { t } = useTranslation()
   if (!open) return null
   return (
     <>
       <button
         type="button"
         className="fixed inset-0 z-40 bg-black/30"
-        aria-label="Close overlay"
+        aria-label={t('teacherTools.ariaCloseOverlay')}
         onClick={onClose}
       />
       <aside className="fixed bottom-0 right-0 top-0 z-50 flex w-full max-w-lg flex-col border-l border-gray-200 bg-white shadow-2xl">

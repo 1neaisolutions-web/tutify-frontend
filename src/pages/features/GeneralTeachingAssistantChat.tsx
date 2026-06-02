@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { flushSync } from 'react-dom'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import * as chatbotApi from '../../api/chatbots'
 import * as subscriptionApi from '../../api/subscriptions'
@@ -79,6 +80,7 @@ interface Conversation {
 }
 
 const GeneralTeachingAssistantChat = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [messages, setMessages] = useState<Message[]>([])
   /** Pagination for loading older messages (scroll-up). */
@@ -247,7 +249,7 @@ const GeneralTeachingAssistantChat = () => {
         setHasMoreOlder(page.has_more)
         setNextBeforeCursor(page.next_before)
 
-        let convTitle = 'Untitled Conversation'
+        let convTitle = t('generalTeachingAssistantChat.untitledConversation')
         let createdAt = new Date()
         let updatedAt = new Date()
         try {
@@ -267,7 +269,7 @@ const GeneralTeachingAssistantChat = () => {
                 ? {
                     ...conv,
                     messages: undefined,
-                    title: convTitle !== 'Untitled Conversation' ? convTitle : conv.title,
+                    title: convTitle !== t('generalTeachingAssistantChat.untitledConversation') ? convTitle : conv.title,
                     updatedAt,
                   }
                 : conv,
@@ -289,7 +291,7 @@ const GeneralTeachingAssistantChat = () => {
       }
     } catch (error) {
       console.error(`Error loading conversation messages ${conversationId}:`, error)
-      toast.error('Failed to load conversation messages')
+      toast.error(t('generalTeachingAssistantChat.failedToLoadConversationMessages'))
       setOlderLoading(false)
     }
   }
@@ -302,7 +304,7 @@ const GeneralTeachingAssistantChat = () => {
 
         const formattedConversations: Conversation[] = apiConversations.map((conv) => ({
           id: conv.id,
-          title: conv.title || 'Untitled Conversation',
+          title: conv.title || t('generalTeachingAssistantChat.untitledConversation'),
           messages: undefined,
           message_count: conv.message_count,
           createdAt: new Date(conv.created_at),
@@ -477,13 +479,13 @@ const GeneralTeachingAssistantChat = () => {
   const generateConversationTitle = (firstMessage: string): string => {
     try {
       if (!firstMessage || typeof firstMessage !== 'string') {
-        return 'New Conversation'
+        return t('generalTeachingAssistantChat.newConversation')
       }
       const words = firstMessage.split(' ').slice(0, 6).join(' ')
       return words.length > 50 ? words.substring(0, 50) + '...' : words
     } catch (error) {
       console.error('Error generating conversation title:', error)
-      return 'New Conversation'
+      return t('generalTeachingAssistantChat.newConversation')
     }
   }
 
@@ -526,7 +528,7 @@ const GeneralTeachingAssistantChat = () => {
             // New conversation - add to list
             const newConv: Conversation = {
               id: conversationId,
-              title: updatedConv.title || 'Untitled Conversation',
+              title: updatedConv.title || t('generalTeachingAssistantChat.untitledConversation'),
               messages: undefined, // Lazy loaded when selected
               message_count: updatedConv.message_count,
               createdAt: new Date(updatedConv.created_at),
@@ -562,15 +564,15 @@ const GeneralTeachingAssistantChat = () => {
           ''
         const normalized = raw.toLowerCase()
         if (normalized.includes('database error') || normalized.includes('undefinedcolumn')) {
-          return 'Sorry — we’re having trouble on our side right now. Please try again in a moment.'
+          return t('generalTeachingAssistantChat.errors.serverTrouble')
         }
         if (normalized.includes('networkerror') || normalized.includes('failed to fetch')) {
-          return 'Sorry — I couldn’t reach the server. Please check your connection and try again.'
+          return t('generalTeachingAssistantChat.errors.connectionFailed')
         }
         if (normalized.includes('rate limit') || normalized.includes('too many requests')) {
-          return 'You’re sending messages a bit too fast. Please wait a moment and try again.'
+          return t('generalTeachingAssistantChat.errors.rateLimited')
         }
-        return 'Sorry — something went wrong while generating a response. Please try again.'
+        return t('generalTeachingAssistantChat.errors.generic')
       }
 
       const userMessage: Message = {
@@ -819,13 +821,13 @@ const GeneralTeachingAssistantChat = () => {
         
         // Show error message
         if (error instanceof Error) {
-          toast.error(error.message || 'Failed to send message. Please try again.')
+          toast.error(error.message || t('generalTeachingAssistantChat.failedToSendMessagePleaseTryAgain'))
         } else if ((error as any)?.status === 403) {
-          toast.error('Premium subscription required for this feature.')
+          toast.error(t('generalTeachingAssistantChat.premiumSubscriptionRequiredForThisFeature'))
         } else if ((error as any)?.status === 429) {
-          toast.error('Rate limit exceeded. Please try again later.')
+          toast.error(t('generalTeachingAssistantChat.rateLimitExceededPleaseTryAgainLater'))
         } else {
-          toast.error('Failed to send message. Please try again.')
+          toast.error(t('generalTeachingAssistantChat.failedToSendMessagePleaseTryAgain'))
         }
       }
 
@@ -936,7 +938,7 @@ const GeneralTeachingAssistantChat = () => {
       setIsLoading(true)
       setCanStopGeneration(true)
 
-      // Regenerate response using API
+      // {t('generalTeachingAssistantChat.regenerateResponse')} using API
       try {
         const response = await chatbotApi.sendMessage(CHATBOT_SLUG, {
           message: userMessage.content,
@@ -981,9 +983,9 @@ const GeneralTeachingAssistantChat = () => {
         setIsLoading(false)
         setCanStopGeneration(false)
         if (error instanceof Error) {
-          toast.error(error.message || 'Failed to regenerate response.')
+          toast.error(error.message || t('generalTeachingAssistantChat.failedToRegenerateResponsePleaseTryAgain'))
         } else {
-          toast.error('Failed to regenerate response. Please try again.')
+          toast.error(t('generalTeachingAssistantChat.failedToRegenerateResponsePleaseTryAgain'))
         }
       }
     } catch (error) {
@@ -1031,7 +1033,7 @@ const GeneralTeachingAssistantChat = () => {
     try {
       // Check if user has access to file attachments (premium feature)
       if (!featureAccess.file_attachments) {
-        toast.info('File attachments are available with Premium. Upgrade to access.')
+        toast.info(t('generalTeachingAssistantChat.fileAttachmentsAreAvailableWithPremiumUpgradeToAccess'))
         e.target.value = '' // Reset file input
         return
       }
@@ -1060,15 +1062,15 @@ const GeneralTeachingAssistantChat = () => {
 
   const formatFileSize = (bytes: number): string => {
     try {
-      if (bytes === 0) return '0 Bytes'
-      if (bytes < 0 || !isFinite(bytes)) return '0 Bytes'
+      if (bytes === 0) return `0 ${t('generalTeachingAssistantChat.fileSize.bytes')}`
+      if (bytes < 0 || !isFinite(bytes)) return `0 ${t('generalTeachingAssistantChat.fileSize.bytes')}`
       const k = 1024
-      const sizes = ['Bytes', 'KB', 'MB', 'GB']
+      const sizes = [t('generalTeachingAssistantChat.fileSize.bytes'), 'KB', 'MB', 'GB']
       const i = Math.floor(Math.log(bytes) / Math.log(k))
       return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i]
     } catch (error) {
       console.error('Error formatting file size:', error)
-      return 'Unknown size'
+      return t('generalTeachingAssistantChat.unknownSize')
     }
   }
 
@@ -1076,7 +1078,7 @@ const GeneralTeachingAssistantChat = () => {
     try {
       // Check if user has access to audio/voice features (premium)
       if (!featureAccess.audio_transcription) {
-        toast.info('Voice input is available with Premium. Upgrade to access.')
+        toast.info(t('generalTeachingAssistantChat.voiceInputIsAvailableWithPremiumUpgradeToAccess'))
         return
       }
 
@@ -1130,7 +1132,7 @@ const GeneralTeachingAssistantChat = () => {
       isRecordingRef.current = false
       setMediaRecorder(null)
       mediaRecorderRef.current = null
-      alert('Could not access microphone. Please check permissions.')
+      alert(t('generalTeachingAssistantChat.microphoneAccessDenied'))
     }
   }
 
@@ -1154,7 +1156,7 @@ const GeneralTeachingAssistantChat = () => {
   const toggleAudio = () => {
     // Audio (voice input/output) is premium feature - GPT style
     if (!featureAccess.audio_transcription && !audioEnabled) {
-      toast.info('Voice features are available with Premium. Upgrade to access.')
+        toast.info(t('generalTeachingAssistantChat.voiceFeaturesAreAvailableWithPremiumUpgradeToAccess'))
       return
     }
     setAudioEnabled(!audioEnabled)
@@ -1179,38 +1181,53 @@ const GeneralTeachingAssistantChat = () => {
     }
   }
 
-  const botModeConfig = {
-    fastest: {
-      label: 'Fastest',
-      icon: Gauge,
-      description: 'Quick responses, optimized for speed',
-      color: 'text-green-600',
-      bgColor: 'bg-green-50',
-      borderColor: 'border-green-200',
-    },
-    smartest: {
-      label: 'Smartest',
-      icon: Brain,
-      description: 'Balanced intelligence and speed',
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50',
-      borderColor: 'border-blue-200',
-    },
-    'critical-thinking': {
-      label: 'Critical Thinking',
-      icon: SparklesIcon,
-      description: 'Deep analysis and reasoning',
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-50',
-      borderColor: 'border-purple-200',
-    },
-  }
+  const botModeConfig = useMemo(
+    () => ({
+      fastest: {
+        label: t('generalTeachingAssistantChat.botMode.fastest'),
+        icon: Gauge,
+        description: t('generalTeachingAssistantChat.botMode.fastestDesc'),
+        color: 'text-green-600',
+        bgColor: 'bg-green-50',
+        borderColor: 'border-green-200',
+      },
+      smartest: {
+        label: t('generalTeachingAssistantChat.botMode.smartest'),
+        icon: Brain,
+        description: t('generalTeachingAssistantChat.botMode.smartestDesc'),
+        color: 'text-blue-600',
+        bgColor: 'bg-blue-50',
+        borderColor: 'border-blue-200',
+      },
+      'critical-thinking': {
+        label: t('generalTeachingAssistantChat.botMode.criticalThinking'),
+        icon: SparklesIcon,
+        description: t('generalTeachingAssistantChat.botMode.criticalThinkingDesc'),
+        color: 'text-purple-600',
+        bgColor: 'bg-purple-50',
+        borderColor: 'border-purple-200',
+      },
+    }),
+    [t],
+  )
 
-  const responseLengthConfig = {
-    short: { label: 'Short', description: 'Brief, concise responses' },
-    medium: { label: 'Medium', description: 'Balanced detail' },
-    long: { label: 'Long', description: 'Comprehensive, detailed responses' },
-  }
+  const responseLengthConfig = useMemo(
+    () => ({
+      short: {
+        label: t('generalTeachingAssistantChat.responseLength.short'),
+        description: t('generalTeachingAssistantChat.responseLength.shortDesc'),
+      },
+      medium: {
+        label: t('generalTeachingAssistantChat.responseLength.medium'),
+        description: t('generalTeachingAssistantChat.responseLength.mediumDesc'),
+      },
+      long: {
+        label: t('generalTeachingAssistantChat.responseLength.long'),
+        description: t('generalTeachingAssistantChat.responseLength.longDesc'),
+      },
+    }),
+    [t],
+  )
 
   const handleResponseLengthChange = (length: 'short' | 'medium' | 'long') => {
     setResponseLength(length)
@@ -1220,7 +1237,7 @@ const GeneralTeachingAssistantChat = () => {
   const toggleWebSearch = () => {
     // Check if user has access to web search
     if (!featureAccess.web_search && !webSearchEnabled) {
-      toast.info('Web search is a premium feature. Upgrade to access.')
+      toast.info(t('generalTeachingAssistantChat.webSearchIsAPremiumFeatureUpgradeToAccess'))
       return
     }
     setWebSearchEnabled(!webSearchEnabled)
@@ -1253,11 +1270,11 @@ const GeneralTeachingAssistantChat = () => {
             // Focus input
             setTimeout(() => textareaRef.current?.focus(), 100)
           } else {
-            setInputValue('Generate questions based on: ')
+            setInputValue(t('generalTeachingAssistantChat.inputPrefixes.generateQuestions'))
             setTimeout(() => textareaRef.current?.focus(), 100)
           }
         } else {
-          setInputValue('Generate questions about: ')
+          setInputValue(t('generalTeachingAssistantChat.inputPrefixes.generateQuestionsAbout'))
           setTimeout(() => textareaRef.current?.focus(), 100)
         }
         break
@@ -1282,11 +1299,11 @@ const GeneralTeachingAssistantChat = () => {
             setInputValue(`Please provide a clear and concise summary of the following:\n\n${truncated}`)
             setTimeout(() => textareaRef.current?.focus(), 100)
           } else {
-            setInputValue('Summarize: ')
+            setInputValue(t('generalTeachingAssistantChat.inputPrefixes.summarize'))
             setTimeout(() => textareaRef.current?.focus(), 100)
           }
         } else {
-          setInputValue('Summarize: ')
+          setInputValue(t('generalTeachingAssistantChat.inputPrefixes.summarize'))
           setTimeout(() => textareaRef.current?.focus(), 100)
         }
         break
@@ -1305,11 +1322,11 @@ const GeneralTeachingAssistantChat = () => {
         setCustomPrompts(updated)
         localStorage.setItem('custom-prompts', JSON.stringify(updated))
         setNewCustomPrompt('')
-        toast.success('Custom prompt saved!')
+        toast.success(t('generalTeachingAssistantChat.customPromptSaved'))
       }
     } catch (error) {
       console.error('Error saving custom prompt:', error)
-      toast.error('Failed to save custom prompt')
+      toast.error(t('generalTeachingAssistantChat.failedToSaveCustomPrompt'))
     }
   }
 
@@ -1318,10 +1335,10 @@ const GeneralTeachingAssistantChat = () => {
       const updated = customPrompts.filter((_, i) => i !== index)
       setCustomPrompts(updated)
       localStorage.setItem('custom-prompts', JSON.stringify(updated))
-      toast.success('Custom prompt deleted')
+      toast.success(t('generalTeachingAssistantChat.customPromptDeleted'))
     } catch (error) {
       console.error('Error deleting custom prompt:', error)
-      toast.error('Failed to delete custom prompt')
+      toast.error(t('generalTeachingAssistantChat.failedToDeleteCustomPrompt'))
     }
   }
 
@@ -1551,26 +1568,26 @@ What would you like help with today? Feel free to ask me anything about teaching
   const formatTimestamp = (date: Date): string => {
     try {
       if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
-        return 'Unknown time'
+        return t('generalTeachingAssistantChat.unknownTime')
       }
       const now = new Date()
       const diff = now.getTime() - date.getTime()
       const minutes = Math.floor(diff / 60000)
       
-      if (minutes < 1) return 'Just now'
-      if (minutes < 60) return `${minutes}m ago`
-      if (minutes < 1440) return `${Math.floor(minutes / 60)}h ago`
+      if (minutes < 1) return t('history.justNow')
+      if (minutes < 60) return t('history.minutesAgo', { count: minutes })
+      if (minutes < 1440) return t('history.hoursAgo', { count: Math.floor(minutes / 60) })
       return date.toLocaleDateString()
     } catch (error) {
       console.error('Error formatting timestamp:', error)
-      return 'Unknown time'
+      return t('generalTeachingAssistantChat.unknownTime')
     }
   }
 
   const renderMarkdown = (text: string): JSX.Element => {
     try {
       if (!text || typeof text !== 'string') {
-        return <div className="text-gray-700">No content</div>
+        return <div className="text-gray-700">{t('generalTeachingAssistantChat.noContent')}</div>
       }
       // Simple markdown rendering - split by lines and handle basic formatting
       const lines = text.split('\n')
@@ -1670,7 +1687,7 @@ What would you like help with today? Feel free to ask me anything about teaching
 
   const deleteConversation = async (conversationId: string, e: React.MouseEvent) => {
     e.stopPropagation()
-    if (!window.confirm('Are you sure you want to delete this conversation?')) {
+    if (!window.confirm(t('generalTeachingAssistantChat.confirmDeleteConversation'))) {
       return
     }
 
@@ -1693,7 +1710,7 @@ What would you like help with today? Feel free to ask me anything about teaching
         const apiConversations = await chatbotApi.listConversations(CHATBOT_SLUG)
         const formattedConversations: Conversation[] = apiConversations.map((conv) => ({
           id: conv.id,
-          title: conv.title || 'Untitled Conversation',
+          title: conv.title || t('generalTeachingAssistantChat.untitledConversation'),
           messages: undefined,
           message_count: conv.message_count,
           createdAt: new Date(conv.created_at),
@@ -1704,15 +1721,15 @@ What would you like help with today? Feel free to ask me anything about teaching
         console.error('Error refreshing conversations after delete:', error)
       }
       
-      toast.success('Conversation deleted successfully')
+      toast.success(t('generalTeachingAssistantChat.conversationDeletedSuccessfully'))
     } catch (error: any) {
       console.error('Error deleting conversation:', error)
-      toast.error(error?.message || 'Failed to delete conversation')
+      toast.error(error?.message || t('generalTeachingAssistantChat.failedToDeleteConversation'))
     }
   }
 
   const deleteAllConversations = async () => {
-    if (!window.confirm('Are you sure you want to delete all conversations? This cannot be undone.')) {
+    if (!window.confirm(t('generalTeachingAssistantChat.confirmDeleteAllConversations'))) {
       return
     }
 
@@ -1728,10 +1745,10 @@ What would you like help with today? Feel free to ask me anything about teaching
       localStorage.removeItem('general-teaching-assistant-current-conversation')
       setShowHistory(false)
       
-      toast.success('All conversations deleted successfully')
+      toast.success(t('generalTeachingAssistantChat.allConversationsDeletedSuccessfully'))
     } catch (error: any) {
       console.error('Error deleting conversations:', error)
-      toast.error('Failed to delete some conversations')
+      toast.error(t('generalTeachingAssistantChat.failedToDeleteSomeConversations'))
     }
   }
 
@@ -1742,21 +1759,21 @@ What would you like help with today? Feel free to ask me anything about teaching
   const formatDate = (date: Date): string => {
     try {
       if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
-        return 'Unknown date'
+        return t('generalTeachingAssistantChat.unknownDate')
       }
       const now = new Date()
       const diff = now.getTime() - date.getTime()
       const days = Math.floor(diff / (1000 * 60 * 60 * 24))
       
-      if (days === 0) return 'Today'
-      if (days === 1) return 'Yesterday'
-      if (days < 7) return `${days} days ago`
-      if (days < 30) return `${Math.floor(days / 7)} weeks ago`
-      if (days < 365) return `${Math.floor(days / 30)} months ago`
+      if (days === 0) return t('generalTeachingAssistantChat.today')
+      if (days === 1) return t('generalTeachingAssistantChat.yesterday')
+      if (days < 7) return t('generalTeachingAssistantChat.daysAgo', { count: days })
+      if (days < 30) return t('generalTeachingAssistantChat.weeksAgo', { count: Math.floor(days / 7) })
+      if (days < 365) return t('generalTeachingAssistantChat.monthsAgo', { count: Math.floor(days / 30) })
       return date.toLocaleDateString()
     } catch (error) {
       console.error('Error formatting date:', error)
-      return 'Unknown date'
+      return t('generalTeachingAssistantChat.unknownDate')
     }
   }
 
@@ -1776,8 +1793,8 @@ What would you like help with today? Feel free to ask me anything about teaching
               <Bot className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h1 className="text-base font-semibold text-gray-900 leading-tight">General Teaching Assistant</h1>
-              <p className="text-[11px] text-gray-500 leading-tight">Your versatile AI companion for teaching</p>
+              <h1 className="text-base font-semibold text-gray-900 leading-tight">{t('generalTeachingAssistantChat.generalTeachingAssistant')}</h1>
+              <p className="text-[11px] text-gray-500 leading-tight">{t('generalTeachingAssistantChat.yourVersatileAiCompanionForTeaching')}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -1786,10 +1803,10 @@ What would you like help with today? Feel free to ask me anything about teaching
               <div className="hidden md:flex items-center gap-3 px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200">
                 <div className="text-xs">
                   <div className="font-medium text-gray-700">
-                    Messages: {quota.daily_messages_used} / {quota.daily_messages_limit}
+                    {t('generalTeachingAssistantChat.messagesQuota', { used: quota.daily_messages_used, limit: quota.daily_messages_limit })}
                   </div>
                   <div className="text-gray-500 text-[10px] mt-0.5">
-                    {quota.daily_messages_limit - quota.daily_messages_used} remaining today
+                    {t('generalTeachingAssistantChat.messagesRemainingToday', { count: quota.daily_messages_limit - quota.daily_messages_used })}
                   </div>
                 </div>
                 <div className="h-8 w-px bg-gray-300" />
@@ -1865,7 +1882,7 @@ What would you like help with today? Feel free to ask me anything about teaching
               className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
             >
               <Plus className="h-4 w-4" />
-              New Chat
+              {t('generalTeachingAssistantChat.newChat')}
             </button>
             <button
               onClick={() => setShowHistory(!showHistory)}
@@ -1876,7 +1893,7 @@ What would you like help with today? Feel free to ask me anything about teaching
               }`}
             >
               <History className="h-4 w-4" />
-              History
+              {t('nav.history')}
               {conversations.length > 0 && (
                 <span className="ml-1 rounded-full bg-blue-100 px-1.5 py-0.5 text-xs font-semibold text-blue-600">
                   {conversations.length}
@@ -1889,7 +1906,7 @@ What would you like help with today? Feel free to ask me anything about teaching
                 className="flex items-center gap-2 rounded-lg border border-red-200 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition"
               >
                 <Trash2 className="h-4 w-4" />
-                Clear
+                {t('generalTeachingAssistantChat.clear')}
               </button>
             )}
           </div>
@@ -1909,9 +1926,9 @@ What would you like help with today? Feel free to ask me anything about teaching
               <div className="sticky top-0 z-10 border-b border-transparent">
                 <div className="mx-auto max-w-4xl px-4 pt-3">
                   <div className="rounded-full bg-white/90 px-3 py-1 text-center text-[11px] text-gray-500 shadow-sm ring-1 ring-gray-200 backdrop-blur supports-[backdrop-filter]:bg-white/80">
-                    {olderLoading && <span>Loading older messages…</span>}
-                    {!olderLoading && !hasMoreOlder && <span className="text-gray-400">Beginning of conversation</span>}
-                    {!olderLoading && hasMoreOlder && <span className="text-gray-400">Scroll up to load older messages</span>}
+                    {olderLoading && <span>{t('generalTeachingAssistantChat.loadingOlderMessages')}</span>}
+                    {!olderLoading && !hasMoreOlder && <span className="text-gray-400">{t('generalTeachingAssistantChat.beginningOfConversation')}</span>}
+                    {!olderLoading && hasMoreOlder && <span className="text-gray-400">{t('generalTeachingAssistantChat.scrollUpToLoadOlderMessages')}</span>}
                   </div>
                 </div>
               </div>
@@ -1934,16 +1951,16 @@ What would you like help with today? Feel free to ask me anything about teaching
                     </div>
                     <div className="mb-2 flex items-center justify-center gap-2">
                       <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent">
-                        Hello! I'm General Teaching Assistant
+                        {t('generalTeachingAssistantChat.helloIMGeneralTeachingAssistant')}
                       </h2>
                       <button className="p-1 text-gray-400 hover:text-gray-600 transition">
                         <HelpCircle className="h-5 w-5" />
                       </button>
                     </div>
-                    <p className="text-sm font-medium text-purple-600 mb-6">Made for Teachers</p>
+                    <p className="text-sm font-medium text-purple-600 mb-6">{t('generalTeachingAssistantChat.madeForTeachers')}</p>
                     <div className="max-w-2xl mx-auto">
                       <p className="text-base text-gray-700 leading-relaxed">
-                        Hello! I'm your AI instructional coach. You can ask any questions related to best practices in teaching or your work in a school building. Feel free to ask me for ideas for your classroom, research on best practices in pedagogy, behavior management strategies, or any general advice! The more specific your questions, the better my responses will be. How can I help you today?
+                        {t('generalTeachingAssistantChat.welcomeIntro')}
                       </p>
                     </div>
                   </div>
@@ -1952,10 +1969,10 @@ What would you like help with today? Feel free to ask me anything about teaching
                   <div className="w-full max-w-3xl mx-auto mt-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {[
-                        'Draft a classroom contract covering respect and responsibility',
-                        'Draft a grant proposal outline for classroom tech funding',
-                        'Suggest classroom routines to build student ownership daily',
-                        'Suggest 5 ways to incorporate mindfulness in classroom',
+                        t('generalTeachingAssistantChat.sampleSuggestions.classroomContract'),
+                        t('generalTeachingAssistantChat.sampleSuggestions.grantProposal'),
+                        t('generalTeachingAssistantChat.sampleSuggestions.classroomRoutines'),
+                        t('generalTeachingAssistantChat.sampleSuggestions.mindfulness'),
                       ].map((suggestion, idx) => (
                         <button
                           key={idx}
@@ -2015,13 +2032,13 @@ What would you like help with today? Feel free to ask me anything about teaching
                             onClick={handleCancelEdit}
                             className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
                           >
-                            Cancel
+                            {t('generalTeachingAssistantChat.cancel')}
                           </button>
                           <button
                             onClick={handleSaveEdit}
                             className="rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700 transition"
                           >
-                            Save
+                            {t('generalTeachingAssistantChat.save')}
                           </button>
                         </div>
                       </div>
@@ -2055,14 +2072,14 @@ What would you like help with today? Feel free to ask me anything about teaching
                          isLoading && (
                           <div className="mt-3 flex items-center gap-2 pt-2 border-t border-gray-100">
                             <Loader2 className="h-3.5 w-3.5 animate-spin text-blue-500" />
-                            <span className="text-xs text-gray-500 font-medium">Generating...</span>
+                            <span className="text-xs text-gray-500 font-medium">{t('chatbot.common.generating')}</span>
                             {canStopGeneration && (
                               <button
                                 onClick={handleStopGeneration}
                                 className="ml-auto flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-100 transition"
                               >
                                 <StopCircle className="h-3 w-3" />
-                                Stop
+                                {t('generalTeachingAssistantChat.stop')}
                               </button>
                             )}
                           </div>
@@ -2081,7 +2098,7 @@ What would you like help with today? Feel free to ask me anything about teaching
                                       ? 'text-blue-100 hover:text-white hover:bg-blue-700'
                                       : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
                                   }`}
-                                  title="Edit message"
+                                  title={t('generalTeachingAssistantChat.editMessage')}
                                 >
                                   <Edit className="h-4 w-4" />
                                 </button>
@@ -2092,7 +2109,7 @@ What would you like help with today? Feel free to ask me anything about teaching
                                       ? 'text-blue-100 hover:text-white hover:bg-blue-700'
                                       : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
                                   }`}
-                                  title="Copy message"
+                                  title={t('generalTeachingAssistantChat.copyMessage')}
                                 >
                                   {copiedMessageId === message.id ? (
                                     <CheckCircle2 className="h-4 w-4" />
@@ -2110,7 +2127,7 @@ What would you like help with today? Feel free to ask me anything about teaching
                                         ? 'text-blue-100 hover:text-white hover:bg-blue-700'
                                         : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
                                     }`}
-                                    title="More options"
+                                    title={t('generalTeachingAssistantChat.moreOptions')}
                                   >
                                     <MoreVertical className="h-4 w-4" />
                                   </button>
@@ -2121,7 +2138,7 @@ What would you like help with today? Feel free to ask me anything about teaching
                                         className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
                                       >
                                         <Trash2 className="h-4 w-4" />
-                                        Delete message
+                                        {t('generalTeachingAssistantChat.deleteMessage')}
                                       </button>
                                     </div>
                                   )}
@@ -2136,7 +2153,7 @@ What would you like help with today? Feel free to ask me anything about teaching
                                       ? 'text-green-600 bg-green-50'
                                       : 'text-gray-400 hover:text-green-600 hover:bg-green-50'
                                   }`}
-                                  title="Good response"
+                                  title={t('generalTeachingAssistantChat.goodResponse')}
                                 >
                                   <ThumbsUp className="h-4 w-4" />
                                 </button>
@@ -2147,14 +2164,14 @@ What would you like help with today? Feel free to ask me anything about teaching
                                       ? 'text-red-600 bg-red-50'
                                       : 'text-gray-400 hover:text-red-600 hover:bg-red-50'
                                   }`}
-                                  title="Poor response"
+                                  title={t('generalTeachingAssistantChat.poorResponse')}
                                 >
                                   <ThumbsDown className="h-4 w-4" />
                                 </button>
                                 <button
                                   onClick={() => copyToClipboard(message.content, message.id)}
                                   className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition"
-                                  title="Copy message"
+                                  title={t('generalTeachingAssistantChat.copyMessage')}
                                 >
                                   {copiedMessageId === message.id ? (
                                     <CheckCircle2 className="h-4 w-4" />
@@ -2175,7 +2192,7 @@ What would you like help with today? Feel free to ask me anything about teaching
                           className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 transition shadow-sm"
                         >
                           <RefreshCw className="h-3.5 w-3.5" />
-                          Regenerate response
+                          {t('generalTeachingAssistantChat.regenerateResponse')}
                         </button>
                       </div>
                     )}
@@ -2207,7 +2224,7 @@ What would you like help with today? Feel free to ask me anything about teaching
                   ) : (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
-                      <span className="text-sm text-gray-600 font-medium">Generating...</span>
+                      <span className="text-sm text-gray-600 font-medium">{t('chatbot.common.generating')}</span>
                     </>
                   )}
                   {canStopGeneration && (
@@ -2216,7 +2233,7 @@ What would you like help with today? Feel free to ask me anything about teaching
                       className="ml-2 flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-2.5 py-1 text-xs font-medium text-red-600 hover:bg-red-100 transition"
                     >
                       <StopCircle className="h-3.5 w-3.5" />
-                      Stop
+                      {t('generalTeachingAssistantChat.stop')}
                     </button>
                   )}
                 </div>
@@ -2278,7 +2295,7 @@ What would you like help with today? Feel free to ask me anything about teaching
                   <button
                     onClick={() => {
                       if (!featureAccess.file_attachments) {
-                        toast.info('File attachments are available with Premium. Upgrade to access.')
+                        toast.info(t('generalTeachingAssistantChat.fileAttachmentsAreAvailableWithPremiumUpgradeToAccess'))
                         return
                       }
                       setShowUploadMenu(!showUploadMenu)
@@ -2289,10 +2306,10 @@ What would you like help with today? Feel free to ask me anything about teaching
                         ? 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400'
                         : 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed opacity-60'
                     }`}
-                    title={featureAccess.file_attachments ? 'Attach files' : 'File attachments require Premium'}
+                    title={featureAccess.file_attachments ? t('generalTeachingAssistantChat.attachFiles') : t('generalTeachingAssistantChat.fileAttachmentsRequirePremium')}
                   >
                     <Paperclip className="h-4 w-4" />
-                    <span className="hidden sm:inline">Attach</span>
+                    <span className="hidden sm:inline">{t('generalTeachingAssistantChat.attach')}</span>
                     {!featureAccess.file_attachments && (
                       <Lock className="h-3 w-3 ml-1" />
                     )}
@@ -2306,7 +2323,7 @@ What would you like help with today? Feel free to ask me anything about teaching
                       <div className="absolute bottom-full left-0 mb-2 w-64 rounded-xl border border-gray-200 bg-white shadow-xl z-50 overflow-hidden upload-menu-container">
                         <div className="p-2">
                           <div className="mb-2 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                            Upload Options
+                            {t('generalTeachingAssistantChat.uploadOptions')}
                           </div>
                           <label
                             onClick={() => imageInputRef.current?.click()}
@@ -2316,8 +2333,8 @@ What would you like help with today? Feel free to ask me anything about teaching
                               <Image className="h-5 w-5" />
                             </div>
                             <div className="flex-1">
-                              <div className="font-medium text-gray-900">Images</div>
-                              <div className="text-xs text-gray-500">JPG, PNG, GIF</div>
+                              <div className="font-medium text-gray-900">{t('generalTeachingAssistantChat.images')}</div>
+                              <div className="text-xs text-gray-500">{t('generalTeachingAssistantChat.jpgPngGif')}</div>
                             </div>
                             <input
                               ref={imageInputRef}
@@ -2336,8 +2353,8 @@ What would you like help with today? Feel free to ask me anything about teaching
                               <FileText className="h-5 w-5" />
                             </div>
                             <div className="flex-1">
-                              <div className="font-medium text-gray-900">Documents</div>
-                              <div className="text-xs text-gray-500">PDF, DOC, DOCX</div>
+                              <div className="font-medium text-gray-900">{t('generalTeachingAssistantChat.documents')}</div>
+                              <div className="text-xs text-gray-500">{t('generalTeachingAssistantChat.pdfDocDocx')}</div>
                             </div>
                             <input
                               ref={documentInputRef}
@@ -2356,8 +2373,8 @@ What would you like help with today? Feel free to ask me anything about teaching
                               <File className="h-5 w-5" />
                             </div>
                             <div className="flex-1">
-                              <div className="font-medium text-gray-900">All Files</div>
-                              <div className="text-xs text-gray-500">Any file type</div>
+                              <div className="font-medium text-gray-900">{t('generalTeachingAssistantChat.allFiles')}</div>
+                              <div className="text-xs text-gray-500">{t('generalTeachingAssistantChat.anyFileType')}</div>
                             </div>
                             <input
                               ref={allFilesInputRef}
@@ -2435,14 +2452,14 @@ What would you like help with today? Feel free to ask me anything about teaching
                   }`}
                   title={
                     !featureAccess.web_search
-                      ? 'Web search requires Premium'
+                      ? t('generalTeachingAssistantChat.webSearchRequiresPremium')
                       : webSearchEnabled
-                      ? 'Web search enabled'
-                      : 'Enable web search'
+                      ? t('generalTeachingAssistantChat.webSearchEnabled')
+                      : t('generalTeachingAssistantChat.enableWebSearch')
                   }
                 >
                   <Globe className="h-4 w-4" />
-                  <span className="hidden sm:inline">Web</span>
+                  <span className="hidden sm:inline">{t('generalTeachingAssistantChat.web')}</span>
                   {!featureAccess.web_search && (
                     <Lock className="h-3 w-3 ml-1" />
                   )}
@@ -2455,7 +2472,7 @@ What would you like help with today? Feel free to ask me anything about teaching
                     className="flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 hover:border-gray-400"
                   >
                     <Settings className="h-4 w-4" />
-                    <span className="hidden sm:inline">Actions</span>
+                    <span className="hidden sm:inline">{t('generalTeachingAssistantChat.actions')}</span>
                     <ChevronDown className="h-3 w-3" />
                   </button>
                   {showActionsMenu && (
@@ -2467,7 +2484,7 @@ What would you like help with today? Feel free to ask me anything about teaching
                       <div className="absolute left-0 bottom-full mb-2 w-64 rounded-xl border border-gray-200 bg-white shadow-xl z-50 overflow-hidden actions-menu-container">
                         <div className="p-2">
                           <div className="mb-2 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                            Actions
+                            {t('generalTeachingAssistantChat.actions')}
                           </div>
                           <button
                             onClick={() => handleAction('questions')}
@@ -2475,8 +2492,8 @@ What would you like help with today? Feel free to ask me anything about teaching
                           >
                             <FileQuestion className="h-5 w-5 text-blue-600" />
                             <div>
-                              <div className="font-medium text-gray-900">Questions</div>
-                              <div className="text-xs text-gray-500">Generate questions</div>
+                              <div className="font-medium text-gray-900">{t('generalTeachingAssistantChat.questions')}</div>
+                              <div className="text-xs text-gray-500">{t('generalTeachingAssistantChat.generateQuestions')}</div>
                             </div>
                           </button>
                           <div className="relative length-menu-container">
@@ -2486,7 +2503,7 @@ What would you like help with today? Feel free to ask me anything about teaching
                             >
                               <AlignLeft className="h-5 w-5 text-green-600" />
                               <div className="flex-1">
-                                <div className="font-medium text-gray-900">Length</div>
+                                <div className="font-medium text-gray-900">{t('generalTeachingAssistantChat.length')}</div>
                                 <div className="text-xs text-gray-500">{responseLengthConfig[responseLength].description}</div>
                               </div>
                               <ChevronRight className="h-4 w-4 text-gray-400" />
@@ -2516,8 +2533,8 @@ What would you like help with today? Feel free to ask me anything about teaching
                           >
                             <AlignLeft className="h-5 w-5 text-purple-600" />
                             <div>
-                              <div className="font-medium text-gray-900">Summarize</div>
-                              <div className="text-xs text-gray-500">Summarize content</div>
+                              <div className="font-medium text-gray-900">{t('generalTeachingAssistantChat.summarize')}</div>
+                              <div className="text-xs text-gray-500">{t('generalTeachingAssistantChat.summarizeContent')}</div>
                             </div>
                           </button>
                           <button
@@ -2526,11 +2543,11 @@ What would you like help with today? Feel free to ask me anything about teaching
                           >
                             <Bookmark className="h-5 w-5 text-amber-600" />
                             <div className="flex-1">
-                              <div className="font-medium text-gray-900">Custom Prompts</div>
+                              <div className="font-medium text-gray-900">{t('generalTeachingAssistantChat.customPrompts')}</div>
                               <div className="text-xs text-gray-500">
                                 {customPrompts.length > 0 
-                                  ? `${customPrompts.length} saved prompt${customPrompts.length > 1 ? 's' : ''}`
-                                  : 'Save prompts'}
+                                  ? t('generalTeachingAssistantChat.savedPromptsCount', { count: customPrompts.length })
+                                  : t('generalTeachingAssistantChat.savePrompts')}
                               </div>
                             </div>
                           </button>
@@ -2550,7 +2567,7 @@ What would you like help with today? Feel free to ask me anything about teaching
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="Ask me anything about teaching..."
+                    placeholder={t('generalTeachingAssistantChat.askMeAnythingAboutTeaching')}
                     rows={1}
                     className="w-full resize-none border-0 bg-transparent px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-0"
                     disabled={isLoading}
@@ -2570,10 +2587,10 @@ What would you like help with today? Feel free to ask me anything about teaching
                   }`}
                   title={
                     !featureAccess.audio_transcription
-                      ? 'Voice input requires Premium'
+                      ? t('generalTeachingAssistantChat.voiceInputRequiresPremium')
                       : isRecording
-                      ? 'Stop recording'
-                      : 'Record audio'
+                      ? t('generalTeachingAssistantChat.stopRecording')
+                      : t('generalTeachingAssistantChat.recordAudio')
                   }
                 >
                   {isRecording ? (
@@ -2593,7 +2610,7 @@ What would you like help with today? Feel free to ask me anything about teaching
                   onClick={handleSendMessage}
                   disabled={(!inputValue.trim() && attachedFiles.length === 0) || isLoading}
                   className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-md transition-all hover:from-blue-700 hover:to-blue-800 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-md"
-                  title="Send message"
+                  title={t('generalTeachingAssistantChat.sendMessage')}
                 >
                   {isLoading ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
@@ -2607,7 +2624,7 @@ What would you like help with today? Feel free to ask me anything about teaching
               <div className="mt-4 flex items-center justify-center gap-2 text-xs text-gray-500">
                 <Accessibility className="h-4 w-4" />
                 <p>
-                  AI may make mistakes. Check important info. Responses are generated by AI and may contain errors.
+                  {t('generalTeachingAssistantChat.aiMayMakeMistakesCheckImportantInfoResponsesAreGenerate')}
                 </p>
               </div>
             </div>
@@ -2629,7 +2646,7 @@ What would you like help with today? Feel free to ask me anything about teaching
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                     <History className="h-5 w-5" />
-                    Chat History
+                    {t('generalTeachingAssistantChat.chatHistory')}
                   </h2>
                   <button
                     onClick={() => setShowHistory(false)}
@@ -2643,7 +2660,7 @@ What would you like help with today? Feel free to ask me anything about teaching
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Search conversations..."
+                    placeholder={t('generalTeachingAssistantChat.searchConversations')}
                     value={historySearchQuery}
                     onChange={(e) => setHistorySearchQuery(e.target.value)}
                     className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -2654,7 +2671,7 @@ What would you like help with today? Feel free to ask me anything about teaching
                     onClick={deleteAllConversations}
                     className="mt-3 w-full text-xs text-red-600 hover:text-red-700 font-medium"
                   >
-                    Delete all conversations
+                    {t('generalTeachingAssistantChat.deleteAllConversations')}
                   </button>
                 )}
               </div>
@@ -2666,14 +2683,14 @@ What would you like help with today? Feel free to ask me anything about teaching
                     {historySearchQuery ? (
                       <>
                         <Search className="h-12 w-12 text-gray-300 mb-3" />
-                        <p className="text-sm text-gray-500">No conversations found</p>
-                        <p className="text-xs text-gray-400 mt-1">Try a different search term</p>
+                        <p className="text-sm text-gray-500">{t('generalTeachingAssistantChat.noConversationsFound')}</p>
+                        <p className="text-xs text-gray-400 mt-1">{t('generalTeachingAssistantChat.tryADifferentSearchTerm')}</p>
                       </>
                     ) : (
                       <>
                         <History className="h-12 w-12 text-gray-300 mb-3" />
-                        <p className="text-sm text-gray-500">No conversations yet</p>
-                        <p className="text-xs text-gray-400 mt-1">Start a new chat to see it here</p>
+                        <p className="text-sm text-gray-500">{t('generalTeachingAssistantChat.noConversationsYet')}</p>
+                        <p className="text-xs text-gray-400 mt-1">{t('generalTeachingAssistantChat.startANewChatToSeeItHere')}</p>
                       </>
                     )}
                   </div>
@@ -2708,7 +2725,7 @@ What would you like help with today? Feel free to ask me anything about teaching
                           <button
                             onClick={(e) => deleteConversation(conversation.id, e)}
                             className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-red-600 rounded transition"
-                            title="Delete conversation"
+                            title={t('generalTeachingAssistantChat.deleteConversation')}
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
@@ -2732,7 +2749,7 @@ What would you like help with today? Feel free to ask me anything about teaching
             <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-xl shadow-2xl z-50 max-h-[80vh] flex flex-col">
               <div className="p-6 border-b border-gray-200">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-gray-900">Custom Prompts</h2>
+                  <h2 className="text-xl font-semibold text-gray-900">{t('generalTeachingAssistantChat.customPrompts')}</h2>
                   <button
                     onClick={() => setShowCustomPromptsModal(false)}
                     className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition"
@@ -2740,18 +2757,17 @@ What would you like help with today? Feel free to ask me anything about teaching
                     <X className="h-5 w-5" />
                   </button>
                 </div>
-                <p className="text-sm text-gray-500 mt-1">Save and reuse your favorite prompts</p>
+                <p className="text-sm text-gray-500 mt-1">{t('generalTeachingAssistantChat.saveAndReuseYourFavoritePrompts')}</p>
               </div>
               
               <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                {/* Add New Prompt */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Add New Prompt</label>
+                  <label className="text-sm font-medium text-gray-700">{t('generalTeachingAssistantChat.addNewPrompt')}</label>
                   <div className="flex gap-2">
                     <textarea
                       value={newCustomPrompt}
                       onChange={(e) => setNewCustomPrompt(e.target.value)}
-                      placeholder="Enter your custom prompt..."
+                      placeholder={t('generalTeachingAssistantChat.enterYourCustomPrompt')}
                       rows={2}
                       className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
@@ -2764,7 +2780,7 @@ What would you like help with today? Feel free to ask me anything about teaching
                       disabled={!newCustomPrompt.trim()}
                       className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium transition"
                     >
-                      Save
+                      {t('generalTeachingAssistantChat.save')}
                     </button>
                   </div>
                 </div>
@@ -2772,7 +2788,7 @@ What would you like help with today? Feel free to ask me anything about teaching
                 {/* Saved Prompts List */}
                 {customPrompts.length > 0 ? (
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Saved Prompts ({customPrompts.length})</label>
+                    <label className="text-sm font-medium text-gray-700">{t('generalTeachingAssistantChat.savedPromptsLabel', { count: customPrompts.length })}</label>
                     <div className="space-y-2 max-h-60 overflow-y-auto">
                       {customPrompts.map((prompt, index) => (
                         <div
@@ -2786,14 +2802,14 @@ What would you like help with today? Feel free to ask me anything about teaching
                             <button
                               onClick={() => useCustomPrompt(prompt)}
                               className="p-1.5 text-blue-600 hover:bg-blue-100 rounded transition opacity-0 group-hover:opacity-100"
-                              title="Use this prompt"
+                              title={t('generalTeachingAssistantChat.useThisPrompt')}
                             >
                               <Send className="h-4 w-4" />
                             </button>
                             <button
                               onClick={() => deleteCustomPrompt(index)}
                               className="p-1.5 text-red-600 hover:bg-red-100 rounded transition opacity-0 group-hover:opacity-100"
-                              title="Delete prompt"
+                              title={t('generalTeachingAssistantChat.deletePrompt')}
                             >
                               <Trash2 className="h-4 w-4" />
                             </button>
@@ -2805,8 +2821,8 @@ What would you like help with today? Feel free to ask me anything about teaching
                 ) : (
                   <div className="text-center py-8 text-gray-500">
                     <Bookmark className="h-12 w-12 mx-auto mb-3 text-gray-300" />
-                    <p className="text-sm">No saved prompts yet</p>
-                    <p className="text-xs mt-1">Create a prompt above to get started</p>
+                    <p className="text-sm">{t('generalTeachingAssistantChat.noSavedPromptsYet')}</p>
+                    <p className="text-xs mt-1">{t('generalTeachingAssistantChat.createAPromptAboveToGetStarted')}</p>
                   </div>
                 )}
               </div>

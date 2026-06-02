@@ -1,6 +1,7 @@
 // Library imports
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 // Local imports
 import { sideMenuRoutes } from '../../../routes/sideMenuConfig';
@@ -12,6 +13,7 @@ import { ArrowHeadIcon, CloseMenuIcon, MenuIcon } from '../../../assets/icons';
 import { Settings } from '@mui/icons-material';
 
 const SideMenu = ({ sideMenuOpen, setSideMenuOpen }) => {
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname;
@@ -43,7 +45,7 @@ const SideMenu = ({ sideMenuOpen, setSideMenuOpen }) => {
                 className='size-10'
               />
               <span className='text-[16px] font-semibold text-secondary-dark whitespace-nowrap tracking-wide'>
-                Dr. Self Tape
+                {t('app.name')}
               </span>
             </div>
           )}
@@ -86,7 +88,9 @@ const SideMenu = ({ sideMenuOpen, setSideMenuOpen }) => {
                 <div className='flex items-center gap-2'>
                   <div className='min-w-[20px]'>{route.icon}</div>
                   {sideMenuOpen && (
-                    <span className='truncate font-medium'>{route.text}</span>
+                    <span className='truncate font-medium'>
+                      {route.i18nKey ? t(route.i18nKey) : route.text}
+                    </span>
                   )}
                 </div>
 
@@ -133,7 +137,9 @@ const SideMenu = ({ sideMenuOpen, setSideMenuOpen }) => {
                             </span>
                             {sideMenuOpen && (
                               <span className='truncate font-medium'>
-                                {child.moduleName}
+                                {child.i18nKey
+                                  ? t(child.i18nKey)
+                                  : child.moduleName || child.text}
                               </span>
                             )}
                           </div>
@@ -159,7 +165,7 @@ const SideMenu = ({ sideMenuOpen, setSideMenuOpen }) => {
             />
           </span>
           {sideMenuOpen && (
-            <span className="truncate font-medium pt-1">Settings</span>
+            <span className="truncate font-medium pt-1">{t('nav.settings')}</span>
           )}
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { Check, ChevronRight } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { WizardStepDef } from '../types/teacherToolsWizard'
 
 interface Props {
@@ -11,9 +12,10 @@ interface Props {
 }
 
 export function TeacherToolsSubStepper({ steps, current, maxUnlocked, onStepClick, compact = false }: Props) {
+  const { t } = useTranslation()
   return (
     <nav
-      aria-label="Configure steps"
+      aria-label={t('teacherTools.ariaConfigureSteps')}
       className={compact ? '' : 'border-b border-gray-200 pb-4'}
     >
       <ol className={`flex flex-wrap items-center ${compact ? 'gap-y-1' : 'gap-y-2'}`}>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { EditIcon } from '../../../assets/icons';
 import { CustomButton } from '../CustomButton';
 import { CustomCheckbox } from '../CustomCheckbox';
@@ -9,6 +10,8 @@ export const EditTableColumns = ({
   columnToShow,
   setColumnToShow,
 }) => {
+  const { t } = useTranslation();
+
   const handleChange = (selectedColumn) => {
     let updatedColumns = [...columnToShow];
 
@@ -41,7 +44,7 @@ export const EditTableColumns = ({
             <CustomButton variant='outlined' className='!h-[33px] !font-normal bg-primary/80 !py-0 !pl-2.5'>
               <div className='flex items-center justify-center gap-1 text-primary'>
                 <EditIcon height={19} width={19} />
-                <span>Columns</span>
+                <span>{t('table.columns')}</span>
               </div>
             </CustomButton>
           </div>
@@ -53,12 +56,12 @@ export const EditTableColumns = ({
     >
       <div className='p-4 flex flex-col gap-3 w-[180px] max-h-[400px]'>
         <div className='flex items-center justify-between border-b border-neutral-100 pb-2'>
-          <span className='text-sm font-medium text-neutral-800'>Columns</span>
+          <span className='text-sm font-medium text-neutral-800'>{t('table.columns')}</span>
           <button
             onClick={handleResetAll}
             className='text-sm font-medium text-primary hover:text-primary-dark transition-colors cursor-pointer'
           >
-            Reset All
+            {t('table.resetAll')}
           </button>
         </div>
 

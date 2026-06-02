@@ -1,0 +1,288 @@
+{
+  "en-US": {
+    "claude": {
+      "common": { "close": "Close", "active": "Active", "inactive": "Inactive", "compliant": "Compliant", "nonCompliant": "Non-compliant", "recommendations": "Recommendations", "severity": "Severity:", "location": "Location:", "covered": "Covered", "notCovered": "Not Covered", "evidence": "Evidence:" },
+      "privacy": {
+        "title": "Privacy Compliance Checker",
+        "subtitle": "FERPA & COPPA compliance verification",
+        "ferpa": { "title": "FERPA Compliance", "pass": "Student data is protected according to FERPA regulations", "fail": "FERPA compliance issues detected" },
+        "coppa": { "title": "COPPA Compliance", "pass": "Compliant with COPPA regulations for students under 13", "fail": "COPPA compliance issues detected" },
+        "dataMinimization": { "title": "Data Minimization", "pass": "Only necessary data is collected", "warn": "Consider minimizing data collection" },
+        "secureHandling": { "title": "Secure Handling", "pass": "Data is handled securely with encryption", "fail": "Security issues detected" },
+        "issues": { "title": "Issues Detected" },
+        "overall": { "compliant": "Compliant", "reviewRequired": "Review Required", "passMessage": "All privacy compliance checks passed", "failMessage": "Please review and address the issues above" }
+      },
+      "longDoc": {
+        "title": "Long Document Analyzer",
+        "subtitle": "Analyze textbooks, curricula, and research papers (200K context)",
+        "dropzone": { "primary": "Drag and drop documents here, or click to browse", "formats": "Supports PDF, DOC, DOCX, TXT (up to 200K tokens)" },
+        "analyzing": { "title": "Analyzing document...", "subtitle": "Processing content with Claude's 200K context window" },
+        "complete": { "title": "Analysis Complete", "summary": "Processed {{tokenCount}} tokens from {{fileName}}" },
+        "insights": { "title": "Key Insights" },
+        "standards": { "title": "Standards Extracted" },
+        "curriculum": { "title": "Curriculum Information", "subjects": "Subjects", "gradeLevels": "Grade Levels", "topics": "Topics" },
+        "summary": { "title": "Summary" }
+      },
+      "guidedLearning": {
+        "title": "Guided Learning Mode",
+        "subtitle": "Socratic method and step-by-step reasoning",
+        "mode": { "label": "Learning Mode", "socratic": "Socratic", "stepByStep": "Step by step", "criticalThinking": "Critical thinking", "metacognitive": "Metacognitive" },
+        "level": { "label": "Difficulty Level", "beginner": "Beginner", "intermediate": "Intermediate", "advanced": "Advanced" },
+        "topic": { "label": "Topic:", "empty": "Enter a topic to begin" },
+        "actions": { "generateQuestions": "Generate Socratic Questions", "generateHints": "Generate Hints" },
+        "questions": { "title": "Guided Questions" },
+        "hints": { "title": "Step-by-Step Hints", "nextStep": "Next Step" }
+      },
+      "assessment": {
+        "title": "Ethical Assessment Review",
+        "subtitle": "Bias-free and culturally responsive assessment",
+        "score": { "label": "Ethical Assessment Score", "allPassed": "All checks passed", "reviewRequired": "Review required" },
+        "criteria": { "title": "Assessment Criteria", "biasFree": "Bias-Free", "culturallyResponsive": "Culturally Responsive", "accessible": "Accessible", "fair": "Fair & Equitable" },
+        "biasIssues": { "title": "Bias Issues Detected", "type": "{{type}} Bias", "detected": "Bias Detected" },
+        "summary": {
+          "ready": "Assessment Ready",
+          "reviewRecommended": "Review Recommended",
+          "significantIssues": "Significant Issues Found",
+          "readyMessage": "Your assessment meets ethical standards and is ready to use",
+          "reviewMessage": "Please review and address the issues above before using this assessment"
+        }
+      },
+      "ethicalDashboard": {
+        "title": "Ethical AI Dashboard",
+        "subtitle": "Constitutional AI principles and compliance status",
+        "principles": { "title": "Constitutional AI Principles" },
+        "bias": { "title": "Bias Detection", "detected": "Bias Detected: {{type}}", "none": "No Bias Detected" },
+        "privacy": { "title": "Privacy Compliance", "ferpa": "FERPA Compliance", "coppa": "COPPA Compliance" }
+      },
+      "alignment": {
+        "title": "Curriculum Alignment Pro",
+        "subtitle": "Multi-standard alignment with ethical review",
+        "score": { "label": "Alignment Score", "standardsAnalyzed": "{{count}} standards analyzed" },
+        "coverage": { "title": "Standards Coverage" },
+        "gaps": { "title": "Standards Gaps" },
+        "crossCurricular": { "title": "Cross-Curricular Connections" },
+        "ethical": { "title": "Ethical Review", "passed": "Ethical Review Passed", "reviewRequired": "Review Required", "concerns": "Concerns:", "recommendations": "Recommendations:" }
+      },
+      "docCompare": {
+        "title": "Document Comparison Tool",
+        "subtitle": "Compare multiple curriculum documents",
+        "dropzone": { "primary": "Drag and drop multiple documents here, or click to browse", "formats": "Upload 2 or more documents to compare (PDF, DOC, DOCX, TXT)" },
+        "filesSelected": "Documents Selected ({{count}})",
+        "comparing": { "title": "Comparing documents...", "subtitle": "Analyzing similarities and differences" },
+        "similarities": "Similarities",
+        "differences": "Differences",
+        "standards": { "title": "Standards Comparison", "common": "Common Standards", "unique": "Unique Standards" },
+        "synthesis": { "title": "Synthesis Report" },
+        "mock": {
+          "similarities": ["Common standards and learning objectives", "Shared pedagogical approaches", "Similar assessment strategies"],
+          "differences": ["Different grade level focus", "Varying depth of content coverage", "Different cultural perspectives"]
+        }
+      }
+    },
+    "premium": {
+      "standards": {
+        "title": "Standards Browser Pro",
+        "subtitle": "Select educational standards for alignment",
+        "searchPlaceholder": "Search standards...",
+        "allSubjects": "All Subjects",
+        "allGrades": "All Grades",
+        "gradeOption": "Grade {{grade}}",
+        "selectedCount": "{{count}} standard selected",
+        "selectedCount_plural": "{{count}} standards selected",
+        "empty": "No standards found matching your criteria",
+        "apply": "Apply {{count}} Standard",
+        "apply_plural": "Apply {{count}} Standards",
+        "subjects": { "ela": "English Language Arts", "math": "Mathematics", "science": "Science" }
+      },
+      "instructions": {
+        "title": "Custom Instructions",
+        "subtitle": "Personalize GPT-4's responses to your teaching style",
+        "teachingStyles": { "label": "Teaching Styles" },
+        "subjects": { "label": "Subject Expertise" },
+        "outputFormat": { "label": "Output Format", "detailed": "Detailed", "concise": "Concise", "structured": "Structured" },
+        "tone": { "label": "Tone", "professional": "Professional", "friendly": "Friendly", "formal": "Formal" },
+        "language": { "label": "Language", "enUS": "English (US)", "enUK": "English (UK)", "es": "Spanish", "fr": "French", "de": "German" },
+        "save": "Save Instructions"
+      },
+      "export": {
+        "title": "Export Conversation",
+        "messageCount": "{{count}} messages",
+        "format": { "label": "Export Format", "pdf": "PDF", "word": "Word Document", "markdown": "Markdown", "html": "HTML", "googleDocs": "Google Docs" },
+        "options": {
+          "label": "Export Options",
+          "metadata": { "label": "Include Metadata", "description": "Timestamps, dates, and conversation info" },
+          "images": { "label": "Include Images", "description": "Embed uploaded images in export" }
+        },
+        "formatting": { "label": "Formatting Style", "professional": "Professional", "simple": "Simple", "custom": "Custom" },
+        "action": "Export",
+        "googleDocsAlert": "Google Docs export requires API integration"
+      },
+      "multimodal": {
+        "title": "Multimodal Upload",
+        "subtitle": "Upload images or documents for AI analysis",
+        "dropzone": { "primary": "Drag and drop files here, or click to browse", "formats": "Supports images (JPG, PNG, GIF) and documents (PDF, DOC, DOCX)" },
+        "processing": "Processing...",
+        "empty": "No files selected",
+        "addFiles": "Add {{count}} File",
+        "addFiles_plural": "Add {{count}} Files"
+      }
+    },
+    "content": {
+      "processing": {
+        "title": "Processing Status",
+        "published": "Document Published Successfully!",
+        "failed": { "title": "Processing Failed", "defaultMessage": "Processing failed", "hintLabel": "Hint:" },
+        "progress": { "label": "Progress" },
+        "connecting": { "connected": "Connected — waiting for first status update…", "pending": "Connecting to status stream…", "help": "If this stays on \"Connecting\", the browser never reached your API (wrong URL, CORS, or backend down). If it says \"Connected\" but never updates, open DevTools → Network → find status/stream and confirm VITE_USE_LOCAL / VITE_API_BASE_URL point at your FastAPI host." },
+        "error": { "title": "Connection Error", "help": "The backend may still be starting up. Click Retry, or check DevTools → Network for details." },
+        "pages": { "opening": "Opening PDF — {{totalPages}} pages detected, reading now…", "read": "Pages read: {{read}} / {{total}}", "slowHint": "— large books take several minutes, still running" },
+        "vectors": { "stored": "Vectors stored: {{completed}} / {{total}}" },
+        "chunks": { "count": "Chunks: {{completed}} / {{total}}" },
+        "steps": { "uploaded": "Uploaded", "textExtracting": "Extracting Text", "ocrRunning": "Processing OCR (async)", "normalizing": "Normalizing", "chunking": "Chunking", "embedding": "Generating Embeddings", "indexing": "Indexing", "qaValidation": "QA Validation", "published": "Published" }
+      },
+      "worksheet": {
+        "title": "Worksheet",
+        "empty": "No worksheet data available",
+        "difficulty": { "easy": "Easy", "medium": "Medium", "hard": "Hard" },
+        "meta": { "topic": "Topic:", "grade": "Grade:", "subject": "Subject:", "date": "Date:", "generated": "Generated:" },
+        "actions": { "copy": "Copy", "exportText": "Export Text", "exportPdf": "Export PDF", "print": "Print", "edit": "Edit", "cancel": "Cancel", "save": "Save" },
+        "toast": { "copySuccess": "Worksheet copied to clipboard!", "copyFailed": "Failed to copy worksheet", "exportSuccess": "Worksheet exported as text file!", "saveSuccess": "Worksheet saved!", "cancelled": "Changes cancelled" },
+        "edit": { "addQuestion": "Add New Question", "addOption": "Add Option", "delete": "Delete", "deleteConfirm": "Are you sure you want to delete this question?", "defaultQuestion": "New question text", "defaultOption": "New option" },
+        "sections": { "answer": "Answer:", "markingScheme": "Marking Scheme", "warnings": "Warnings" },
+        "questionTypes": { "mcq": "MCQ", "shortAnswer": "Short Answer", "longAnswer": "Long Answer" },
+        "points": "Points",
+        "marking": { "points": "{{points}} points" }
+      },
+      "toc": {
+        "title": "Optional: table of contents (JSON)",
+        "help": "Paste a JSON array of chapters with title, start_page_pdf, and end_page_pdf. Leave empty for auto-detection.",
+        "placeholder": "Paste TOC JSON here, or leave empty for auto-detection…",
+        "ariaLabel": "Optional table of contents JSON",
+        "example": { "title": "Example format" },
+        "errors": {
+          "invalidJson": "Invalid JSON. Check brackets, commas, and quotes.",
+          "notArray": "TOC must be a JSON array of chapter objects.",
+          "entryNotObject": "Entry {{n}} must be an object.",
+          "missingTitle": "Entry {{n}} needs a non-empty \"title\".",
+          "invalidPages": "Entry {{n}} needs numeric start_page_pdf and end_page_pdf.",
+          "pageMin": "Entry {{n}}: page numbers must be ≥ 1.",
+          "pageOrder": "Entry {{n}}: end_page_pdf must be ≥ start_page_pdf.",
+          "emptyArray": "TOC array is empty."
+        }
+      },
+      "upload": {
+        "validation": { "packNameRequired": "Pack name is required", "selectPack": "Please select a content pack", "selectFile": "Please select a file", "failed": "Upload failed" },
+        "progress": { "starting": "Starting upload..." },
+        "success": "Document uploaded successfully! Processing started...",
+        "pack": { "sectionTitle": "Content Pack Information", "selectLabel": "Content Pack", "selectPlaceholder": "Select a pack...", "name": "Pack Name", "description": "Description", "subject": "Subject", "grade": "Grade", "curriculum": "Curriculum", "placeholders": { "name": "e.g., Grade 10 Mathematics", "description": "Brief description of this content pack", "subject": "e.g., Mathematics", "grade": "e.g., 10", "curriculum": "e.g., Common Core" } },
+        "file": { "label": "Document File", "upload": "Upload a file", "dragDrop": "or drag and drop", "formats": "PDF, DOCX, or images up to 50MB" },
+        "meta": { "title": "Document Title (optional)", "author": "Author (optional)", "titlePlaceholder": "Document title", "authorPlaceholder": "Author name" },
+        "forceOcr": "Force OCR (even for digital PDFs)",
+        "actions": { "uploading": "Uploading...", "uploadDocument": "Upload Document" }
+      },
+      "pack": { "untitled": "Untitled Pack", "documentCount": "{{count}} documents", "editTooltip": "Edit pack", "deleteTooltip": "Delete pack" },
+      "qa": {
+        "title": "QA Validation Results",
+        "status": "Status: {{status}}",
+        "checks": { "pageCoverage": "Page Coverage", "textDensity": "Text Density", "embeddingCompleteness": "Embedding Completeness", "vectorRetrieval": "Vector Retrieval" },
+        "metrics": { "title": "Metrics" },
+        "goldenQueries": { "title": "Golden Query Tests", "chunksFound": "Chunks found: {{count}}" },
+        "notes": { "title": "Notes" }
+      }
+    },
+    "workspace": {
+      "fallbackName": "Workspace",
+      "scopeType": { "institution": "Institution", "organization": "Organization", "personal": "Personal" },
+      "switcher": { "title": "Switch Workspace", "active": "Active" }
+    },
+    "credits": {
+      "activate": {
+        "title": "Activate credits",
+        "subtitle": "Enter your access code to get started",
+        "codeLabel": "Access code",
+        "codePlaceholder": "XXXX-XXXX-XXXX",
+        "success": { "title": "You're all set", "subtitle": "Your credits have been activated", "creditsAdded": "Credits added", "validUntil": "Valid until", "renewal": "Renewal", "autoRenewing": "Auto-renewing", "cta": "Start using 1ne" },
+        "errors": { "invalid": "Invalid code. Please try again.", "generic": "Something went wrong. Please try again." },
+        "actions": { "activating": "Activating…", "activate": "Activate" },
+        "noCode": { "prompt": "Don't have a code?", "contact": "Contact us" }
+      },
+      "noCredits": {
+        "title": { "expired": "Credits expired", "remaining": "No credits remaining" },
+        "body": { "expired": "Your credit balance has expired. Activate an access code to continue using AI features.", "remaining": "You need credits to use this feature. Activate an access code to get started." },
+        "balance": "Balance:",
+        "required": "Required:",
+        "stats": { "balance": "your balance", "required": "required" },
+        "actions": { "activate": "Activate credits", "viewPlan": "View plan" }
+      },
+      "plan": {
+        "yourCredits": "Your credits",
+        "memberSince": "Member since {{date}}",
+        "activateCode": "+ Activate code",
+        "creditsUnit": "credits",
+        "remaining": "{{pct}}% remaining",
+        "expires": "Expires {{date}}",
+        "autoRenewing": "Auto-renewing",
+        "noActiveCredits": "No active credits. Activate a code to get started.",
+        "activateCreditsLink": "Activate credits →",
+        "usageBreakdown": "Usage breakdown",
+        "last30Days": "Last 30 days",
+        "activity": "Activity",
+        "activityFallback": "Activity",
+        "left": "{{count}} left",
+        "creditsShort": "cr"
+      }
+    },
+    "student": {
+      "badge": { "aiDefault": "AI", "statusDefault": "Status" }
+    },
+    "shared": {
+      "notAvailable": "N/A",
+      "status": { "unknown": "Unknown" },
+      "filePicker": { "defaultPlaceholder": "Choose a file" },
+      "imagePicker": { "defaultPlaceholder": "Upload an image", "previewAlt": "Preview" },
+      "profilePicture": {
+        "defaultLabel": "Profile Picture",
+        "defaultUser": "User",
+        "ariaLabel": "Upload profile picture",
+        "errors": { "noFile": "No file selected", "invalidType": "Invalid file type. Allowed formats: {{formats}}", "tooLarge": "File size exceeds {{max}}MB limit. Current size: {{current}}MB", "notImage": "Selected file is not an image" },
+        "actions": { "uploading": "Uploading...", "change": "Change", "upload": "Upload", "remove": "Remove" }
+      },
+      "calendar": { "allDay": "All Day" },
+      "accordion": { "noData": "No data found" },
+      "statsCard": { "vsLast30Days": "vs last 30 days" }
+    },
+    "error": {
+      "boundary": { "title": "Something went wrong", "message": "We're sorry, but something unexpected happened. Please try refreshing the page.", "refresh": "Refresh page", "goToLogin": "Go to Login", "goToDashboard": "Go to Dashboard" }
+    },
+    "settings": {
+      "general": { "theme": { "followsDevice": " (follows device)" } },
+      "notifications": { "currentChannel": "Current channel: {{channel}}", "edit": "Edit", "manageDefaults": "Manage notification defaults" },
+      "integrations": {
+        "title": "Integrations",
+        "addNew": "Add new integration",
+        "status": { "connected": "Connected", "available": "Available", "comingSoon": "Coming soon" },
+        "googleClassroom": { "name": "Google Classroom", "description": "Sync assignments and rosters automatically." },
+        "microsoftTeams": { "name": "Microsoft Teams", "description": "Enable Teams meetings and assignment syncing." },
+        "canvasLms": { "name": "Canvas LMS", "description": "Direct gradebook integration for Canvas users." }
+      },
+      "developer": { "title": "API & developer access", "connectedApps": "Connected apps", "connectedAppsDesc": "3 apps have access to your teaching workspace.", "manageTokens": "Manage API tokens" },
+      "export": { "title": "Export & backup", "downloadData": "Download workspace data", "downloadDataDesc": "Templates, assessments, and chat history", "scheduleBackups": "Schedule weekly backups" },
+      "plan": {
+        "yourCredits": "Your credits",
+        "memberSince": "Member since {{date}}",
+        "activateCode": "+ Activate code",
+        "creditsRemaining": "/ {{total}} credits",
+        "remainingPct": "{{pct}}% remaining",
+        "expires": "Expires {{date}}",
+        "autoRenewing": "Auto-renewing",
+        "noActiveCredits": "No active credits. Activate a code to get started.",
+        "activateCreditsLink": "Activate credits →",
+        "usageBreakdown": "Usage breakdown",
+        "last30Days": "Last 30 days",
+        "activity": "Activity",
+        "activityFallback": "Activity",
+        "left": "{{count}} left"
+      }
+    }
+  }
+}

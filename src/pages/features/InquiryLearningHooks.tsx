@@ -37,6 +37,7 @@ import {
   Flame,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template'
@@ -64,6 +65,7 @@ interface QuestionFramework {
 }
 
 const InquiryLearningHooks = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -388,14 +390,10 @@ These questions require analysis and judgment:
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 3
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('inquiryLearningHooks.module3')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    50 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('inquiryLearningHooks.k0Min')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
                     <Star className="h-3 w-3" />
@@ -405,16 +403,14 @@ These questions require analysis and judgment:
                     }, 0)} / {lessons.reduce((sum, l) => sum + l.points, 0)} points
                   </span>
                 </div>
-                <h1 className="text-3xl font-bold">Inquiry-Based Learning Hooks</h1>
-                <p className="mt-2 text-green-100">
-                  Discover powerful strategies to spark curiosity and launch inquiry-based learning experiences
-                </p>
+                <h1 className="text-3xl font-bold">{t('inquiryLearningHooks.inquiryBasedLearningHooks')}</h1>
+                <p className="mt-2 text-green-100">{t('inquiryLearningHooks.discoverPowerfulStrategiesToSparkCuriosityAndLaunchInqu')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm mb-4">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4" />
-                <span>High Impact</span>
+                <span>{t('inquiryLearningHooks.highImpact')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Trophy className="w-4 h-4" />
@@ -439,7 +435,7 @@ These questions require analysis and judgment:
         {/* Sidebar */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('inquiryLearningHooks.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isActive = idx === currentLesson
@@ -513,9 +509,7 @@ These questions require analysis and judgment:
                 </div>
                 {completedLessons.includes(currentLessonData.id) && (
                   <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-semibold flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4" />
-                    Completed
-                  </span>
+                    <CheckCircle2 className="h-4 w-4" />{t('inquiryLearningHooks.completed')}</span>
                 )}
               </div>
             </div>
@@ -548,7 +542,7 @@ These questions require analysis and judgment:
                 </div>
 
                 <div className="bg-green-50 rounded-xl p-6 border border-green-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Points</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('inquiryLearningHooks.keyPoints')}</h3>
                   <ul className="space-y-2">
                     {currentLessonData.content.keyPoints.map((point: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -570,7 +564,7 @@ These questions require analysis and judgment:
 
                 {currentLessonData.content.keyTakeaways && (
                   <div className="bg-purple-50 rounded-xl p-6 border border-purple-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Takeaways</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('inquiryLearningHooks.keyTakeaways')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyTakeaways.map((takeaway: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -595,66 +589,64 @@ These questions require analysis and judgment:
                       onClick={() => setShowHookGenerator(true)}
                       className="w-full px-6 py-4 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
                     >
-                      <Zap className="h-5 w-5" />
-                      Launch Hook Generator
-                    </button>
+                      <Zap className="h-5 w-5" />{t('inquiryLearningHooks.launchHookGenerator')}</button>
                   ) : (
                     <div className="bg-white rounded-xl p-6 border-2 border-green-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Inquiry Hook Generator</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('inquiryLearningHooks.inquiryHookGenerator')}</h3>
                       <div className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('inquiryLearningHooks.subject')}</label>
                             <select
                               value={hookInput.subject}
                               onChange={(e) => setHookInput({ ...hookInput, subject: e.target.value })}
                               className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                             >
-                              <option value="">Select subject</option>
-                              <option value="Science">Science</option>
-                              <option value="Math">Math</option>
-                              <option value="Social Studies">Social Studies</option>
-                              <option value="English">English</option>
+                              <option value="">{t('inquiryLearningHooks.selectSubject')}</option>
+                              <option value="Science">{t('inquiryLearningHooks.science')}</option>
+                              <option value="Math">{t('inquiryLearningHooks.math')}</option>
+                              <option value="Social Studies">{t('inquiryLearningHooks.socialStudies')}</option>
+                              <option value="English">{t('inquiryLearningHooks.english')}</option>
                             </select>
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('inquiryLearningHooks.gradeLevel')}</label>
                             <select
                               value={hookInput.gradeLevel}
                               onChange={(e) => setHookInput({ ...hookInput, gradeLevel: e.target.value })}
                               className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                             >
-                              <option value="">Select grade</option>
+                              <option value="">{t('inquiryLearningHooks.selectGrade')}</option>
                               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
                                 <option key={grade} value={grade.toString()}>
-                                  Grade {grade}
+                                  {t('common.gradeOption', { grade })}
                                 </option>
                               ))}
                             </select>
                           </div>
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Topic or Concept</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('inquiryLearningHooks.topicOrConcept')}</label>
                           <input
                             type="text"
                             value={hookInput.topic}
                             onChange={(e) => setHookInput({ ...hookInput, topic: e.target.value })}
-                            placeholder="e.g., Photosynthesis, Fractions, Ancient Civilizations"
+                            placeholder={t('inquiryLearningHooks.eGPhotosynthesisFractionsAncientCivilizations')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Hook Type</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('inquiryLearningHooks.hookType')}</label>
                           <select
                             value={hookInput.hookType}
                             onChange={(e) => setHookInput({ ...hookInput, hookType: e.target.value })}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           >
-                            <option value="">Select type</option>
-                            <option value="Phenomenon-Based">Phenomenon-Based</option>
-                            <option value="Problem-Based">Problem-Based</option>
-                            <option value="Mystery">Mystery</option>
-                            <option value="Controversy">Controversy</option>
+                            <option value="">{t('inquiryLearningHooks.selectType')}</option>
+                            <option value="Phenomenon-Based">{t('inquiryLearningHooks.phenomenonBased')}</option>
+                            <option value="Problem-Based">{t('inquiryLearningHooks.problemBased')}</option>
+                            <option value="Mystery">{t('inquiryLearningHooks.mystery')}</option>
+                            <option value="Controversy">{t('inquiryLearningHooks.controversy')}</option>
                           </select>
                         </div>
                         <button
@@ -662,13 +654,11 @@ These questions require analysis and judgment:
                           disabled={!hookInput.subject || !hookInput.topic}
                           className="w-full px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
                         >
-                          <Sparkles className="h-4 w-4" />
-                          Generate Hook
-                        </button>
+                          <Sparkles className="h-4 w-4" />{t('inquiryLearningHooks.generateHook')}</button>
 
                         {generatedHook && (
                           <div className="mt-6 bg-green-50 rounded-lg p-6 border border-green-200">
-                            <h4 className="text-base font-semibold text-gray-900 mb-3">Generated Inquiry Hook</h4>
+                            <h4 className="text-base font-semibold text-gray-900 mb-3">{t('inquiryLearningHooks.generatedInquiryHook')}</h4>
                             <div className="bg-white rounded-lg p-4 border border-green-200 mb-4">
                               <p className="text-lg font-medium text-gray-900 mb-2">{generatedHook.hook}</p>
                               <span className="px-2 py-1 rounded bg-green-100 text-green-700 text-xs font-semibold">
@@ -676,7 +666,7 @@ These questions require analysis and judgment:
                               </span>
                             </div>
                             <div className="mb-4">
-                              <p className="text-sm font-semibold text-gray-900 mb-2">Guiding Questions:</p>
+                              <p className="text-sm font-semibold text-gray-900 mb-2">{t('inquiryLearningHooks.guidingQuestions')}</p>
                               <ul className="space-y-1">
                                 {generatedHook.questions.map((q: string, idx: number) => (
                                   <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
@@ -687,7 +677,7 @@ These questions require analysis and judgment:
                               </ul>
                             </div>
                             <div>
-                              <p className="text-sm font-semibold text-gray-900 mb-2">Investigation Steps:</p>
+                              <p className="text-sm font-semibold text-gray-900 mb-2">{t('inquiryLearningHooks.investigationSteps')}</p>
                               <ol className="space-y-1">
                                 {generatedHook.investigation.map((step: string, idx: number) => (
                                   <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
@@ -708,7 +698,7 @@ These questions require analysis and judgment:
 
                 {/* Hook Types Examples */}
                 <div className="bg-white rounded-xl p-6 border-2 border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Hook Type Examples</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('inquiryLearningHooks.hookTypeExamples')}</h3>
                   <div className="space-y-4">
                     {hookTypes.map((hook, idx) => (
                       <div key={idx} className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-5 border border-green-200">
@@ -720,11 +710,11 @@ These questions require analysis and judgment:
                         </div>
                         <p className="text-sm text-gray-700 mb-3">{hook.description}</p>
                         <div className="bg-white rounded-lg p-3 border border-green-200 mb-3">
-                          <p className="text-xs font-semibold text-gray-600 mb-1">Example:</p>
+                          <p className="text-xs font-semibold text-gray-600 mb-1">{t('inquiryLearningHooks.example')}</p>
                           <p className="text-sm text-gray-900">{hook.example}</p>
                         </div>
                         <div>
-                          <p className="text-xs font-semibold text-gray-600 mb-1">Implementation:</p>
+                          <p className="text-xs font-semibold text-gray-600 mb-1">{t('inquiryLearningHooks.implementation')}</p>
                           <ul className="space-y-1">
                             {hook.implementation.map((step, stepIdx) => (
                               <li key={stepIdx} className="text-xs text-gray-700 flex items-start gap-1">
@@ -742,7 +732,7 @@ These questions require analysis and judgment:
                 {/* Question Frameworks */}
                 {currentLessonData.id === 'hook-generator' && (
                   <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Question Frameworks</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('inquiryLearningHooks.questionFrameworks')}</h3>
                     <div className="space-y-4">
                       {questionFrameworks.map((framework, idx) => (
                         <div key={idx} className="bg-white rounded-lg p-5 border border-blue-200">
@@ -783,9 +773,7 @@ These questions require analysis and judgment:
                   </ul>
                 </div>
                 <button className="w-full px-6 py-4 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2">
-                  <Download className="h-5 w-5" />
-                  Download Template
-                </button>
+                  <Download className="h-5 w-5" />{t('inquiryLearningHooks.downloadTemplate')}</button>
               </div>
             )}
 
@@ -796,9 +784,7 @@ These questions require analysis and judgment:
                 disabled={currentLesson === 0}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
-                <ArrowLeft className="h-4 w-4" />
-                Previous
-              </button>
+                <ArrowLeft className="h-4 w-4" />{t('inquiryLearningHooks.previous')}</button>
 
               <button
                 onClick={() => {
@@ -811,18 +797,12 @@ These questions require analysis and judgment:
               >
                 {completedLessons.includes(currentLessonData.id) ? (
                   <>
-                    <CheckCircle2 className="h-4 w-4" />
-                    Marked Complete
-                  </>
+                    <CheckCircle2 className="h-4 w-4" />{t('inquiryLearningHooks.markedComplete')}</>
                 ) : currentLesson === lessons.length - 1 ? (
                   <>
-                    <Trophy className="h-4 w-4" />
-                    Complete Module
-                  </>
+                    <Trophy className="h-4 w-4" />{t('inquiryLearningHooks.completeModule')}</>
                 ) : (
-                  <>
-                    Complete & Next
-                    <ArrowRight className="h-4 w-4" />
+                  <>{t('inquiryLearningHooks.completeNext')}<ArrowRight className="h-4 w-4" />
                   </>
                 )}
               </button>
@@ -835,7 +815,7 @@ These questions require analysis and judgment:
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-600 mb-4">
                 <Trophy className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Module Complete!</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('inquiryLearningHooks.moduleComplete')}</h3>
               <p className="text-gray-700 mb-6">
                 You've earned {lessons.reduce((sum, l) => sum + l.points, 0)} points. Great work!
               </p>
@@ -846,9 +826,7 @@ These questions require analysis and judgment:
                 >
                   Continue to Next Module
                 </button>
-                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                  Download Certificate
-                </button>
+                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">{t('inquiryLearningHooks.downloadCertificate')}</button>
               </div>
             </div>
           )}

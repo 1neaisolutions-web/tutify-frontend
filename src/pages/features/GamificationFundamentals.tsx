@@ -36,6 +36,7 @@ import {
   RefreshCw,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template'
@@ -63,6 +64,7 @@ interface GamificationDesign {
 }
 
 const GamificationFundamentals = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -346,14 +348,10 @@ The brain releases dopamine not just when receiving rewards, but when anticipati
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 1
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('gamificationFundamentals.module1')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    45 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('gamificationFundamentals.k5Min')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
                     <Star className="h-3 w-3" />
@@ -363,16 +361,14 @@ The brain releases dopamine not just when receiving rewards, but when anticipati
                     }, 0)} / {lessons.reduce((sum, l) => sum + l.points, 0)} points
                   </span>
                 </div>
-                <h1 className="text-3xl font-bold">Gamification Fundamentals</h1>
-                <p className="mt-2 text-amber-100">
-                  Learn the core principles of gamification and how to apply game mechanics to increase student motivation and engagement
-                </p>
+                <h1 className="text-3xl font-bold">{t('gamificationFundamentals.gamificationFundamentals')}</h1>
+                <p className="mt-2 text-amber-100">{t('gamificationFundamentals.learnTheCorePrinciplesOfGamificationAndHowToApply')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm mb-4">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4" />
-                <span>High Impact</span>
+                <span>{t('gamificationFundamentals.highImpact')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Trophy className="w-4 h-4" />
@@ -405,7 +401,7 @@ The brain releases dopamine not just when receiving rewards, but when anticipati
         {/* Sidebar - Lesson Navigation */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('gamificationFundamentals.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isActive = idx === currentLesson
@@ -480,9 +476,7 @@ The brain releases dopamine not just when receiving rewards, but when anticipati
                 </div>
                 {completedLessons.includes(currentLessonData.id) && (
                   <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-semibold flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4" />
-                    Completed
-                  </span>
+                    <CheckCircle2 className="h-4 w-4" />{t('gamificationFundamentals.completed')}</span>
                 )}
               </div>
             </div>
@@ -523,7 +517,7 @@ The brain releases dopamine not just when receiving rewards, but when anticipati
                 </div>
 
                 <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Points</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('gamificationFundamentals.keyPoints')}</h3>
                   <ul className="space-y-2">
                     {currentLessonData.content.keyPoints.map((point: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -535,7 +529,7 @@ The brain releases dopamine not just when receiving rewards, but when anticipati
                 </div>
 
                 <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Transcript</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('gamificationFundamentals.transcript')}</h3>
                   <p className="text-sm text-gray-700 leading-relaxed">{currentLessonData.content.transcript}</p>
                 </div>
               </div>
@@ -549,7 +543,7 @@ The brain releases dopamine not just when receiving rewards, but when anticipati
                 </div>
 
                 <div className="bg-purple-50 rounded-xl p-6 border border-purple-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Takeaways</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('gamificationFundamentals.keyTakeaways')}</h3>
                   <ul className="space-y-2">
                     {currentLessonData.content.keyTakeaways.map((takeaway: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -567,7 +561,7 @@ The brain releases dopamine not just when receiving rewards, but when anticipati
               <div className="space-y-6">
                 <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-6 border border-amber-200">
                   <h3 className="text-lg font-semibold text-gray-900 mb-3">{currentLessonData.content.description}</h3>
-                  <p className="text-sm text-gray-700 mb-4">Follow these steps to design your gamification system:</p>
+                  <p className="text-sm text-gray-700 mb-4">{t('gamificationFundamentals.followTheseStepsToDesignYourGamificationSystem')}</p>
                   <ol className="space-y-3">
                     {currentLessonData.content.steps.map((step: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
@@ -585,35 +579,33 @@ The brain releases dopamine not just when receiving rewards, but when anticipati
                     onClick={() => setShowDesignTool(true)}
                     className="w-full px-6 py-4 bg-amber-600 text-white rounded-xl font-semibold hover:bg-amber-700 transition flex items-center justify-center gap-2"
                   >
-                    <Zap className="h-5 w-5" />
-                    Launch Design Tool
-                  </button>
+                    <Zap className="h-5 w-5" />{t('gamificationFundamentals.launchDesignTool')}</button>
                 ) : (
                   <div className="bg-white rounded-xl p-6 border-2 border-amber-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Gamification Design Tool</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('gamificationFundamentals.gamificationDesignTool')}</h3>
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Learning Objective</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('gamificationFundamentals.learningObjective')}</label>
                         <textarea
                           value={gamificationDesign.objective}
                           onChange={(e) => setGamificationDesign({ ...gamificationDesign, objective: e.target.value })}
-                          placeholder="What do you want students to learn or achieve?"
+                          placeholder={t('gamificationFundamentals.whatDoYouWantStudentsToLearnOrAchieve')}
                           rows={3}
                           className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Target Audience</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('gamificationFundamentals.targetAudience')}</label>
                         <input
                           type="text"
                           value={gamificationDesign.targetAudience}
                           onChange={(e) => setGamificationDesign({ ...gamificationDesign, targetAudience: e.target.value })}
-                          placeholder="e.g., 5th grade math students"
+                          placeholder={t('gamificationFundamentals.eG5thGradeMathStudents')}
                           className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Game Mechanics</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('gamificationFundamentals.gameMechanics')}</label>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                           {['Points', 'Badges', 'Leaderboards', 'Levels', 'Quests', 'Progress Bars'].map((mechanic) => (
                             <button
@@ -643,21 +635,21 @@ The brain releases dopamine not just when receiving rewards, but when anticipati
                         </div>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Reward System</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('gamificationFundamentals.rewardSystem')}</label>
                         <input
                           type="text"
                           value={gamificationDesign.rewards.join(', ')}
                           onChange={(e) => setGamificationDesign({ ...gamificationDesign, rewards: e.target.value.split(', ') })}
-                          placeholder="e.g., Extra recess, Homework pass, Class privileges"
+                          placeholder={t('gamificationFundamentals.eGExtraRecessHomeworkPassClassPrivileges')}
                           className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Progression Path</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('gamificationFundamentals.progressionPath')}</label>
                         <textarea
                           value={gamificationDesign.progression}
                           onChange={(e) => setGamificationDesign({ ...gamificationDesign, progression: e.target.value })}
-                          placeholder="Describe how students will progress through levels or stages"
+                          placeholder={t('gamificationFundamentals.describeHowStudentsWillProgressThroughLevelsOrStages')}
                           rows={3}
                           className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100"
                         />
@@ -666,9 +658,7 @@ The brain releases dopamine not just when receiving rewards, but when anticipati
                         <button
                           onClick={handleDesignSubmit}
                           className="flex-1 px-6 py-3 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition"
-                        >
-                          Save Design
-                        </button>
+                        >{t('gamificationFundamentals.saveDesign')}</button>
                         <button
                           onClick={() => setShowDesignTool(false)}
                           className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition"
@@ -687,7 +677,7 @@ The brain releases dopamine not just when receiving rewards, but when anticipati
               <div className="space-y-6">
                 <div className="bg-green-50 rounded-xl p-6 border border-green-200">
                   <h3 className="text-lg font-semibold text-gray-900 mb-3">{currentLessonData.content.description}</h3>
-                  <p className="text-sm text-gray-700 mb-4">This template includes the following sections:</p>
+                  <p className="text-sm text-gray-700 mb-4">{t('gamificationFundamentals.thisTemplateIncludesTheFollowingSections')}</p>
                   <ul className="space-y-2">
                     {currentLessonData.content.sections.map((section: string, idx: number) => (
                       <li key={idx} className="flex items-center gap-2 text-sm text-gray-700">
@@ -699,27 +689,25 @@ The brain releases dopamine not just when receiving rewards, but when anticipati
                 </div>
 
                 <div className="bg-white rounded-xl p-6 border-2 border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Template Preview</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('gamificationFundamentals.templatePreview')}</h3>
                   <div className="space-y-4">
                     {currentLessonData.content.sections.map((section: string, idx: number) => (
                       <div key={idx} className="border-2 border-dashed border-gray-300 rounded-lg p-4">
                         <h4 className="text-sm font-semibold text-gray-900 mb-2">{section}</h4>
-                        <p className="text-xs text-gray-500 italic">Your content will appear here...</p>
+                        <p className="text-xs text-gray-500 italic">{t('gamificationFundamentals.yourContentWillAppearHere')}</p>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 <button className="w-full px-6 py-4 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2">
-                  <Download className="h-5 w-5" />
-                  Download Template
-                </button>
+                  <Download className="h-5 w-5" />{t('gamificationFundamentals.downloadTemplate')}</button>
               </div>
             )}
 
             {/* Game Mechanics Reference */}
             <div className="mt-8 pt-6 border-t border-gray-200">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Core Game Mechanics</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">{t('gamificationFundamentals.coreGameMechanics')}</h3>
               <div className="space-y-4">
                 {gameMechanics.map((mechanic, idx) => (
                   <div key={idx} className="bg-gray-50 rounded-xl p-5 border border-gray-200">
@@ -727,7 +715,7 @@ The brain releases dopamine not just when receiving rewards, but when anticipati
                     <p className="text-sm text-gray-700 mb-3">{mechanic.description}</p>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
-                        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Examples</p>
+                        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('gamificationFundamentals.examples')}</p>
                         <ul className="space-y-1">
                           {mechanic.examples.map((example, exIdx) => (
                             <li key={exIdx} className="text-xs text-gray-700 flex items-start gap-1">
@@ -738,7 +726,7 @@ The brain releases dopamine not just when receiving rewards, but when anticipati
                         </ul>
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Implementation</p>
+                        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('gamificationFundamentals.implementation')}</p>
                         <ul className="space-y-1">
                           {mechanic.implementation.map((impl, implIdx) => (
                             <li key={implIdx} className="text-xs text-gray-700 flex items-start gap-1">
@@ -749,7 +737,7 @@ The brain releases dopamine not just when receiving rewards, but when anticipati
                         </ul>
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Benefits</p>
+                        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('gamificationFundamentals.benefits')}</p>
                         <ul className="space-y-1">
                           {mechanic.benefits.map((benefit, benIdx) => (
                             <li key={benIdx} className="text-xs text-gray-700 flex items-start gap-1">
@@ -772,9 +760,7 @@ The brain releases dopamine not just when receiving rewards, but when anticipati
                 disabled={currentLesson === 0}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
-                <ArrowLeft className="h-4 w-4" />
-                Previous
-              </button>
+                <ArrowLeft className="h-4 w-4" />{t('gamificationFundamentals.previous')}</button>
 
               <button
                 onClick={() => {
@@ -787,18 +773,12 @@ The brain releases dopamine not just when receiving rewards, but when anticipati
               >
                 {completedLessons.includes(currentLessonData.id) ? (
                   <>
-                    <CheckCircle2 className="h-4 w-4" />
-                    Marked Complete
-                  </>
+                    <CheckCircle2 className="h-4 w-4" />{t('gamificationFundamentals.markedComplete')}</>
                 ) : currentLesson === lessons.length - 1 ? (
                   <>
-                    <Trophy className="h-4 w-4" />
-                    Complete Module
-                  </>
+                    <Trophy className="h-4 w-4" />{t('gamificationFundamentals.completeModule')}</>
                 ) : (
-                  <>
-                    Complete & Next
-                    <ArrowRight className="h-4 w-4" />
+                  <>{t('gamificationFundamentals.completeNext')}<ArrowRight className="h-4 w-4" />
                   </>
                 )}
               </button>
@@ -811,7 +791,7 @@ The brain releases dopamine not just when receiving rewards, but when anticipati
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-600 mb-4">
                 <Trophy className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Module Complete!</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('gamificationFundamentals.moduleComplete')}</h3>
               <p className="text-gray-700 mb-6">
                 You've earned {lessons.reduce((sum, l) => sum + l.points, 0)} points. Great work!
               </p>
@@ -822,9 +802,7 @@ The brain releases dopamine not just when receiving rewards, but when anticipati
                 >
                   Continue to Next Module
                 </button>
-                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                  Download Certificate
-                </button>
+                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">{t('gamificationFundamentals.downloadCertificate')}</button>
               </div>
             </div>
           )}

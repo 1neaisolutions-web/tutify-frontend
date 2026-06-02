@@ -1,7 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ProgressIcon } from '../../../assets/icons';
 
 export const StatsCard = ({ name, amount, percentage, metrics }) => {
+  const { t } = useTranslation();
   return (
     <React.Fragment>
       <div className='card-section relative overflow-hidden'>
@@ -30,7 +32,7 @@ export const StatsCard = ({ name, amount, percentage, metrics }) => {
               {percentage}%
             </span>
             <span className='text-[12px] font-[400] leading-[18px] tracking-[-0.18px] text-secondary'>
-              vs last 30 days
+              {t('shared.statsCard.vsLast30Days')}
             </span>
           </div>
         </div>

@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import type { LucideIcon } from 'lucide-react'
 import type { LearningHubSectionItem } from '../../../features/learningHub/types'
 import { isResearchStructuredSectionsPayload } from '../../../features/learningHub/researchInsightStructuredPayload'
+import { localizedField, resolveHubItemTitle } from '../../../i18n/resolveLocalizedContent'
+import { normalizeCatalogId } from '../../../i18n/catalogLabel'
 import {
   ArrowLeft,
   Bookmark,
@@ -41,20 +44,29 @@ const SIDEBAR_ICONS: LucideIcon[] = [Eye, FileText, Layers, Target, Zap, Lightbu
 type NavItem = { id: string; label: string; Icon: LucideIcon }
 
 export function ResearchInsightSectionsPayloadView({ item }: { item: LearningHubSectionItem }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const c = item.researchInsightContent
   const payload = c?.payload
   if (!c || !isResearchStructuredSectionsPayload(payload)) return null
 
+  const displayTitle = resolveHubItemTitle(t, item.slug, item.title)
+  const sectionLabel = (sectionId: string, fallback: string) =>
+    localizedField(
+      t,
+      `learningHubContent.catalog.${normalizeCatalogId(item.slug)}.sections.${sectionId}.title`,
+      fallback,
+    )
+
   const navItems = useMemo((): NavItem[] => {
     const items: NavItem[] = []
     if (payload.summary && payload.summary.length > 0) {
-      items.push({ id: 'summary', label: 'Summary', Icon: Eye })
+      items.push({ id: 'summary', label: t('learningHubSections.summary'), Icon: Eye })
     }
     payload.sections.forEach((s, i) => {
       items.push({
         id: s.id,
-        label: s.title,
+        label: sectionLabel(s.id, s.title),
         Icon: SIDEBAR_ICONS[i % SIDEBAR_ICONS.length]!,
       })
     })
@@ -64,10 +76,10 @@ export function ResearchInsightSectionsPayloadView({ item }: { item: LearningHub
       (payload.references && payload.references.length > 0) ||
       (payload.metadata && Object.keys(payload.metadata).length > 0)
     if (hasWrapUp) {
-      items.push({ id: 'wrap-up', label: 'Takeaways & resources', Icon: Star })
+      items.push({ id: 'wrap-up', label: t('learningHubSections.takeawaysResources'), Icon: Star })
     }
     return items
-  }, [payload])
+  }, [payload, t, item.slug])
 
   const [activeId, setActiveId] = useState<string>('')
 
@@ -83,7 +95,7 @@ export function ResearchInsightSectionsPayloadView({ item }: { item: LearningHub
     0,
     navItems.findIndex((n) => n.id === effectiveId)
   )
-  const stepLabel = navItems.length > 0 ? `Step ${currentIndex + 1} of ${navItems.length}` : ''
+  const stepLabel = navItems.length > 0 ? t('learningHubSections.stepOf', { current: currentIndex + 1, total: navItems.length }) : ''
 
   const goPrev = () => {
     if (currentIndex > 0) setActiveId(navItems[currentIndex - 1]!.id)
@@ -149,7 +161,7 @@ export function ResearchInsightSectionsPayloadView({ item }: { item: LearningHub
     if (effectiveId === 'summary' && payload.summary && payload.summary.length > 0) {
       return (
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-gray-900">Summary</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{t('learningHubSections.summary')}</h2>
           <div className="rounded-xl border border-purple-100 bg-gradient-to-br from-purple-50/80 to-indigo-50/50 p-6">
             <ul className="space-y-3 text-sm text-gray-700">
               {payload.summary.map((line, i) => (
@@ -167,19 +179,19 @@ export function ResearchInsightSectionsPayloadView({ item }: { item: LearningHub
     if (effectiveId === 'wrap-up') {
       return (
         <div className="space-y-8">
-          <h2 className="text-2xl font-bold text-gray-900">Takeaways & resources</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{t('learningHubSections.takeawaysResources')}</h2>
 
           {payload.keyTakeaways && payload.keyTakeaways.length > 0 && (
             <div className="rounded-xl border border-amber-200 bg-amber-50/80 p-6">
               <h3 className="mb-3 flex items-center gap-2 text-lg font-semibold text-amber-900">
                 <Lightbulb className="h-5 w-5 text-amber-700" />
-                Key takeaways
+                {t('learningHubSections.keyTakeawaysHeading')}
               </h3>
               <ul className="space-y-2 text-sm text-amber-950/90">
-                {payload.keyTakeaways.map((t, i) => (
+                {payload.keyTakeaways.map((takeaway, i) => (
                   <li key={i} className="flex gap-2">
                     <span className="font-semibold text-amber-800">{i + 1}.</span>
-                    <span>{t}</span>
+                    <span>{takeaway}</span>
                   </li>
                 ))}
               </ul>
@@ -188,7 +200,7 @@ export function ResearchInsightSectionsPayloadView({ item }: { item: LearningHub
 
           {payload.implementationIdeas && payload.implementationIdeas.length > 0 && (
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-              <h3 className="mb-3 text-lg font-semibold text-gray-900">Implementation ideas</h3>
+              <h3 className="mb-3 text-lg font-semibold text-gray-900">{t('learningHubSections.implementationIdeas')}</h3>
               <ul className="list-inside list-disc space-y-2 text-sm text-gray-700">
                 {payload.implementationIdeas.map((idea, i) => (
                   <li key={i}>{idea}</li>
@@ -200,7 +212,7 @@ export function ResearchInsightSectionsPayloadView({ item }: { item: LearningHub
           {payload.references && payload.references.length > 0 && (
             <div className="border-t border-gray-100 pt-6">
               <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500">
-                References
+                {t('learningHubSections.references')}
               </h3>
               <ul className="space-y-2 text-sm text-gray-600">
                 {payload.references.map((ref, i) => (
@@ -255,7 +267,7 @@ export function ResearchInsightSectionsPayloadView({ item }: { item: LearningHub
                     {c.headerDurationLabel ?? item.duration ?? ''}
                   </span>
                 </div>
-                <h1 className="text-3xl font-bold">{item.title}</h1>
+                <h1 className="text-3xl font-bold">{displayTitle}</h1>
                 <p className={`mt-2 ${heroSubtitleClass}`}>{c.heroDescription}</p>
               </div>
             </div>
@@ -298,7 +310,7 @@ export function ResearchInsightSectionsPayloadView({ item }: { item: LearningHub
         <div className="lg:col-span-1">
           <div className="sticky top-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-600">
-              Sections
+              {t('learningHubSections.navSections')}
             </h3>
             <div className="space-y-1">
               {navItems.map((nav) => {
@@ -342,7 +354,7 @@ export function ResearchInsightSectionsPayloadView({ item }: { item: LearningHub
                 className="inline-flex items-center justify-center gap-1 rounded-full bg-purple-50 px-4 py-2 text-sm font-semibold text-purple-800 transition hover:bg-purple-100 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ChevronLeft className="h-4 w-4" />
-                Back
+                {t('learningHubSections.back')}
               </button>
               <button
                 type="button"
@@ -350,7 +362,7 @@ export function ResearchInsightSectionsPayloadView({ item }: { item: LearningHub
                 disabled={currentIndex >= navItems.length - 1}
                 className="inline-flex items-center justify-center gap-1 rounded-full bg-purple-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-purple-500 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                Continue
+                {t('learningHubSections.continue')}
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>
@@ -360,3 +372,4 @@ export function ResearchInsightSectionsPayloadView({ item }: { item: LearningHub
     </div>
   )
 }
+

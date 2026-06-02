@@ -16,6 +16,7 @@ import { ProcessingStatusCard } from '../../components/contentIngestion/Processi
 import { QAValidationResults } from '../../components/contentIngestion/QAValidationResults'
 import { useSnackbar } from '../../hooks/useSnackbar'
 
+import { useTranslation } from 'react-i18next'
 type ChunkingSummary = {
   chunks_total?: number
   chunk_size_tokens?: number
@@ -58,6 +59,7 @@ const RETRYABLE_STATUSES = new Set([
 ])
 
 export const DocumentDetails = () => {
+  const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [document, setDocument] = useState<Document | null>(null)
@@ -120,7 +122,7 @@ export const DocumentDetails = () => {
     try {
       setActionLoading(true)
       await retryDocumentProcessing(id)
-      toast.success('Processing restarted from the beginning')
+      toast.success(t('documentDetailsPage.processingRestartedFromTheBeginning'))
       loadDocument()
     } catch (error: any) {
       toast.error(error.message || 'Failed to retry processing')
@@ -136,7 +138,7 @@ export const DocumentDetails = () => {
       setActionLoading(true)
       const results = await runQAValidation(id)
       setQAResults(results)
-      toast.success('QA validation completed')
+      toast.success(t('documentDetailsPage.qaValidationCompleted'))
       loadDocument()
     } catch (error: any) {
       toast.error(error.message || 'Failed to run QA validation')
@@ -151,7 +153,7 @@ export const DocumentDetails = () => {
     try {
       setActionLoading(true)
       await publishDocument(id, false)
-      toast.success('Document published successfully')
+      toast.success(t('documentDetailsPage.documentPublishedSuccessfully'))
       loadDocument()
     } catch (error: any) {
       toast.error(error.message || 'Failed to publish document')
@@ -172,7 +174,7 @@ export const DocumentDetails = () => {
     return (
       <div className="min-h-screen bg-gray-50 p-6">
         <div className="max-w-4xl mx-auto">
-          <p className="text-gray-600">Document not found</p>
+          <p className="text-gray-600">{t('documentDetailsPage.documentNotFound')}</p>
         </div>
       </div>
     )
@@ -189,7 +191,7 @@ export const DocumentDetails = () => {
           className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-6"
         >
           <ArrowLeft className="w-5 h-5" />
-          <span>Back to Documents</span>
+          <span>{t('documentDetailsPage.backToDocuments')}</span>
         </button>
         
         <div className="bg-white rounded-lg shadow p-6 mb-6">
@@ -213,24 +215,24 @@ export const DocumentDetails = () => {
           
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-gray-600">File Size:</span>{' '}
+              <span className="text-gray-600">{t('documentDetailsPage.fileSize')}</span>{' '}
               <span className="font-medium">
                 {document.file_size ? `${(document.file_size / 1024 / 1024).toFixed(2)} MB` : 'N/A'}
               </span>
             </div>
             <div>
-              <span className="text-gray-600">Pages:</span>{' '}
+              <span className="text-gray-600">{t('documentDetailsPage.pages')}</span>{' '}
               <span className="font-medium">{document.total_pages || 'N/A'}</span>
             </div>
             <div>
-              <span className="text-gray-600">Uploaded:</span>{' '}
+              <span className="text-gray-600">{t('documentDetailsPage.uploaded')}</span>{' '}
               <span className="font-medium">
                 {new Date(document.created_at).toLocaleString()}
               </span>
             </div>
             {document.processed_at && (
               <div>
-                <span className="text-gray-600">Processed:</span>{' '}
+                <span className="text-gray-600">{t('documentDetailsPage.processed')}</span>{' '}
                 <span className="font-medium">
                   {new Date(document.processed_at).toLocaleString()}
                 </span>
@@ -244,9 +246,7 @@ export const DocumentDetails = () => {
             return (
               <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50/80 p-5">
                 <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-                  <Layers className="h-4 w-4 text-indigo-600 shrink-0" aria-hidden />
-                  Indexing snapshot
-                </div>
+                  <Layers className="h-4 w-4 text-indigo-600 shrink-0" aria-hidden />{t('documentDetailsPage.indexingSnapshot')}</div>
                 <p className="mt-1 text-xs text-slate-600">
                   Same pipeline for any textbook or board: chunk sizes adapt to digital vs scanned PDFs; topic
                   strands fall back to the document title when no chapter map is provided.
@@ -254,28 +254,28 @@ export const DocumentDetails = () => {
                 <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
                   {cs.chunks_total != null && (
                     <div>
-                      <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">Chunks stored</dt>
+                      <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">{t('documentDetailsPage.chunksStored')}</dt>
                       <dd className="font-semibold text-slate-900">{cs.chunks_total.toLocaleString()}</dd>
                     </div>
                   )}
                   <div>
-                    <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">Chunking profile</dt>
+                    <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">{t('documentDetailsPage.chunkingProfile')}</dt>
                     <dd className="font-semibold text-slate-900">{humanizeChunkProfile(cs.chunk_profile)}</dd>
                   </div>
                   <div>
-                    <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">Target size / overlap</dt>
+                    <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">{t('documentDetailsPage.targetSizeOverlap')}</dt>
                     <dd className="font-semibold text-slate-900">
                       {cs.chunk_size_tokens != null ? `${cs.chunk_size_tokens} tok` : '—'}
                       {cs.chunk_overlap_tokens != null ? ` · ${cs.chunk_overlap_tokens} tok overlap` : ''}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">Topic strands</dt>
+                    <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">{t('documentDetailsPage.topicStrands')}</dt>
                     <dd className="font-semibold text-slate-900">{describeTopicScopeMode(cs.topic_scope_mode)}</dd>
                   </div>
                   {cs.catalog_toc_source ? (
                     <div className="sm:col-span-2">
-                      <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">TOC source</dt>
+                      <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">{t('documentDetailsPage.tocSource')}</dt>
                       <dd className="mt-0.5 text-xs font-medium text-slate-700">
                         {cs.catalog_toc_source === 'pdf_outline_auto'
                           ? 'PDF bookmarks (outline)'
@@ -289,7 +289,7 @@ export const DocumentDetails = () => {
                   ) : null}
                   {cs.primary_topic_label ? (
                     <div className="sm:col-span-2">
-                      <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">Default strand label</dt>
+                      <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">{t('documentDetailsPage.defaultStrandLabel')}</dt>
                       <dd className="mt-0.5 font-medium text-slate-800">{cs.primary_topic_label}</dd>
                     </div>
                   ) : null}
@@ -340,23 +340,20 @@ export const DocumentDetails = () => {
               <div className="flex-1">
                 {document.status === 'failed' ? (
                   <>
-                    <h3 className="font-semibold text-red-900 mb-2">Processing Failed</h3>
+                    <h3 className="font-semibold text-red-900 mb-2">{t('documentDetailsPage.processingFailed')}</h3>
                     {document.error_message && (
                       <p className="text-red-700 mb-2">{document.error_message}</p>
                     )}
                     {document.remediation_hint && (
                       <p className="text-sm text-red-600 mb-4">
-                        <strong>Hint:</strong> {document.remediation_hint}
+                        <strong>{t('documentDetailsPage.hint')}</strong> {document.remediation_hint}
                       </p>
                     )}
                   </>
                 ) : (
                   <>
-                    <h3 className="font-semibold text-amber-900 mb-2">Processing stuck or very slow?</h3>
-                    <p className="text-sm text-amber-900/90 mb-4">
-                      If the step above has not moved for many minutes, restart from the beginning. Partial
-                      progress for this document will be cleared and ingestion will run again.
-                    </p>
+                    <h3 className="font-semibold text-amber-900 mb-2">{t('documentDetailsPage.processingStuckOrVerySlow')}</h3>
+                    <p className="text-sm text-amber-900/90 mb-4">{t('documentDetailsPage.ifTheStepAboveHasNotMovedForManyMinutes')}</p>
                   </>
                 )}
                 <button
@@ -365,9 +362,7 @@ export const DocumentDetails = () => {
                   disabled={actionLoading}
                   className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
                 >
-                  <RefreshCw className="w-4 h-4 inline mr-2" />
-                  Retry processing
-                </button>
+                  <RefreshCw className="w-4 h-4 inline mr-2" />{t('documentDetailsPage.retryProcessing')}</button>
               </div>
             </div>
           </div>
@@ -376,24 +371,20 @@ export const DocumentDetails = () => {
         {document.status === 'qa_validation' && (
           <div className="bg-white rounded-lg shadow p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">QA Validation</h3>
+              <h3 className="text-lg font-semibold text-gray-900">{t('documentDetailsPage.qaValidation')}</h3>
               <div className="space-x-3">
                 <button
                   onClick={handleRunQA}
                   disabled={actionLoading}
                   className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-                >
-                  Run QA
-                </button>
+                >{t('documentDetailsPage.runQa')}</button>
                 {qaResults && qaResults.qa_status === 'passed' && (
                   <button
                     onClick={handlePublish}
                     disabled={actionLoading}
                     className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
                   >
-                    <CheckCircle className="w-4 h-4 inline mr-2" />
-                    Publish
-                  </button>
+                    <CheckCircle className="w-4 h-4 inline mr-2" />{t('documentDetailsPage.publish')}</button>
                 )}
               </div>
             </div>
@@ -405,12 +396,9 @@ export const DocumentDetails = () => {
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center space-x-2 text-green-600 mb-4">
               <CheckCircle className="w-6 h-6" />
-              <h3 className="text-lg font-semibold">Document Published</h3>
+              <h3 className="text-lg font-semibold">{t('documentDetailsPage.documentPublished')}</h3>
             </div>
-            <p className="text-gray-600">
-              This document is in your catalog for worksheets, quizzes, and other tools that retrieve from indexed
-              chunks. Any board or language is supported as long as text extraction succeeded.
-            </p>
+            <p className="text-gray-600">{t('documentDetailsPage.thisDocumentIsInYourCatalogForWorksheetsQuizzesAnd')}</p>
           </div>
         )}
       </div>

@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Settings, X, Save, Sparkles } from 'lucide-react'
+import { X, Save, Sparkles } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { CustomInstruction } from '../../types/premium'
 
 interface CustomInstructionsProps {
@@ -9,6 +10,7 @@ interface CustomInstructionsProps {
 }
 
 const CustomInstructions = ({ instructions: initialInstructions, onSave, onClose }: CustomInstructionsProps) => {
+  const { t } = useTranslation()
   const defaultInstructions: CustomInstruction = {
     teachingStyle: [],
     subjectExpertise: [],
@@ -43,18 +45,25 @@ const CustomInstructions = ({ instructions: initialInstructions, onSave, onClose
     onClose()
   }
 
+  const languageOptions = [
+    { value: 'en-US', labelKey: 'premium.instructions.language.enUS' },
+    { value: 'en-GB', labelKey: 'premium.instructions.language.enUK' },
+    { value: 'es-ES', labelKey: 'premium.instructions.language.es' },
+    { value: 'fr-FR', labelKey: 'premium.instructions.language.fr' },
+    { value: 'de-DE', labelKey: 'premium.instructions.language.de' },
+  ] as const
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
-        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-indigo-50">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600">
               <Sparkles className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Custom Instructions</h2>
-              <p className="text-sm text-gray-600">Personalize GPT-4's responses to your teaching style</p>
+              <h2 className="text-xl font-bold text-gray-900">{t('premium.instructions.title')}</h2>
+              <p className="text-sm text-gray-600">{t('premium.instructions.subtitle')}</p>
             </div>
           </div>
           <button
@@ -65,11 +74,9 @@ const CustomInstructions = ({ instructions: initialInstructions, onSave, onClose
           </button>
         </div>
 
-        {/* Content */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {/* Teaching Styles */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-3">Teaching Styles</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-3">{t('premium.instructions.teachingStyles.label')}</label>
             <div className="flex flex-wrap gap-2">
               {teachingStyles.map((style) => {
                 const isSelected = instructions.teachingStyle.includes(style)
@@ -97,9 +104,8 @@ const CustomInstructions = ({ instructions: initialInstructions, onSave, onClose
             </div>
           </div>
 
-          {/* Subject Expertise */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-3">Subject Expertise</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-3">{t('premium.instructions.subjects.label')}</label>
             <div className="flex flex-wrap gap-2">
               {subjects.map((subject) => {
                 const isSelected = instructions.subjectExpertise.includes(subject)
@@ -127,9 +133,8 @@ const CustomInstructions = ({ instructions: initialInstructions, onSave, onClose
             </div>
           </div>
 
-          {/* Output Format */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-3">Output Format</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-3">{t('premium.instructions.outputFormat.label')}</label>
             <div className="flex gap-3">
               {(['detailed', 'concise', 'structured'] as const).map((format) => (
                 <button
@@ -141,15 +146,14 @@ const CustomInstructions = ({ instructions: initialInstructions, onSave, onClose
                       : 'border-gray-200 text-gray-700 hover:border-purple-300'
                   }`}
                 >
-                  {format.charAt(0).toUpperCase() + format.slice(1)}
+                  {t(`premium.instructions.outputFormat.${format}`)}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Tone */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-3">Tone</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-3">{t('premium.instructions.tone.label')}</label>
             <div className="flex gap-3">
               {(['professional', 'friendly', 'formal'] as const).map((tone) => (
                 <button
@@ -161,43 +165,41 @@ const CustomInstructions = ({ instructions: initialInstructions, onSave, onClose
                       : 'border-gray-200 text-gray-700 hover:border-purple-300'
                   }`}
                 >
-                  {tone.charAt(0).toUpperCase() + tone.slice(1)}
+                  {t(`premium.instructions.tone.${tone}`)}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Language */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-3">Language</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-3">{t('premium.instructions.language.label')}</label>
             <select
               value={instructions.language}
               onChange={(e) => setInstructions((prev) => ({ ...prev, language: e.target.value }))}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
             >
-              <option value="en-US">English (US)</option>
-              <option value="en-GB">English (UK)</option>
-              <option value="es-ES">Spanish</option>
-              <option value="fr-FR">French</option>
-              <option value="de-DE">German</option>
+              {languageOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {t(opt.labelKey)}
+                </option>
+              ))}
             </select>
           </div>
         </div>
 
-        {/* Footer */}
         <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50">
           <button
             onClick={onClose}
             className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 transition"
           >
-            Cancel
+            {t('common.cancel')}
           </button>
           <button
             onClick={handleSave}
             className="px-6 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-lg hover:from-purple-600 hover:to-indigo-700 transition shadow-md flex items-center gap-2"
           >
             <Save className="h-4 w-4" />
-            Save Instructions
+            {t('premium.instructions.save')}
           </button>
         </div>
       </div>
@@ -206,4 +208,3 @@ const CustomInstructions = ({ instructions: initialInstructions, onSave, onClose
 }
 
 export default CustomInstructions
-

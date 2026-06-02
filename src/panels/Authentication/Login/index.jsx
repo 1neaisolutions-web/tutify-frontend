@@ -12,8 +12,10 @@ import { getFirstRouteByRole } from '../../../routes/routeHelpers';
 import { setAuthToken } from '../../../redux/http';
 import { CustomButton, CustomInput } from '../../../components/shared';
 import TenantSelection from '@/components/Auth/TenantSelection';
+import { useTranslation } from 'react-i18next';
 
 export const Login = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   
@@ -59,7 +61,7 @@ export const Login = () => {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 dark:from-gray-950 dark:to-gray-900">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Redirecting...</p>
+          <p className="mt-4 text-gray-600">{t('login.redirecting')}</p>
         </div>
       </div>
     );
@@ -85,7 +87,7 @@ export const Login = () => {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 dark:from-gray-950 dark:to-gray-900">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <p className="mt-4 text-gray-600">{t('login.loading')}</p>
         </div>
       </div>
     );
@@ -118,7 +120,7 @@ export const Login = () => {
     }
 
     if (!validateEmail(formData?.email)) {
-      newErrors.email = 'Invalid Email';
+      newErrors.email = t('login.validation.invalidEmail');
     }
 
     if (isError(newErrors)) {
@@ -217,7 +219,7 @@ export const Login = () => {
         console.error('[Login] Login rejected:', errorPayload, result);
         
         // Extract error message from various formats
-        let errorMessage = 'Login failed. Please check your credentials.';
+        let errorMessage = t('login.error');
         
         if (typeof errorPayload === 'string') {
           errorMessage = errorPayload;
@@ -238,7 +240,7 @@ export const Login = () => {
         // Unknown status - this shouldn't happen but handle it
         setLoading(false);
         console.error('[Login] Unknown request status:', result?.meta?.requestStatus, result);
-        const unknownError = 'Login failed. Please try again.';
+        const unknownError = t('login.error');
         setLoginError(unknownError);
         if (toast?.error) {
           toast.error(unknownError);
@@ -249,7 +251,7 @@ export const Login = () => {
       console.error('[Login] Exception caught:', err);
       
       // Extract error message from various error types
-      let errorMessage = 'Login failed. Please check your credentials.';
+      let errorMessage = t('login.error');
       
       if (err?.message) {
         errorMessage = err.message;
@@ -324,32 +326,32 @@ export const Login = () => {
         <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-full mb-4">
           <GraduationCap className="w-8 h-8 text-white" />
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Teacher Assistant</h1>
-        <p className="text-gray-600">Sign in to your account</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('app.name')}</h1>
+        <p className="text-gray-600">{t('login.subtitle')}</p>
       </div>
 
       <div className="card">
         <form onSubmit={handleSubmit} className="space-y-6">
           <CustomInput
-            label='Email'
+            label={t('login.emailLabel')}
             name='email'
             type='text'
             value={formData.email}
             onChange={handleChange}
             autoComplete='on'
             autoFocus
-            placeholder='Enter your email'
+            placeholder={t('login.emailPlaceholder')}
             error={!!errors.email}
             errorMsg={errors.email}
           />
 
           <CustomInput
-            label='Password'
+            label={t('login.passwordLabel')}
             name='password'
             type='password'
             value={formData.password}
             onChange={handleChange}
-            placeholder='Enter your password'
+            placeholder={t('login.passwordPlaceholder')}
             error={!!errors.password}
             errorMsg={errors.password}
           />
@@ -370,7 +372,7 @@ export const Login = () => {
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />
                 <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                  Remember me
+                  {t('login.rememberMe')}
                 </label>
               </div>
               <button
@@ -378,7 +380,7 @@ export const Login = () => {
                 onClick={() => navigate('/forgot-password')}
                 className='text-sm text-primary-600 cursor-pointer hover:underline'
               >
-                Forgot password?
+                {t('login.forgotPassword')}
               </button>
             </div>
 
@@ -388,19 +390,19 @@ export const Login = () => {
               disabled={loading || isEmpty(formData)}
               className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Signing in...' : 'Sign in'}
+              {loading ? t('login.signingIn') : t('login.signIn')}
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
+              {t('login.noAccount')}{' '}
               <button
                 type="button"
                 onClick={() => navigate('/signup')}
                 className="text-primary-600 hover:text-primary-700 font-medium"
               >
-                Sign up
+                {t('login.signUpLink')}
               </button>
             </p>
           </div>

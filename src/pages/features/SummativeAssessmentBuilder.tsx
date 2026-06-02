@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ClipboardCheck, Sparkles, RefreshCw, Download } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 type AssessmentSubject =
   | 'Science'
   | 'Math'
@@ -147,6 +148,7 @@ const sampleAssessment: SummativeAssessmentOutput = {
 }
 
 const SummativeAssessmentBuilder = () => {
+  const { t } = useTranslation()
   const [inputs, setInputs] = useState<SummativeAssessmentInputs>({
     grade: 7,
     subject: 'Science',
@@ -298,10 +300,8 @@ const SummativeAssessmentBuilder = () => {
             <ClipboardCheck className="w-6 h-6 text-primary-600" />
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold text-gray-900">Summative Assessment Builder</h1>
-            <p className="text-sm text-gray-600 mt-0.5">
-              Craft end-of-unit assessments aligned to learning objectives and formats
-            </p>
+            <h1 className="text-xl font-bold text-gray-900">{t('summativeAssessmentBuilder.summativeAssessmentBuilder')}</h1>
+            <p className="text-sm text-gray-600 mt-0.5">{t('summativeAssessmentBuilder.craftEndOfUnitAssessmentsAlignedToLearningObjectivesAnd')}</p>
           </div>
         </div>
       </div>
@@ -311,13 +311,12 @@ const SummativeAssessmentBuilder = () => {
           <div className="card">
             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
               <Sparkles className="w-5 h-5 text-primary-600" />
-              <span>Assessment Inputs</span>
+              <span>{t('summativeAssessmentBuilder.assessmentInputs')}</span>
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Grade <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('summativeAssessmentBuilder.grade2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -326,14 +325,13 @@ const SummativeAssessmentBuilder = () => {
                   value={inputs.grade}
                   onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
                   className="input-field"
-                  placeholder="Enter grade (1-12)"
+                  placeholder={t('common.gradePlaceholder')}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Subject <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('summativeAssessmentBuilder.subject2')}<span className="text-red-500">*</span>
                 </label>
                 <select
                   value={inputs.subject}
@@ -343,21 +341,20 @@ const SummativeAssessmentBuilder = () => {
                   className="input-field"
                   required
                 >
-                  <option value="">Select subject</option>
-                  <option value="Science">Science</option>
-                  <option value="Math">Math</option>
-                  <option value="English">English</option>
-                  <option value="Arts">Arts</option>
-                  <option value="Social Studies">Social Studies</option>
-                  <option value="Technology">Technology</option>
-                  <option value="Physical Education">Physical Education</option>
-                  <option value="Other">Other</option>
+                  <option value="">{t('summativeAssessmentBuilder.selectSubject')}</option>
+                  <option value="Science">{t('summativeAssessmentBuilder.science')}</option>
+                  <option value="Math">{t('summativeAssessmentBuilder.math')}</option>
+                  <option value="English">{t('summativeAssessmentBuilder.english')}</option>
+                  <option value="Arts">{t('summativeAssessmentBuilder.arts')}</option>
+                  <option value="Social Studies">{t('summativeAssessmentBuilder.socialStudies')}</option>
+                  <option value="Technology">{t('summativeAssessmentBuilder.technology')}</option>
+                  <option value="Physical Education">{t('summativeAssessmentBuilder.physicalEducation')}</option>
+                  <option value="Other">{t('summativeAssessmentBuilder.other')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Topic <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('summativeAssessmentBuilder.topic2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -370,8 +367,7 @@ const SummativeAssessmentBuilder = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Assessment Type <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('summativeAssessmentBuilder.assessmentType')}<span className="text-red-500">*</span>
                 </label>
                 <select
                   value={inputs.assessment_type}
@@ -384,18 +380,16 @@ const SummativeAssessmentBuilder = () => {
                   className="input-field"
                   required
                 >
-                  <option value="">Select type</option>
-                  <option value="exam">Exam</option>
-                  <option value="performance_task">Performance Task</option>
-                  <option value="project">Project</option>
-                  <option value="presentation">Presentation</option>
+                  <option value="">{t('summativeAssessmentBuilder.selectType')}</option>
+                  <option value="exam">{t('summativeAssessmentBuilder.exam')}</option>
+                  <option value="performance_task">{t('summativeAssessmentBuilder.performanceTask')}</option>
+                  <option value="project">{t('summativeAssessmentBuilder.project')}</option>
+                  <option value="presentation">{t('summativeAssessmentBuilder.presentation')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Learning Objectives
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('summativeAssessmentBuilder.learningObjectives')}</label>
                 <div className="flex gap-2 mb-2">
                   <input
                     type="text"
@@ -409,7 +403,7 @@ const SummativeAssessmentBuilder = () => {
                       }
                     }}
                     className="input-field flex-1"
-                    placeholder="Enter learning objective"
+                    placeholder={t('summativeAssessmentBuilder.enterLearningObjective')}
                   />
                   <button
                     type="button"
@@ -445,9 +439,7 @@ const SummativeAssessmentBuilder = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Question Formats
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('summativeAssessmentBuilder.questionFormats')}</label>
                 <div className="flex gap-2 mb-2">
                   <input
                     type="text"
@@ -504,13 +496,11 @@ const SummativeAssessmentBuilder = () => {
                   onChange={(e) => handleInputChange('rubric_needed', e.target.checked)}
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />
-                <label htmlFor="rubric-needed" className="ml-2 text-sm text-gray-700">
-                  Generate rubric
-                </label>
+                <label htmlFor="rubric-needed" className="ml-2 text-sm text-gray-700">{t('summativeAssessmentBuilder.generateRubric')}</label>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Difficulty Level</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('summativeAssessmentBuilder.difficultyLevel')}</label>
                 <select
                   value={inputs.difficulty_level}
                   onChange={(e) =>
@@ -522,32 +512,32 @@ const SummativeAssessmentBuilder = () => {
                   className="input-field"
                 >
                   <option value="">Select level (optional)</option>
-                  <option value="easy">Easy</option>
-                  <option value="moderate">Moderate</option>
-                  <option value="challenging">Challenging</option>
+                  <option value="easy">{t('summativeAssessmentBuilder.easy')}</option>
+                  <option value="moderate">{t('summativeAssessmentBuilder.moderate')}</option>
+                  <option value="challenging">{t('summativeAssessmentBuilder.challenging')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('summativeAssessmentBuilder.duration2')}</label>
                 <input
                   type="text"
                   value={inputs.duration}
                   onChange={(e) => handleInputChange('duration', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., PT40M"
+                  placeholder={t('summativeAssessmentBuilder.eGPt40m')}
                 />
                 <p className="mt-1 text-xs text-gray-500">Use ISO 8601 duration (e.g., PT40M).</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('summativeAssessmentBuilder.language')}</label>
                 <input
                   type="text"
                   value={inputs.language}
                   onChange={(e) => handleInputChange('language', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., en-US"
+                  placeholder={t('summativeAssessmentBuilder.eGEnUs')}
                 />
               </div>
 
@@ -559,12 +549,12 @@ const SummativeAssessmentBuilder = () => {
                 {isGenerating ? (
                   <>
                     <RefreshCw className="w-5 h-5 animate-spin" />
-                    <span>Generating...</span>
+                    <span>{t('summativeAssessmentBuilder.generating')}</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-5 h-5" />
-                    <span>Generate Assessment</span>
+                    <span>{t('summativeAssessmentBuilder.generateAssessment')}</span>
                   </>
                 )}
               </button>
@@ -576,18 +566,18 @@ const SummativeAssessmentBuilder = () => {
           {output ? (
             <div className="card">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Generated Assessment Plan</h2>
+                <h2 className="text-lg font-semibold text-gray-900">{t('summativeAssessmentBuilder.generatedAssessmentPlan')}</h2>
                 <div className="flex gap-2">
                   <button className="btn-secondary flex items-center space-x-2">
                     <Download className="w-4 h-4" />
-                    <span>Download</span>
+                    <span>{t('summativeAssessmentBuilder.download')}</span>
                   </button>
                   <button
                     onClick={() => setOutput(null)}
                     className="btn-secondary flex items-center space-x-2"
                   >
                     <RefreshCw className="w-4 h-4" />
-                    <span>Reset</span>
+                    <span>{t('summativeAssessmentBuilder.reset')}</span>
                   </button>
                 </div>
               </div>
@@ -597,25 +587,25 @@ const SummativeAssessmentBuilder = () => {
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">{output.title}</h3>
                   <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                     <span>
-                      <strong>Grade:</strong> {output.grade}
+                      <strong>{t('summativeAssessmentBuilder.grade')}</strong> {output.grade}
                     </span>
                     <span>
-                      <strong>Subject:</strong> {output.subject}
+                      <strong>{t('summativeAssessmentBuilder.subject')}</strong> {output.subject}
                     </span>
                     <span>
-                      <strong>Topic:</strong> {output.topic}
+                      <strong>{t('summativeAssessmentBuilder.topic')}</strong> {output.topic}
                     </span>
                     <span>
-                      <strong>Type:</strong> {output.assessment_type}
+                      <strong>{t('summativeAssessmentBuilder.type')}</strong> {output.assessment_type}
                     </span>
                     {output.duration && (
                       <span>
-                        <strong>Duration:</strong> {output.duration}
+                        <strong>{t('summativeAssessmentBuilder.duration')}</strong> {output.duration}
                       </span>
                     )}
                     {output.difficulty_level && (
                       <span>
-                        <strong>Difficulty:</strong> {output.difficulty_level}
+                        <strong>{t('summativeAssessmentBuilder.difficulty')}</strong> {output.difficulty_level}
                       </span>
                     )}
                   </div>
@@ -623,7 +613,7 @@ const SummativeAssessmentBuilder = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Learning Objectives</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('summativeAssessmentBuilder.learningObjectives')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.learning_objectives.map((objective, index) => (
                       <li key={index}>{objective}</li>
@@ -632,7 +622,7 @@ const SummativeAssessmentBuilder = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Assessment Structure</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('summativeAssessmentBuilder.assessmentStructure')}</h4>
                   <div className="space-y-3 text-sm text-gray-700">
                     {output.structure.map((section, index) => (
                       <div key={index} className="bg-gray-50 rounded-lg p-4">
@@ -649,7 +639,7 @@ const SummativeAssessmentBuilder = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Question Set</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('summativeAssessmentBuilder.questionSet')}</h4>
                   <div className="space-y-3">
                     {output.questions.map((question, index) => (
                       <div key={index} className="bg-white border border-gray-200 rounded-lg p-4">
@@ -664,7 +654,7 @@ const SummativeAssessmentBuilder = () => {
                         <p className="text-sm text-gray-700">{question.prompt}</p>
                         {question.expected_response && (
                           <p className="mt-2 text-xs text-gray-500">
-                            <strong>Expected Response:</strong> {question.expected_response}
+                            <strong>{t('summativeAssessmentBuilder.expectedResponse')}</strong> {question.expected_response}
                           </p>
                         )}
                       </div>
@@ -674,7 +664,7 @@ const SummativeAssessmentBuilder = () => {
 
                 {output.rubric && (
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Rubric</h4>
+                    <h4 className="font-semibold text-gray-900 mb-2">{t('summativeAssessmentBuilder.rubric')}</h4>
                     <div className="space-y-4">
                       {output.rubric.map((criteria, index) => (
                         <div key={index} className="bg-gray-50 rounded-lg p-4">
@@ -694,7 +684,7 @@ const SummativeAssessmentBuilder = () => {
                 )}
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Teacher Notes</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('summativeAssessmentBuilder.teacherNotes')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.teacher_notes.map((note, index) => (
                       <li key={index}>{note}</li>
@@ -707,12 +697,8 @@ const SummativeAssessmentBuilder = () => {
             <div className="card">
               <div className="text-center py-12">
                 <ClipboardCheck className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Your assessment plan will appear here
-                </h3>
-                <p className="text-gray-600">
-                  Complete the inputs and select "Generate Assessment" to preview the assessment outline.
-                </p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('summativeAssessmentBuilder.yourAssessmentPlanWillAppearHere')}</h3>
+                <p className="text-gray-600">{t('summativeAssessmentBuilder.completeTheInputsAndSelectGenerateAssessmentToPreviewTh')}</p>
               </div>
             </div>
           )}

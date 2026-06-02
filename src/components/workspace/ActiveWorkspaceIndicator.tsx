@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { fetchMemberships } from '../../redux/features/membership/membershipSlice';
 import { AppDispatch } from '../../redux/store';
 import { Building2, Users, User } from 'lucide-react';
 
 const ActiveWorkspaceIndicator: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const { activeMembership, memberships } = useSelector((state: any) => state.membership);
   const user = useSelector((state: any) => state?.auth?.user);
-  
-  // Hide for super admin - they don't need workspace indicator
+
   const isSuperAdmin = user?.role === 'super_admin';
 
   useEffect(() => {
@@ -18,7 +19,6 @@ const ActiveWorkspaceIndicator: React.FC = () => {
     }
   }, [dispatch, memberships.length, isSuperAdmin]);
 
-  // Hide for super admin
   if (isSuperAdmin) {
     return null;
   }
@@ -45,11 +45,11 @@ const ActiveWorkspaceIndicator: React.FC = () => {
   const getScopeLabel = (scopeType: string) => {
     switch (scopeType) {
       case 'institution':
-        return 'Institution';
+        return t('workspace.scopeType.institution');
       case 'organization':
-        return 'Organization';
+        return t('workspace.scopeType.organization');
       case 'personal_workspace':
-        return 'Personal';
+        return t('workspace.scopeType.personal');
       default:
         return scopeType;
     }
@@ -63,7 +63,7 @@ const ActiveWorkspaceIndicator: React.FC = () => {
       <div className="flex flex-col">
         <span className="text-xs text-gray-500">{getScopeLabel(currentMembership?.scope_type)}</span>
         <span className="text-sm font-medium text-gray-700">
-          {currentMembership?.scope_display_name || currentMembership?.scope_name || 'Workspace'}
+          {currentMembership?.scope_display_name || currentMembership?.scope_name || t('workspace.fallbackName')}
         </span>
       </div>
     </div>

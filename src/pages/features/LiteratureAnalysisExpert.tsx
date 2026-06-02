@@ -36,7 +36,9 @@ import { useSnackbar } from '../../hooks/useSnackbar'
 import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
+import { resolveApiMessage } from '../../i18n/resolveApiMessage'
 
+import { useTranslation } from 'react-i18next'
 interface ThemeAnalysis {
   themes: {
     theme: string
@@ -79,6 +81,7 @@ interface DiscussionPrompts {
 }
 
 const LiteratureAnalysisExpert = () => {
+  const { t } = useTranslation()
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const CHATBOT_SLUG = 'literature-analysis-expert'
@@ -126,57 +129,14 @@ const LiteratureAnalysisExpert = () => {
         else if (tab === 'devices') setLiteraryDevices(data as LiteraryDevices)
         else setDiscussionPrompts(data as DiscussionPrompts)
       } catch {
-        toast.info('Could not restore saved output from History.')
+        toast.info(t('literatureAnalysisExpert.couldNotRestoreSavedOutputFromHistory'))
       }
     },
   })
 
-  // Helper function to extract error message from various error formats
-  const extractErrorMessage = (error: any, defaultMessage: string): string => {
-    if (typeof error === 'string') {
-      return error
-    }
-    
-    // Handle Pydantic validation errors (array format)
-    const extractFromDetail = (detail: any): string | null => {
-      if (Array.isArray(detail)) {
-        const firstError = detail[0]
-        return firstError?.msg || firstError?.message || `Validation error: ${firstError?.type || 'unknown'}`
-      } else if (typeof detail === 'string') {
-        return detail
-      }
-      return null
-    }
-    
-    if (error?.detail) {
-      const msg = extractFromDetail(error.detail)
-      if (msg) return msg
-    }
-    
-    if (error?.response?.data?.detail) {
-      const msg = extractFromDetail(error.response.data.detail)
-      if (msg) return msg
-    }
-    
-    if (error?.data?.detail) {
-      const msg = extractFromDetail(error.data.detail)
-      if (msg) return msg
-    }
-    
-    if (error?.message) {
-      return typeof error.message === 'string' ? error.message : JSON.stringify(error.message)
-    }
-    
-    if (error?.response?.data?.message) {
-      return typeof error.response.data.message === 'string' ? error.response.data.message : JSON.stringify(error.response.data.message)
-    }
-    
-    return defaultMessage
-  }
-
   const handleThemeAnalysis = async () => {
     if (!textInput.trim() && !title.trim()) {
-      toast.error('Please enter text or title for theme analysis')
+      toast.error(t('literatureAnalysisExpert.pleaseEnterTextOrTitleForThemeAnalysis'))
       return
     }
     
@@ -204,15 +164,18 @@ const LiteratureAnalysisExpert = () => {
       
       setThemeAnalysis(response.result as ThemeAnalysis)
       pinFromResponse(response.conversation_id)
-      toast.success('Theme analysis completed')
+      toast.success(t('literatureAnalysisExpert.themeAnalysisCompleted'))
     } catch (error: any) {
       if (captureApiError(error)) return
       console.error('Error analyzing themes:', error)
-      const errorMessage = extractErrorMessage(error, 'Failed to analyze themes')
+      const errorMessage = resolveApiMessage(
+        t,
+        error?.detail || error?.message || 'Failed to analyze themes',
+      )
       toast.error(errorMessage)
       
       if (error?.status === 403 || error?.response?.status === 403 || errorMessage.includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('literatureAnalysisExpert.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsAnalyzing(false)
@@ -221,7 +184,7 @@ const LiteratureAnalysisExpert = () => {
 
   const handleCharacterAnalysis = async () => {
     if (!textInput.trim() && !title.trim()) {
-      toast.error('Please enter text or title for character analysis')
+      toast.error(t('literatureAnalysisExpert.pleaseEnterTextOrTitleForCharacterAnalysis'))
       return
     }
     
@@ -249,15 +212,18 @@ const LiteratureAnalysisExpert = () => {
       
       setCharacterAnalysis(response.result as CharacterAnalysis)
       pinFromResponse(response.conversation_id)
-      toast.success('Character analysis completed')
+      toast.success(t('literatureAnalysisExpert.characterAnalysisCompleted'))
     } catch (error: any) {
       if (captureApiError(error)) return
       console.error('Error analyzing characters:', error)
-      const errorMessage = extractErrorMessage(error, 'Failed to analyze characters')
+      const errorMessage = resolveApiMessage(
+        t,
+        error?.detail || error?.message || 'Failed to analyze characters',
+      )
       toast.error(errorMessage)
       
       if (error?.status === 403 || error?.response?.status === 403 || errorMessage.includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('literatureAnalysisExpert.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsAnalyzing(false)
@@ -266,7 +232,7 @@ const LiteratureAnalysisExpert = () => {
 
   const handleLiteraryDevices = async () => {
     if (!textInput.trim() && !title.trim()) {
-      toast.error('Please enter text or title for literary devices analysis')
+      toast.error(t('literatureAnalysisExpert.pleaseEnterTextOrTitleForLiteraryDevicesAnalysis'))
       return
     }
     
@@ -294,15 +260,18 @@ const LiteratureAnalysisExpert = () => {
       
       setLiteraryDevices(response.result as LiteraryDevices)
       pinFromResponse(response.conversation_id)
-      toast.success('Literary devices analysis completed')
+      toast.success(t('literatureAnalysisExpert.literaryDevicesAnalysisCompleted'))
     } catch (error: any) {
       if (captureApiError(error)) return
       console.error('Error analyzing literary devices:', error)
-      const errorMessage = extractErrorMessage(error, 'Failed to analyze literary devices')
+      const errorMessage = resolveApiMessage(
+        t,
+        error?.detail || error?.message || 'Failed to analyze literary devices',
+      )
       toast.error(errorMessage)
       
       if (error?.status === 403 || error?.response?.status === 403 || errorMessage.includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('literatureAnalysisExpert.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsAnalyzing(false)
@@ -311,7 +280,7 @@ const LiteratureAnalysisExpert = () => {
 
   const handleDiscussionPrompts = async () => {
     if (!textInput.trim() && !title.trim()) {
-      toast.error('Please enter text or title for discussion prompts')
+      toast.error(t('literatureAnalysisExpert.pleaseEnterTextOrTitleForDiscussionPrompts'))
       return
     }
     
@@ -339,15 +308,18 @@ const LiteratureAnalysisExpert = () => {
       
       setDiscussionPrompts(response.result as DiscussionPrompts)
       pinFromResponse(response.conversation_id)
-      toast.success('Discussion prompts generated')
+      toast.success(t('literatureAnalysisExpert.discussionPromptsGenerated'))
     } catch (error: any) {
       if (captureApiError(error)) return
       console.error('Error generating discussion prompts:', error)
-      const errorMessage = extractErrorMessage(error, 'Failed to generate discussion prompts')
+      const errorMessage = resolveApiMessage(
+        t,
+        error?.detail || error?.message || 'Failed to generate discussion prompts',
+      )
       toast.error(errorMessage)
       
       if (error?.status === 403 || error?.response?.status === 403 || errorMessage.includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('literatureAnalysisExpert.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsAnalyzing(false)
@@ -355,12 +327,12 @@ const LiteratureAnalysisExpert = () => {
   }
 
   const tabs = [
-    { id: 'theme', label: 'Theme Analysis', icon: Compass },
-    { id: 'character', label: 'Character Analysis', icon: Users },
-    { id: 'devices', label: 'Literary Devices', icon: Palette },
-    { id: 'discussion', label: 'Discussion Prompts', icon: MessageSquare },
-    { id: 'compare', label: 'Text Comparison', icon: Layers },
-    { id: 'essay', label: 'Essay Planning', icon: PenTool },
+    { id: 'theme', label: t('literatureAnalysisExpert.tabs.theme'), icon: Compass },
+    { id: 'character', label: t('literatureAnalysisExpert.tabs.character'), icon: Users },
+    { id: 'devices', label: t('literatureAnalysisExpert.tabs.devices'), icon: Palette },
+    { id: 'discussion', label: t('literatureAnalysisExpert.tabs.discussion'), icon: MessageSquare },
+    { id: 'compare', label: t('literatureAnalysisExpert.tabs.compare'), icon: Layers },
+    { id: 'essay', label: t('literatureAnalysisExpert.tabs.essay'), icon: PenTool },
   ]
 
   return (
@@ -384,36 +356,32 @@ const LiteratureAnalysisExpert = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-3xl font-bold">Literature Analysis Expert</h1>
+                  <h1 className="text-3xl font-bold">{t('literatureAnalysisExpert.literatureAnalysisExpert')}</h1>
                   <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
                     <Star className="h-3 w-3" /> 4.7★
                   </span>
                   <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" /> Premium
-                  </span>
+                    <Lock className="inline h-3 w-3 mr-1" />{t('literatureAnalysisExpert.premium')}</span>
                 </div>
-                <p className="mt-2 text-purple-100">
-                  Deep literary analysis tools for theme exploration, character development, literary devices, 
-                  and discussion prompts for classic and contemporary texts.
-                </p>
+                <p className="mt-2 text-purple-100">{t('literatureAnalysisExpert.deepLiteraryAnalysisToolsForThemeExplorationCharacterDe')}</p>
               </div>
             </div>
             <div className="flex flex-wrap gap-3 mt-6">
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <Compass className="h-4 w-4" />
-                <span>Theme Exploration</span>
+                <span>{t('literatureAnalysisExpert.themeExploration')}</span>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <Users className="h-4 w-4" />
-                <span>Character Analysis</span>
+                <span>{t('literatureAnalysisExpert.characterAnalysis')}</span>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <Palette className="h-4 w-4" />
-                <span>Literary Devices</span>
+                <span>{t('literatureAnalysisExpert.literaryDevices')}</span>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <MessageSquare className="h-4 w-4" />
-                <span>Discussion Prompts</span>
+                <span>{t('literatureAnalysisExpert.discussionPrompts')}</span>
               </div>
             </div>
           </div>
@@ -425,7 +393,7 @@ const LiteratureAnalysisExpert = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Texts Analyzed</p>
+              <p className="text-sm font-medium text-gray-600">{t('literatureAnalysisExpert.textsAnalyzed')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">189</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600">
@@ -436,7 +404,7 @@ const LiteratureAnalysisExpert = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Themes Identified</p>
+              <p className="text-sm font-medium text-gray-600">{t('literatureAnalysisExpert.themesIdentified')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">456</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600">
@@ -447,7 +415,7 @@ const LiteratureAnalysisExpert = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Characters Analyzed</p>
+              <p className="text-sm font-medium text-gray-600">{t('literatureAnalysisExpert.charactersAnalyzed')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">723</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
@@ -458,7 +426,7 @@ const LiteratureAnalysisExpert = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Discussion Prompts</p>
+              <p className="text-sm font-medium text-gray-600">{t('literatureAnalysisExpert.discussionPrompts')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">1,234</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-pink-100 text-pink-600">
@@ -506,7 +474,7 @@ const LiteratureAnalysisExpert = () => {
                       type="text"
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
-                      placeholder="e.g., To Kill a Mockingbird"
+                      placeholder={t('literatureAnalysisExpert.eGToKillAMockingbird')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100"
                     />
                   </div>
@@ -518,14 +486,12 @@ const LiteratureAnalysisExpert = () => {
                       type="text"
                       value={author}
                       onChange={(e) => setAuthor(e.target.value)}
-                      placeholder="e.g., Harper Lee"
+                      placeholder={t('literatureAnalysisExpert.eGHarperLee')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Grade Level
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literatureAnalysisExpert.gradeLevel')}</label>
                     <select
                       value={gradeLevel}
                       onChange={(e) => setGradeLevel(e.target.value)}
@@ -533,19 +499,17 @@ const LiteratureAnalysisExpert = () => {
                     >
                       {[6, 7, 8, 9, 10, 11, 12].map((grade) => (
                         <option key={grade} value={grade}>
-                          Grade {grade}
+                          {t('common.gradeOption', { grade })}
                         </option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Paste Text or Enter Context
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literatureAnalysisExpert.pasteTextOrEnterContext')}</label>
                     <textarea
                       value={textInput}
                       onChange={(e) => setTextInput(e.target.value)}
-                      placeholder="Paste text excerpt, describe the work, or provide context for theme analysis..."
+                      placeholder={t('literatureAnalysisExpert.pasteTextExcerptDescribeTheWorkOrProvideContextFor')}
                       rows={10}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100"
                     />
@@ -556,14 +520,10 @@ const LiteratureAnalysisExpert = () => {
                     >
                       {isAnalyzing ? (
                         <>
-                          <RefreshCw className="h-4 w-4 animate-spin" />
-                          Analyzing...
-                        </>
+                          <RefreshCw className="h-4 w-4 animate-spin" />{t('literatureAnalysisExpert.analyzing')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-4 w-4" />
-                          Analyze Themes
-                        </>
+                          <Sparkles className="h-4 w-4" />{t('literatureAnalysisExpert.analyzeThemes')}</>
                       )}
                     </button>
                   </div>
@@ -574,16 +534,14 @@ const LiteratureAnalysisExpert = () => {
                     <div className="space-y-6">
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-purple-50 to-indigo-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Compass className="h-5 w-5 text-purple-600" />
-                          Themes
-                        </h3>
+                          <Compass className="h-5 w-5 text-purple-600" />{t('literatureAnalysisExpert.themes')}</h3>
                         <div className="space-y-6">
                           {themeAnalysis.themes.map((theme, idx) => (
                             <div key={idx} className="bg-white rounded-xl p-5 border border-purple-200">
                               <h4 className="text-lg font-bold text-gray-900 mb-2">{theme.theme}</h4>
                               <p className="text-sm text-gray-700 mb-3">{theme.description}</p>
                               <div className="mb-3">
-                                <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Evidence:</p>
+                                <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('literatureAnalysisExpert.evidence')}</p>
                                 <ul className="space-y-1">
                                   {theme.evidence.map((ev, evIdx) => (
                                     <li key={evIdx} className="text-sm text-gray-600 flex items-start gap-2">
@@ -594,7 +552,7 @@ const LiteratureAnalysisExpert = () => {
                                 </ul>
                               </div>
                               <div className="rounded-lg bg-purple-50 p-3 border border-purple-200">
-                                <p className="text-xs font-semibold text-purple-700 mb-1">Significance:</p>
+                                <p className="text-xs font-semibold text-purple-700 mb-1">{t('literatureAnalysisExpert.significance')}</p>
                                 <p className="text-sm text-purple-800">{theme.significance}</p>
                               </div>
                             </div>
@@ -604,9 +562,7 @@ const LiteratureAnalysisExpert = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-blue-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Layers className="h-5 w-5 text-indigo-600" />
-                          Motifs
-                        </h3>
+                          <Layers className="h-5 w-5 text-indigo-600" />{t('literatureAnalysisExpert.motifs')}</h3>
                         <ul className="space-y-2">
                           {themeAnalysis.motifs.map((motif, idx) => (
                             <li key={idx} className="flex items-start gap-2 text-sm text-gray-700 bg-white rounded-lg p-3 border border-indigo-200">
@@ -619,16 +575,14 @@ const LiteratureAnalysisExpert = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Eye className="h-5 w-5 text-blue-600" />
-                          Symbols
-                        </h3>
+                          <Eye className="h-5 w-5 text-blue-600" />{t('literatureAnalysisExpert.symbols')}</h3>
                         <div className="space-y-4">
                           {themeAnalysis.symbols.map((symbol, idx) => (
                             <div key={idx} className="bg-white rounded-xl p-5 border border-blue-200">
                               <h4 className="text-base font-bold text-gray-900 mb-2">{symbol.symbol}</h4>
                               <p className="text-sm text-gray-700 mb-3 font-medium">{symbol.meaning}</p>
                               <div>
-                                <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Examples:</p>
+                                <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('literatureAnalysisExpert.examples')}</p>
                                 <ul className="space-y-1">
                                   {symbol.examples.map((ex, exIdx) => (
                                     <li key={exIdx} className="text-sm text-gray-600 flex items-start gap-2">
@@ -644,16 +598,12 @@ const LiteratureAnalysisExpert = () => {
                       </div>
 
                       <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                        <Download className="h-4 w-4" />
-                        Download Theme Analysis Report
-                      </button>
+                        <Download className="h-4 w-4" />{t('literatureAnalysisExpert.downloadThemeAnalysisReport')}</button>
                     </div>
                   ) : (
                     <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
                       <Compass className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm font-medium text-gray-600">
-                        Enter text information and click "Analyze Themes" to explore themes, motifs, and symbols
-                      </p>
+                      <p className="text-sm font-medium text-gray-600">{t('literatureAnalysisExpert.enterTextInformationAndClickAnalyzeThemesToExploreTheme')}</p>
                     </div>
                   )}
                 </div>
@@ -674,18 +624,16 @@ const LiteratureAnalysisExpert = () => {
                       type="text"
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
-                      placeholder="e.g., The Great Gatsby"
+                      placeholder={t('literatureAnalysisExpert.eGTheGreatGatsby')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Character Name or Text Context
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literatureAnalysisExpert.characterNameOrTextContext')}</label>
                     <textarea
                       value={textInput}
                       onChange={(e) => setTextInput(e.target.value)}
-                      placeholder="Enter character name, paste text excerpts, or provide context for character analysis..."
+                      placeholder={t('literatureAnalysisExpert.enterCharacterNamePasteTextExcerptsOrProvideContextFor')}
                       rows={12}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100"
                     />
@@ -696,14 +644,10 @@ const LiteratureAnalysisExpert = () => {
                     >
                       {isAnalyzing ? (
                         <>
-                          <RefreshCw className="h-4 w-4 animate-spin" />
-                          Analyzing...
-                        </>
+                          <RefreshCw className="h-4 w-4 animate-spin" />{t('literatureAnalysisExpert.analyzing')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-4 w-4" />
-                          Analyze Characters
-                        </>
+                          <Sparkles className="h-4 w-4" />{t('literatureAnalysisExpert.analyzeCharacters')}</>
                       )}
                     </button>
                   </div>
@@ -726,7 +670,7 @@ const LiteratureAnalysisExpert = () => {
                             </div>
 
                             <div className="mb-4">
-                              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Character Traits:</p>
+                              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('literatureAnalysisExpert.characterTraits')}</p>
                               <div className="flex flex-wrap gap-2">
                                 {character.traits.map((trait, traitIdx) => (
                                   <span key={traitIdx} className="px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-semibold">
@@ -737,12 +681,12 @@ const LiteratureAnalysisExpert = () => {
                             </div>
 
                             <div className="mb-4">
-                              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Character Development:</p>
+                              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('literatureAnalysisExpert.characterDevelopment')}</p>
                               <p className="text-sm text-gray-700 leading-relaxed">{character.development}</p>
                             </div>
 
                             <div className="mb-4">
-                              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Relationships:</p>
+                              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('literatureAnalysisExpert.relationships')}</p>
                               <ul className="space-y-1">
                                 {character.relationships.map((rel, relIdx) => (
                                   <li key={relIdx} className="text-sm text-gray-600 flex items-start gap-2">
@@ -754,7 +698,7 @@ const LiteratureAnalysisExpert = () => {
                             </div>
 
                             <div>
-                              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Key Quotes:</p>
+                              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('literatureAnalysisExpert.keyQuotes')}</p>
                               <div className="space-y-2">
                                 {character.quotes.map((quote, quoteIdx) => (
                                   <div key={quoteIdx} className="rounded-lg bg-purple-50 p-3 border-l-4 border-purple-400">
@@ -768,16 +712,12 @@ const LiteratureAnalysisExpert = () => {
                       ))}
 
                       <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                        <Download className="h-4 w-4" />
-                        Download Character Analysis Report
-                      </button>
+                        <Download className="h-4 w-4" />{t('literatureAnalysisExpert.downloadCharacterAnalysisReport')}</button>
                     </div>
                   ) : (
                     <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
                       <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm font-medium text-gray-600">
-                        Enter character information and analyze traits, development, and relationships
-                      </p>
+                      <p className="text-sm font-medium text-gray-600">{t('literatureAnalysisExpert.enterCharacterInformationAndAnalyzeTraitsDevelopmentAnd')}</p>
                     </div>
                   )}
                 </div>
@@ -798,18 +738,16 @@ const LiteratureAnalysisExpert = () => {
                       type="text"
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
-                      placeholder="e.g., Romeo and Juliet"
+                      placeholder={t('literatureAnalysisExpert.eGRomeoAndJuliet')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Paste Text Excerpt
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literatureAnalysisExpert.pasteTextExcerpt')}</label>
                     <textarea
                       value={textInput}
                       onChange={(e) => setTextInput(e.target.value)}
-                      placeholder="Paste text excerpt to identify literary devices..."
+                      placeholder={t('literatureAnalysisExpert.pasteTextExcerptToIdentifyLiteraryDevices')}
                       rows={12}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100"
                     />
@@ -820,14 +758,10 @@ const LiteratureAnalysisExpert = () => {
                     >
                       {isAnalyzing ? (
                         <>
-                          <RefreshCw className="h-4 w-4 animate-spin" />
-                          Identifying...
-                        </>
+                          <RefreshCw className="h-4 w-4 animate-spin" />{t('literatureAnalysisExpert.identifying')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-4 w-4" />
-                          Identify Literary Devices
-                        </>
+                          <Sparkles className="h-4 w-4" />{t('literatureAnalysisExpert.identifyLiteraryDevices')}</>
                       )}
                     </button>
                   </div>
@@ -846,7 +780,7 @@ const LiteratureAnalysisExpert = () => {
                               <h3 className="text-lg font-bold text-gray-900">{device.type}</h3>
                             </div>
                             <div className="mb-4">
-                              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Examples:</p>
+                              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('literatureAnalysisExpert.examples')}</p>
                               <ul className="space-y-2">
                                 {device.examples.map((ex, exIdx) => (
                                   <li key={exIdx} className="text-sm text-gray-700 bg-indigo-50 rounded-lg p-3 border border-indigo-200">
@@ -857,7 +791,7 @@ const LiteratureAnalysisExpert = () => {
                               </ul>
                             </div>
                             <div className="rounded-lg bg-indigo-50 p-3 border border-indigo-200">
-                              <p className="text-xs font-semibold text-indigo-700 mb-1">Effect:</p>
+                              <p className="text-xs font-semibold text-indigo-700 mb-1">{t('literatureAnalysisExpert.effect')}</p>
                               <p className="text-sm text-indigo-800">{device.effect}</p>
                             </div>
                           </div>
@@ -865,16 +799,12 @@ const LiteratureAnalysisExpert = () => {
                       ))}
 
                       <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                        <Download className="h-4 w-4" />
-                        Download Literary Devices Report
-                      </button>
+                        <Download className="h-4 w-4" />{t('literatureAnalysisExpert.downloadLiteraryDevicesReport')}</button>
                     </div>
                   ) : (
                     <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
                       <Palette className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm font-medium text-gray-600">
-                        Paste text to identify literary devices and their effects
-                      </p>
+                      <p className="text-sm font-medium text-gray-600">{t('literatureAnalysisExpert.pasteTextToIdentifyLiteraryDevicesAndTheirEffects')}</p>
                     </div>
                   )}
                 </div>
@@ -895,14 +825,12 @@ const LiteratureAnalysisExpert = () => {
                       type="text"
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
-                      placeholder="e.g., 1984"
+                      placeholder={t('literatureAnalysisExpert.eG1984')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Grade Level
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literatureAnalysisExpert.gradeLevel')}</label>
                     <select
                       value={gradeLevel}
                       onChange={(e) => setGradeLevel(e.target.value)}
@@ -910,19 +838,17 @@ const LiteratureAnalysisExpert = () => {
                     >
                       {[6, 7, 8, 9, 10, 11, 12].map((grade) => (
                         <option key={grade} value={grade}>
-                          Grade {grade}
+                          {t('common.gradeOption', { grade })}
                         </option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Text Context or Excerpt
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literatureAnalysisExpert.textContextOrExcerpt')}</label>
                     <textarea
                       value={textInput}
                       onChange={(e) => setTextInput(e.target.value)}
-                      placeholder="Enter text context, themes, or paste excerpt to generate discussion prompts..."
+                      placeholder={t('literatureAnalysisExpert.enterTextContextThemesOrPasteExcerptToGenerateDiscussio')}
                       rows={10}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100"
                     />
@@ -933,14 +859,10 @@ const LiteratureAnalysisExpert = () => {
                     >
                       {isAnalyzing ? (
                         <>
-                          <RefreshCw className="h-4 w-4 animate-spin" />
-                          Generating...
-                        </>
+                          <RefreshCw className="h-4 w-4 animate-spin" />{t('literatureAnalysisExpert.generating')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-4 w-4" />
-                          Generate Discussion Prompts
-                        </>
+                          <Sparkles className="h-4 w-4" />{t('literatureAnalysisExpert.generateDiscussionPrompts')}</>
                       )}
                     </button>
                   </div>
@@ -951,9 +873,7 @@ const LiteratureAnalysisExpert = () => {
                     <div className="space-y-6">
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Target className="h-5 w-5 text-blue-600" />
-                          Literal Questions
-                        </h3>
+                          <Target className="h-5 w-5 text-blue-600" />{t('literatureAnalysisExpert.literalQuestions')}</h3>
                         <ul className="space-y-2">
                           {discussionPrompts.literal.map((prompt, idx) => (
                             <li key={idx} className="flex items-start gap-2 text-sm text-gray-700 bg-white rounded-lg p-3 border border-blue-200">
@@ -966,9 +886,7 @@ const LiteratureAnalysisExpert = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Brain className="h-5 w-5 text-indigo-600" />
-                          Inferential Questions
-                        </h3>
+                          <Brain className="h-5 w-5 text-indigo-600" />{t('literatureAnalysisExpert.inferentialQuestions')}</h3>
                         <ul className="space-y-2">
                           {discussionPrompts.inferential.map((prompt, idx) => (
                             <li key={idx} className="flex items-start gap-2 text-sm text-gray-700 bg-white rounded-lg p-3 border border-indigo-200">
@@ -981,9 +899,7 @@ const LiteratureAnalysisExpert = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Award className="h-5 w-5 text-purple-600" />
-                          Evaluative Questions
-                        </h3>
+                          <Award className="h-5 w-5 text-purple-600" />{t('literatureAnalysisExpert.evaluativeQuestions')}</h3>
                         <ul className="space-y-2">
                           {discussionPrompts.evaluative.map((prompt, idx) => (
                             <li key={idx} className="flex items-start gap-2 text-sm text-gray-700 bg-white rounded-lg p-3 border border-purple-200">
@@ -996,9 +912,7 @@ const LiteratureAnalysisExpert = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-pink-50 to-rose-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Lightbulb className="h-5 w-5 text-pink-600" />
-                          Creative Prompts
-                        </h3>
+                          <Lightbulb className="h-5 w-5 text-pink-600" />{t('literatureAnalysisExpert.creativePrompts')}</h3>
                         <ul className="space-y-2">
                           {discussionPrompts.creative.map((prompt, idx) => (
                             <li key={idx} className="flex items-start gap-2 text-sm text-gray-700 bg-white rounded-lg p-3 border border-pink-200">
@@ -1010,16 +924,12 @@ const LiteratureAnalysisExpert = () => {
                       </div>
 
                       <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                        <Download className="h-4 w-4" />
-                        Download Discussion Prompts
-                      </button>
+                        <Download className="h-4 w-4" />{t('literatureAnalysisExpert.downloadDiscussionPrompts')}</button>
                     </div>
                   ) : (
                     <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
                       <MessageSquare className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm font-medium text-gray-600">
-                        Enter text information to generate discussion prompts at multiple cognitive levels
-                      </p>
+                      <p className="text-sm font-medium text-gray-600">{t('literatureAnalysisExpert.enterTextInformationToGenerateDiscussionPromptsAtMultip')}</p>
                     </div>
                   )}
                 </div>
@@ -1032,44 +942,38 @@ const LiteratureAnalysisExpert = () => {
             <div className="space-y-6">
               <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-amber-50 to-orange-50 p-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Layers className="h-6 w-6 text-amber-600" />
-                  Text Comparison Tool
-                </h3>
-                <p className="text-sm text-gray-600 mb-6">
-                  Compare themes, characters, literary devices, and styles across multiple texts.
-                </p>
+                  <Layers className="h-6 w-6 text-amber-600" />{t('literatureAnalysisExpert.textComparisonTool')}</h3>
+                <p className="text-sm text-gray-600 mb-6">{t('literatureAnalysisExpert.compareThemesCharactersLiteraryDevicesAndStylesAcrossMu')}</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-3">
-                    <label className="block text-sm font-medium text-gray-700">Text 1</label>
+                    <label className="block text-sm font-medium text-gray-700">{t('literatureAnalysisExpert.text1')}</label>
                     <input
                       type="text"
-                      placeholder="Title or author"
+                      placeholder={t('literatureAnalysisExpert.titleOrAuthor')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100"
                     />
                     <textarea
-                      placeholder="Text excerpt or context..."
+                      placeholder={t('literatureAnalysisExpert.textExcerptOrContext')}
                       rows={6}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100"
                     />
                   </div>
                   <div className="space-y-3">
-                    <label className="block text-sm font-medium text-gray-700">Text 2</label>
+                    <label className="block text-sm font-medium text-gray-700">{t('literatureAnalysisExpert.text2')}</label>
                     <input
                       type="text"
-                      placeholder="Title or author"
+                      placeholder={t('literatureAnalysisExpert.titleOrAuthor')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100"
                     />
                     <textarea
-                      placeholder="Text excerpt or context..."
+                      placeholder={t('literatureAnalysisExpert.textExcerptOrContext')}
                       rows={6}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100"
                     />
                   </div>
                 </div>
                 <button className="mt-4 w-full rounded-lg bg-amber-600 px-6 py-3 text-sm font-semibold text-white hover:bg-amber-700 flex items-center justify-center gap-2">
-                  <Sparkles className="h-4 w-4" />
-                  Compare Texts
-                </button>
+                  <Sparkles className="h-4 w-4" />{t('literatureAnalysisExpert.compareTexts')}</button>
               </div>
             </div>
           )}
@@ -1079,43 +983,37 @@ const LiteratureAnalysisExpert = () => {
             <div className="space-y-6">
               <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <PenTool className="h-6 w-6 text-green-600" />
-                  Essay Planning Assistant
-                </h3>
-                <p className="text-sm text-gray-600 mb-6">
-                  Generate thesis statements, outline structures, and supporting evidence for literary analysis essays.
-                </p>
+                  <PenTool className="h-6 w-6 text-green-600" />{t('literatureAnalysisExpert.essayPlanningAssistant')}</h3>
+                <p className="text-sm text-gray-600 mb-6">{t('literatureAnalysisExpert.generateThesisStatementsOutlineStructuresAndSupportingE')}</p>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Essay Topic or Question</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literatureAnalysisExpert.essayTopicOrQuestion')}</label>
                     <input
                       type="text"
-                      placeholder="e.g., Analyze the theme of power in..."
+                      placeholder={t('literatureAnalysisExpert.eGAnalyzeTheThemeOfPowerIn')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Text Information</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literatureAnalysisExpert.textInformation')}</label>
                     <textarea
-                      placeholder="Enter text title, author, and key points to analyze..."
+                      placeholder={t('literatureAnalysisExpert.enterTextTitleAuthorAndKeyPointsToAnalyze')}
                       rows={6}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Essay Type</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literatureAnalysisExpert.essayType')}</label>
                     <select className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100">
-                      <option>Literary Analysis</option>
-                      <option>Character Analysis</option>
-                      <option>Theme Analysis</option>
-                      <option>Comparative Essay</option>
-                      <option>Argumentative Essay</option>
+                      <option>{t('literatureAnalysisExpert.literaryAnalysis')}</option>
+                      <option>{t('literatureAnalysisExpert.characterAnalysis')}</option>
+                      <option>{t('literatureAnalysisExpert.themeAnalysis')}</option>
+                      <option>{t('literatureAnalysisExpert.comparativeEssay')}</option>
+                      <option>{t('literatureAnalysisExpert.argumentativeEssay')}</option>
                     </select>
                   </div>
                   <button className="w-full rounded-lg bg-green-600 px-6 py-3 text-sm font-semibold text-white hover:bg-green-700 flex items-center justify-center gap-2">
-                    <Sparkles className="h-4 w-4" />
-                    Generate Essay Plan
-                  </button>
+                    <Sparkles className="h-4 w-4" />{t('literatureAnalysisExpert.generateEssayPlan')}</button>
                 </div>
               </div>
             </div>
@@ -1125,61 +1023,49 @@ const LiteratureAnalysisExpert = () => {
 
       {/* Additional Features Section */}
       <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-6">Additional Premium Features</h2>
+        <h2 className="text-2xl font-semibold text-gray-900 mb-6">{t('literatureAnalysisExpert.additionalPremiumFeatures')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-purple-50 to-indigo-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600 mb-4">
               <BarChart3 className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Text Complexity Analysis</h3>
-            <p className="text-sm text-gray-600">
-              Analyze reading level, vocabulary complexity, and text structure for appropriate grade placement.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literatureAnalysisExpert.textComplexityAnalysis')}</h3>
+            <p className="text-sm text-gray-600">{t('literatureAnalysisExpert.analyzeReadingLevelVocabularyComplexityAndTextStructure')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-blue-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 mb-4">
               <GraduationCap className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Standards Alignment</h3>
-            <p className="text-sm text-gray-600">
-              All analysis tools align with Common Core ELA standards and state-specific curriculum requirements.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literatureAnalysisExpert.standardsAlignment')}</h3>
+            <p className="text-sm text-gray-600">{t('literatureAnalysisExpert.allAnalysisToolsAlignWithCommonCoreElaStandardsAnd')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 mb-4">
               <TrendingUp className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Progress Tracking</h3>
-            <p className="text-sm text-gray-600">
-              Track student engagement with texts, analysis quality, and discussion participation over time.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literatureAnalysisExpert.progressTracking')}</h3>
+            <p className="text-sm text-gray-600">{t('literatureAnalysisExpert.trackStudentEngagementWithTextsAnalysisQualityAndDiscus')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-cyan-50 to-teal-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600 mb-4">
               <MessageSquare className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">AI-Powered Chat</h3>
-            <p className="text-sm text-gray-600">
-              Get instant answers to literature questions and receive personalized teaching recommendations.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literatureAnalysisExpert.aiPoweredChat')}</h3>
+            <p className="text-sm text-gray-600">{t('literatureAnalysisExpert.getInstantAnswersToLiteratureQuestionsAndReceivePersona')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-teal-50 to-green-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-100 text-teal-600 mb-4">
               <Download className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Export & Share</h3>
-            <p className="text-sm text-gray-600">
-              Export analysis reports, discussion prompts, and essay plans in multiple formats for easy sharing.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literatureAnalysisExpert.exportShare')}</h3>
+            <p className="text-sm text-gray-600">{t('literatureAnalysisExpert.exportAnalysisReportsDiscussionPromptsAndEssayPlansInMu')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600 mb-4">
               <Users className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Differentiation Tools</h3>
-            <p className="text-sm text-gray-600">
-              Automatically generate differentiated analysis activities for students at various reading levels.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literatureAnalysisExpert.differentiationTools')}</h3>
+            <p className="text-sm text-gray-600">{t('literatureAnalysisExpert.automaticallyGenerateDifferentiatedAnalysisActivitiesFo')}</p>
           </div>
         </div>
       </div>

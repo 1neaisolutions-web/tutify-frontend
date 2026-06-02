@@ -28,6 +28,7 @@ import {
   Scroll,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template'
@@ -46,6 +47,7 @@ interface QuestElement {
 }
 
 const QuestBasedLearning = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -271,19 +273,13 @@ Start with guided choices, gradually increase student autonomy as they become mo
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 4
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('questBasedLearning.module4')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    75 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('questBasedLearning.k5Min')}</span>
                 </div>
-                <h1 className="text-3xl font-bold">Quest-Based Learning Design</h1>
-                <p className="mt-2 text-purple-100">
-                  Transform your curriculum into engaging quests and missions
-                </p>
+                <h1 className="text-3xl font-bold">{t('questBasedLearning.questBasedLearningDesign')}</h1>
+                <p className="mt-2 text-purple-100">{t('questBasedLearning.transformYourCurriculumIntoEngagingQuestsAndMissions')}</p>
               </div>
             </div>
             <div className="h-2 bg-white/20 rounded-full overflow-hidden">
@@ -299,7 +295,7 @@ Start with guided choices, gradually increase student autonomy as they become mo
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('questBasedLearning.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isActive = idx === currentLesson
@@ -357,7 +353,7 @@ Start with guided choices, gradually increase student autonomy as they become mo
                   </div>
                 </div>
                 <div className="bg-purple-50 rounded-xl p-6 border border-purple-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Points</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('questBasedLearning.keyPoints')}</h3>
                   <ul className="space-y-2">
                     {currentLessonData.content.keyPoints.map((point: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -383,15 +379,13 @@ Start with guided choices, gradually increase student autonomy as they become mo
                     onClick={() => setShowQuestBuilder(true)}
                     className="w-full px-6 py-4 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition flex items-center justify-center gap-2"
                   >
-                    <Zap className="h-5 w-5" />
-                    Launch Quest Builder
-                  </button>
+                    <Zap className="h-5 w-5" />{t('questBasedLearning.launchQuestBuilder')}</button>
                 ) : (
                   <div className="bg-white rounded-xl p-6 border-2 border-purple-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Quest Builder</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('questBasedLearning.questBuilder')}</h3>
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Quest Title</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('questBasedLearning.questTitle')}</label>
                         <input
                           type="text"
                           value={questDesign.title}
@@ -400,7 +394,7 @@ Start with guided choices, gradually increase student autonomy as they become mo
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Narrative Story</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('questBasedLearning.narrativeStory')}</label>
                         <textarea
                           value={questDesign.narrative}
                           onChange={(e) => setQuestDesign({ ...questDesign, narrative: e.target.value })}
@@ -409,7 +403,7 @@ Start with guided choices, gradually increase student autonomy as they become mo
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Learning Objectives</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('questBasedLearning.learningObjectives')}</label>
                         <textarea
                           value={questDesign.objectives}
                           onChange={(e) => setQuestDesign({ ...questDesign, objectives: e.target.value })}
@@ -421,9 +415,7 @@ Start with guided choices, gradually increase student autonomy as they become mo
                         <button
                           onClick={handleQuestSubmit}
                           className="flex-1 px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition"
-                        >
-                          Save Quest
-                        </button>
+                        >{t('questBasedLearning.saveQuest')}</button>
                         <button
                           onClick={() => setShowQuestBuilder(false)}
                           className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition"
@@ -436,7 +428,7 @@ Start with guided choices, gradually increase student autonomy as they become mo
                 )}
 
                 <div className="bg-white rounded-xl p-6 border-2 border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Quest Elements</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('questBasedLearning.questElements')}</h3>
                   <div className="space-y-4">
                     {questElements.map((element, idx) => (
                       <div key={idx} className="bg-purple-50 rounded-lg p-5 border border-purple-200">
@@ -444,13 +436,13 @@ Start with guided choices, gradually increase student autonomy as they become mo
                         <p className="text-sm text-gray-700 mb-3">{element.description}</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 mb-1">Examples:</p>
+                            <p className="text-xs font-semibold text-gray-600 mb-1">{t('questBasedLearning.examples')}</p>
                             {element.examples.map((ex, exIdx) => (
                               <p key={exIdx} className="text-xs text-gray-700 bg-white rounded p-2 mb-1">{ex}</p>
                             ))}
                           </div>
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 mb-1">Tips:</p>
+                            <p className="text-xs font-semibold text-gray-600 mb-1">{t('questBasedLearning.tips')}</p>
                             {element.tips.map((tip, tipIdx) => (
                               <p key={tipIdx} className="text-xs text-gray-700 bg-white rounded p-2 mb-1">{tip}</p>
                             ))}
@@ -477,9 +469,7 @@ Start with guided choices, gradually increase student autonomy as they become mo
                   </ul>
                 </div>
                 <button className="w-full px-6 py-4 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition flex items-center justify-center gap-2">
-                  <Download className="h-5 w-5" />
-                  Download Template
-                </button>
+                  <Download className="h-5 w-5" />{t('questBasedLearning.downloadTemplate')}</button>
               </div>
             )}
 
@@ -489,9 +479,7 @@ Start with guided choices, gradually increase student autonomy as they become mo
                 disabled={currentLesson === 0}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
-                <ArrowLeft className="h-4 w-4" />
-                Previous
-              </button>
+                <ArrowLeft className="h-4 w-4" />{t('questBasedLearning.previous')}</button>
               <button
                 onClick={() => {
                   handleLessonComplete(currentLessonData.id)
@@ -503,18 +491,12 @@ Start with guided choices, gradually increase student autonomy as they become mo
               >
                 {completedLessons.includes(currentLessonData.id) ? (
                   <>
-                    <CheckCircle2 className="h-4 w-4" />
-                    Marked Complete
-                  </>
+                    <CheckCircle2 className="h-4 w-4" />{t('questBasedLearning.markedComplete')}</>
                 ) : currentLesson === lessons.length - 1 ? (
                   <>
-                    <Trophy className="h-4 w-4" />
-                    Complete Module
-                  </>
+                    <Trophy className="h-4 w-4" />{t('questBasedLearning.completeModule')}</>
                 ) : (
-                  <>
-                    Complete & Next
-                    <ArrowRight className="h-4 w-4" />
+                  <>{t('questBasedLearning.completeNext')}<ArrowRight className="h-4 w-4" />
                   </>
                 )}
               </button>
@@ -524,7 +506,7 @@ Start with guided choices, gradually increase student autonomy as they become mo
           {completedLessons.length === lessons.length && (
             <div className="mt-6 rounded-2xl border-2 border-green-300 bg-gradient-to-br from-green-50 to-emerald-50 p-8 text-center">
               <Trophy className="h-16 w-16 text-green-600 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Module Complete!</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('questBasedLearning.moduleComplete')}</h3>
               <button
                 onClick={() => navigate('/learning-hub/student-engagement-path')}
                 className="rounded-full bg-green-600 px-6 py-3 text-sm font-semibold text-white hover:bg-green-700"

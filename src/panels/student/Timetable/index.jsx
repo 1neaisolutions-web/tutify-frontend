@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 
 const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
@@ -12,6 +13,7 @@ const demo = {
 };
 
 const StudentTimetable = () => {
+  const { t } = useTranslation();
   const nextClass = useMemo(() => {
     const now = new Date();
     const todayIdx = (now.getDay() + 6) % 7; // Mon=0
@@ -26,8 +28,8 @@ const StudentTimetable = () => {
   return (
     <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Timetable</h1>
-        <p className="text-sm text-gray-600 dark:text-gray-300">Weekly view (demo data).</p>
+        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.timetable.title')}</h1>
+        <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.timetable.subtitle')}</p>
       </div>
 
       <div className="px-6 py-6 space-y-4">
@@ -47,7 +49,7 @@ const StudentTimetable = () => {
           <table className="min-w-[720px] w-full text-sm">
             <thead className="bg-gray-50 dark:bg-gray-900/40">
               <tr>
-                <th className="text-left px-3 py-2 text-gray-600 dark:text-gray-300">Time</th>
+                <th className="text-left px-3 py-2 text-gray-600 dark:text-gray-300">{t('studentPanel.timetable.columnTime')}</th>
                 {days.map((d) => (
                   <th key={d} className="text-left px-3 py-2 text-gray-600 dark:text-gray-300">
                     {d}
@@ -66,7 +68,7 @@ const StudentTimetable = () => {
                           {demo[d][t]}
                         </span>
                       ) : (
-                        <span className="text-gray-400">—</span>
+                        <span className="text-gray-400">{t('studentPanel.common.emDash')}</span>
                       )}
                     </td>
                   ))}

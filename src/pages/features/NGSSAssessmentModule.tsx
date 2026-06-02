@@ -24,6 +24,7 @@ import {
   ListChecks,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template' | 'project'
@@ -41,6 +42,7 @@ interface RubricCriteria {
 }
 
 const NGSSAssessmentModule = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -292,14 +294,10 @@ Performance tasks are assessments that require students to demonstrate their und
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 8
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('nGSSAssessmentModule.module8')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    75 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('nGSSAssessmentModule.k5Min')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
                     <Star className="h-3 w-3" />
@@ -309,16 +307,14 @@ Performance tasks are assessments that require students to demonstrate their und
                     }, 0)} / {lessons.reduce((sum, l) => sum + l.points, 0)} points
                   </span>
                 </div>
-                <h1 className="text-3xl font-bold">NGSS-Aligned Assessment & Portfolio Development</h1>
-                <p className="mt-2 text-emerald-100">
-                  Design three-dimensional assessments that authentically measure student understanding
-                </p>
+                <h1 className="text-3xl font-bold">{t('nGSSAssessmentModule.ngssAlignedAssessmentPortfolioDevelopment')}</h1>
+                <p className="mt-2 text-emerald-100">{t('nGSSAssessmentModule.designThreeDimensionalAssessmentsThatAuthenticallyMeasu')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm mb-4">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4" />
-                <span>High Impact</span>
+                <span>{t('nGSSAssessmentModule.highImpact')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Trophy className="w-4 h-4" />
@@ -343,7 +339,7 @@ Performance tasks are assessments that require students to demonstrate their und
         {/* Sidebar */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('nGSSAssessmentModule.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isActive = idx === currentLesson
@@ -403,9 +399,7 @@ Performance tasks are assessments that require students to demonstrate their und
                 </div>
                 {completedLessons.includes(currentLessonData.id) && (
                   <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-semibold flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4" />
-                    Completed
-                  </span>
+                    <CheckCircle2 className="h-4 w-4" />{t('nGSSAssessmentModule.completed')}</span>
                 )}
               </div>
             </div>
@@ -425,7 +419,7 @@ Performance tasks are assessments that require students to demonstrate their und
                 </div>
                 {currentLessonData.content.keyPoints && (
                   <div className="bg-emerald-50 rounded-xl p-6 border border-emerald-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Points</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('nGSSAssessmentModule.keyPoints')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyPoints.map((point: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -447,7 +441,7 @@ Performance tasks are assessments that require students to demonstrate their und
                 </div>
                 {currentLessonData.content.keyTakeaways && (
                   <div className="bg-purple-50 rounded-xl p-6 border border-purple-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Takeaways</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('nGSSAssessmentModule.keyTakeaways')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyTakeaways.map((takeaway: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -472,35 +466,33 @@ Performance tasks are assessments that require students to demonstrate their und
                       onClick={() => setShowRubricBuilder(true)}
                       className="w-full px-6 py-4 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 transition flex items-center justify-center gap-2"
                     >
-                      <Zap className="h-5 w-5" />
-                      Launch Rubric Builder
-                    </button>
+                      <Zap className="h-5 w-5" />{t('nGSSAssessmentModule.launchRubricBuilder')}</button>
                   ) : (
                     <div className="bg-white rounded-xl p-6 border-2 border-emerald-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Three-Dimensional Rubric Builder</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('nGSSAssessmentModule.threeDimensionalRubricBuilder')}</h3>
                       <div className="space-y-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Rubric Title</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('nGSSAssessmentModule.rubricTitle')}</label>
                           <input
                             type="text"
                             value={rubricData.title}
                             onChange={(e) => setRubricData({ ...rubricData, title: e.target.value })}
-                            placeholder="e.g., Ecosystem Interactions Performance Task Rubric"
+                            placeholder={t('nGSSAssessmentModule.eGEcosystemInteractionsPerformanceTaskRubric')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Performance Expectation</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('nGSSAssessmentModule.performanceExpectation')}</label>
                           <input
                             type="text"
                             value={rubricData.performanceExpectation}
                             onChange={(e) => setRubricData({ ...rubricData, performanceExpectation: e.target.value })}
-                            placeholder="e.g., MS-LS2-1"
+                            placeholder={t('nGSSAssessmentModule.eGMsLs21')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
                           />
                         </div>
                         <div className="space-y-4">
-                          <h4 className="text-base font-semibold text-gray-900">Rubric Criteria</h4>
+                          <h4 className="text-base font-semibold text-gray-900">{t('nGSSAssessmentModule.rubricCriteria')}</h4>
                           {rubricCriteriaExamples.map((criteria, idx) => (
                             <div key={idx} className="bg-emerald-50 rounded-lg p-4 border border-emerald-200">
                               <div className="flex items-center gap-2 mb-3">
@@ -522,9 +514,7 @@ Performance tasks are assessments that require students to demonstrate their und
                           <button
                             onClick={handleRubricSubmit}
                             className="flex-1 px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition"
-                          >
-                            Save Rubric
-                          </button>
+                          >{t('nGSSAssessmentModule.saveRubric')}</button>
                           <button
                             onClick={() => setShowRubricBuilder(false)}
                             className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition"
@@ -550,74 +540,72 @@ Performance tasks are assessments that require students to demonstrate their und
                       onClick={() => setShowAssessmentDesigner(true)}
                       className="w-full px-6 py-4 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
                     >
-                      <Rocket className="h-5 w-5" />
-                      Launch Assessment Suite Designer
-                    </button>
+                      <Rocket className="h-5 w-5" />{t('nGSSAssessmentModule.launchAssessmentSuiteDesigner')}</button>
                   ) : (
                     <div className="bg-white rounded-xl p-6 border-2 border-green-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">NGSS Assessment Suite Designer</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('nGSSAssessmentModule.ngssAssessmentSuiteDesigner')}</h3>
                       <div className="space-y-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Assessment Suite Title</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('nGSSAssessmentModule.assessmentSuiteTitle')}</label>
                           <input
                             type="text"
                             value={assessmentData.title}
                             onChange={(e) => setAssessmentData({ ...assessmentData, title: e.target.value })}
-                            placeholder="e.g., Ecosystems Unit Assessment Suite"
+                            placeholder={t('nGSSAssessmentModule.eGEcosystemsUnitAssessmentSuite')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Assessment Type</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('nGSSAssessmentModule.assessmentType')}</label>
                           <select
                             value={assessmentData.type}
                             onChange={(e) => setAssessmentData({ ...assessmentData, type: e.target.value })}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           >
-                            <option value="">Select type</option>
-                            <option value="performance-task">Performance Task</option>
-                            <option value="formative">Formative Assessment</option>
-                            <option value="summative">Summative Assessment</option>
-                            <option value="portfolio">Portfolio Assessment</option>
+                            <option value="">{t('nGSSAssessmentModule.selectType')}</option>
+                            <option value="performance-task">{t('nGSSAssessmentModule.performanceTask')}</option>
+                            <option value="formative">{t('nGSSAssessmentModule.formativeAssessment')}</option>
+                            <option value="summative">{t('nGSSAssessmentModule.summativeAssessment')}</option>
+                            <option value="portfolio">{t('nGSSAssessmentModule.portfolioAssessment')}</option>
                           </select>
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Performance Expectations</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('nGSSAssessmentModule.performanceExpectations')}</label>
                           <textarea
                             value={assessmentData.performanceExpectations}
                             onChange={(e) => setAssessmentData({ ...assessmentData, performanceExpectations: e.target.value })}
                             rows={2}
-                            placeholder="List NGSS performance expectations being assessed..."
+                            placeholder={t('nGSSAssessmentModule.listNgssPerformanceExpectationsBeingAssessed')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Assessment Task</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('nGSSAssessmentModule.assessmentTask')}</label>
                           <textarea
                             value={assessmentData.task}
                             onChange={(e) => setAssessmentData({ ...assessmentData, task: e.target.value })}
                             rows={5}
-                            placeholder="Describe the assessment task students will complete..."
+                            placeholder={t('nGSSAssessmentModule.describeTheAssessmentTaskStudentsWillComplete')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Rubric</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('nGSSAssessmentModule.rubric')}</label>
                           <textarea
                             value={assessmentData.rubric}
                             onChange={(e) => setAssessmentData({ ...assessmentData, rubric: e.target.value })}
                             rows={4}
-                            placeholder="Describe rubric criteria for each dimension..."
+                            placeholder={t('nGSSAssessmentModule.describeRubricCriteriaForEachDimension')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Portfolio Items</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('nGSSAssessmentModule.portfolioItems')}</label>
                           <textarea
                             value={assessmentData.portfolioItems}
                             onChange={(e) => setAssessmentData({ ...assessmentData, portfolioItems: e.target.value })}
                             rows={3}
-                            placeholder="List items students should include in their portfolio..."
+                            placeholder={t('nGSSAssessmentModule.listItemsStudentsShouldIncludeInTheirPortfolio')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
@@ -625,9 +613,7 @@ Performance tasks are assessments that require students to demonstrate their und
                           <button
                             onClick={handleAssessmentSubmit}
                             className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition"
-                          >
-                            Save Assessment Suite
-                          </button>
+                          >{t('nGSSAssessmentModule.saveAssessmentSuite')}</button>
                           <button
                             onClick={() => setShowAssessmentDesigner(false)}
                             className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition"
@@ -641,7 +627,7 @@ Performance tasks are assessments that require students to demonstrate their und
                 </div>
 
                 <div className="bg-white rounded-xl p-6 border-2 border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Project Requirements</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('nGSSAssessmentModule.projectRequirements')}</h3>
                   <ol className="space-y-3">
                     {currentLessonData.content.requirements.map((req: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
@@ -663,9 +649,7 @@ Performance tasks are assessments that require students to demonstrate their und
                 disabled={currentLesson === 0}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
-                <ArrowLeft className="h-4 w-4" />
-                Previous
-              </button>
+                <ArrowLeft className="h-4 w-4" />{t('nGSSAssessmentModule.previous')}</button>
 
               <button
                 onClick={() => {
@@ -678,18 +662,12 @@ Performance tasks are assessments that require students to demonstrate their und
               >
                 {completedLessons.includes(currentLessonData.id) ? (
                   <>
-                    <CheckCircle2 className="h-4 w-4" />
-                    Marked Complete
-                  </>
+                    <CheckCircle2 className="h-4 w-4" />{t('nGSSAssessmentModule.markedComplete')}</>
                 ) : currentLesson === lessons.length - 1 ? (
                   <>
-                    <Trophy className="h-4 w-4" />
-                    Complete Module
-                  </>
+                    <Trophy className="h-4 w-4" />{t('nGSSAssessmentModule.completeModule')}</>
                 ) : (
-                  <>
-                    Complete & Next
-                    <ArrowRight className="h-4 w-4" />
+                  <>{t('nGSSAssessmentModule.completeNext')}<ArrowRight className="h-4 w-4" />
                   </>
                 )}
               </button>
@@ -702,7 +680,7 @@ Performance tasks are assessments that require students to demonstrate their und
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-600 mb-4">
                 <Trophy className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Module Complete!</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('nGSSAssessmentModule.moduleComplete')}</h3>
               <p className="text-gray-700 mb-6">
                 You've earned {lessons.reduce((sum, l) => sum + l.points, 0)} points. Congratulations!
               </p>
@@ -713,9 +691,7 @@ Performance tasks are assessments that require students to demonstrate their und
                 >
                   Continue to Next Module
                 </button>
-                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                  Download Certificate
-                </button>
+                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">{t('nGSSAssessmentModule.downloadCertificate')}</button>
               </div>
             </div>
           )}

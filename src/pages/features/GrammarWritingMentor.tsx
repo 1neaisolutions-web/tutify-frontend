@@ -43,7 +43,9 @@ import { useSnackbar } from '../../hooks/useSnackbar'
 import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
+import { resolveApiMessage } from '../../i18n/resolveApiMessage'
 
+import { useTranslation } from 'react-i18next'
 interface GrammarCheck {
   errors: {
     type: string
@@ -105,6 +107,7 @@ interface GrammarLesson {
 }
 
 const GrammarWritingMentor = () => {
+  const { t } = useTranslation()
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const CHATBOT_SLUG = 'grammar-writing-mentor'
@@ -162,57 +165,14 @@ const GrammarWritingMentor = () => {
           setHasGeneratedLesson(true)
         }
       } catch {
-        toast.info('Could not restore saved output from History.')
+        toast.info(t('grammarWritingMentor.couldNotRestoreSavedOutputFromHistory'))
       }
     },
   })
 
-  // Helper function to extract error message from various error formats
-  const extractErrorMessage = (error: any, defaultMessage: string): string => {
-    if (typeof error === 'string') {
-      return error
-    }
-    
-    // Handle Pydantic validation errors (array format)
-    const extractFromDetail = (detail: any): string | null => {
-      if (Array.isArray(detail)) {
-        const firstError = detail[0]
-        return firstError?.msg || firstError?.message || `Validation error: ${firstError?.type || 'unknown'}`
-      } else if (typeof detail === 'string') {
-        return detail
-      }
-      return null
-    }
-    
-    if (error?.detail) {
-      const msg = extractFromDetail(error.detail)
-      if (msg) return msg
-    }
-    
-    if (error?.response?.data?.detail) {
-      const msg = extractFromDetail(error.response.data.detail)
-      if (msg) return msg
-    }
-    
-    if (error?.data?.detail) {
-      const msg = extractFromDetail(error.data.detail)
-      if (msg) return msg
-    }
-    
-    if (error?.message) {
-      return typeof error.message === 'string' ? error.message : JSON.stringify(error.message)
-    }
-    
-    if (error?.response?.data?.message) {
-      return typeof error.response.data.message === 'string' ? error.response.data.message : JSON.stringify(error.response.data.message)
-    }
-    
-    return defaultMessage
-  }
-
   const handleGrammarCheck = async () => {
     if (!textInput.trim()) {
-      toast.error('Please enter text to check')
+      toast.error(t('grammarWritingMentor.pleaseEnterTextToCheck'))
       return
     }
     
@@ -236,15 +196,18 @@ const GrammarWritingMentor = () => {
       
       setGrammarCheck(response.result as GrammarCheck)
       pinFromResponse(response.conversation_id)
-      toast.success('Grammar check completed')
+      toast.success(t('grammarWritingMentor.grammarCheckCompleted'))
     } catch (error: any) {
       if (captureApiError(error)) return
       console.error('Error checking grammar:', error)
-      const errorMessage = extractErrorMessage(error, 'Failed to check grammar')
+      const errorMessage = resolveApiMessage(
+        t,
+        error?.detail || error?.message || 'Failed to check grammar',
+      )
       toast.error(errorMessage)
       
       if (error?.status === 403 || error?.response?.status === 403 || errorMessage.includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('grammarWritingMentor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsAnalyzing(false)
@@ -253,7 +216,7 @@ const GrammarWritingMentor = () => {
 
   const handleWritingFeedback = async () => {
     if (!textInput.trim()) {
-      toast.error('Please enter writing sample for feedback')
+      toast.error(t('grammarWritingMentor.pleaseEnterWritingSampleForFeedback'))
       return
     }
     
@@ -278,15 +241,18 @@ const GrammarWritingMentor = () => {
       
       setWritingFeedback(response.result as WritingFeedback)
       pinFromResponse(response.conversation_id)
-      toast.success('Writing feedback generated')
+      toast.success(t('grammarWritingMentor.writingFeedbackGenerated'))
     } catch (error: any) {
       if (captureApiError(error)) return
       console.error('Error generating feedback:', error)
-      const errorMessage = extractErrorMessage(error, 'Failed to generate writing feedback')
+      const errorMessage = resolveApiMessage(
+        t,
+        error?.detail || error?.message || 'Failed to generate writing feedback',
+      )
       toast.error(errorMessage)
       
       if (error?.status === 403 || error?.response?.status === 403 || errorMessage.includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('grammarWritingMentor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsAnalyzing(false)
@@ -315,15 +281,18 @@ const GrammarWritingMentor = () => {
       setPeerReviewGuide(response.result as PeerReviewGuide)
       setHasGeneratedPeerGuide(true)
       pinFromResponse(response.conversation_id)
-      toast.success('Peer review guide generated')
+      toast.success(t('grammarWritingMentor.peerReviewGuideGenerated'))
     } catch (error: any) {
       if (captureApiError(error)) return
       console.error('Error generating peer review guide:', error)
-      const errorMessage = extractErrorMessage(error, 'Failed to generate peer review guide')
+      const errorMessage = resolveApiMessage(
+        t,
+        error?.detail || error?.message || 'Failed to generate peer review guide',
+      )
       toast.error(errorMessage)
       
       if (error?.status === 403 || error?.response?.status === 403 || errorMessage.includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('grammarWritingMentor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsAnalyzing(false)
@@ -352,15 +321,18 @@ const GrammarWritingMentor = () => {
       setGrammarLesson(response.result as GrammarLesson)
       setHasGeneratedLesson(true)
       pinFromResponse(response.conversation_id)
-      toast.success('Grammar lesson generated')
+      toast.success(t('grammarWritingMentor.grammarLessonGenerated'))
     } catch (error: any) {
       if (captureApiError(error)) return
       console.error('Error generating grammar lesson:', error)
-      const errorMessage = extractErrorMessage(error, 'Failed to generate grammar lesson')
+      const errorMessage = resolveApiMessage(
+        t,
+        error?.detail || error?.message || 'Failed to generate grammar lesson',
+      )
       toast.error(errorMessage)
       
       if (error?.status === 403 || error?.response?.status === 403 || errorMessage.includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('grammarWritingMentor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsAnalyzing(false)
@@ -368,12 +340,12 @@ const GrammarWritingMentor = () => {
   }
 
   const tabs = [
-    { id: 'grammar', label: 'Grammar Checker', icon: SpellCheck },
-    { id: 'feedback', label: 'Writing Feedback', icon: FileCheck },
-    { id: 'peer', label: 'Peer Review Guide', icon: Users },
-    { id: 'lessons', label: 'Grammar Lessons', icon: BookOpen },
-    { id: 'prompts', label: 'Writing Prompts', icon: Lightbulb },
-    { id: 'rubric', label: 'Rubric Builder', icon: ClipboardList },
+    { id: 'grammar', label: t('grammarWritingMentor.tabs.grammar'), icon: SpellCheck },
+    { id: 'feedback', label: t('grammarWritingMentor.tabs.feedback'), icon: FileCheck },
+    { id: 'peer', label: t('grammarWritingMentor.tabs.peer'), icon: Users },
+    { id: 'lessons', label: t('grammarWritingMentor.tabs.lessons'), icon: BookOpen },
+    { id: 'prompts', label: t('grammarWritingMentor.tabs.prompts'), icon: Lightbulb },
+    { id: 'rubric', label: t('grammarWritingMentor.tabs.rubric'), icon: ClipboardList },
   ]
 
   return (
@@ -396,36 +368,32 @@ const GrammarWritingMentor = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-3xl font-bold">Grammar & Writing Mentor</h1>
+                  <h1 className="text-3xl font-bold">{t('grammarWritingMentor.grammarWritingMentor')}</h1>
                   <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
                     <Star className="h-3 w-3" /> 4.8★
                   </span>
                   <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" /> Premium
-                  </span>
+                    <Lock className="inline h-3 w-3 mr-1" />{t('grammarWritingMentor.premium')}</span>
                 </div>
-                <p className="mt-2 text-emerald-100">
-                  Comprehensive grammar instruction, writing workshop facilitation, peer review guidance, 
-                  and rubric generation for effective writing instruction.
-                </p>
+                <p className="mt-2 text-emerald-100">{t('grammarWritingMentor.comprehensiveGrammarInstructionWritingWorkshopFacilitat')}</p>
               </div>
             </div>
             <div className="flex flex-wrap gap-3 mt-6">
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <SpellCheck className="h-4 w-4" />
-                <span>Grammar Checking</span>
+                <span>{t('grammarWritingMentor.grammarChecking')}</span>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <FileCheck className="h-4 w-4" />
-                <span>Writing Feedback</span>
+                <span>{t('grammarWritingMentor.writingFeedback')}</span>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <Users className="h-4 w-4" />
-                <span>Peer Review Tools</span>
+                <span>{t('grammarWritingMentor.peerReviewTools')}</span>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <BookOpen className="h-4 w-4" />
-                <span>Grammar Lessons</span>
+                <span>{t('grammarWritingMentor.grammarLessons')}</span>
               </div>
             </div>
           </div>
@@ -437,7 +405,7 @@ const GrammarWritingMentor = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Texts Reviewed</p>
+              <p className="text-sm font-medium text-gray-600">{t('grammarWritingMentor.textsReviewed')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">1,456</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
@@ -448,7 +416,7 @@ const GrammarWritingMentor = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Grammar Errors Fixed</p>
+              <p className="text-sm font-medium text-gray-600">{t('grammarWritingMentor.grammarErrorsFixed')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">8,234</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-100 text-teal-600">
@@ -459,7 +427,7 @@ const GrammarWritingMentor = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Students Supported</p>
+              <p className="text-sm font-medium text-gray-600">{t('grammarWritingMentor.studentsSupported')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">2,345</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600">
@@ -470,7 +438,7 @@ const GrammarWritingMentor = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Avg. Writing Score</p>
+              <p className="text-sm font-medium text-gray-600">{t('grammarWritingMentor.avgWritingScore')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">4.2/5</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
@@ -511,9 +479,7 @@ const GrammarWritingMentor = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Grade Level
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('grammarWritingMentor.gradeLevel')}</label>
                     <select
                       value={gradeLevel}
                       onChange={(e) => setGradeLevel(e.target.value)}
@@ -521,19 +487,17 @@ const GrammarWritingMentor = () => {
                     >
                       {[3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
                         <option key={grade} value={grade}>
-                          Grade {grade}
+                          {t('common.gradeOption', { grade })}
                         </option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Paste Student Writing
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('grammarWritingMentor.pasteStudentWriting')}</label>
                     <textarea
                       value={textInput}
                       onChange={(e) => setTextInput(e.target.value)}
-                      placeholder="Paste student writing here for grammar checking and suggestions..."
+                      placeholder={t('grammarWritingMentor.pasteStudentWritingHereForGrammarCheckingAndSuggestions')}
                       rows={14}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
                     />
@@ -548,14 +512,10 @@ const GrammarWritingMentor = () => {
                       >
                         {isAnalyzing ? (
                           <>
-                            <RefreshCw className="h-4 w-4 animate-spin" />
-                            Checking...
-                          </>
+                            <RefreshCw className="h-4 w-4 animate-spin" />{t('grammarWritingMentor.checking')}</>
                         ) : (
                           <>
-                            <SpellCheck className="h-4 w-4" />
-                            Check Grammar
-                          </>
+                            <SpellCheck className="h-4 w-4" />{t('grammarWritingMentor.checkGrammar')}</>
                         )}
                       </button>
                     </div>
@@ -568,12 +528,10 @@ const GrammarWritingMentor = () => {
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-6">
                         <div className="flex items-center justify-between mb-4">
                           <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                            <SpellCheck className="h-5 w-5 text-emerald-600" />
-                            Grammar Score
-                          </h3>
+                            <SpellCheck className="h-5 w-5 text-emerald-600" />{t('grammarWritingMentor.grammarScore')}</h3>
                           <div className="text-right">
                             <p className="text-3xl font-bold text-emerald-600">{grammarCheck.score}%</p>
-                            <p className="text-xs text-gray-600">Overall Quality</p>
+                            <p className="text-xs text-gray-600">{t('grammarWritingMentor.overallQuality')}</p>
                           </div>
                         </div>
                         <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
@@ -637,9 +595,7 @@ const GrammarWritingMentor = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Lightbulb className="h-5 w-5 text-blue-600" />
-                          General Suggestions
-                        </h3>
+                          <Lightbulb className="h-5 w-5 text-blue-600" />{t('grammarWritingMentor.generalSuggestions')}</h3>
                         <ul className="space-y-2">
                           {grammarCheck.suggestions.map((suggestion, idx) => (
                             <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -651,16 +607,12 @@ const GrammarWritingMentor = () => {
                       </div>
 
                       <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                        <Download className="h-4 w-4" />
-                        Download Grammar Report
-                      </button>
+                        <Download className="h-4 w-4" />{t('grammarWritingMentor.downloadGrammarReport')}</button>
                     </div>
                   ) : (
                     <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
                       <SpellCheck className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm font-medium text-gray-600">
-                        Paste student writing and click "Check Grammar" to identify errors and get suggestions
-                      </p>
+                      <p className="text-sm font-medium text-gray-600">{t('grammarWritingMentor.pasteStudentWritingAndClickCheckGrammarToIdentifyErrors')}</p>
                     </div>
                   )}
                 </div>
@@ -674,9 +626,7 @@ const GrammarWritingMentor = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Grade Level
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('grammarWritingMentor.gradeLevel')}</label>
                     <select
                       value={gradeLevel}
                       onChange={(e) => setGradeLevel(e.target.value)}
@@ -684,35 +634,31 @@ const GrammarWritingMentor = () => {
                     >
                       {[3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
                         <option key={grade} value={grade}>
-                          Grade {grade}
+                          {t('common.gradeOption', { grade })}
                         </option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Writing Type
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('grammarWritingMentor.writingType')}</label>
                     <select
                       value={writingType}
                       onChange={(e) => setWritingType(e.target.value)}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
                     >
-                      <option value="narrative">Narrative</option>
-                      <option value="persuasive">Persuasive</option>
-                      <option value="expository">Expository</option>
-                      <option value="descriptive">Descriptive</option>
-                      <option value="creative">Creative</option>
+                      <option value="narrative">{t('grammarWritingMentor.narrative')}</option>
+                      <option value="persuasive">{t('grammarWritingMentor.persuasive')}</option>
+                      <option value="expository">{t('grammarWritingMentor.expository')}</option>
+                      <option value="descriptive">{t('grammarWritingMentor.descriptive')}</option>
+                      <option value="creative">{t('grammarWritingMentor.creative')}</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Student Writing Sample
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('grammarWritingMentor.studentWritingSample')}</label>
                     <textarea
                       value={textInput}
                       onChange={(e) => setTextInput(e.target.value)}
-                      placeholder="Paste student writing for comprehensive feedback..."
+                      placeholder={t('grammarWritingMentor.pasteStudentWritingForComprehensiveFeedback')}
                       rows={12}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
                     />
@@ -723,14 +669,10 @@ const GrammarWritingMentor = () => {
                     >
                       {isAnalyzing ? (
                         <>
-                          <RefreshCw className="h-4 w-4 animate-spin" />
-                          Analyzing...
-                        </>
+                          <RefreshCw className="h-4 w-4 animate-spin" />{t('grammarWritingMentor.analyzing')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-4 w-4" />
-                          Generate Feedback
-                        </>
+                          <Sparkles className="h-4 w-4" />{t('grammarWritingMentor.generateFeedback')}</>
                       )}
                     </button>
                   </div>
@@ -741,9 +683,7 @@ const GrammarWritingMentor = () => {
                     <div className="space-y-4">
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <CheckCircle2 className="h-5 w-5 text-green-600" />
-                          Strengths
-                        </h3>
+                          <CheckCircle2 className="h-5 w-5 text-green-600" />{t('grammarWritingMentor.strengths')}</h3>
                         <ul className="space-y-2">
                           {writingFeedback.strengths.map((strength, idx) => (
                             <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -756,9 +696,7 @@ const GrammarWritingMentor = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-amber-50 to-orange-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <AlertCircle className="h-5 w-5 text-amber-600" />
-                          Areas for Improvement
-                        </h3>
+                          <AlertCircle className="h-5 w-5 text-amber-600" />{t('grammarWritingMentor.areasForImprovement')}</h3>
                         <ul className="space-y-2">
                           {writingFeedback.areasForImprovement.map((area, idx) => (
                             <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -771,9 +709,7 @@ const GrammarWritingMentor = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Lightbulb className="h-5 w-5 text-blue-600" />
-                          Suggestions
-                        </h3>
+                          <Lightbulb className="h-5 w-5 text-blue-600" />{t('grammarWritingMentor.suggestions')}</h3>
                         <ul className="space-y-2">
                           {writingFeedback.suggestions.map((suggestion, idx) => (
                             <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -786,9 +722,7 @@ const GrammarWritingMentor = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-white p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Award className="h-5 w-5 text-purple-600" />
-                          Rubric Score
-                        </h3>
+                          <Award className="h-5 w-5 text-purple-600" />{t('grammarWritingMentor.rubricScore')}</h3>
                         <div className="grid grid-cols-1 gap-4">
                           {Object.entries(writingFeedback.rubricScore).map(([category, score]) => (
                             <div key={category} className="space-y-2">
@@ -807,7 +741,7 @@ const GrammarWritingMentor = () => {
                         </div>
                         <div className="mt-4 pt-4 border-t border-gray-200">
                           <div className="flex items-center justify-between">
-                            <span className="text-base font-semibold text-gray-900">Overall Score</span>
+                            <span className="text-base font-semibold text-gray-900">{t('grammarWritingMentor.overallScore')}</span>
                             <span className="text-2xl font-bold text-gray-900">
                               {(
                                 Object.values(writingFeedback.rubricScore).reduce((a, b) => a + b, 0) /
@@ -821,9 +755,7 @@ const GrammarWritingMentor = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Palette className="h-5 w-5 text-purple-600" />
-                          Style Analysis
-                        </h3>
+                          <Palette className="h-5 w-5 text-purple-600" />{t('grammarWritingMentor.styleAnalysis')}</h3>
                         <div className="space-y-3">
                           {Object.entries(writingFeedback.styleAnalysis).map(([aspect, analysis]) => (
                             <div key={aspect} className="bg-white rounded-lg p-3 border border-purple-200">
@@ -837,16 +769,12 @@ const GrammarWritingMentor = () => {
                       </div>
 
                       <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                        <Download className="h-4 w-4" />
-                        Download Feedback Report
-                      </button>
+                        <Download className="h-4 w-4" />{t('grammarWritingMentor.downloadFeedbackReport')}</button>
                     </div>
                   ) : (
                     <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
                       <FileCheck className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm font-medium text-gray-600">
-                        Paste student writing and get comprehensive feedback with rubric scoring
-                      </p>
+                      <p className="text-sm font-medium text-gray-600">{t('grammarWritingMentor.pasteStudentWritingAndGetComprehensiveFeedbackWithRubri')}</p>
                     </div>
                   )}
                 </div>
@@ -861,12 +789,8 @@ const GrammarWritingMentor = () => {
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                      <Users className="h-6 w-6 text-indigo-600" />
-                      Peer Review Guide Generator
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      Create comprehensive peer review guides with criteria, protocols, and sentence starters.
-                    </p>
+                      <Users className="h-6 w-6 text-indigo-600" />{t('grammarWritingMentor.peerReviewGuideGenerator')}</h3>
+                    <p className="text-sm text-gray-600">{t('grammarWritingMentor.createComprehensivePeerReviewGuidesWithCriteriaProtocol')}</p>
                   </div>
                   <button
                     onClick={handlePeerReviewGuide}
@@ -875,9 +799,7 @@ const GrammarWritingMentor = () => {
                   >
                     {isAnalyzing ? (
                       <>
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                        Generating...
-                      </>
+                        <RefreshCw className="h-4 w-4 animate-spin" />{t('grammarWritingMentor.generating')}</>
                     ) : (
                       <>
                         <Sparkles className="h-4 w-4" />
@@ -893,7 +815,7 @@ const GrammarWritingMentor = () => {
                       <div key={idx} className="bg-white rounded-xl p-6 border border-indigo-200">
                         <h4 className="text-lg font-bold text-gray-900 mb-4">{criterion.category}</h4>
                         <div className="mb-4">
-                          <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Questions to Consider:</p>
+                          <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('grammarWritingMentor.questionsToConsider')}</p>
                           <ul className="space-y-1">
                             {criterion.questions.map((q, qIdx) => (
                               <li key={qIdx} className="text-sm text-gray-700 flex items-start gap-2">
@@ -904,7 +826,7 @@ const GrammarWritingMentor = () => {
                           </ul>
                         </div>
                         <div>
-                          <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Checklist:</p>
+                          <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('grammarWritingMentor.checklist')}</p>
                           <ul className="space-y-1">
                             {criterion.checklist.map((item, itemIdx) => (
                               <li key={itemIdx} className="text-sm text-gray-700 flex items-start gap-2">
@@ -918,7 +840,7 @@ const GrammarWritingMentor = () => {
                     ))}
 
                     <div className="bg-white rounded-xl p-6 border border-indigo-200">
-                      <h4 className="text-lg font-bold text-gray-900 mb-4">Peer Review Protocols</h4>
+                      <h4 className="text-lg font-bold text-gray-900 mb-4">{t('grammarWritingMentor.peerReviewProtocols')}</h4>
                       <ul className="space-y-2">
                         {peerReviewGuide.protocols.map((protocol, idx) => (
                           <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
@@ -932,10 +854,10 @@ const GrammarWritingMentor = () => {
                     </div>
 
                     <div className="bg-white rounded-xl p-6 border border-indigo-200">
-                      <h4 className="text-lg font-bold text-gray-900 mb-4">Sentence Starters</h4>
+                      <h4 className="text-lg font-bold text-gray-900 mb-4">{t('grammarWritingMentor.sentenceStarters')}</h4>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                          <p className="text-xs font-semibold text-green-700 uppercase tracking-wide mb-2">Praise:</p>
+                          <p className="text-xs font-semibold text-green-700 uppercase tracking-wide mb-2">{t('grammarWritingMentor.praise')}</p>
                           <ul className="space-y-1">
                             {peerReviewGuide.sentenceStarters.praise.map((starter, idx) => (
                               <li key={idx} className="text-sm text-gray-700 bg-green-50 rounded-lg p-2 border border-green-200">
@@ -945,7 +867,7 @@ const GrammarWritingMentor = () => {
                           </ul>
                         </div>
                         <div>
-                          <p className="text-xs font-semibold text-amber-700 uppercase tracking-wide mb-2">Suggestion:</p>
+                          <p className="text-xs font-semibold text-amber-700 uppercase tracking-wide mb-2">{t('grammarWritingMentor.suggestion')}</p>
                           <ul className="space-y-1">
                             {peerReviewGuide.sentenceStarters.suggestion.map((starter, idx) => (
                               <li key={idx} className="text-sm text-gray-700 bg-amber-50 rounded-lg p-2 border border-amber-200">
@@ -955,7 +877,7 @@ const GrammarWritingMentor = () => {
                           </ul>
                         </div>
                         <div>
-                          <p className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-2">Question:</p>
+                          <p className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-2">{t('grammarWritingMentor.question')}</p>
                           <ul className="space-y-1">
                             {peerReviewGuide.sentenceStarters.question.map((starter, idx) => (
                               <li key={idx} className="text-sm text-gray-700 bg-blue-50 rounded-lg p-2 border border-blue-200">
@@ -968,9 +890,7 @@ const GrammarWritingMentor = () => {
                     </div>
 
                     <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                      <Download className="h-4 w-4" />
-                      Download Peer Review Guide
-                    </button>
+                      <Download className="h-4 w-4" />{t('grammarWritingMentor.downloadPeerReviewGuide')}</button>
                   </div>
                 )}
               </div>
@@ -984,12 +904,8 @@ const GrammarWritingMentor = () => {
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                      <BookOpen className="h-6 w-6 text-blue-600" />
-                      Interactive Grammar Lessons
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      Access comprehensive grammar lessons with explanations, examples, and practice exercises.
-                    </p>
+                      <BookOpen className="h-6 w-6 text-blue-600" />{t('grammarWritingMentor.interactiveGrammarLessons')}</h3>
+                    <p className="text-sm text-gray-600">{t('grammarWritingMentor.accessComprehensiveGrammarLessonsWithExplanationsExampl')}</p>
                   </div>
                   <button
                     onClick={handleGrammarLesson}
@@ -998,9 +914,7 @@ const GrammarWritingMentor = () => {
                   >
                     {isAnalyzing ? (
                       <>
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                        Generating...
-                      </>
+                        <RefreshCw className="h-4 w-4 animate-spin" />{t('grammarWritingMentor.generating')}</>
                     ) : (
                       <>
                         <Sparkles className="h-4 w-4" />
@@ -1019,7 +933,7 @@ const GrammarWritingMentor = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="rounded-lg bg-green-50 p-4 border border-green-200">
-                        <p className="text-sm font-semibold text-green-700 mb-2">✓ Correct Examples:</p>
+                        <p className="text-sm font-semibold text-green-700 mb-2">{t('grammarWritingMentor.correctExamples')}</p>
                         <ul className="space-y-1">
                           {grammarLesson.examples.correct.map((ex, idx) => (
                             <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
@@ -1030,7 +944,7 @@ const GrammarWritingMentor = () => {
                         </ul>
                       </div>
                       <div className="rounded-lg bg-red-50 p-4 border border-red-200">
-                        <p className="text-sm font-semibold text-red-700 mb-2">✗ Incorrect Examples:</p>
+                        <p className="text-sm font-semibold text-red-700 mb-2">{t('grammarWritingMentor.incorrectExamples')}</p>
                         <ul className="space-y-1">
                           {grammarLesson.examples.incorrect.map((ex, idx) => (
                             <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
@@ -1043,7 +957,7 @@ const GrammarWritingMentor = () => {
                     </div>
 
                     <div>
-                      <h5 className="text-lg font-semibold text-gray-900 mb-4">Practice Exercises</h5>
+                      <h5 className="text-lg font-semibold text-gray-900 mb-4">{t('grammarWritingMentor.practiceExercises')}</h5>
                       <div className="space-y-4">
                         {grammarLesson.practice.map((exercise, idx) => (
                           <div key={idx} className="rounded-lg border border-gray-200 bg-gray-50 p-4">
@@ -1059,7 +973,7 @@ const GrammarWritingMentor = () => {
                               ))}
                             </div>
                             <div className="mt-3 p-3 rounded-lg bg-blue-50 border border-blue-200">
-                              <p className="text-xs font-semibold text-blue-700 mb-1">Explanation:</p>
+                              <p className="text-xs font-semibold text-blue-700 mb-1">{t('grammarWritingMentor.explanation')}</p>
                               <p className="text-sm text-blue-800">{exercise.explanation}</p>
                             </div>
                           </div>
@@ -1077,12 +991,10 @@ const GrammarWritingMentor = () => {
             <div className="space-y-6">
               <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Lightbulb className="h-6 w-6 text-purple-600" />
-                  Writing Prompt Generator
-                </h3>
+                  <Lightbulb className="h-6 w-6 text-purple-600" />{t('grammarWritingMentor.writingPromptGenerator')}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('grammarWritingMentor.gradeLevel')}</label>
                     <select
                       value={gradeLevel}
                       onChange={(e) => setGradeLevel(e.target.value)}
@@ -1090,62 +1002,47 @@ const GrammarWritingMentor = () => {
                     >
                       {[3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
                         <option key={grade} value={grade}>
-                          Grade {grade}
+                          {t('common.gradeOption', { grade })}
                         </option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Prompt Type</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('grammarWritingMentor.promptType')}</label>
                     <select className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100">
-                      <option>Narrative</option>
-                      <option>Persuasive</option>
-                      <option>Expository</option>
-                      <option>Descriptive</option>
-                      <option>Creative</option>
+                      <option>{t('grammarWritingMentor.narrative')}</option>
+                      <option>{t('grammarWritingMentor.persuasive')}</option>
+                      <option>{t('grammarWritingMentor.expository')}</option>
+                      <option>{t('grammarWritingMentor.descriptive')}</option>
+                      <option>{t('grammarWritingMentor.creative')}</option>
                     </select>
                   </div>
                 </div>
                 <button className="w-full rounded-lg bg-purple-600 px-6 py-3 text-sm font-semibold text-white hover:bg-purple-700 flex items-center justify-center gap-2">
-                  <Sparkles className="h-4 w-4" />
-                  Generate Writing Prompts
-                </button>
+                  <Sparkles className="h-4 w-4" />{t('grammarWritingMentor.generateWritingPrompts')}</button>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[
-                  {
-                    title: 'A Day in the Life',
-                    prompt: 'Write a narrative about a day in the life of an object (like a pencil, a book, or a shoe). What adventures does it have?',
-                    type: 'Narrative',
-                    grade: '3-5',
-                  },
-                  {
-                    title: 'School Uniform Debate',
-                    prompt: 'Write a persuasive essay arguing for or against school uniforms. Use evidence and examples to support your position.',
-                    type: 'Persuasive',
-                    grade: '6-8',
-                  },
-                  {
-                    title: 'My Favorite Place',
-                    prompt: 'Describe your favorite place using all five senses. What do you see, hear, smell, taste, and feel there?',
-                    type: 'Descriptive',
-                    grade: '3-5',
-                  },
-                ].map((prompt, idx) => (
+                {(
+                  [
+                    { id: 'dayInLife', typeKey: 'grammarWritingMentor.narrative' },
+                    { id: 'schoolUniform', typeKey: 'grammarWritingMentor.persuasive' },
+                    { id: 'favoritePlace', typeKey: 'grammarWritingMentor.descriptive' },
+                  ] as const
+                ).map((sample, idx) => (
                   <div key={idx} className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-xs font-semibold text-purple-600 uppercase tracking-wide">
-                        {prompt.type}
+                        {t(sample.typeKey)}
                       </span>
-                      <span className="text-xs text-gray-500">Grade {prompt.grade}</span>
+                      <span className="text-xs text-gray-500">
+                        {t('common.gradeOption', { grade: t(`grammarWritingMentor.samples.${sample.id}.grade`) })}
+                      </span>
                     </div>
-                    <h4 className="text-lg font-semibold text-gray-900 mb-2">{prompt.title}</h4>
-                    <p className="text-sm text-gray-600 mb-4">{prompt.prompt}</p>
+                    <h4 className="text-lg font-semibold text-gray-900 mb-2">{t(`grammarWritingMentor.samples.${sample.id}.title`)}</h4>
+                    <p className="text-sm text-gray-600 mb-4">{t(`grammarWritingMentor.samples.${sample.id}.prompt`)}</p>
                     <div className="flex gap-2">
-                      <button className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">
-                        Use Prompt
-                      </button>
+                      <button className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">{t('grammarWritingMentor.usePrompt')}</button>
                       <button className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">
                         <Download className="h-4 w-4" />
                       </button>
@@ -1161,15 +1058,11 @@ const GrammarWritingMentor = () => {
             <div className="space-y-6">
               <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-teal-50 to-emerald-50 p-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <ClipboardList className="h-6 w-6 text-teal-600" />
-                  Rubric Builder
-                </h3>
-                <p className="text-sm text-gray-600 mb-6">
-                  Create comprehensive writing rubrics tailored to your grade level and writing type.
-                </p>
+                  <ClipboardList className="h-6 w-6 text-teal-600" />{t('grammarWritingMentor.rubricBuilder')}</h3>
+                <p className="text-sm text-gray-600 mb-6">{t('grammarWritingMentor.createComprehensiveWritingRubricsTailoredToYourGradeLev')}</p>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('grammarWritingMentor.gradeLevel')}</label>
                     <select
                       value={gradeLevel}
                       onChange={(e) => setGradeLevel(e.target.value)}
@@ -1177,29 +1070,27 @@ const GrammarWritingMentor = () => {
                     >
                       {[3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
                         <option key={grade} value={grade}>
-                          Grade {grade}
+                          {t('common.gradeOption', { grade })}
                         </option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Writing Type</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('grammarWritingMentor.writingType')}</label>
                     <select
                       value={writingType}
                       onChange={(e) => setWritingType(e.target.value)}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
                     >
-                      <option value="narrative">Narrative</option>
-                      <option value="persuasive">Persuasive</option>
-                      <option value="expository">Expository</option>
-                      <option value="descriptive">Descriptive</option>
-                      <option value="creative">Creative</option>
+                      <option value="narrative">{t('grammarWritingMentor.narrative')}</option>
+                      <option value="persuasive">{t('grammarWritingMentor.persuasive')}</option>
+                      <option value="expository">{t('grammarWritingMentor.expository')}</option>
+                      <option value="descriptive">{t('grammarWritingMentor.descriptive')}</option>
+                      <option value="creative">{t('grammarWritingMentor.creative')}</option>
                     </select>
                   </div>
                   <button className="w-full rounded-lg bg-teal-600 px-6 py-3 text-sm font-semibold text-white hover:bg-teal-700 flex items-center justify-center gap-2">
-                    <Sparkles className="h-4 w-4" />
-                    Generate Rubric
-                  </button>
+                    <Sparkles className="h-4 w-4" />{t('grammarWritingMentor.generateRubric')}</button>
                 </div>
               </div>
             </div>
@@ -1209,61 +1100,49 @@ const GrammarWritingMentor = () => {
 
       {/* Additional Features Section */}
       <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-6">Additional Premium Features</h2>
+        <h2 className="text-2xl font-semibold text-gray-900 mb-6">{t('grammarWritingMentor.additionalPremiumFeatures')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 mb-4">
               <TrendingUp className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Progress Tracking</h3>
-            <p className="text-sm text-gray-600">
-              Monitor student writing progress over time with detailed analytics and improvement reports.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('grammarWritingMentor.progressTracking')}</h3>
+            <p className="text-sm text-gray-600">{t('grammarWritingMentor.monitorStudentWritingProgressOverTimeWithDetailedAnalyt')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-teal-50 to-cyan-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-100 text-teal-600 mb-4">
               <GraduationCap className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Standards Alignment</h3>
-            <p className="text-sm text-gray-600">
-              All tools align with Common Core ELA writing standards and state-specific curriculum requirements.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('grammarWritingMentor.standardsAlignment')}</h3>
+            <p className="text-sm text-gray-600">{t('grammarWritingMentor.allToolsAlignWithCommonCoreElaWritingStandardsAnd')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-cyan-50 to-blue-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600 mb-4">
               <MessageSquare className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">AI-Powered Chat</h3>
-            <p className="text-sm text-gray-600">
-              Get instant answers to grammar and writing questions with personalized teaching recommendations.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('grammarWritingMentor.aiPoweredChat')}</h3>
+            <p className="text-sm text-gray-600">{t('grammarWritingMentor.getInstantAnswersToGrammarAndWritingQuestionsWithPerson')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 mb-4">
               <Download className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Export & Share</h3>
-            <p className="text-sm text-gray-600">
-              Export feedback reports, rubrics, and lesson plans in multiple formats for easy sharing.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('grammarWritingMentor.exportShare')}</h3>
+            <p className="text-sm text-gray-600">{t('grammarWritingMentor.exportFeedbackReportsRubricsAndLessonPlansInMultipleFor')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 mb-4">
               <Users className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Differentiation Tools</h3>
-            <p className="text-sm text-gray-600">
-              Automatically generate differentiated writing activities for students at various skill levels.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('grammarWritingMentor.differentiationTools')}</h3>
+            <p className="text-sm text-gray-600">{t('grammarWritingMentor.automaticallyGenerateDifferentiatedWritingActivitiesFor')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600 mb-4">
               <Clock className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Time-Saving Templates</h3>
-            <p className="text-sm text-gray-600">
-              Access ready-to-use rubrics, peer review guides, and grammar lesson templates.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('grammarWritingMentor.timeSavingTemplates')}</h3>
+            <p className="text-sm text-gray-600">{t('grammarWritingMentor.accessReadyToUseRubricsPeerReviewGuidesAndGrammar')}</p>
           </div>
         </div>
       </div>

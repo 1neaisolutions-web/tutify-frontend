@@ -1,19 +1,14 @@
 import { useState, useRef, useEffect, useId } from 'react'
 import { Coins, ExternalLink } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import ActivateCreditsModal from './ActivateCreditsModal'
 
 interface NoCreditsCardProps {
   reason?: string
   balance?: number
   required?: number
-  /** Compact inline variant for chat message area */
   compact?: boolean
-  /** Called after credits are successfully activated */
   onActivated?: () => void
-  /**
-   * Scroll the card into view when it appears (default true).
-   * Disable for rare cases where parent layout handles scroll.
-   */
   autoScroll?: boolean
 }
 
@@ -25,6 +20,7 @@ export default function NoCreditsCard({
   onActivated,
   autoScroll = true,
 }: NoCreditsCardProps) {
+  const { t } = useTranslation()
   const [modalOpen, setModalOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
   const scrollAnchorId = `no-credits-card-${useId().replace(/:/g, '')}`
@@ -33,19 +29,17 @@ export default function NoCreditsCard({
     if (!autoScroll) return
     const el = rootRef.current
     if (!el) return
-    const t = window.setTimeout(() => {
+    const timer = window.setTimeout(() => {
       requestAnimationFrame(() => {
         el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })
       })
     }, 50)
-    return () => window.clearTimeout(t)
+    return () => window.clearTimeout(timer)
   }, [autoScroll, reason, balance, required, compact])
 
   const isExpired = reason === 'credits_expired'
-  const title = isExpired ? 'Credits expired' : 'No credits remaining'
-  const body = isExpired
-    ? 'Your credit balance has expired. Activate an access code to continue using AI features.'
-    : 'You need credits to use this feature. Activate an access code to get started.'
+  const title = isExpired ? t('credits.noCredits.title.expired') : t('credits.noCredits.title.remaining')
+  const body = isExpired ? t('credits.noCredits.body.expired') : t('credits.noCredits.body.remaining')
 
   const handleClose = () => {
     setModalOpen(false)
@@ -69,10 +63,10 @@ export default function NoCreditsCard({
             {(balance !== undefined || required !== undefined) && (
               <div className="mt-1.5 flex items-center gap-3 text-xs text-amber-700">
                 {balance !== undefined && (
-                  <span>Balance: <strong className="text-amber-900">{balance}</strong></span>
+                  <span>{t('credits.noCredits.balance')} <strong className="text-amber-900">{balance}</strong></span>
                 )}
                 {required !== undefined && (
-                  <span>Required: <strong className="text-amber-900">{required}</strong></span>
+                  <span>{t('credits.noCredits.required')} <strong className="text-amber-900">{required}</strong></span>
                 )}
               </div>
             )}
@@ -81,13 +75,13 @@ export default function NoCreditsCard({
                 onClick={() => setModalOpen(true)}
                 className="rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-amber-500 active:scale-95"
               >
-                Activate credits
+                {t('credits.noCredits.actions.activate')}
               </button>
               <a
                 href="/settings?tab=plan"
                 className="text-xs font-medium text-amber-700 hover:text-amber-900 underline underline-offset-2 transition"
               >
-                View plan
+                {t('credits.noCredits.actions.viewPlan')}
               </a>
             </div>
           </div>
@@ -117,7 +111,7 @@ export default function NoCreditsCard({
               {balance !== undefined && (
                 <div className="text-center">
                   <div className="text-xl font-bold text-amber-900">{balance}</div>
-                  <div className="text-xs text-amber-600 mt-0.5">your balance</div>
+                  <div className="text-xs text-amber-600 mt-0.5">{t('credits.noCredits.stats.balance')}</div>
                 </div>
               )}
               {balance !== undefined && required !== undefined && (
@@ -126,7 +120,7 @@ export default function NoCreditsCard({
               {required !== undefined && (
                 <div className="text-center">
                   <div className="text-xl font-bold text-amber-900">{required}</div>
-                  <div className="text-xs text-amber-600 mt-0.5">required</div>
+                  <div className="text-xs text-amber-600 mt-0.5">{t('credits.noCredits.stats.required')}</div>
                 </div>
               )}
             </div>
@@ -136,13 +130,13 @@ export default function NoCreditsCard({
               onClick={() => setModalOpen(true)}
               className="rounded-xl bg-amber-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-500 active:scale-95"
             >
-              Activate credits
+              {t('credits.noCredits.actions.activate')}
             </button>
             <a
               href="/settings?tab=plan"
               className="flex items-center gap-1.5 text-sm font-medium text-amber-700 hover:text-amber-900 transition"
             >
-              View plan
+              {t('credits.noCredits.actions.viewPlan')}
               <ExternalLink className="h-3.5 w-3.5" />
             </a>
           </div>

@@ -1,0 +1,318 @@
+{
+  "common": {
+    "loading": "جار التحميل",
+    "cancel": "إلغاء",
+    "search": "بحث",
+    "addNew": "إضافة جديد",
+    "save": "[ترجمة المصطلح: Save]",
+    "upload": "تحميل",
+    "delete": "حذف",
+    "export": "تصدير",
+    "all": "جميع الجهات",
+    "back": "[ترجمة المصطلح: Back]",
+    "comingSoon": "سيأتي قريباً",
+    "comingSoonHint": "الميزة غير متوفرة.",
+    "noDataFound": "لم يتم العثور على أية بيانات",
+    "noDataFoundHint": "حاول تعديل عوامل التصفية أو مصطلحات البحث.",
+    "retry": "أعد المحاولة",
+    "showLess": "عرض أقل",
+    "showMore": "عرض المزيد"
+  },
+  "app": {
+    "name": "مساعد تدريس",
+    "studentName": "<g id=\"2195\">مساعد</g> <g id=\"2201\">الطالب</g>"
+  },
+  "languageDropdown": {
+    "loading": "جارٍ تحميل اللغات ...",
+    "placeholder": "اختر اللغة",
+    "searchPlaceholder": "لغات البحث",
+    "listLabel": "اللغات",
+    "noMatch": "لا توجد لغات مطابقة \"{{query}}\"",
+    "count": "{{count}} لغة",
+    "count_one": "{{count}} LANGUAGE",
+    "count_other": "{{count}} لغة",
+    "countAvailable": "مطبق",
+    "countMatch": "مطابقة \"{{query}}\""
+  },
+  "layout": {
+    "activateCredits": "تفعيل الأرصدة",
+    "credits": "الساعات المعتمدة",
+    "messages": "[ترجمة المصطلح: Messages]",
+    "notifications": "الإشعارات",
+    "newCount": "{{count}} جديد",
+    "noMessages": "لا توجد رسائل",
+    "noMessagesHint": "عندما تتلقى رسائل، ستظهر هنا.",
+    "noNotifications": "لا إشعارات",
+    "noNotificationsHint": "عندما يكون لديك تحديثات، ستظهر هنا.",
+    "viewAllMessages": "عرض جميع الرسائل",
+    "viewAllNotifications": "عرض كافة الإشعارات",
+    "signOut": "تسجيل الخروج",
+    "signingOut": "جاري تسجيل خروج...",
+    "allCaughtUp": ". أفهمت كل شئ ؟",
+    "noNewNotifications": "لا يوجد إشعارات جديد",
+    "noNotificationsYet": "لا إخطارات حتى الآن",
+    "notificationsEmptyHint": "عندما يكون لديك تحديثات، ستظهر هنا."
+  },
+  "settings": {
+    "tabs": {
+      "general": "عام",
+      "notifications": "الإشعارات",
+      "plan": "الخطة والاعتمادات",
+      "integrations": "التكامل",
+      "developer": "[ترجمة المصطلح: Developer]",
+      "export": "تصدير"
+    },
+    "general": {
+      "title": "التفضيلات العامة",
+      "language": {
+        "label": "اللغة",
+        "change": "التغيير",
+        "uiFallback": "تظهر الواجهة باللغة الإنجليزية. يتم حفظ تفضيلاتك (__ PH0 __) لملفك الشخصي وتواريخك."
+      },
+      "timezone": {
+        "label": "المنطقة الزمنية",
+        "adjust": "المُعدلة.",
+        "currentTime": "الوقت الحالي",
+        "noMatch": "لا توجد مناطق زمنية تتطابق مع بحثك"
+      },
+      "theme": {
+        "label": "قالب واجهة المستخدم",
+        "light": "الخفيفة",
+        "dark": "غامق",
+        "system": "النظام",
+        "followsDevice": "(يتبع الجهاز)"
+      },
+      "syncSaving": "جارٍي الحفظ…",
+      "syncSaved": "[ترجمة المصطلح: Saved]",
+      "syncError": "فشلت عملية الحفظ"
+    },
+    "notifications": {
+      "title": "الإشعارات",
+      "productUpdates": "تحديثات المنتج",
+      "lessonReminders": "تذكيرات الدرس",
+      "weeklyInsights": "الرؤى الأسبوعية",
+      "channels": {
+        "emailAndApp": "البريد الإلكتروني والتطبيق",
+        "emailOnly": "التواصل عبر البرید الإلکتروني فقط",
+        "appOnly": "التطبيق فقط"
+      },
+      "currentChannel": "القناة الحالية: {{channel}}",
+      "edit": "تحرير",
+      "manageDefaults": "إدارة الإعدادات الافتراضية للإشعارات"
+    },
+    "integrations": {
+      "title": "التكامل",
+      "addNew": "إضافة تكامل جديد.",
+      "status": {
+        "connected": "[ترجمة المصطلح: Connected]",
+        "available": "متاح",
+        "comingSoon": "سيأتي قريباً"
+      },
+      "googleClassroom": {
+        "name": "Google Classroom",
+        "description": "مزامنة الواجبات والقوائم تلقائيًا."
+      },
+      "microsoftTeams": {
+        "name": "ميكروسوفت تيمز",
+        "description": "تمكين اجتماعات الفرق ومزامنة المهام."
+      },
+      "canvasLms": {
+        "name": "Canvas LMS",
+        "description": "تكامل دفتر الدرجات المباشر لمستخدمي Canvas."
+      }
+    },
+    "developer": {
+      "title": "الوصول إلى واجهة برمجة التطبيقات والمطور",
+      "connectedApps": "التطبيقات المتصلة",
+      "connectedAppsDesc": "3 تطبيقات يمكنها الوصول إلى مساحة عمل التدريس الخاصة بك.",
+      "manageTokens": "إدارة رموز API"
+    },
+    "export": {
+      "title": "التصدير والنسخ الاحتياطي",
+      "downloadData": "تنزيل بيانات مساحة العمل",
+      "downloadDataDesc": "القوالب والتقييمات وسجل الدردشة",
+      "scheduleBackups": "جدولة النسخ الاحتياطية الأسبوعية"
+    },
+    "plan": {
+      "yourCredits": "أعتماداتك",
+      "memberSince": "عضو منذ {{date}}",
+      "activateCode": "+ تفعيل الرمز",
+      "creditsRemaining": "/ {{total}} رصيد",
+      "remainingPct": "{{pct}}% متبقي",
+      "expires": "تنتهي صلاحيته في {{date}}",
+      "autoRenewing": "التجديد التلقائي",
+      "noActiveCredits": "لا توجد أرصدة نشطة. قم بتنشيط رمز للبدء.",
+      "activateCreditsLink": "تفعيل الأرصدة →",
+      "usageBreakdown": "تفاصيل الاستخدام",
+      "last30Days": "آخر 30 يومًا",
+      "activity": "النشاط",
+      "activityFallback": "النشاط",
+      "left": "{{count}} يسار"
+    }
+  },
+  "nav": {
+    "dashboard": "لوحة القيادة",
+    "teacherTools": "????? ??????:",
+    "teacherToolsOverview": "نظرة عامة",
+    "teacherToolsAnalytics": "التحليلات",
+    "quiz": "المسابقة",
+    "assignment": "التنازل",
+    "worksheet": "ورقة العمل",
+    "exams": "الامتحانات",
+    "templates": "مكتبة القوالب",
+    "chatbots": "روبوتات الدردشة المتخصصة",
+    "youtubeQuiz": "مولد اختبارات YouTube",
+    "pixgen": "PixGen (AI Media Studio)",
+    "learningHub": "التعلم المهني",
+    "personalization": "التخصيص",
+    "administration": "الإدارة",
+    "reporting": "إعداد التقارير",
+    "assessment": "Assessment",
+    "contentManagement": "إدارة المحتوى",
+    "history": "تاريخ",
+    "analytics": "التحليلات",
+    "useCases": "استكشاف حالات الاستخدام",
+    "profile": "ملف تعريفي",
+    "settings": "الإعدادات",
+    "accessCodes": "رموز الدّخول ؟",
+    "contentPacks": "حزم المحتوى",
+    "documents": "الوثائق",
+    "learningHubContent": "محتوى مركز التعلم",
+    "organization": "المؤسسة",
+    "parent": "الوالدان",
+    "school": "المدرسة",
+    "uploadDocument": "تحميل مستند"
+  },
+  "workspace": {
+    "fallbackName": "Workspace (مساحة العمل)",
+    "scopeType": {
+      "institution": "المؤسسة",
+      "organization": "المؤسسة",
+      "personal": "شخصي"
+    },
+    "switcher": {
+      "title": "تبديل مساحة عمل",
+      "active": "نشط"
+    }
+  },
+  "login": {
+    "subtitle": "تسجيل الدخول إلى حسابك",
+    "emailLabel": "عنوان البريد الإلكتروني",
+    "emailPlaceholder": "البريد الالكتروني",
+    "passwordLabel": "[ترجمة المصطلح: Password]",
+    "rememberMe": "تذكرني",
+    "forgotPassword": "هل نسيت كلمة المرور؟",
+    "signIn": "سجل الدخول",
+    "signingIn": "جار تسجيل الدخول...",
+    "noAccount": "لا تملك حسابًا؟",
+    "signUpLink": "اشترك",
+    "error": "فشل تسجيل الدخول. يرجى التحقق من بيانات اعتمادك."
+  },
+  "teacherTools": {
+    "breadcrumbTeacherTools": "????? ??????:",
+    "breadcrumbTemplates": "القوالب",
+    "edit": "تحرير",
+    "duplicate": "مكرر",
+    "archive": "الارشيف",
+    "delete": "حذف",
+    "toolAssign": "تعيين",
+    "toolSheet": "الورقة",
+    "toolExam": "الفحص",
+    "range7d": "آخر 7 أيام",
+    "range30d": "آخر 30 يومًا",
+    "rangeAll": "كلّ الوقت",
+    "previewData": "معاينة البيانات",
+    "previewDataHint": "— ستظهر النتائج الحقيقية هنا بعد تقديم الطلاب.",
+    "statContentCreated": "تم إنشاء المحتوى في",
+    "overview": {
+      "kpiTotalActive": "إجمالي العناصر النشطة",
+      "kpiScheduledWeek": "تم تحديد موعده هذا الأسبوع",
+      "kpiPendingDrafts": "المسودات المعلقة",
+      "kpiPublished": "اعلانات منشورة",
+      "kpiAvgQuizScore": "متوسط درجة الاختبار",
+      "kpiQuizzesTaken": "الاختبارات المنجزة"
+    }
+  },
+  "quiz": {
+    "breadcrumb": "المسابقة"
+  },
+  "assignment": {
+    "breadcrumb": "التنازل"
+  },
+  "worksheet": {
+    "breadcrumb": "ورقة العمل"
+  },
+  "exam": {
+    "breadcrumb": "الامتحانات",
+    "detail": {
+      "tabs": {
+        "analytics": "التحليلات",
+        "results": "النتائج",
+        "candidates": "المرشحون"
+      }
+    },
+    "statMarks": "الدرجة"
+  },
+  "status": {
+    "draft": "مسودة",
+    "published": "تم النشر",
+    "active": "نشط",
+    "closed": "مغلق",
+    "graded": "متدرج",
+    "submitted": "مُقَدَّم",
+    "pending": "جاري",
+    "archived": "مؤرشف",
+    "completed": "مكتمل",
+    "upcoming": "المعروض المتوقع",
+    "ongoing": "قيد التنفيذ",
+    "cancelled": "تم الإلغاء",
+    "late": "التأخير",
+    "onTime": "في الموعد المحدد"
+  },
+  "dashboard": {
+    "recentActivity": "الأنشطة الحديثة",
+    "viewAll": "عرض الكل",
+    "teacherToolsOverview": "نظرة عامة على أدوات المعلم",
+    "greetingMorning": "صباح الخير، {{name}}",
+    "greetingAfternoon": "مساء الخير، {{name}}",
+    "greetingEvening": "مساء الخير، {{name}}",
+    "defaultName": "معلم",
+    "workspaceReady": "مساحة العمل جاهزة.",
+    "activeContent": "{{count}} عناصر نشطة في مساحتك",
+    "createFirstQuiz": "أنشئ أول اختبار لك للبدء.",
+    "createFirstQuizCta": "إنشاء اختبار",
+    "totalContent": "إجمالي المحتوى",
+    "thisWeek": "هذا الأسبوع",
+    "draftBacklog": "مسودات معلقة",
+    "published": "منشور",
+    "dayStreak": "سلسلة أيام",
+    "upcomingDeadlines": "المواعيد القادمة",
+    "noDeadlines": "لا توجد مواعيد قادمة",
+    "noActivity": "لا يوجد نشاط حديث",
+    "draftsToFinish": "مسودات للإنهاء",
+    "all": "الكل",
+    "noDrafts": "لا مسودات",
+    "coreWorkflows": "سير العمل الأساسي",
+    "dueToday": "مستحق اليوم",
+    "dueInDays": "مستحق خلال {{count}} أيام",
+    "dueSoon": "مستحق قريباً: {{title}}",
+    "continueDraft": "متابعة المسودة: {{title}}",
+    "tools": {
+      "quiz": "المسابقة",
+      "assignment": "التنازل",
+      "worksheet": "ورقة العمل",
+      "exam": "الفحص"
+    }
+  },
+  "tenantSelection": {
+    "title": "تحديد مساحة العمل",
+    "subtitle": "اختر مساحة عمل للمتابعة",
+    "workspace": "Workspace (مساحة العمل)",
+    "signingIn": "جار تسجيل الدخول...",
+    "scope": {
+      "institution": "المؤسسة",
+      "organization": "المؤسسة",
+      "personalWorkspace": "مساحة العمل الشخصية"
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams, useLocation, useSearchParams } from 'react-router-dom'
 import {
@@ -74,9 +75,26 @@ import { blankLongStub, blankMcqStub, blankShortStub } from './demo/examQuestion
 import { alignExamBlueprintMarksToTotal } from './utils/alignExamBlueprintMarks'
 import { EXAM_EXEMPLAR } from '../exemplars/examExemplar'
 
-const EXAM_TYPES = ['Unit test', 'Mid-term', 'Final exam', 'Mock exam']
-const TERMS = ['Term 1', 'Term 2', 'Term 3']
+const EXAM_TYPES = ['Unit test', 'Mid-term', 'Final exam', 'Mock exam'] as const
+const EXAM_TYPE_LABEL_KEYS: Record<(typeof EXAM_TYPES)[number], string> = {
+  'Unit test': 'exam.types.unitTest',
+  'Mid-term': 'exam.types.midTerm',
+  'Final exam': 'exam.types.finalExam',
+  'Mock exam': 'exam.types.mockExam',
+}
+const TERMS = ['Term 1', 'Term 2', 'Term 3'] as const
+const TERM_LABEL_KEYS: Record<(typeof TERMS)[number], string> = {
+  'Term 1': 'exam.terms.term1',
+  'Term 2': 'exam.terms.term2',
+  'Term 3': 'exam.terms.term3',
+}
 const INTERNATIONAL_STANDARDS = ['Cambridge-style', 'IB-aligned', 'Standard', 'National curriculum'] as const
+const STANDARD_LABEL_KEYS: Record<(typeof INTERNATIONAL_STANDARDS)[number], string> = {
+  'Cambridge-style': 'exam.standards.cambridgeStyle',
+  'IB-aligned': 'exam.standards.ibAligned',
+  Standard: 'exam.standards.standard',
+  'National curriculum': 'exam.standards.nationalCurriculum',
+}
 
 function classKeyForGrade(grade: string) {
   return demoClasses.find((c) => c.grade === grade)?.key ?? demoClasses[0]?.key ?? 'g8c'
@@ -103,6 +121,7 @@ function fmtWindowLine(iso: string) {
 }
 
 export default function ExamCreate() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const [searchParams] = useSearchParams()
@@ -132,9 +151,9 @@ export default function ExamCreate() {
   const [handoutLayout, setHandoutLayout] = useState<HandoutLayoutOpts>(DEFAULT_HANDOUT_LAYOUT)
   const [draftLayout, setDraftLayout] = useState<HandoutLayoutOpts>(DEFAULT_HANDOUT_LAYOUT)
 
-  const [title, setTitle] = useState('Summative exam')
-  const [examType, setExamType] = useState('Unit test')
-  const [term, setTerm] = useState('Term 2')
+  const [title, setTitle] = useState(() => t('exam.defaultTitle'))
+  const [examType, setExamType] = useState<(typeof EXAM_TYPES)[number]>('Unit test')
+  const [term, setTerm] = useState<(typeof TERMS)[number]>('Term 2')
   const [durationMinutes, setDurationMinutes] = useState(60)
   const [subject, setSubject] = useState<string>(SUBJECTS[2])
   const [grade, setGrade] = useState<string>(GRADES[2])
@@ -430,7 +449,7 @@ export default function ExamCreate() {
     setBuildErrors([])
     subWizard.unlockAllSteps()
     setPhase('review')
-    toast.success('Exemplar loaded — edit or regenerate anytime.')
+    toast.success(t('teacherTools.toastExemplarLoaded'))
   }, [rag, subWizard, toast, enterExemplarPreview, isEdit])
 
   useEffect(() => {
@@ -447,7 +466,7 @@ export default function ExamCreate() {
     if (topic) setLoadedTopic(topic)
     if (searchParams.get('fromTemplate') && !templateToastRef.current) {
       templateToastRef.current = true
-      toast.success('Prefilled from template')
+      toast.success(t('teacherTools.toastPrefilledTemplate'))
     }
   }, [isEdit, searchParams, toast])
 
@@ -500,7 +519,7 @@ export default function ExamCreate() {
         setHydrateReady(true)
       } catch {
         if (cancelled) return
-        toast.error('Exam not found')
+        toast.error(t('exam.toastNotFound'))
         navigate('/teacher-tools/exams')
       }
     })()
@@ -520,10 +539,10 @@ export default function ExamCreate() {
     })
     if (!ragV.ok) errs.push(...ragV.errors)
     const pe = validateExamPaperFields(paper)
-    if (Object.keys(pe).length > 0) errs.push('Fix paper structure validation errors (red text in Section 2).')
+    if (Object.keys(pe).length > 0) errs.push(t('exam.paperStructureValidation'))
     if (errs.length > 0) {
       setBuildErrors(errs)
-      toast.error('Fix the highlighted fields to generate.')
+      toast.error(t('teacherTools.toastFixFields'))
       return
     }
     setBuildErrors([])
@@ -541,7 +560,7 @@ export default function ExamCreate() {
       const classes = selectedClasses.length > 0 ? selectedClasses : [classKeyForGrade(grade)]
       if (!id) {
         const created = await examApi.createExam({
-          title: title.trim() || 'Untitled exam',
+          title: title.trim() || t('exam.untitled'),
           subject,
           grade,
           examType,
@@ -580,8 +599,13 @@ export default function ExamCreate() {
       const gen = await examApi.generateExam(id, { regenerateScope: 'all' }, crypto.randomUUID())
       applyExamFromApi(gen.exam)
       setPhase('review')
-      if (gen.warnings?.length) toast.success(`Exam generated (${gen.warnings.length} notice${gen.warnings.length === 1 ? '' : 's'})`)
-      else toast.success('Exam generated — review below.')
+      if (gen.warnings?.length) {
+        toast.success(
+          gen.warnings.length === 1
+            ? t('exam.toastGeneratedWithNotices', { count: gen.warnings.length })
+            : t('exam.toastGeneratedWithNoticesPlural', { count: gen.warnings.length }),
+        )
+      } else toast.success(t('exam.toastGenerated'))
       refreshCredits()
     } catch (e) {
       console.warn('[ExamCreate] generate failed', e)
@@ -591,8 +615,8 @@ export default function ExamCreate() {
         setGenerationError(null)
         return
       }
-      setGenerationError('Generation failed. Check sources and paper settings, then retry.')
-      toast.error('Could not generate the exam.')
+      setGenerationError(t('exam.generationFailed'))
+      toast.error(t('exam.toastGenerateFailed'))
     } finally {
       window.clearInterval(progressTimer)
       setGenerating(false)
@@ -602,7 +626,7 @@ export default function ExamCreate() {
 
   const regenerateSections = async () => {
     if (!effectiveExamId) {
-      toast.error('Generate the exam first.')
+      toast.error(t('exam.toastGenerateFirst'))
       return
     }
     setCreditGate(null)
@@ -611,7 +635,7 @@ export default function ExamCreate() {
     try {
       const gen = await examApi.generateExam(effectiveExamId, { regenerateScope: 'all' }, crypto.randomUUID())
       applyExamFromApi(gen.exam)
-      toast.success('Exam regenerated')
+      toast.success(t('exam.toastRegenerated'))
       refreshCredits()
     } catch (e) {
       const credit = parseCreditError(e)
@@ -619,7 +643,7 @@ export default function ExamCreate() {
         setCreditGate(credit)
         return
       }
-      toast.error('Regeneration failed')
+      toast.error(t('exam.toastRegenFailed'))
     } finally {
       setExamRegenerateBusy(null)
     }
@@ -636,7 +660,7 @@ export default function ExamCreate() {
       const updated = await examApi.reorderMcqs(effectiveExamId, order)
       applyExamFromApi(updated)
     } catch {
-      toast.error('Could not reorder')
+      toast.error(t('exam.toastReorderFailed'))
     }
   }
   const deleteMcq = async (index: number) => {
@@ -647,7 +671,7 @@ export default function ExamCreate() {
       const updated = await examApi.deleteMcq(effectiveExamId, q._id)
       applyExamFromApi(updated)
     } catch {
-      toast.error('Could not delete question')
+      toast.error(t('exam.toastDeleteFailed'))
     }
   }
   const regenerateMcq = async (index: number) => {
@@ -663,9 +687,9 @@ export default function ExamCreate() {
       const next = updated.mcqs.find((m) => m.id === q._id)
       applyExamFromApi(updated)
       if (next && normExamText(prevStem) === normExamText(next.stem) && sameOptionLists(prevOpts, next.options)) {
-        toast.warning('The model returned the same question. Try again or edit it manually.')
+        toast.warning(t('exam.toastSameQuestion'))
       } else {
-        toast.success('Question regenerated')
+        toast.success(t('exam.toastQuestionRegenerated'))
       }
       refreshCredits()
     } catch (e) {
@@ -674,14 +698,14 @@ export default function ExamCreate() {
         setRegenCreditGate(credit)
         return
       }
-      toast.error('Regeneration failed')
+      toast.error(t('exam.toastRegenFailed'))
     } finally {
       setExamRegenerateBusy(null)
     }
   }
   const addManualMcq = async () => {
     if (!effectiveExamId) {
-      toast.error('Generate the exam shell first (click Generate).')
+      toast.error(t('exam.toastShellFirst'))
       return
     }
     const stub = blankMcqStub(paper)
@@ -693,7 +717,7 @@ export default function ExamCreate() {
       })
       applyExamFromApi(updated)
     } catch {
-      toast.error('Could not add question')
+      toast.error(t('exam.toastAddFailed'))
     }
   }
   const openEditMcq = (index: number) => {
@@ -715,7 +739,7 @@ export default function ExamCreate() {
       const updated = await examApi.reorderShorts(effectiveExamId, order)
       applyExamFromApi(updated)
     } catch {
-      toast.error('Could not reorder')
+      toast.error(t('exam.toastReorderFailed'))
     }
   }
   const deleteShort = async (index: number) => {
@@ -726,7 +750,7 @@ export default function ExamCreate() {
       const updated = await examApi.deleteShort(effectiveExamId, q._id)
       applyExamFromApi(updated)
     } catch {
-      toast.error('Could not delete question')
+      toast.error(t('exam.toastDeleteFailed'))
     }
   }
   const regenerateShort = async (index: number) => {
@@ -741,9 +765,9 @@ export default function ExamCreate() {
       const next = updated.shorts.find((s) => s.id === q._id)
       applyExamFromApi(updated)
       if (next && normExamText(prevStem) === normExamText(next.stem)) {
-        toast.warning('The model returned the same question. Try again or edit it manually.')
+        toast.warning(t('exam.toastSameQuestion'))
       } else {
-        toast.success('Question regenerated')
+        toast.success(t('exam.toastQuestionRegenerated'))
       }
       refreshCredits()
     } catch (e) {
@@ -752,14 +776,14 @@ export default function ExamCreate() {
         setRegenCreditGate(credit)
         return
       }
-      toast.error('Regeneration failed')
+      toast.error(t('exam.toastRegenFailed'))
     } finally {
       setExamRegenerateBusy(null)
     }
   }
   const addManualShort = async () => {
     if (!effectiveExamId) {
-      toast.error('Generate the exam shell first.')
+      toast.error(t('exam.toastShellFirstShort'))
       return
     }
     const stub = blankShortStub()
@@ -767,7 +791,7 @@ export default function ExamCreate() {
       const updated = await examApi.addShort(effectiveExamId, { stem: stub.stem, marksPer: paper.shortMarksPer })
       applyExamFromApi(updated)
     } catch {
-      toast.error('Could not add question')
+      toast.error(t('exam.toastAddFailed'))
     }
   }
   const openEditShort = (index: number) => {
@@ -788,7 +812,7 @@ export default function ExamCreate() {
       const updated = await examApi.reorderLongs(effectiveExamId, order)
       applyExamFromApi(updated)
     } catch {
-      toast.error('Could not reorder')
+      toast.error(t('exam.toastReorderFailed'))
     }
   }
   const deleteLong = async (index: number) => {
@@ -799,7 +823,7 @@ export default function ExamCreate() {
       const updated = await examApi.deleteLong(effectiveExamId, q._id)
       applyExamFromApi(updated)
     } catch {
-      toast.error('Could not delete question')
+      toast.error(t('exam.toastDeleteFailed'))
     }
   }
   const regenerateLong = async (index: number) => {
@@ -819,9 +843,9 @@ export default function ExamCreate() {
         normExamText(prevStem) === normExamText(next.stem) &&
         sameOptionLists(prevSub, next.subparts)
       ) {
-        toast.warning('The model returned the same question. Try again or edit it manually.')
+        toast.warning(t('exam.toastSameQuestion'))
       } else {
-        toast.success('Question regenerated')
+        toast.success(t('exam.toastQuestionRegenerated'))
       }
       refreshCredits()
     } catch (e) {
@@ -830,14 +854,14 @@ export default function ExamCreate() {
         setRegenCreditGate(credit)
         return
       }
-      toast.error('Regeneration failed')
+      toast.error(t('exam.toastRegenFailed'))
     } finally {
       setExamRegenerateBusy(null)
     }
   }
   const addManualLong = async () => {
     if (!effectiveExamId) {
-      toast.error('Generate the exam shell first.')
+      toast.error(t('exam.toastShellFirstShort'))
       return
     }
     const stub = blankLongStub(paper)
@@ -849,7 +873,7 @@ export default function ExamCreate() {
       })
       applyExamFromApi(updated)
     } catch {
-      toast.error('Could not add question')
+      toast.error(t('exam.toastAddFailed'))
     }
   }
   const openEditLong = (index: number) => {
@@ -863,7 +887,7 @@ export default function ExamCreate() {
   const buildPatchPayload = (status: 'draft' | 'scheduled'): examApi.ExamPatchPayload => {
     const classes = selectedClasses.length > 0 ? selectedClasses : [classKeyForGrade(grade)]
     return {
-      title: title.trim() || 'Untitled exam',
+      title: title.trim() || t('exam.untitled'),
       subject,
       grade,
       term,
@@ -887,24 +911,24 @@ export default function ExamCreate() {
 
   const handleSaveDraft = async () => {
     if (isExemplarPreview) {
-      toast.error('Generate your exam first — exemplar preview is not saved.')
+      toast.error(t('teacherTools.toastExemplarNotSaved'))
       return
     }
     if (phase !== 'review' && examMcqs.length === 0) {
-      toast.error('Generate the exam before saving a draft.')
+      toast.error(t('exam.toastDraftNeedsExam'))
       return
     }
     if (!effectiveExamId) {
-      toast.error('Generate the exam first, then save.')
+      toast.error(t('exam.toastSaveFirst'))
       return
     }
     setSaveDraftPending(true)
     try {
       await examApi.patchExam(effectiveExamId, buildPatchPayload('draft'))
-      toast.success('Draft saved')
+      toast.success(t('teacherTools.toastDraftSaved'))
       navigate(`/teacher-tools/exams/${effectiveExamId}`)
     } catch {
-      toast.error('Could not save draft')
+      toast.error(t('teacherTools.toastDraftFailed'))
     } finally {
       setSaveDraftPending(false)
     }
@@ -912,24 +936,24 @@ export default function ExamCreate() {
 
   const handlePublish = async () => {
     if (isExemplarPreview) {
-      toast.error('Generate your exam first — exemplar preview cannot be scheduled.')
+      toast.error(t('exam.toastExemplarCannotSchedule'))
       return
     }
     if (phase !== 'review' && examMcqs.length === 0) {
-      toast.error('Generate the exam before scheduling.')
+      toast.error(t('exam.toastScheduleNeedsExam'))
       return
     }
     if (!effectiveExamId) {
-      toast.error('Generate the exam first.')
+      toast.error(t('exam.toastGenerateFirst'))
       return
     }
     setPublishPending(true)
     try {
       await examApi.patchExam(effectiveExamId, buildPatchPayload('scheduled'))
-      toast.success(isEdit ? 'Exam updated' : 'Exam scheduled')
+      toast.success(isEdit ? t('exam.toastUpdated') : t('exam.toastScheduled'))
       navigate('/teacher-tools/exams')
     } catch {
-      toast.error('Could not save exam')
+      toast.error(t('exam.toastSaveFailed'))
     } finally {
       setPublishPending(false)
     }
@@ -943,12 +967,12 @@ export default function ExamCreate() {
 
   const exportPdf = () => {
     if (examMcqs.length === 0) {
-      toast.error('Generate the exam before exporting PDF.')
+      toast.error(t('exam.toastPdfNeedsExam'))
       return
     }
     downloadExamHandoutPdf(
       {
-        title: `${title || 'Exam'} — Preview`,
+        title: `${title || t('exam.fallbackTitle')} — ${t('exam.previewTitleSuffix')}`,
         subject,
         grade,
         timeLimitMinutes: durationMinutes,
@@ -961,7 +985,7 @@ export default function ExamCreate() {
       },
       `${(title || 'exam').replace(/\s+/g, '-').slice(0, 32)}-exam.pdf`,
     )
-    toast.success('PDF downloaded')
+    toast.success(t('teacherTools.toastPdfDownloaded'))
   }
 
   if (isEdit && !hydrateReady) {
@@ -969,14 +993,14 @@ export default function ExamCreate() {
       <div className="min-h-[40vh] space-y-3 p-8">
         <div className="h-4 w-48 animate-pulse rounded bg-gray-200" />
         <div className="h-32 max-w-xl animate-pulse rounded-2xl bg-gray-100" />
-        <p className="text-sm text-gray-600">Loading exam…</p>
+        <p className="text-sm text-gray-600">{t('exam.detail.loading')}</p>
       </div>
     )
   }
 
   const wizardStep = phase === 'build' ? 0 : 1
   const sections = generatedSections.length > 0 ? generatedSections : sectionsSeed
-  const reviewSourceTag = rag.generateWithoutSources ? 'Topic-only' : 'Sources selected'
+  const reviewSourceTag = rag.generateWithoutSources ? t('teacherTools.topicOnlyTag') : t('teacherTools.sourcesSelected')
 
   const buildFooter = (
     <TeacherToolsWizardFooter
@@ -995,23 +1019,23 @@ export default function ExamCreate() {
       onGenerate={() => {
         if (!fullBuildValidation.ok) {
           setBuildErrors(fullBuildValidation.errors)
-          toast.error('Fix the highlighted fields to generate.')
+          toast.error(t('teacherTools.toastFixFields'))
           return
         }
         setBuildErrors([])
         void runGeneration()
       }}
       generating={generating}
-      generateLabel="Generate exam"
+      generateLabel={t('exam.generateLabel')}
       onShowExemplar={handleShowExemplar}
       onExitToList={handleExitToList}
-      exitLabel="Back to exam list"
+      exitLabel={t('exam.exitLabel')}
     />
   )
 
   const reviewFooter = (
     <TeacherToolsCreateReviewFooter
-      exitLabel="Back to exam list"
+      exitLabel={t('exam.exitLabel')}
       onExitToList={handleExitToList}
       onEditRequirements={handleBackToConfigure}
       publish={{
@@ -1028,7 +1052,7 @@ export default function ExamCreate() {
         onPublish: () => void handlePublish(),
         publishPending,
         publishDisabled: isExemplarPreview,
-        publishLabel: isEdit ? 'Save changes' : 'Schedule exam',
+        publishLabel: isEdit ? t('exam.saveChanges') : t('exam.scheduleExam'),
       }}
     />
   )
@@ -1040,12 +1064,12 @@ export default function ExamCreate() {
         <>
           <TeacherToolsPageHeader
             variant="compact"
-            title={isEdit ? 'Edit exam' : 'Create exam'}
-            subtitle="Configure scope and paper layout, generate the exam, then review and schedule."
+            title={isEdit ? t('exam.editTitle') : t('exam.createTitle')}
+            subtitle={t('exam.createSubtitle')}
             breadcrumbs={[
-              { label: 'Teacher Tools', to: '/teacher-tools' },
-              { label: 'Exams', to: '/teacher-tools/exams' },
-              { label: isEdit ? 'Edit' : 'Create' },
+              { label: t('teacherTools.breadcrumbTeacherTools'), to: '/teacher-tools' },
+              { label: t('exam.breadcrumb'), to: '/teacher-tools/exams' },
+              { label: isEdit ? t('teacherTools.breadcrumbEdit') : t('teacherTools.breadcrumbCreate') },
             ]}
           />
           <div className="pb-2">
@@ -1057,7 +1081,7 @@ export default function ExamCreate() {
                 const hasReviewContent =
                   examMcqs.length > 0 || examShorts.length > 0 || examLongs.length > 0 || generatedSections.length > 0
                 if (i === 1 && !hasReviewContent) {
-                  toast.error('Generate the exam first to open review.')
+                  toast.error(t('exam.toastReviewNeedsGenerate'))
                   return
                 }
                 if (i === 0) handleBackToConfigure()
@@ -1084,7 +1108,7 @@ export default function ExamCreate() {
             className="ml-3 font-semibold underline"
             onClick={() => setGenerationError(null)}
           >
-            Dismiss
+            {t('teacherTools.dismiss')}
           </button>
         </div>
       )}
@@ -1117,53 +1141,53 @@ export default function ExamCreate() {
             compact
             header={
               <TeacherToolsPanelHeader
-                kicker="Exam identity"
-                title="Exam basics"
-                subtitle="Name the exam and set type, term, duration, and cohort."
+                kicker={t('exam.create.identityKicker')}
+                title={t('exam.create.basicsTitle')}
+                subtitle={t('exam.create.basicsSubtitle')}
                 tone="indigo"
               />
             }
           >
             <div className="grid gap-4 p-5 md:grid-cols-2">
               <label className="md:col-span-2 block text-sm font-medium text-gray-800">
-                Exam title <span className="text-red-500">*</span>
+                {t('exam.create.examTitle')} <span className="text-red-500">*</span>
                 <input
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g. End of unit — Forces & motion (Grade 7)"
+                  placeholder={t('exam.examTitlePlaceholder')}
                   className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
                 />
               </label>
               <label className="block text-sm font-medium text-gray-800">
-                Exam type
+                {t('exam.create.examType')}
                 <select
                   value={examType}
-                  onChange={(e) => setExamType(e.target.value)}
+                  onChange={(e) => setExamType(e.target.value as (typeof EXAM_TYPES)[number])}
                   className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
                 >
-                  {EXAM_TYPES.map((t) => (
-                    <option key={t} value={t}>
-                      {t}
+                  {EXAM_TYPES.map((typeValue) => (
+                    <option key={typeValue} value={typeValue}>
+                      {t(EXAM_TYPE_LABEL_KEYS[typeValue])}
                     </option>
                   ))}
                 </select>
               </label>
               <label className="block text-sm font-medium text-gray-800">
-                Term
+                {t('exam.create.term')}
                 <select
                   value={term}
-                  onChange={(e) => setTerm(e.target.value)}
+                  onChange={(e) => setTerm(e.target.value as (typeof TERMS)[number])}
                   className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
                 >
-                  {TERMS.map((t) => (
-                    <option key={t} value={t}>
-                      {t}
+                  {TERMS.map((termValue) => (
+                    <option key={termValue} value={termValue}>
+                      {t(TERM_LABEL_KEYS[termValue])}
                     </option>
                   ))}
                 </select>
               </label>
               <label className="block text-sm font-medium text-gray-800">
-                Duration (minutes)
+                {t('exam.create.durationMinutes')}
                 <input
                   type="number"
                   value={durationMinutes}
@@ -1174,7 +1198,7 @@ export default function ExamCreate() {
                 />
               </label>
               <label className="block text-sm font-medium text-gray-800">
-                Subject
+                {t('teacherTools.subject')}
                 <select
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
@@ -1188,7 +1212,7 @@ export default function ExamCreate() {
                 </select>
               </label>
               <label className="block text-sm font-medium text-gray-800">
-                Grade / cohort
+                {t('teacherTools.gradeCohort')}
                 <select
                   value={grade}
                   onChange={(e) => setGrade(e.target.value)}
@@ -1202,7 +1226,7 @@ export default function ExamCreate() {
                 </select>
               </label>
               <label className="block text-sm font-medium text-gray-800">
-                International standard profile
+                {t('exam.create.internationalStandard')}
                 <select
                   value={internationalStandard}
                   onChange={(e) =>
@@ -1210,9 +1234,9 @@ export default function ExamCreate() {
                   }
                   className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
                 >
-                  {INTERNATIONAL_STANDARDS.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
+                  {INTERNATIONAL_STANDARDS.map((standardValue) => (
+                    <option key={standardValue} value={standardValue}>
+                      {t(STANDARD_LABEL_KEYS[standardValue])}
                     </option>
                   ))}
                 </select>
@@ -1227,9 +1251,9 @@ export default function ExamCreate() {
             compact
             header={
               <TeacherToolsPanelHeader
-                kicker="Content sources"
-                title="Source materials"
-                subtitle="Choose catalog titles or switch to topic-only generation."
+                kicker={t('exam.create.contentSourcesKicker')}
+                title={t('worksheet.rag.sourcesTitle')}
+                subtitle={t('worksheet.rag.sourcesSubtitle')}
                 tone="emerald"
               />
             }
@@ -1246,9 +1270,9 @@ export default function ExamCreate() {
             compact
             header={
               <TeacherToolsPanelHeader
-                kicker="Scope definition"
-                title="Topic strands & refinement"
-                subtitle="Pick strands from your materials or describe the topic focus."
+                kicker={t('exam.create.scopeKicker')}
+                title={t('worksheet.rag.scopeTitle')}
+                subtitle={t('worksheet.rag.scopeSubtitle')}
                 tone="violet"
               />
             }
@@ -1262,14 +1286,14 @@ export default function ExamCreate() {
           {subWizard.currentStepId === 'paper_structure' && (
           <div className="space-y-3">
             <TeacherToolsPanelHeader
-              kicker="Paper structure"
-              title="Section layout & marks"
-              subtitle="Define sections and mark distribution for generation."
+              kicker={t('exam.create.paperStructureKicker')}
+              title={t('exam.create.paperStructureTitle')}
+              subtitle={t('exam.create.paperStructureSubtitle')}
               tone="gray"
             />
             <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
             <label className="mb-4 block text-sm font-medium text-gray-800">
-              Target section count
+              {t('exam.create.targetSectionCount')}
               <input
                 type="number"
                 min={1}
@@ -1295,7 +1319,7 @@ export default function ExamCreate() {
           {isExemplarPreview && <TeacherToolsExemplarReviewBanner />}
           <TeacherToolsReviewHeaderCompact
             sourceTag={reviewSourceTag}
-            stats={[{ label: 'marks', value: paperMarks.grand }]}
+            stats={[{ label: t('exam.statMarks'), value: paperMarks.grand }]}
             actions={
               <>
                 <button
@@ -1307,7 +1331,7 @@ export default function ExamCreate() {
                   disabled={examMcqs.length === 0}
                   className="rounded-lg border border-indigo-200 bg-white px-2 py-1 text-xs font-semibold text-indigo-800 hover:bg-indigo-50 disabled:opacity-50"
                 >
-                  Print preview
+                  {t('quiz.review.printPreview')}
                 </button>
                 <button
                   type="button"
@@ -1315,7 +1339,7 @@ export default function ExamCreate() {
                   onClick={() => void regenerateSections()}
                   className="rounded-lg border border-indigo-200 bg-white px-2 py-1 text-xs font-semibold text-indigo-800 hover:bg-indigo-50 disabled:opacity-50"
                 >
-                  {examRegenerateBusy === 'sections' ? 'Regenerating…' : 'Regenerate all'}
+                  {examRegenerateBusy === 'sections' ? t('quiz.review.regeneratingAll') : t('quiz.review.regenerateAll')}
                 </button>
               </>
             }
@@ -1356,8 +1380,8 @@ export default function ExamCreate() {
       <CustomModal
         open={discardOpen}
         close={cancelDiscard}
-        title="Leave without saving?"
-        primaryButtonText="Leave"
+        title={t('teacherTools.leaveTitle')}
+        primaryButtonText={t('teacherTools.leave')}
         isDelete
         handleSave={confirmDiscard}
       >
@@ -1369,8 +1393,8 @@ export default function ExamCreate() {
       <CustomModal
         open={previewOpen}
         close={() => setPreviewOpen(false)}
-        title="Print preview"
-        primaryButtonText="Save layout and close"
+        title={t('exam.printPreviewTitle')}
+        primaryButtonText={t('quiz.printPreview.saveLayoutClose')}
         handleSave={() => {
           setHandoutLayout(draftLayout)
           setPreviewOpen(false)
@@ -1378,9 +1402,9 @@ export default function ExamCreate() {
       >
         <div className="space-y-4">
           <div className="flex flex-wrap items-center gap-3 rounded-xl border border-indigo-100 bg-indigo-50/50 px-3 py-2.5">
-            <span className="text-xs font-semibold uppercase tracking-wide text-indigo-900">Handout spacing</span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-indigo-900">{t('quiz.printPreview.handoutSpacing')}</span>
             <label className="flex items-center gap-1.5 text-xs text-gray-800">
-              <span className="text-gray-600">Line height</span>
+              <span className="text-gray-600">{t('quiz.printPreview.lineHeight')}</span>
               <select
                 value={draftLayout.bodyLineHeight}
                 onChange={(e) =>
@@ -1392,7 +1416,7 @@ export default function ExamCreate() {
               </select>
             </label>
             <label className="flex items-center gap-1.5 text-xs text-gray-800">
-              <span className="text-gray-600">Question gap</span>
+              <span className="text-gray-600">{t('teacherTools.questionGap')}</span>
               <select
                 value={draftLayout.questionGapPx}
                 onChange={(e) =>
@@ -1427,8 +1451,8 @@ export default function ExamCreate() {
       <CustomModal
         open={editMcqIdx !== null}
         close={() => setEditMcqIdx(null)}
-        title="Edit MCQ"
-        primaryButtonText="Save"
+        title={t('exam.editMcq')}
+        primaryButtonText={t('teacherTools.save')}
         handleSave={() => {
           void (async () => {
             if (editMcqIdx === null || !effectiveExamId) return
@@ -1447,7 +1471,7 @@ export default function ExamCreate() {
               applyExamFromApi(updated)
               setEditMcqIdx(null)
             } catch {
-              toast.error('Could not save question')
+              toast.error(t('exam.toastSaveQuestionFailed'))
             }
           })()
         }}
@@ -1477,8 +1501,8 @@ export default function ExamCreate() {
       <CustomModal
         open={editShortIdx !== null}
         close={() => setEditShortIdx(null)}
-        title="Edit short question"
-        primaryButtonText="Save"
+        title={t('exam.editShort')}
+        primaryButtonText={t('teacherTools.save')}
         handleSave={() => {
           void (async () => {
             if (editShortIdx === null || !effectiveExamId) return
@@ -1489,7 +1513,7 @@ export default function ExamCreate() {
               applyExamFromApi(updated)
               setEditShortIdx(null)
             } catch {
-              toast.error('Could not save question')
+              toast.error(t('exam.toastSaveQuestionFailed'))
             }
           })()
         }}
@@ -1510,8 +1534,8 @@ export default function ExamCreate() {
       <CustomModal
         open={editLongIdx !== null}
         close={() => setEditLongIdx(null)}
-        title="Edit long question"
-        primaryButtonText="Save"
+        title={t('exam.editLong')}
+        primaryButtonText={t('teacherTools.save')}
         handleSave={() => {
           void (async () => {
             if (editLongIdx === null || !effectiveExamId) return
@@ -1531,7 +1555,7 @@ export default function ExamCreate() {
               applyExamFromApi(updated)
               setEditLongIdx(null)
             } catch {
-              toast.error('Could not save question')
+              toast.error(t('exam.toastSaveQuestionFailed'))
             }
           })()
         }}

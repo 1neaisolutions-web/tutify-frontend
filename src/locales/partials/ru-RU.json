@@ -1,0 +1,318 @@
+{
+  "common": {
+    "loading": "Загрузка…",
+    "cancel": "Отмена",
+    "search": "Поиск",
+    "addNew": "Добавить новую",
+    "save": "Сохранить",
+    "upload": "Загрузить",
+    "delete": "Удалить",
+    "export": "Экспорт",
+    "all": "Все",
+    "back": "Назад",
+    "comingSoon": "Уже скоро",
+    "comingSoonHint": "Эта функция пока недоступна",
+    "noDataFound": "Данные не найдены",
+    "noDataFoundHint": "Попробуйте настроить фильтры или поиск.",
+    "retry": "Попробовать еще раз",
+    "showLess": "Показать меньше",
+    "showMore": "Показать больше"
+  },
+  "app": {
+    "name": "Помощник учителя",
+    "studentName": "Практикант,"
+  },
+  "languageDropdown": {
+    "loading": "Загрузка Языков",
+    "placeholder": "Выбрать язык",
+    "searchPlaceholder": "Поиск языка",
+    "listLabel": "Языки",
+    "noMatch": "Нет языков, соответствующих \"{{query}}\"",
+    "count": "{{count}} языки",
+    "count_one": "{{count}} язык",
+    "count_other": "{{count}} языки",
+    "countAvailable": "Доступно %@",
+    "countMatch": "соответствует \"{{query}}\""
+  },
+  "layout": {
+    "activateCredits": "Активировать кредиты",
+    "credits": "З.е.",
+    "messages": "Сообщения",
+    "notifications": "Уведомления",
+    "newCount": "{{count}} new",
+    "noMessages": "Не сообщений",
+    "noMessagesHint": "Когда вы получите сообщения, они появятся здесь.",
+    "noNotifications": "Нет уведомлений",
+    "noNotificationsHint": "Когда у вас появятся обновления, они появятся здесь.",
+    "viewAllMessages": "View all messages",
+    "viewAllNotifications": "Просмотр всех уведомлений",
+    "signOut": "Выход",
+    "signingOut": "Выполняется выход...",
+    "allCaughtUp": "Вы всё прочитали",
+    "noNewNotifications": "Нет новых уведомлений",
+    "noNotificationsYet": "Еще нет уведомлений",
+    "notificationsEmptyHint": "Когда у вас появятся обновления, они появятся здесь."
+  },
+  "settings": {
+    "tabs": {
+      "general": "Общие положения",
+      "notifications": "Уведомления",
+      "plan": "План и кредиты",
+      "integrations": "Интеграции",
+      "developer": "Разработчик",
+      "export": "Экспорт"
+    },
+    "general": {
+      "title": "Общие настройки",
+      "language": {
+        "label": "Язык",
+        "change": "Изм.",
+        "uiFallback": "Интерфейс показан на английском языке. Ваши предпочтения ({{language}}) сохранены для профиля и дат."
+      },
+      "timezone": {
+        "label": "Часовой пояс",
+        "adjust": "Настроить",
+        "currentTime": "Текущее время",
+        "noMatch": "По вашему запросу нет подходящих часовых поясов"
+      },
+      "theme": {
+        "label": "Тема интерфейса",
+        "light": "Свет",
+        "dark": "Темный",
+        "system": "Система",
+        "followsDevice": "(следует за устройством)"
+      },
+      "syncSaving": "Сохранение…",
+      "syncSaved": "Сохранено",
+      "syncError": "Сбой сохранения"
+    },
+    "notifications": {
+      "title": "Уведомления",
+      "productUpdates": "Обновления плагинов",
+      "lessonReminders": "Напоминания об уроке",
+      "weeklyInsights": "Еженедельные аналитические данные",
+      "channels": {
+        "emailAndApp": "Электронная почта и приложение",
+        "emailOnly": "Только электронная почта",
+        "appOnly": "Solo applicazioni"
+      },
+      "currentChannel": "Текущий канал: {{channel}}",
+      "edit": "Правка",
+      "manageDefaults": "Управление уведомлениями по умолчанию"
+    },
+    "integrations": {
+      "title": "Интеграции",
+      "addNew": "добавление новой интеграции",
+      "status": {
+        "connected": "Подключено",
+        "available": "Наличие",
+        "comingSoon": "Уже скоро"
+      },
+      "googleClassroom": {
+        "name": "Google Classroom",
+        "description": "Синхронизируйте задания и списки автоматически."
+      },
+      "microsoftTeams": {
+        "name": "Microsoft Teams",
+        "description": "Включите собрания групп и синхронизацию назначений."
+      },
+      "canvasLms": {
+        "name": "Canvas LMS",
+        "description": "Прямая интеграция с учебниками для пользователей Canvas."
+      }
+    },
+    "developer": {
+      "title": "Доступ разработчика",
+      "connectedApps": "Подключенные приложения",
+      "connectedAppsDesc": "3 приложения имеют доступ к вашему учебному рабочему пространству.",
+      "manageTokens": "Управление токенами API"
+    },
+    "export": {
+      "title": "Экспорт и резервное копирование",
+      "downloadData": "Загрузить данные рабочего пространства",
+      "downloadDataDesc": "Шаблоны, оценки и история чатов",
+      "scheduleBackups": "Запланировать еженедельное резервное"
+    },
+    "plan": {
+      "yourCredits": "Ваши кредиты",
+      "memberSince": "Участник с {{date}}",
+      "activateCode": "Код активации",
+      "creditsRemaining": "/ {{total}} з.е.",
+      "remainingPct": "Осталось {{pct}}%",
+      "expires": "Истекает {{date}}",
+      "autoRenewing": "Автоматическое продление",
+      "noActiveCredits": "Нет активных кредитов. Активируйте код, чтобы начать.",
+      "activateCreditsLink": "Активировать кредиты →",
+      "usageBreakdown": "Разбивка использования",
+      "last30Days": "Последние 30 дней",
+      "activity": "Действие",
+      "activityFallback": "Действие",
+      "left": "{{count}} слева"
+    }
+  },
+  "nav": {
+    "dashboard": "Bнформационная панель",
+    "teacherTools": "Инструменты для учителей",
+    "teacherToolsOverview": "Обзор",
+    "teacherToolsAnalytics": "Аналитика",
+    "quiz": ".",
+    "assignment": "Переуступка прав и обязанностей",
+    "worksheet": "Рабочий лист",
+    "exams": "Экзамены",
+    "templates": "Библиотека шаблонов",
+    "chatbots": "Специализированные чат-боты",
+    "youtubeQuiz": "Генератор тестов YouTube",
+    "pixgen": "PixGen (AI Media Studio)",
+    "learningHub": "Центр профессионального обучения",
+    "personalization": "Персонализация",
+    "administration": "Управление",
+    "reporting": "Отчетность",
+    "assessment": "Оценка",
+    "contentManagement": "Управление содержанием",
+    "history": "История",
+    "analytics": "Аналитика",
+    "useCases": "Изучить варианты использования",
+    "profile": "Профиль",
+    "settings": "Настройки",
+    "accessCodes": "Коды доступа",
+    "contentPacks": "Пакеты контента",
+    "documents": "Документация",
+    "learningHubContent": "Контент учебного центра",
+    "organization": "Организация",
+    "parent": "Исходный",
+    "school": "Школа",
+    "uploadDocument": "Загрузить документ"
+  },
+  "workspace": {
+    "fallbackName": "Рабочее пространство",
+    "scopeType": {
+      "institution": "учреждение",
+      "organization": "Организация",
+      "personal": "Личный"
+    },
+    "switcher": {
+      "title": "Переключиться на <d>@workspace</d>",
+      "active": "Активные"
+    }
+  },
+  "login": {
+    "subtitle": "Вход в ваш аккаунт",
+    "emailLabel": "Адрес электронной почты",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Пароль",
+    "rememberMe": "Запомнить меня",
+    "forgotPassword": "Забыли пароль?",
+    "signIn": "Зарегистрироваться",
+    "signingIn": "Идет вход…",
+    "noAccount": "Нет учетной записи?",
+    "signUpLink": "Регистрация",
+    "error": "Не удалось войти. Проверьте свои учетные данные."
+  },
+  "teacherTools": {
+    "breadcrumbTeacherTools": "Инструменты для учителей",
+    "breadcrumbTemplates": "Шаблоны",
+    "edit": "Правка",
+    "duplicate": "Дублировать",
+    "archive": "Архив",
+    "delete": "Удалить",
+    "toolAssign": "Назначить",
+    "toolSheet": "Лист",
+    "toolExam": "экзамен",
+    "range7d": "Последние 7 дней",
+    "range30d": "Последние 30 дней",
+    "rangeAll": "За все время",
+    "previewData": "Предварительный просмотр данных",
+    "previewDataHint": "— Реальные результаты появятся здесь после того, как студенты подадут заявку.",
+    "statContentCreated": "Контент создан",
+    "overview": {
+      "kpiTotalActive": "Всего активных элементов",
+      "kpiScheduledWeek": "Запланировано на эту неделю",
+      "kpiPendingDrafts": "Черновики в ожидании",
+      "kpiPublished": "опубликованные элементы.",
+      "kpiAvgQuizScore": "Результаты теста",
+      "kpiQuizzesTaken": "Пройденные викторины"
+    }
+  },
+  "quiz": {
+    "breadcrumb": "."
+  },
+  "assignment": {
+    "breadcrumb": "Переуступка прав и обязанностей"
+  },
+  "worksheet": {
+    "breadcrumb": "Рабочий лист"
+  },
+  "exam": {
+    "breadcrumb": "Экзамены",
+    "detail": {
+      "tabs": {
+        "analytics": "Аналитика",
+        "results": "Результаты",
+        "candidates": "Кандидаты"
+      }
+    },
+    "statMarks": "«отлично»"
+  },
+  "status": {
+    "draft": "ПРОЕКТ",
+    "published": "Жарияланды",
+    "active": "Активные",
+    "closed": "Закрыто",
+    "graded": "Оценён",
+    "submitted": "Представлено",
+    "pending": "В процессе",
+    "archived": "В архиве",
+    "completed": "Завершено",
+    "upcoming": "Предстоящие",
+    "ongoing": "В процессе",
+    "cancelled": "Отменён",
+    "late": "Несвоевременный",
+    "onTime": "Вовремя"
+  },
+  "dashboard": {
+    "recentActivity": "Последние действия",
+    "viewAll": "Смотреть все",
+    "teacherToolsOverview": "Обзор инструментов для учителей",
+    "greetingMorning": "Доброе утро, {{name}}",
+    "greetingAfternoon": "Добрый день, {{name}}",
+    "greetingEvening": "Добрый вечер, {{name}}",
+    "defaultName": "учитель",
+    "workspaceReady": "Ваше рабочее пространство готово.",
+    "activeContent": "{{count}} активных элементов в рабочем пространстве",
+    "createFirstQuiz": "Создайте первый тест, чтобы начать.",
+    "createFirstQuizCta": "Создать тест",
+    "totalContent": "Всего контента",
+    "thisWeek": "На этой неделе",
+    "draftBacklog": "Черновики в очереди",
+    "published": "Опубликовано",
+    "dayStreak": "Серия дней",
+    "upcomingDeadlines": "Предстоящие сроки",
+    "noDeadlines": "Нет предстоящих сроков",
+    "noActivity": "Нет недавней активности",
+    "draftsToFinish": "Черновики к завершению",
+    "all": "Все",
+    "noDrafts": "Нет черновиков",
+    "coreWorkflows": "Основные процессы",
+    "dueToday": "Срок сегодня",
+    "dueInDays": "Срок через {{count}} дн.",
+    "dueSoon": "Скоро срок: {{title}}",
+    "continueDraft": "Продолжить черновик: {{title}}",
+    "tools": {
+      "quiz": ".",
+      "assignment": "Переуступка прав и обязанностей",
+      "worksheet": "Рабочий лист",
+      "exam": "экзамен"
+    }
+  },
+  "tenantSelection": {
+    "title": "Выберите рабочее пространство",
+    "subtitle": "Выберите рабочее пространство для продолжения",
+    "workspace": "Рабочее пространство",
+    "signingIn": "Идет вход…",
+    "scope": {
+      "institution": "учреждение",
+      "organization": "Организация",
+      "personalWorkspace": "Частное рабочее пространство"
+    }
+  }
+}

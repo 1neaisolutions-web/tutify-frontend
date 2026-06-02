@@ -29,8 +29,10 @@ import { setAuthToken } from '../redux/http';
 import { validateEmail, validatePassword } from '../utils/utils';
 import { baseURL } from '../redux/constant';
 import { Lock, User, Mail, Phone, AtSign, AlertCircle, CheckCircle2, BookOpen } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const Profile = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { toast } = useSnackbar();
@@ -58,27 +60,15 @@ const Profile = () => {
     success: contextSuccess,
   } = useSelector((state) => state.profileContext) ?? {};
   
-  // Helper function to format role name professionally
   const formatRoleName = (role) => {
     if (!role) return '';
-    
     const roleStr = typeof role === 'string' ? role : (role?.name ? (typeof role.name === 'string' ? role.name : role.name?.value || role.name?.toString() || '') : role?.toString() || '');
-    
-    // Map role names to display format
-    const roleMap = {
-      'super_admin': 'Super Admin',
-      'org_admin': 'Organization Admin',
-      'organization_admin': 'Organization Admin',
-      'school_admin': 'School Admin',
-      'institution_admin': 'Institution Admin',
-      'teacher': 'Teacher',
-      'student': 'Student',
-      'parent': 'Parent',
-    };
-    
-    return roleMap[roleStr.toLowerCase()] || roleStr
+    const key = `profile.roles.${roleStr.toLowerCase()}`;
+    const translated = t(key);
+    if (translated !== key) return translated;
+    return roleStr
       .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
   };
   
@@ -373,35 +363,35 @@ const Profile = () => {
     const errors = {};
 
     if (!formData.first_name || formData.first_name.trim().length === 0) {
-      errors.first_name = 'First name is required';
+      errors.first_name = t('profile.validation.firstNameRequired');
     } else if (formData.first_name.trim().length > 100) {
-      errors.first_name = 'First name must be 100 characters or less';
+      errors.first_name = t('profile.validation.firstNameMax');
     }
 
     if (!formData.last_name || formData.last_name.trim().length === 0) {
-      errors.last_name = 'Last name is required';
+      errors.last_name = t('profile.validation.lastNameRequired');
     } else if (formData.last_name.trim().length > 100) {
-      errors.last_name = 'Last name must be 100 characters or less';
+      errors.last_name = t('profile.validation.lastNameMax');
     }
 
     if (!formData.email || formData.email.trim().length === 0) {
-      errors.email = 'Email is required';
+      errors.email = t('profile.validation.emailRequired');
     } else if (!validateEmail(formData.email)) {
-      errors.email = 'Invalid email format';
+      errors.email = t('profile.validation.emailInvalid');
     }
 
     if (formData.phone && formData.phone.trim().length > 20) {
-      errors.phone = 'Phone number must be 20 characters or less';
+      errors.phone = t('profile.validation.phoneMax');
     }
 
     if (formData.username) {
       const username = formData.username.trim();
       if (username.length < 3) {
-        errors.username = 'Username must be at least 3 characters';
+        errors.username = t('profile.validation.usernameMin');
       } else if (username.length > 100) {
-        errors.username = 'Username must be 100 characters or less';
+        errors.username = t('profile.validation.usernameMax');
       } else if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
-        errors.username = 'Username can only contain letters, numbers, underscores, and hyphens';
+        errors.username = t('profile.validation.usernamePattern');
       }
     }
 
@@ -414,24 +404,24 @@ const Profile = () => {
     const errors = {};
 
     if (!passwordData.current_password) {
-      errors.current_password = 'Current password is required';
+      errors.current_password = t('profile.validation.currentPasswordRequired');
     }
 
     if (!passwordData.new_password) {
-      errors.new_password = 'New password is required';
+      errors.new_password = t('profile.validation.newPasswordRequired');
     } else {
       const passwordValidation = validatePassword(passwordData.new_password);
       if (!passwordValidation.length) {
-        errors.new_password = 'Password must be at least 10 characters';
+        errors.new_password = t('profile.validation.passwordMinLength');
       } else if (!passwordValidation.upper || !passwordValidation.lower || !passwordValidation.number || !passwordValidation.specialChar) {
-        errors.new_password = 'Password must contain uppercase, lowercase, number, and special character';
+        errors.new_password = t('profile.validation.passwordComplexity');
       }
     }
 
     if (!passwordData.confirm_password) {
-      errors.confirm_password = 'Please confirm your new password';
+      errors.confirm_password = t('profile.validation.confirmPasswordRequired');
     } else if (passwordData.new_password !== passwordData.confirm_password) {
-      errors.confirm_password = 'Passwords do not match';
+      errors.confirm_password = t('profile.validation.passwordMismatch');
     }
 
     setPasswordErrors(errors);
@@ -457,14 +447,14 @@ const Profile = () => {
   // Validate teaching context (required fields for PATCH)
   const validateContextForm = () => {
     const errors = {};
-    if (!contextForm.country?.trim()) errors.country = 'Country is required';
-    if (!contextForm.region?.trim()) errors.region = 'Region is required';
-    if (!contextForm.school_type?.trim()) errors.school_type = 'School type is required';
-    if (!contextForm.grade_band?.trim()) errors.grade_band = 'Grade band is required';
+    if (!contextForm.country?.trim()) errors.country = t('profile.validation.countryRequired');
+    if (!contextForm.region?.trim()) errors.region = t('profile.validation.regionRequired');
+    if (!contextForm.school_type?.trim()) errors.school_type = t('profile.validation.schoolTypeRequired');
+    if (!contextForm.grade_band?.trim()) errors.grade_band = t('profile.validation.gradeBandRequired');
     if (!Array.isArray(contextForm.subjects) || contextForm.subjects.length === 0) {
-      errors.subjects = 'At least one subject is required';
+      errors.subjects = t('profile.validation.subjectsRequired');
     }
-    if (!contextForm.language_preference?.trim()) errors.language_preference = 'Language preference is required';
+    if (!contextForm.language_preference?.trim()) errors.language_preference = t('profile.validation.languageRequired');
     setContextFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -517,26 +507,26 @@ const Profile = () => {
       const sync = result.payload?.personalization_sync;
       if (PERSONALIZATION_ENABLED) {
         if (sync && sync.status === 'queued') {
-          toast.success('Profile saved.');
+          toast.success(t('profile.savedSuccess'));
           if (severity === 'major_reset' || sync.severity === 'major_reset') {
-            toast.info('Rebuilding your personalized recommendations…');
+            toast.info(t('profile.toast.rebuildingRecommendations'));
             await dispatch(resetPersonalization());
           } else {
-            toast.info('Updating recommendations…');
+            toast.info(t('profile.toast.updatingRecommendations'));
           }
           await dispatch(syncHubAfterMutation(sync));
-          toast.success('Recommendations updated.');
+          toast.success(t('profile.toast.recommendationsUpdated'));
         } else {
           // Non-queued path: always re-fetch slate to pick up fresh content/banner
           if (severity === 'major_reset') {
             await dispatch(resetPersonalization());
           }
           await dispatch(fetchLearningHubSlate());
-          toast.success('Teaching context saved successfully.');
+          toast.success(t('profile.toast.teachingContextSaved'));
         }
       } else {
         dispatch(fetchLearningHubHome());
-        toast.success('Teaching context saved successfully.');
+        toast.success(t('profile.toast.teachingContextSaved'));
       }
       setInitialContextForm({ ...contextForm });
     }
@@ -559,7 +549,7 @@ const Profile = () => {
 
     if (!preflightProfileChange.fulfilled.match(preflightAction)) {
       // Preflight failed — fall back to direct save with a warning toast
-      toast.info('Impact check unavailable — saving directly.');
+      toast.info(t('profile.toast.preflightUnavailable'));
       await executeTeachingContextSave(payload);
       return;
     }
@@ -574,7 +564,7 @@ const Profile = () => {
 
     if (preflight.severity === 'minor_recompute' && preflight.changed_fields.length > 0) {
       // Non-blocking info toast, then save
-      toast.info('Profile saved. Your recommendations will update in the background.');
+      toast.info(t('profile.toast.profileSavedBackground'));
     }
 
     await executeTeachingContextSave(payload, preflight.severity);
@@ -636,12 +626,12 @@ const Profile = () => {
     e.preventDefault();
 
     if (!validateForm()) {
-      toast.error('Please fix the errors in the form');
+      toast.error(t('profile.validation.fixFormErrors'));
       return;
     }
 
     if (!hasChanges()) {
-      toast.info('No changes to save');
+      toast.info(t('profile.validation.noChanges'));
       return;
     }
 
@@ -729,9 +719,9 @@ const Profile = () => {
             }));
           }
           
-          toast.success(response.message || 'Email updated successfully! Please check your new email for verification.');
+          toast.success(response.message || t('profile.toast.emailUpdated'));
         } else {
-          toast.success('Profile updated successfully!');
+          toast.success(t('profile.toast.profileUpdated'));
         }
         
         // Clear form state
@@ -771,18 +761,18 @@ const Profile = () => {
           }
         }
       } else {
-        const errorMessage = result?.payload || error || 'Failed to update profile';
+        const errorMessage = result?.payload || error || t('profile.toast.updateFailed');
         if (typeof errorMessage === 'string') {
           toast.error(errorMessage);
         } else if (errorMessage?.detail) {
           toast.error(errorMessage.detail);
         } else {
-          toast.error('Failed to update profile. Please try again.');
+          toast.error(t('profile.toast.updateFailedRetry'));
         }
       }
     } catch (err) {
       console.error('Profile update error:', err);
-      toast.error('An unexpected error occurred. Please try again.');
+      toast.error(t('profile.toast.unexpectedError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -793,7 +783,7 @@ const Profile = () => {
     e.preventDefault();
 
     if (!validatePasswordForm()) {
-      toast.error('Please fix the errors in the form');
+      toast.error(t('profile.validation.fixFormErrors'));
       return;
     }
 
@@ -806,7 +796,7 @@ const Profile = () => {
       }));
 
       if (result?.meta?.requestStatus === 'fulfilled') {
-        toast.success('Password changed successfully!');
+        toast.success(t('profile.toast.passwordChanged'));
         setPasswordData({
           current_password: '',
           new_password: '',
@@ -814,18 +804,18 @@ const Profile = () => {
         });
         setPasswordErrors({});
       } else {
-        const errorMessage = result?.payload || 'Failed to change password';
+        const errorMessage = result?.payload || t('profile.toast.passwordChangeFailed');
         if (typeof errorMessage === 'string') {
           toast.error(errorMessage);
         } else if (errorMessage?.detail) {
           toast.error(errorMessage.detail);
         } else {
-          toast.error('Failed to change password. Please try again.');
+          toast.error(t('profile.toast.passwordChangeFailedRetry'));
         }
       }
     } catch (err) {
       console.error('Password change error:', err);
-      toast.error('An unexpected error occurred. Please try again.');
+      toast.error(t('profile.toast.unexpectedError'));
     } finally {
       setIsChangingPassword(false);
     }
@@ -837,7 +827,7 @@ const Profile = () => {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading profile...</p>
+          <p className="text-gray-600">{t('profile.loading')}</p>
         </div>
       </div>
     );
@@ -848,12 +838,12 @@ const Profile = () => {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <p className="text-danger mb-4">Failed to load profile data</p>
+          <p className="text-danger mb-4">{t('profile.loadFailed')}</p>
           <CustomButton
             onClick={() => dispatch(getProfileDetails())}
             className="!bg-primary !text-white"
           >
-            Retry
+            {t('profile.retry')}
           </CustomButton>
         </div>
       </div>
@@ -877,21 +867,21 @@ const Profile = () => {
         <div className="flex items-center justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-2xl font-bold text-gray-900">Profile Settings</h1>
+              <h1 className="text-2xl font-bold text-gray-900">{t('profile.title')}</h1>
               {formattedRole && formattedRole.trim() && (
                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${roleBadgeColor || 'bg-gray-100 text-gray-700'}`}>
                   {formattedRole}
                 </span>
               )}
             </div>
-            <p className="text-sm text-gray-500 mt-1">Manage your account information and security</p>
+            <p className="text-sm text-gray-500 mt-1">{t('profile.subtitle')}</p>
           </div>
         </div>
       </div>
 
       {PERSONALIZATION_ENABLED && hubSyncStatus === 'updating' && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-sm text-blue-900">
-          Updating recommendations for your Professional Learning Hub…
+          {t('profile.hubSync.updating')}
         </div>
       )}
       {PERSONALIZATION_ENABLED && hubSyncStatus === 'failed' && hubSyncError && (
@@ -902,7 +892,7 @@ const Profile = () => {
             onClick={() => dispatch(fetchLearningHubSlate())}
             className="text-sm font-medium text-amber-900 underline"
           >
-            Refresh hub data
+            {t('profile.hubSync.refreshHubData')}
           </button>
         </div>
       )}
@@ -921,7 +911,7 @@ const Profile = () => {
             >
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4" />
-                Account & Security
+                {t('profile.tabs.account')}
               </div>
             </button>
             {isStudent ? (
@@ -935,7 +925,7 @@ const Profile = () => {
               >
                 <div className="flex items-center gap-2">
                   <BookOpen className="w-4 h-4" />
-                  Student Profile
+                  {t('profile.tabs.studentProfile')}
                 </div>
               </button>
             ) : (
@@ -949,7 +939,7 @@ const Profile = () => {
               >
                 <div className="flex items-center gap-2">
                   <BookOpen className="w-4 h-4" />
-                  Teaching Profile
+                  {t('profile.tabs.teachingProfile')}
                 </div>
               </button>
             )}
@@ -965,12 +955,12 @@ const Profile = () => {
               {learningHubHome?.profile_completeness != null && (
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                   <p className="text-sm font-medium text-gray-700">
-                    Profile completeness: {Math.round((learningHubHome.profile_completeness?.score ?? 0) * 100)}%
+                    {t('profile.completeness.label', { percent: Math.round((learningHubHome.profile_completeness?.score ?? 0) * 100) })}
                   </p>
                   {Array.isArray(learningHubHome.profile_completeness?.missing_fields) &&
                     learningHubHome.profile_completeness.missing_fields.length > 0 && (
                     <p className="text-xs text-gray-600 mt-1">
-                      Complete these to improve AI recommendations:{' '}
+                      {t('profile.completeness.missingHint')}{' '}
                       {learningHubHome.profile_completeness.missing_fields
                         .map((f) => f.replace(/_/g, ' '))
                         .join(', ')}
@@ -984,10 +974,9 @@ const Profile = () => {
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
                   <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
                   <div className="flex-1">
-                    <h3 className="text-sm font-semibold text-amber-900 mb-1">Email Change Notice</h3>
+                    <h3 className="text-sm font-semibold text-amber-900 mb-1">{t('profile.emailWarning.title')}</h3>
                     <p className="text-sm text-amber-700">
-                      Changing your email address will send a verification email to your new address. 
-                      Please check your new email and verify it to complete the change. You'll stay logged in.
+                      {t('profile.emailWarning.body')}
                     </p>
                   </div>
                   <button
@@ -1001,19 +990,19 @@ const Profile = () => {
                     }}
                     className="text-amber-700 hover:text-amber-900 text-sm font-medium"
                   >
-                    Cancel
+                    {t('profile.emailWarning.cancel')}
                   </button>
                 </div>
               )}
 
               {/* Profile Picture Section */}
               <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Profile Picture</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('profile.profilePicture.title')}</h2>
                 <ProfilePictureUpload
                   firstName={(() => {
                     // Use full name for initials: first_name + last_name
                     const fullName = `${formData.first_name || ''} ${formData.last_name || ''}`.trim();
-                    return fullName || profileDetails?.full_name || profileDetails?.username || user?.full_name || user?.username || profileDetails?.first_name || 'User';
+                    return fullName || profileDetails?.full_name || profileDetails?.username || user?.full_name || user?.username || profileDetails?.first_name || t('profile.defaultUser');
                   })()}
                   currentImageUrl={profilePictureUrl}
                   value={profilePictureFile}
@@ -1028,13 +1017,13 @@ const Profile = () => {
 
               {/* Personal Information Section */}
               <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                <h2 className="text-lg font-semibold text-gray-900 mb-6">Personal Information</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-6">{t('profile.personalInfo.title')}</h2>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* First Name */}
                   <div>
                     <CustomInput
-                      label="First Name"
+                      label={t('profile.personalInfo.firstName')}
                       name="first_name"
                       value={formData.first_name}
                       onChange={handleChange}
@@ -1042,7 +1031,7 @@ const Profile = () => {
                       errorMsg={formErrors.first_name}
                       required
                       disabled={isSubmitting || loading}
-                      placeholder="Enter your first name"
+                      placeholder={t('profile.personalInfo.firstNamePlaceholder')}
                       icon={<User className="w-4 h-4" />}
                     />
                   </div>
@@ -1050,7 +1039,7 @@ const Profile = () => {
                   {/* Last Name */}
                   <div>
                     <CustomInput
-                      label="Last Name"
+                      label={t('profile.personalInfo.lastName')}
                       name="last_name"
                       value={formData.last_name}
                       onChange={handleChange}
@@ -1058,7 +1047,7 @@ const Profile = () => {
                       errorMsg={formErrors.last_name}
                       required
                       disabled={isSubmitting || loading}
-                      placeholder="Enter your last name"
+                      placeholder={t('profile.personalInfo.lastNamePlaceholder')}
                       icon={<User className="w-4 h-4" />}
                     />
                   </div>
@@ -1066,7 +1055,7 @@ const Profile = () => {
                   {/* Email */}
                   <div>
                     <CustomInput
-                      label="Email Address"
+                      label={t('profile.personalInfo.email')}
                       name="email"
                       type="email"
                       value={formData.email}
@@ -1075,7 +1064,7 @@ const Profile = () => {
                       errorMsg={formErrors.email}
                       required
                       disabled={isSubmitting || loading}
-                      placeholder="Enter your email"
+                      placeholder={t('profile.personalInfo.emailPlaceholder')}
                       icon={<Mail className="w-4 h-4" />}
                     />
                   </div>
@@ -1083,7 +1072,7 @@ const Profile = () => {
                   {/* Phone */}
                   <div>
                     <CustomInput
-                      label="Phone Number"
+                      label={t('profile.personalInfo.phone')}
                       name="phone"
                       type="tel"
                       value={formData.phone}
@@ -1091,7 +1080,7 @@ const Profile = () => {
                       error={!!formErrors.phone}
                       errorMsg={formErrors.phone}
                       disabled={isSubmitting || loading}
-                      placeholder="Enter your phone number"
+                      placeholder={t('profile.personalInfo.phonePlaceholder')}
                       icon={<Phone className="w-4 h-4" />}
                     />
                   </div>
@@ -1099,17 +1088,17 @@ const Profile = () => {
                   {/* Username */}
                   <div className="md:col-span-2">
                     <CustomInput
-                      label="Username"
+                      label={t('profile.personalInfo.username')}
                       name="username"
                       value={formData.username}
                       onChange={handleChange}
                       error={!!formErrors.username}
                       errorMsg={formErrors.username}
                       disabled={isSubmitting || loading}
-                      placeholder="Enter your username (optional)"
+                      placeholder={t('profile.personalInfo.usernamePlaceholder')}
                       icon={<AtSign className="w-4 h-4" />}
                     />
-                    <p className="text-xs text-gray-500 mt-1 ml-1">Choose a unique username for your profile</p>
+                    <p className="text-xs text-gray-500 mt-1 ml-1">{t('profile.personalInfo.usernameHint')}</p>
                   </div>
                 </div>
               </div>
@@ -1146,7 +1135,7 @@ const Profile = () => {
                   variant="outlined"
                   className="!h-10 !min-w-[120px] !rounded-lg !border-gray-300 !text-gray-700 hover:!bg-gray-50"
                 >
-                  Cancel
+                  {t('profile.actions.cancel')}
                 </CustomButton>
                 
                 <CustomButton
@@ -1155,16 +1144,16 @@ const Profile = () => {
                   loading={isSubmitting}
                   className="!h-10 !min-w-[140px] !rounded-lg !bg-primary !text-white hover:!bg-primary-dark"
                 >
-                  {isSubmitting ? 'Updating...' : 'Update Profile'}
+                  {isSubmitting ? t('profile.actions.updating') : t('profile.actions.updateProfile')}
                 </CustomButton>
               </div>
             </form>
             <form onSubmit={handlePasswordSubmit} className="space-y-6 w-full bg-gray-50 rounded-lg p-6 border border-gray-200 mt-2">
-              <h2 className="text-lg font-semibold text-gray-900">Change Password</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{t('profile.password.title')}</h2>
               <div className="space-y-6">
                 {/* Current Password */}
                 <CustomInput
-                  label="Current Password"
+                  label={t('profile.password.current')}
                   name="current_password"
                   type="password"
                   value={passwordData.current_password}
@@ -1173,13 +1162,13 @@ const Profile = () => {
                   errorMsg={passwordErrors.current_password}
                   required
                   disabled={isChangingPassword || updatePasswordLoading}
-                  placeholder="Enter your current password"
+                  placeholder={t('profile.password.currentPlaceholder')}
                   icon={<Lock className="w-4 h-4" />}
                 />
 
                 {/* New Password */}
                 <CustomInput
-                  label="New Password"
+                  label={t('profile.password.new')}
                   name="new_password"
                   type="password"
                   value={passwordData.new_password}
@@ -1188,7 +1177,7 @@ const Profile = () => {
                   errorMsg={passwordErrors.new_password}
                   required
                   disabled={isChangingPassword || updatePasswordLoading}
-                  placeholder="Enter your new password"
+                  placeholder={t('profile.password.newPlaceholder')}
                   icon={<Lock className="w-4 h-4" />}
                 />
 
@@ -1196,24 +1185,24 @@ const Profile = () => {
                   <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
                     <div className="flex items-center gap-2">
                       <AlertCircle className="h-4 w-4 text-gray-600" />
-                      <h3 className="text-sm font-semibold text-gray-900">Password Requirements</h3>
+                      <h3 className="text-sm font-semibold text-gray-900">{t('profile.password.requirementsTitle')}</h3>
                     </div>
                     <ul className="mt-3 grid gap-1.5 text-sm text-gray-700 sm:grid-cols-2">
                       <li className="flex items-start gap-2">
                         <span className="mt-1 h-1.5 w-1.5 rounded-full bg-gray-500" />
-                        <span>At least 10 characters</span>
+                        <span>{t('profile.password.reqMinLength')}</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="mt-1 h-1.5 w-1.5 rounded-full bg-gray-500" />
-                        <span>Uppercase and lowercase letters</span>
+                        <span>{t('profile.password.reqCase')}</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="mt-1 h-1.5 w-1.5 rounded-full bg-gray-500" />
-                        <span>At least one number</span>
+                        <span>{t('profile.password.reqNumber')}</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="mt-1 h-1.5 w-1.5 rounded-full bg-gray-500" />
-                        <span>At least one special character</span>
+                        <span>{t('profile.password.reqSpecial')}</span>
                       </li>
                     </ul>
                   </div>
@@ -1221,7 +1210,7 @@ const Profile = () => {
 
                 {/* Confirm Password */}
                 <CustomInput
-                  label="Confirm New Password"
+                  label={t('profile.password.confirm')}
                   name="confirm_password"
                   type="password"
                   value={passwordData.confirm_password}
@@ -1230,7 +1219,7 @@ const Profile = () => {
                   errorMsg={passwordErrors.confirm_password}
                   required
                   disabled={isChangingPassword || updatePasswordLoading}
-                  placeholder="Confirm your new password"
+                  placeholder={t('profile.password.confirmPlaceholder')}
                   icon={<Lock className="w-4 h-4" />}
                 />
               </div>
@@ -1255,7 +1244,7 @@ const Profile = () => {
                   variant="outlined"
                   className="!h-10 !min-w-[120px] !rounded-lg !border-gray-300 !text-gray-700 hover:!bg-gray-50"
                 >
-                  Clear
+                  {t('profile.password.clear')}
                 </CustomButton>
                 
                 <CustomButton
@@ -1268,7 +1257,7 @@ const Profile = () => {
                   loading={isChangingPassword || updatePasswordLoading}
                   className="!h-10 !min-w-[140px] !rounded-lg !bg-primary !text-white hover:!bg-primary-dark"
                 >
-                  {isChangingPassword || updatePasswordLoading ? 'Changing...' : 'Change Password'}
+                  {isChangingPassword || updatePasswordLoading ? t('profile.password.changing') : t('profile.password.change')}
                 </CustomButton>
               </div>
             </form>
@@ -1281,10 +1270,10 @@ const Profile = () => {
               <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                 <div className="flex items-center gap-2 mb-2">
                   <BookOpen className="w-5 h-5 text-gray-700" />
-                  <h2 className="text-lg font-semibold text-gray-900">Student Profile</h2>
+                  <h2 className="text-lg font-semibold text-gray-900">{t('profile.studentProfile.title')}</h2>
                 </div>
                 <p className="text-sm text-gray-500 mb-4">
-                  This profile is used for student onboarding context (stored locally in Phase 1).
+                  {t('profile.studentProfile.subtitle')}
                 </p>
 
                 {(() => {
@@ -1309,10 +1298,10 @@ const Profile = () => {
                       localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
                       localStorage.setItem(CLASSES_KEY, JSON.stringify(classes));
                       localStorage.setItem(GOALS_KEY, JSON.stringify(goals));
-                      toast('Student profile saved (local demo).', 'success');
+                      toast(t('profile.toast.studentProfileSaved'), 'success');
                     } catch (err) {
                       console.error(err);
-                      toast('Failed to save student profile.', 'error');
+                      toast(t('profile.toast.studentProfileSaveFailed'), 'error');
                     }
                   };
 
@@ -1320,58 +1309,58 @@ const Profile = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <CustomInput
-                          label="Name"
+                          label={t('profile.studentProfile.name')}
                           name="student_name"
                           value={profile.name || ''}
                           onChange={(e) => {
                             profile = { ...profile, name: e.target.value };
                           }}
-                          placeholder="Alex"
+                          placeholder={t('profile.studentProfile.namePlaceholder')}
                           icon={<User className="w-4 h-4" />}
                         />
                       </div>
                       <div>
                         <CustomInput
-                          label="Grade / Level"
+                          label={t('profile.studentProfile.gradeLevel')}
                           name="student_grade"
                           value={profile.gradeLevel || ''}
                           onChange={(e) => {
                             profile = { ...profile, gradeLevel: e.target.value };
                           }}
-                          placeholder="Grade 10"
+                          placeholder={t('profile.studentProfile.gradePlaceholder')}
                         />
                       </div>
                       <div className="md:col-span-2">
                         <CustomInput
-                          label="Timezone"
+                          label={t('profile.studentProfile.timezone')}
                           name="student_timezone"
                           value={profile.timezone || ''}
                           onChange={(e) => {
                             profile = { ...profile, timezone: e.target.value };
                           }}
-                          placeholder="America/New_York"
+                          placeholder={t('profile.studentProfile.timezonePlaceholder')}
                         />
                       </div>
                       <div className="md:col-span-2">
                         <CustomInput
-                          label="Classes"
+                          label={t('profile.studentProfile.classes')}
                           name="student_classes"
                           value={classes.classes || ''}
                           onChange={(e) => {
                             classes = { classes: e.target.value };
                           }}
-                          placeholder="Math, Biology, English…"
+                          placeholder={t('profile.studentProfile.classesPlaceholder')}
                         />
                       </div>
                       <div className="md:col-span-2">
                         <CustomInput
-                          label="Goals"
+                          label={t('profile.studentProfile.goals')}
                           name="student_goals"
                           value={goals.goals || ''}
                           onChange={(e) => {
                             goals = { goals: e.target.value };
                           }}
-                          placeholder="Improve algebra, prepare for next week’s exam…"
+                          placeholder={t('profile.studentProfile.goalsPlaceholder')}
                         />
                       </div>
 
@@ -1381,7 +1370,7 @@ const Profile = () => {
                           onClick={() => {
                             try {
                               localStorage.removeItem('tutify_student_onboarding_completed');
-                              toast('Onboarding will show again next time.', 'success');
+                              toast(t('profile.toast.onboardingReset'), 'success');
                             } catch (e) {
                               void e;
                             }
@@ -1389,7 +1378,7 @@ const Profile = () => {
                           variant="outlined"
                           className="!h-10 !min-w-[170px] !rounded-lg !border-gray-300 !text-gray-700 hover:!bg-gray-50"
                         >
-                          Reset onboarding
+                          {t('profile.studentProfile.resetOnboarding')}
                         </CustomButton>
 
                         <CustomButton
@@ -1397,7 +1386,7 @@ const Profile = () => {
                           onClick={save}
                           className="!h-10 !min-w-[150px] !rounded-lg !bg-primary !text-white hover:!bg-primary-dark"
                         >
-                          Save student profile
+                          {t('profile.studentProfile.save')}
                         </CustomButton>
                       </div>
                     </div>
@@ -1413,10 +1402,10 @@ const Profile = () => {
               <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                 <div className="flex items-center gap-2 mb-2">
                   <BookOpen className="w-5 h-5 text-gray-700" />
-                  <h2 className="text-lg font-semibold text-gray-900">Teaching Context</h2>
+                  <h2 className="text-lg font-semibold text-gray-900">{t('profile.teachingContext.title')}</h2>
                 </div>
                 <p className="text-sm text-gray-500 mb-4">
-                  Completing your teaching context improves your Learning Hub recommendations.
+                  {t('profile.teachingContext.subtitle')}
                 </p>
                 {contextError && (
                   <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700">
@@ -1425,41 +1414,41 @@ const Profile = () => {
                 )}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <SelectDropdown label="Country" name="country" value={contextForm.country} onChange={handleContextChange} options={countries || []} disabled={metadataLoading} error={!!contextFormErrors.country} errorMsg={contextFormErrors.country} required placeholder="Select country" />
+                    <SelectDropdown label={t('profile.teachingContext.country')} name="country" value={contextForm.country} onChange={handleContextChange} options={countries || []} disabled={metadataLoading} error={!!contextFormErrors.country} errorMsg={contextFormErrors.country} required placeholder={t('profile.teachingContext.selectCountry')} />
                   </div>
                   <div>
-                    <SelectDropdown label="Region" name="region" value={contextForm.region} onChange={handleContextChange} options={regions || []} disabled={metadataLoading || regionsLoading || !contextForm.country} error={!!contextFormErrors.region} errorMsg={contextFormErrors.region} required placeholder={!contextForm.country ? 'Select country first' : 'Select region'} />
+                    <SelectDropdown label={t('profile.teachingContext.region')} name="region" value={contextForm.region} onChange={handleContextChange} options={regions || []} disabled={metadataLoading || regionsLoading || !contextForm.country} error={!!contextFormErrors.region} errorMsg={contextFormErrors.region} required placeholder={!contextForm.country ? t('profile.teachingContext.selectCountryFirst') : t('profile.teachingContext.selectRegion')} />
                   </div>
                   <div>
-                    <SelectDropdown label="School type" name="school_type" value={contextForm.school_type} onChange={handleContextChange} options={schoolTypes || []} disabled={metadataLoading} error={!!contextFormErrors.school_type} errorMsg={contextFormErrors.school_type} required placeholder="Select school type" />
+                    <SelectDropdown label={t('profile.teachingContext.schoolType')} name="school_type" value={contextForm.school_type} onChange={handleContextChange} options={schoolTypes || []} disabled={metadataLoading} error={!!contextFormErrors.school_type} errorMsg={contextFormErrors.school_type} required placeholder={t('profile.teachingContext.selectSchoolType')} />
                   </div>
                   <div>
-                    <SelectDropdown label="Grade band" name="grade_band" value={contextForm.grade_band} onChange={handleContextChange} options={gradeBands || []} disabled={metadataLoading} error={!!contextFormErrors.grade_band} errorMsg={contextFormErrors.grade_band} required placeholder="Select grade band" />
+                    <SelectDropdown label={t('profile.teachingContext.gradeBand')} name="grade_band" value={contextForm.grade_band} onChange={handleContextChange} options={gradeBands || []} disabled={metadataLoading} error={!!contextFormErrors.grade_band} errorMsg={contextFormErrors.grade_band} required placeholder={t('profile.teachingContext.selectGradeBand')} />
                   </div>
                   <div className="md:col-span-2">
-                    <SelectDropdown label="Subjects" name="subjects" value={contextForm.subjects} onChange={handleContextChange} options={subjects || []} multiSelect disabled={metadataLoading} error={!!contextFormErrors.subjects} errorMsg={contextFormErrors.subjects} required placeholder="Select at least one subject" />
+                    <SelectDropdown label={t('profile.teachingContext.subjects')} name="subjects" value={contextForm.subjects} onChange={handleContextChange} options={subjects || []} multiSelect disabled={metadataLoading} error={!!contextFormErrors.subjects} errorMsg={contextFormErrors.subjects} required placeholder={t('profile.teachingContext.selectSubjects')} />
                   </div>
                   <div>
-                    <SelectDropdown label="Language preference" name="language_preference" value={contextForm.language_preference} onChange={handleContextChange} options={languages || []} disabled={metadataLoading} error={!!contextFormErrors.language_preference} errorMsg={contextFormErrors.language_preference} required placeholder="Select language" />
+                    <SelectDropdown label={t('profile.teachingContext.languagePreference')} name="language_preference" value={contextForm.language_preference} onChange={handleContextChange} options={languages || []} disabled={metadataLoading} error={!!contextFormErrors.language_preference} errorMsg={contextFormErrors.language_preference} required placeholder={t('profile.teachingContext.selectLanguage')} />
                   </div>
                   <div>
-                    <SelectDropdown label="Curriculum framework" name="curriculum_framework" value={contextForm.curriculum_framework} onChange={handleContextChange} options={curriculums || []} disabled={metadataLoading} placeholder="Select (optional)" />
+                    <SelectDropdown label={t('profile.teachingContext.curriculumFramework')} name="curriculum_framework" value={contextForm.curriculum_framework} onChange={handleContextChange} options={curriculums || []} disabled={metadataLoading} placeholder={t('profile.teachingContext.selectOptional')} />
                   </div>
                   <div>
-                    <SelectDropdown label="Years of experience" name="years_experience" value={contextForm.years_experience} onChange={handleContextChange} options={yearsExperience || []} disabled={metadataLoading} placeholder="Select (optional)" />
+                    <SelectDropdown label={t('profile.teachingContext.yearsExperience')} name="years_experience" value={contextForm.years_experience} onChange={handleContextChange} options={yearsExperience || []} disabled={metadataLoading} placeholder={t('profile.teachingContext.selectOptional')} />
                   </div>
                   <div>
-                    <CustomInput label="School name" name="school_name" value={contextForm.school_name} onChange={(e) => handleContextChange({ target: { name: 'school_name', value: e.target.value } })} disabled={contextSaving} placeholder="Optional" icon={<BookOpen className="w-4 h-4" />} />
+                    <CustomInput label={t('profile.teachingContext.schoolName')} name="school_name" value={contextForm.school_name} onChange={(e) => handleContextChange({ target: { name: 'school_name', value: e.target.value } })} disabled={contextSaving} placeholder={t('profile.teachingContext.optional')} icon={<BookOpen className="w-4 h-4" />} />
                   </div>
                   <div>
-                    <CustomInput label="City" name="city" value={contextForm.city} onChange={(e) => handleContextChange({ target: { name: 'city', value: e.target.value } })} disabled={contextSaving} placeholder="Optional" />
+                    <CustomInput label={t('profile.teachingContext.city')} name="city" value={contextForm.city} onChange={(e) => handleContextChange({ target: { name: 'city', value: e.target.value } })} disabled={contextSaving} placeholder={t('profile.teachingContext.optional')} />
                   </div>
                   <div>
-                    <CustomInput label="Postal code" name="postal_code" value={contextForm.postal_code} onChange={(e) => handleContextChange({ target: { name: 'postal_code', value: e.target.value } })} disabled={contextSaving} placeholder="Optional" />
+                    <CustomInput label={t('profile.teachingContext.postalCode')} name="postal_code" value={contextForm.postal_code} onChange={(e) => handleContextChange({ target: { name: 'postal_code', value: e.target.value } })} disabled={contextSaving} placeholder={t('profile.teachingContext.optional')} />
                   </div>
                   <div className="md:col-span-2">
                     <CustomInput
-                      label="Professional goals"
+                      label={t('profile.teachingContext.professionalGoals')}
                       name="professional_goals"
                       value={Array.isArray(contextForm.professional_goals) ? contextForm.professional_goals.join(', ') : ''}
                       onChange={(e) => {
@@ -1468,7 +1457,7 @@ const Profile = () => {
                         handleContextChange({ target: { name: 'professional_goals', value: arr } });
                       }}
                       disabled={contextSaving}
-                      placeholder="Comma-separated (e.g. classroom management, differentiation)"
+                      placeholder={t('profile.teachingContext.goalsPlaceholder')}
                     />
                   </div>
                 </div>
@@ -1479,7 +1468,7 @@ const Profile = () => {
                     disabled={contextSaving || metadataLoading || !hasContextChanges()}
                     className="!h-10 !min-w-[170px] !rounded-lg !bg-primary !text-white hover:!bg-primary-dark"
                   >
-                    {contextSaving ? 'Saving…' : 'Save teaching context'}
+                    {contextSaving ? t('profile.teachingContext.saving') : t('profile.teachingContext.save')}
                   </CustomButton>
                 </div>
               </div>

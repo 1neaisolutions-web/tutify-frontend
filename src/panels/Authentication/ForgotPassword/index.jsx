@@ -9,8 +9,10 @@ import { isEmpty, validateEmail } from '../../../utils/utils';
 import { forgotPassword } from '../../../redux/features/auth/authSlice';
 import { useSnackbar } from '../../../hooks/useSnackbar';
 import { CustomButton, CustomInput } from '../../../components/shared';
+import { useTranslation } from 'react-i18next';
 
 export const ForgotPassword = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { toast } = useSnackbar();
@@ -34,9 +36,9 @@ export const ForgotPassword = () => {
     let newErrors = {};
 
     if (!email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = t('forgotPassword.validation.emailRequired');
     } else if (!validateEmail(email)) {
-      newErrors.email = 'Invalid Email';
+      newErrors.email = t('forgotPassword.validation.emailInvalid');
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -51,15 +53,15 @@ export const ForgotPassword = () => {
       if (result?.meta?.requestStatus === 'fulfilled') {
         setLoading(false);
         setIsSubmitted(true);
-        toast.success('Password reset link sent to your email');
+        toast.success(t('snackbar.forgotPassword.success'));
       } else {
         setLoading(false);
-        toast.error(result?.payload || 'Failed to send reset link. Please try again.');
+        toast.error(result?.payload || t('snackbar.forgotPassword.error'));
       }
     } catch (err) {
       setLoading(false);
       console.error('Forgot password failed:', err);
-      toast.error('An error occurred. Please try again.');
+      toast.error(t('snackbar.genericError'));
     }
   };
 
@@ -82,18 +84,18 @@ export const ForgotPassword = () => {
               />
             </svg>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Check your email</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('forgotPassword.successTitle')}</h1>
           <p className="text-gray-600">
-            We've sent a password reset link to <strong>{email}</strong>
+            {t('forgotPassword.successMessage', { email })}
           </p>
         </div>
 
         <div className="card text-center">
           <p className="text-gray-600 mb-6">
-            Please check your email and follow the instructions to reset your password.
+            {t('forgotPassword.successInstructions')}
           </p>
           <Link to="/login" className="btn-primary inline-block">
-            Back to Sign in
+            {t('forgotPassword.backToLogin')}
           </Link>
         </div>
       </AuthLayout>
@@ -106,19 +108,19 @@ export const ForgotPassword = () => {
         <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-full mb-4">
           <GraduationCap className="w-8 h-8 text-white" />
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Forgot Password?</h1>
-        <p className="text-gray-600">No worries, we'll send you reset instructions.</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('forgotPassword.title')}</h1>
+        <p className="text-gray-600">{t('forgotPassword.subtitle')}</p>
       </div>
 
       <div className="card">
         <form onSubmit={handleSubmit} className="space-y-6">
           <CustomInput
-            label="Email Address"
+            label={t('forgotPassword.emailLabel')}
             name="email"
             type="email"
             value={email}
             onChange={handleChange}
-            placeholder="you@example.com"
+            placeholder={t('forgotPassword.emailPlaceholder')}
             error={!!errors.email}
             errorMsg={errors.email}
             required
@@ -129,7 +131,7 @@ export const ForgotPassword = () => {
             disabled={loading || !email}
             className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Sending...' : 'Reset Password'}
+            {loading ? t('forgotPassword.submitting') : t('forgotPassword.submit')}
           </button>
         </form>
 
@@ -139,7 +141,7 @@ export const ForgotPassword = () => {
             className="inline-flex items-center text-sm text-primary-600 hover:text-primary-700 font-medium"
           >
             <ArrowLeft className="w-4 h-4 mr-1" />
-            Back to Sign in
+            {t('forgotPassword.backToLogin')}
           </Link>
         </div>
       </div>

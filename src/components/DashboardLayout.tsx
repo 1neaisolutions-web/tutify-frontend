@@ -58,6 +58,7 @@ import ActivateCreditsModal from './ActivateCreditsModal'
 import { creditBalanceUiPercents } from '../utils/creditBalanceUi'
 import { formatDate, formatNumber } from '../lib/i18n/format'
 import { useTranslation } from 'react-i18next'
+import { tText } from '../i18n/tText'
 
 type MenuItem = {
   path: string
@@ -75,30 +76,6 @@ type MenuItem = {
 interface DashboardLayoutProps {
   children: React.ReactNode
 }
-
-// Helper function to format role name professionally
-const formatRoleName = (role: string | null | undefined): string => {
-  if (!role) return '';
-  
-  const roleStr = typeof role === 'string' ? role : role.toString();
-  
-  // Map role names to display format
-  const roleMap: Record<string, string> = {
-    'super_admin': 'Super Admin',
-    'org_admin': 'Organization Admin',
-    'organization_admin': 'Organization Admin',
-    'school_admin': 'School Admin',
-    'institution_admin': 'Institution Admin',
-    'teacher': 'Teacher',
-    'student': 'Student',
-    'parent': 'Parent',
-  };
-  
-  return roleMap[roleStr.toLowerCase()] || roleStr
-    .split('_')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-};
 
 // Helper function to get role badge color
 const getRoleBadgeColor = (role: string | null | undefined): string => {
@@ -168,6 +145,27 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const formatRoleName = (role: string | null | undefined): string => {
+    if (!role) return ''
+    const roleStr = typeof role === 'string' ? role : role.toString()
+    const roleMap: Record<string, string> = {
+      super_admin: t('layout.roles.superAdmin'),
+      org_admin: t('layout.roles.orgAdmin'),
+      organization_admin: t('layout.roles.orgAdmin'),
+      school_admin: t('layout.roles.schoolAdmin'),
+      institution_admin: t('layout.roles.institutionAdmin'),
+      teacher: t('layout.roles.teacher'),
+      student: t('layout.roles.student'),
+      parent: t('layout.roles.parent'),
+    }
+    return (
+      roleMap[roleStr.toLowerCase()] ||
+      roleStr
+        .split('_')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+    )
+  }
   const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({})
   const { profileDetails } = useSelector((state: any) => state.auth)
   const subscription = useSelector((state: any) => state.subscription)
@@ -214,8 +212,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
   const appName =
     String(getUserRole() || '').toLowerCase() === 'student'
-      ? t('app.studentName', 'Student Assistant')
-      : t('app.name')
+      ? tText(t, 'app.studentName', { defaultValue: 'Student Assistant' })
+      : tText(t, 'app.name', { defaultValue: 'Teacher Assistant' })
   
   // Load profile details and credit balance on mount
   useEffect(() => {
@@ -324,12 +322,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     return {
       path: item.path,
       icon: item.icon,
-      label: item.i18nKey ? t(item.i18nKey) : item.text,
+      label: item.i18nKey ? tText(t, item.i18nKey, { defaultValue: item.text }) : item.text,
       iconColor: iconColors.color,
       iconBg: iconColors.bg,
       subItems: item.child?.map((childItem) => ({
         path: childItem.path,
-        label: childItem.i18nKey ? t(childItem.i18nKey) : childItem.text,
+        label: childItem.i18nKey ? tText(t, childItem.i18nKey, { defaultValue: childItem.text }) : childItem.text,
         icon: childItem.icon,
       })),
     }
@@ -564,8 +562,16 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                 <button
                   onClick={() => navigate('/settings?tab=plan')}
                   title={subscription.expiresAt
-                    ? `Expires ${formatDate(subscription.expiresAt, { month: 'short', day: 'numeric', year: 'numeric' })}`
-                    : subscription.autoRenew ? 'Auto-renewing' : undefined}
+                    ? t('credits.plan.expires', {
+                        date: formatDate(subscription.expiresAt, {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric',
+                        }),
+                      })
+                    : subscription.autoRenew
+                      ? t('credits.plan.autoRenewing')
+                      : undefined}
                   className={`flex items-center gap-2 rounded-xl border border-gray-200 bg-gradient-to-r ${bgColor} px-4 py-2 transition hover:shadow-sm`}
                 >
                   <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${iconColor}`}>
@@ -831,7 +837,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                       || user?.username
                       || profileDetails?.email?.split('@')[0]
                       || user?.email?.split('@')[0]
-                      || 'User';
+                      || t('layout.defaultUser');
                     
                     return (
                       <CustomAvatar
@@ -870,7 +876,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                             : null);
                         
                         // Only fallback to email if no name is available
-                        return displayName || profileDetails?.email || user?.email || 'User';
+                        return displayName || profileDetails?.email || user?.email || t('layout.defaultUser');
                       })()}
                     </p>
                     <p className="text-xs text-gray-500 truncate mt-0.5">
@@ -1007,7 +1013,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   || user?.username
                   || profileDetails?.email?.split('@')[0]
                   || user?.email?.split('@')[0]
-                  || 'User';
+                  || t('layout.defaultUser');
                 
                 return (
                   <CustomAvatar
@@ -1044,7 +1050,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                           : null);
                       
                       // Only fallback to email if no name is available
-                      return displayName || profileDetails?.email || user?.email || 'User';
+                      return displayName || profileDetails?.email || user?.email || t('layout.defaultUser');
                     })()}
                   </p>
                   <p className="text-xs text-gray-500 truncate mt-0.5">
@@ -1068,7 +1074,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   className="flex w-full items-center space-x-3 px-4 py-2 text-left text-gray-700 hover:bg-gray-100 transition-colors duration-200 cursor-pointer no-underline"
                 >
                   <User className="w-4 h-4 flex-shrink-0" />
-                  <span className="text-sm">Profile</span>
+                  <span className="text-sm">{t('nav.profile')}</span>
                 </Link>
                 <Link
                   to="/settings"

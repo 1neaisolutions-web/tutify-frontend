@@ -25,6 +25,7 @@ import {
   RefreshCw,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface MetacognitiveComponent {
   component: string
   description: string
@@ -42,6 +43,7 @@ interface Strategy {
 const METACOGNITION_SLUG = 'metacognition-research'
 
 function MetacognitionResearchInner() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [activeSection, setActiveSection] = useState<'overview' | 'components' | 'strategies' | 'reflection' | 'implementation'>('overview')
 
@@ -168,28 +170,19 @@ function MetacognitionResearchInner() {
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition"
           >
             <ArrowLeft className="h-5 w-5" />
-            <span className="text-sm font-semibold">Back to Learning Hub</span>
+            <span className="text-sm font-semibold">{t('metacognitionResearch.backToLearningHub')}</span>
           </button>
           <div className="bg-white rounded-3xl shadow-xl p-8 border border-green-100">
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-4">
-                  <span className="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold uppercase tracking-wide">
-                    Learning strategies
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold uppercase tracking-wide">{t('metacognitionResearch.learningStrategies')}</span>
                   <span className="text-gray-400">•</span>
                   <span className="text-sm text-gray-600 flex items-center gap-1">
-                    <Clock className="h-4 w-4" />
-                    8 min read
-                  </span>
+                    <Clock className="h-4 w-4" />{t('metacognitionResearch.kMinRead')}</span>
                 </div>
-                <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                  Metacognition: Teaching Students to Think About Thinking
-                </h1>
-                <p className="text-lg text-gray-700 leading-relaxed">
-                  Research-backed strategies for developing metacognitive skills that improve learning outcomes. 
-                  Based on John Flavell's foundational research on metacognition and self-regulated learning.
-                </p>
+                <h1 className="text-4xl font-bold text-gray-900 mb-4">{t('metacognitionResearch.metacognitionTeachingStudentsToThinkAboutThinking')}</h1>
+                <p className="text-lg text-gray-700 leading-relaxed">{t('metacognitionResearch.researchBackedStrategiesForDevelopingMetacognitiveSkill')}</p>
               </div>
               <div className="flex items-center gap-2 ml-6">
                 <button className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition">
@@ -237,43 +230,38 @@ function MetacognitionResearchInner() {
             <div className="space-y-6">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Brain className="h-6 w-6 text-green-600" />
-                  What is Metacognition?
-                </h2>
+                  <Brain className="h-6 w-6 text-green-600" />{t('metacognitionResearch.whatIsMetacognition')}</h2>
                 <div className="prose max-w-none text-gray-700 space-y-4">
-                  <p>
-                    Metacognition is "thinking about thinking" - the awareness and understanding of one's own thought processes. 
-                    It involves knowing what you know, knowing what you don't know, and knowing how to learn.
-                  </p>
+                  <p>{t('metacognitionResearch.metacognitionIsThinkingAboutThinkingTheAwarenessAndUnde')}</p>
                   <div className="bg-green-50 rounded-xl p-6 border border-green-200 mt-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Why Metacognition Matters</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('metacognitionResearch.whyMetacognitionMatters')}</h3>
                     <ul className="space-y-3">
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold text-gray-900">Improved Learning Outcomes</p>
-                          <p className="text-sm text-gray-700">Students who use metacognitive strategies perform better academically</p>
+                          <p className="font-semibold text-gray-900">{t('metacognitionResearch.improvedLearningOutcomes')}</p>
+                          <p className="text-sm text-gray-700">{t('metacognitionResearch.studentsWhoUseMetacognitiveStrategiesPerformBetterAcade')}</p>
                         </div>
                       </li>
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold text-gray-900">Transfer of Learning</p>
-                          <p className="text-sm text-gray-700">Metacognitive skills transfer across subjects and contexts</p>
+                          <p className="font-semibold text-gray-900">{t('metacognitionResearch.transferOfLearning')}</p>
+                          <p className="text-sm text-gray-700">{t('metacognitionResearch.metacognitiveSkillsTransferAcrossSubjectsAndContexts')}</p>
                         </div>
                       </li>
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold text-gray-900">Self-Regulated Learning</p>
-                          <p className="text-sm text-gray-700">Students become more independent and effective learners</p>
+                          <p className="font-semibold text-gray-900">{t('metacognitionResearch.selfRegulatedLearning')}</p>
+                          <p className="text-sm text-gray-700">{t('metacognitionResearch.studentsBecomeMoreIndependentAndEffectiveLearners')}</p>
                         </div>
                       </li>
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold text-gray-900">Lifelong Learning</p>
-                          <p className="text-sm text-gray-700">Metacognitive skills support learning throughout life</p>
+                          <p className="font-semibold text-gray-900">{t('metacognitionResearch.lifelongLearning')}</p>
+                          <p className="text-sm text-gray-700">{t('metacognitionResearch.metacognitiveSkillsSupportLearningThroughoutLife')}</p>
                         </div>
                       </li>
                     </ul>
@@ -283,9 +271,7 @@ function MetacognitionResearchInner() {
 
               <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200 p-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Target className="h-6 w-6 text-emerald-600" />
-                  The Metacognitive Cycle
-                </h2>
+                  <Target className="h-6 w-6 text-emerald-600" />{t('metacognitionResearch.theMetacognitiveCycle')}</h2>
                 <div className="grid md:grid-cols-4 gap-4">
                   {[
                     { step: 'Plan', icon: Target, bgColor: 'bg-blue-50', borderColor: 'border-blue-200', iconBg: 'bg-blue-100', iconColor: 'text-blue-600' },
@@ -304,9 +290,7 @@ function MetacognitionResearchInner() {
                     )
                   })}
                 </div>
-                <p className="text-sm text-gray-700 mt-4 text-center">
-                  Effective learners continuously cycle through planning, monitoring, evaluating, and adjusting their approach.
-                </p>
+                <p className="text-sm text-gray-700 mt-4 text-center">{t('metacognitionResearch.effectiveLearnersContinuouslyCycleThroughPlanningMonito')}</p>
               </div>
             </div>
           )}
@@ -314,7 +298,7 @@ function MetacognitionResearchInner() {
           {activeSection === 'components' && (
             <div className="space-y-6">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Three Components of Metacognition</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('metacognitionResearch.threeComponentsOfMetacognition')}</h2>
                 <div className="space-y-6">
                   {metacognitiveComponents.map((component, idx) => (
                     <div key={idx} className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition">
@@ -329,7 +313,7 @@ function MetacognitionResearchInner() {
                       </div>
                       <div className="grid md:grid-cols-2 gap-4">
                         <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                          <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">Examples</p>
+                          <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">{t('metacognitionResearch.examples')}</p>
                           <ul className="space-y-1">
                             {component.examples.map((example, exIdx) => (
                               <li key={exIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -340,7 +324,7 @@ function MetacognitionResearchInner() {
                           </ul>
                         </div>
                         <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-                          <p className="text-xs font-semibold text-green-700 uppercase tracking-wide mb-2">Teaching Strategies</p>
+                          <p className="text-xs font-semibold text-green-700 uppercase tracking-wide mb-2">{t('metacognitionResearch.teachingStrategies')}</p>
                           <ul className="space-y-1">
                             {component.teachingStrategies.map((strategy, stIdx) => (
                               <li key={stIdx} className="flex items-start gap-2 text-sm text-green-700">
@@ -361,7 +345,7 @@ function MetacognitionResearchInner() {
           {activeSection === 'strategies' && (
             <div className="space-y-6">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Teaching Strategies for Metacognition</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('metacognitionResearch.teachingStrategiesForMetacognition')}</h2>
                 <div className="space-y-6">
                   {strategies.map((strategy, idx) => (
                     <div key={idx} className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition">
@@ -373,7 +357,7 @@ function MetacognitionResearchInner() {
                           <h3 className="text-lg font-semibold text-gray-900 mb-2">{strategy.strategy}</h3>
                           <p className="text-gray-700 mb-4">{strategy.description}</p>
                           <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                            <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">Examples</p>
+                            <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">{t('metacognitionResearch.examples')}</p>
                             <ul className="space-y-2">
                               {strategy.examples.map((example, exIdx) => (
                                 <li key={exIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -384,7 +368,7 @@ function MetacognitionResearchInner() {
                             </ul>
                           </div>
                           <div className="bg-green-50 rounded-lg p-3 border border-green-200">
-                            <p className="text-xs font-semibold text-green-800 mb-1">Impact</p>
+                            <p className="text-xs font-semibold text-green-800 mb-1">{t('metacognitionResearch.impact')}</p>
                             <p className="text-sm text-green-700">{strategy.impact}</p>
                           </div>
                         </div>
@@ -399,47 +383,47 @@ function MetacognitionResearchInner() {
           {activeSection === 'reflection' && (
             <div className="space-y-6">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Reflection and Self-Assessment Tools</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('metacognitionResearch.reflectionAndSelfAssessmentTools')}</h2>
                 
                 <div className="space-y-6">
                   <div className="bg-green-50 rounded-xl p-6 border border-green-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Before Learning</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('metacognitionResearch.beforeLearning')}</h3>
                     <div className="bg-white rounded-lg p-4 border border-green-200">
-                      <p className="text-sm font-semibold text-gray-900 mb-2">Questions to Ask:</p>
+                      <p className="text-sm font-semibold text-gray-900 mb-2">{t('metacognitionResearch.questionsToAsk')}</p>
                       <ul className="space-y-1 text-sm text-gray-700">
-                        <li>• What do I already know about this topic?</li>
-                        <li>• What do I want to learn?</li>
-                        <li>• What strategies have worked for me before?</li>
-                        <li>• What might be challenging?</li>
-                        <li>• How will I know if I understand?</li>
+                        <li>{t('metacognitionResearch.whatDoIAlreadyKnowAboutThisTopic')}</li>
+                        <li>{t('metacognitionResearch.whatDoIWantToLearn')}</li>
+                        <li>{t('metacognitionResearch.whatStrategiesHaveWorkedForMeBefore')}</li>
+                        <li>{t('metacognitionResearch.whatMightBeChallenging')}</li>
+                        <li>{t('metacognitionResearch.howWillIKnowIfIUnderstand')}</li>
                       </ul>
                     </div>
                   </div>
 
                   <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">During Learning</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('metacognitionResearch.duringLearning')}</h3>
                     <div className="bg-white rounded-lg p-4 border border-blue-200">
-                      <p className="text-sm font-semibold text-gray-900 mb-2">Monitoring Questions:</p>
+                      <p className="text-sm font-semibold text-gray-900 mb-2">{t('metacognitionResearch.monitoringQuestions')}</p>
                       <ul className="space-y-1 text-sm text-gray-700">
-                        <li>• Do I understand what I'm reading/learning?</li>
-                        <li>• Am I making progress toward my goal?</li>
-                        <li>• Is my strategy working?</li>
-                        <li>• What do I need to clarify?</li>
-                        <li>• Should I try a different approach?</li>
+                        <li>{t('metacognitionResearch.doIUnderstandWhatIMReadingLearning')}</li>
+                        <li>{t('metacognitionResearch.amIMakingProgressTowardMyGoal')}</li>
+                        <li>{t('metacognitionResearch.isMyStrategyWorking')}</li>
+                        <li>{t('metacognitionResearch.whatDoINeedToClarify')}</li>
+                        <li>{t('metacognitionResearch.shouldITryADifferentApproach')}</li>
                       </ul>
                     </div>
                   </div>
 
                   <div className="bg-purple-50 rounded-xl p-6 border border-purple-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">After Learning</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('metacognitionResearch.afterLearning')}</h3>
                     <div className="bg-white rounded-lg p-4 border border-purple-200">
-                      <p className="text-sm font-semibold text-gray-900 mb-2">Reflection Questions:</p>
+                      <p className="text-sm font-semibold text-gray-900 mb-2">{t('metacognitionResearch.reflectionQuestions')}</p>
                       <ul className="space-y-1 text-sm text-gray-700">
-                        <li>• What did I learn?</li>
-                        <li>• What strategies helped me?</li>
-                        <li>• What was challenging and why?</li>
-                        <li>• What would I do differently next time?</li>
-                        <li>• How can I apply this learning?</li>
+                        <li>{t('metacognitionResearch.whatDidILearn')}</li>
+                        <li>{t('metacognitionResearch.whatStrategiesHelpedMe')}</li>
+                        <li>{t('metacognitionResearch.whatWasChallengingAndWhy')}</li>
+                        <li>{t('metacognitionResearch.whatWouldIDoDifferentlyNextTime')}</li>
+                        <li>{t('metacognitionResearch.howCanIApplyThisLearning')}</li>
                       </ul>
                     </div>
                   </div>
@@ -451,80 +435,74 @@ function MetacognitionResearchInner() {
           {activeSection === 'implementation' && (
             <div className="space-y-6">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Implementation Guide</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('metacognitionResearch.implementationGuide')}</h2>
                 
                 <div className="space-y-6">
                   <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                      <Target className="h-5 w-5 text-green-600" />
-                      Week 1-2: Foundation
-                    </h3>
+                      <Target className="h-5 w-5 text-green-600" />{t('metacognitionResearch.week12Foundation')}</h3>
                     <ul className="space-y-2 text-gray-700">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                        <span>Introduce the concept of metacognition</span>
+                        <span>{t('metacognitionResearch.introduceTheConceptOfMetacognition')}</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                        <span>Model think-alouds during instruction</span>
+                        <span>{t('metacognitionResearch.modelThinkAloudsDuringInstruction')}</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                        <span>Start using planning prompts before tasks</span>
+                        <span>{t('metacognitionResearch.startUsingPlanningPromptsBeforeTasks')}</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                        <span>Teach self-questioning strategies</span>
+                        <span>{t('metacognitionResearch.teachSelfQuestioningStrategies')}</span>
                       </li>
                     </ul>
                   </div>
 
                   <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                      <Target className="h-5 w-5 text-blue-600" />
-                      Week 3-4: Practice
-                    </h3>
+                      <Target className="h-5 w-5 text-blue-600" />{t('metacognitionResearch.week34Practice')}</h3>
                     <ul className="space-y-2 text-gray-700">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                        <span>Have students practice think-alouds</span>
+                        <span>{t('metacognitionResearch.haveStudentsPracticeThinkAlouds')}</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                        <span>Introduce reflection journals</span>
+                        <span>{t('metacognitionResearch.introduceReflectionJournals')}</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                        <span>Teach specific learning strategies</span>
+                        <span>{t('metacognitionResearch.teachSpecificLearningStrategies')}</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                        <span>Use self-assessment checklists</span>
+                        <span>{t('metacognitionResearch.useSelfAssessmentChecklists')}</span>
                       </li>
                     </ul>
                   </div>
 
                   <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                      <Target className="h-5 w-5 text-purple-600" />
-                      Ongoing: Sustain
-                    </h3>
+                      <Target className="h-5 w-5 text-purple-600" />{t('metacognitionResearch.ongoingSustain')}</h3>
                     <ul className="space-y-2 text-gray-700">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                        <span>Integrate metacognitive prompts into daily lessons</span>
+                        <span>{t('metacognitionResearch.integrateMetacognitivePromptsIntoDailyLessons')}</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                        <span>Regularly reflect on learning processes</span>
+                        <span>{t('metacognitionResearch.regularlyReflectOnLearningProcesses')}</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                        <span>Celebrate metacognitive growth</span>
+                        <span>{t('metacognitionResearch.celebrateMetacognitiveGrowth')}</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                        <span>Help students transfer strategies across subjects</span>
+                        <span>{t('metacognitionResearch.helpStudentsTransferStrategiesAcrossSubjects')}</span>
                       </li>
                     </ul>
                   </div>
@@ -532,23 +510,23 @@ function MetacognitionResearchInner() {
               </div>
 
               <div className="bg-white rounded-xl p-6 border border-gray-200">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Quick Wins</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">{t('metacognitionResearch.quickWins')}</h3>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-                    <p className="text-sm font-semibold text-green-900 mb-2">Start Today</p>
-                    <p className="text-sm text-green-700">Model one think-aloud during a lesson</p>
+                    <p className="text-sm font-semibold text-green-900 mb-2">{t('metacognitionResearch.startToday')}</p>
+                    <p className="text-sm text-green-700">{t('metacognitionResearch.modelOneThinkAloudDuringALesson')}</p>
                   </div>
                   <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                    <p className="text-sm font-semibold text-blue-900 mb-2">This Week</p>
-                    <p className="text-sm text-blue-700">Add planning prompts before a major assignment</p>
+                    <p className="text-sm font-semibold text-blue-900 mb-2">{t('metacognitionResearch.thisWeek')}</p>
+                    <p className="text-sm text-blue-700">{t('metacognitionResearch.addPlanningPromptsBeforeAMajorAssignment')}</p>
                   </div>
                   <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
-                    <p className="text-sm font-semibold text-purple-900 mb-2">This Month</p>
-                    <p className="text-sm text-purple-700">Introduce reflection journals for one subject</p>
+                    <p className="text-sm font-semibold text-purple-900 mb-2">{t('metacognitionResearch.thisMonth')}</p>
+                    <p className="text-sm text-purple-700">{t('metacognitionResearch.introduceReflectionJournalsForOneSubject')}</p>
                   </div>
                   <div className="bg-pink-50 rounded-lg p-4 border border-pink-200">
-                    <p className="text-sm font-semibold text-pink-900 mb-2">Ongoing</p>
-                    <p className="text-sm text-pink-700">Use self-questioning prompts regularly</p>
+                    <p className="text-sm font-semibold text-pink-900 mb-2">{t('metacognitionResearch.ongoing')}</p>
+                    <p className="text-sm text-pink-700">{t('metacognitionResearch.useSelfQuestioningPromptsRegularly')}</p>
                   </div>
                 </div>
               </div>

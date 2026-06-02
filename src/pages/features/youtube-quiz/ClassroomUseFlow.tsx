@@ -1,4 +1,4 @@
-import { useState, type ElementType } from 'react'
+import { useMemo, useState, type ElementType } from 'react'
 import {
   Link as LinkIcon,
   Sparkles,
@@ -10,11 +10,11 @@ import {
   Clock,
   Zap,
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 type StepStatus = 'available' | 'demo' | 'future'
 
-// TODO: Replace with backend API response later.
-const WORKFLOW_STEPS: {
+type WorkflowStep = {
   id: string
   number: number
   title: string
@@ -23,87 +23,113 @@ const WORKFLOW_STEPS: {
   whatSystem: string
   backendReq: string
   status: StepStatus
-}[] = [
-  {
-    id: 'choose-video',
-    number: 1,
-    title: 'Choose or paste video',
-    Icon: LinkIcon,
-    whatTeacher: 'Paste a YouTube link or select from Quick Start sources below.',
-    whatSystem: 'Validates URL, fetches video metadata, and confirms transcript availability.',
-    backendReq: 'YouTube Data API v3 + transcript extraction service.',
-    status: 'available',
-  },
-  {
-    id: 'generate-quiz',
-    number: 2,
-    title: 'Generate quiz blueprint',
-    Icon: Sparkles,
-    whatTeacher: 'Set grade band, subject lens, and question styles — then click Generate.',
-    whatSystem: 'Runs AI pipeline: transcript segmentation → DOK alignment → question generation.',
-    backendReq: 'LLM inference endpoint (already live). Transcript extraction API.',
-    status: 'available',
-  },
-  {
-    id: 'review-questions',
-    number: 3,
-    title: 'Review questions',
-    Icon: ListChecks,
-    whatTeacher: 'Preview generated questions, edit or remove items, and reorder sections.',
-    whatSystem: 'Renders structured quiz preview with answer keys and difficulty tags.',
-    backendReq: 'Quiz edit/patch endpoint (planned). Answer-key validation.',
-    status: 'available',
-  },
-  {
-    id: 'select-strategy',
-    number: 4,
-    title: 'Select teaching strategy',
-    Icon: Layers,
-    whatTeacher: 'Choose a lesson flow strategy. Preview configuration and apply to quiz.',
-    whatSystem: 'Stores strategy preference against the quiz session for export customisation.',
-    backendReq: 'Quiz strategy save endpoint + teacher session storage.',
-    status: 'demo',
-  },
-  {
-    id: 'export',
-    number: 5,
-    title: 'Export, print, or save',
-    Icon: Download,
-    whatTeacher: 'Download as PDF, copy to Google Forms, or generate a shareable link.',
-    whatSystem: 'Formats quiz into the selected template. Generates share token or file blob.',
-    backendReq: 'PDF renderer, Google Forms API integration, link shortener service.',
-    status: 'demo',
-  },
-  {
-    id: 'reuse',
-    number: 6,
-    title: 'Reuse for future lessons',
-    Icon: RefreshCw,
-    whatTeacher: 'Save to quiz library. Tag by topic. Search and clone for new classes.',
-    whatSystem: 'Persists quiz to teacher library with tagging, versioning, and class assignment.',
-    backendReq: 'Quiz library CRUD, tag index, class roster linking.',
-    status: 'future',
-  },
-]
+}
 
-// TODO: Replace with real progress derived from backend state later.
-const PROGRESS_INDICATORS = [
-  { label: 'Video selected', status: 'complete' as const },
-  { label: 'Quiz generated', status: 'complete' as const },
-  { label: 'Strategy selected', status: 'in-progress' as const },
-  { label: 'Export ready', status: 'demo' as const },
-]
-
-const STATUS_CONFIG: Record<StepStatus, { label: string; badgeCls: string }> = {
-  available: { label: 'Available now', badgeCls: 'border-green-200 bg-green-100 text-green-700' },
-  demo: { label: 'Demo only', badgeCls: 'border-amber-200 bg-amber-100 text-amber-700' },
-  future: { label: 'Future backend', badgeCls: 'border-gray-200 bg-gray-100 text-gray-600' },
+type ProgressIndicator = {
+  label: string
+  status: 'complete' | 'in-progress' | 'demo'
 }
 
 export function ClassroomUseFlow() {
+  const { t } = useTranslation()
   const [activeId, setActiveId] = useState<string | null>(null)
 
-  const active = WORKFLOW_STEPS.find((s) => s.id === activeId) ?? null
+  const statusConfig = useMemo(
+    () =>
+      ({
+        available: {
+          label: t('youtubeQuizPage.classroomFlow.availableNow'),
+          badgeCls: 'border-green-200 bg-green-100 text-green-700',
+        },
+        demo: {
+          label: t('youtubeQuizPage.classroomFlow.demoOnly'),
+          badgeCls: 'border-amber-200 bg-amber-100 text-amber-700',
+        },
+        future: {
+          label: t('youtubeQuizPage.classroomFlow.futureBackend'),
+          badgeCls: 'border-gray-200 bg-gray-100 text-gray-600',
+        },
+      }) satisfies Record<StepStatus, { label: string; badgeCls: string }>,
+    [t]
+  )
+
+  const workflowSteps = useMemo<WorkflowStep[]>(
+    () => [
+      {
+        id: 'choose-video',
+        number: 1,
+        title: t('youtubeQuizPage.classroomFlow.steps.chooseVideo.title'),
+        Icon: LinkIcon,
+        whatTeacher: t('youtubeQuizPage.classroomFlow.steps.chooseVideo.whatTeacher'),
+        whatSystem: t('youtubeQuizPage.classroomFlow.steps.chooseVideo.whatSystem'),
+        backendReq: t('youtubeQuizPage.classroomFlow.steps.chooseVideo.backendReq'),
+        status: 'available',
+      },
+      {
+        id: 'generate-quiz',
+        number: 2,
+        title: t('youtubeQuizPage.classroomFlow.steps.generateQuiz.title'),
+        Icon: Sparkles,
+        whatTeacher: t('youtubeQuizPage.classroomFlow.steps.generateQuiz.whatTeacher'),
+        whatSystem: t('youtubeQuizPage.classroomFlow.steps.generateQuiz.whatSystem'),
+        backendReq: t('youtubeQuizPage.classroomFlow.steps.generateQuiz.backendReq'),
+        status: 'available',
+      },
+      {
+        id: 'review-questions',
+        number: 3,
+        title: t('youtubeQuizPage.classroomFlow.steps.reviewQuestions.title'),
+        Icon: ListChecks,
+        whatTeacher: t('youtubeQuizPage.classroomFlow.steps.reviewQuestions.whatTeacher'),
+        whatSystem: t('youtubeQuizPage.classroomFlow.steps.reviewQuestions.whatSystem'),
+        backendReq: t('youtubeQuizPage.classroomFlow.steps.reviewQuestions.backendReq'),
+        status: 'available',
+      },
+      {
+        id: 'select-strategy',
+        number: 4,
+        title: t('youtubeQuizPage.classroomFlow.steps.selectStrategy.title'),
+        Icon: Layers,
+        whatTeacher: t('youtubeQuizPage.classroomFlow.steps.selectStrategy.whatTeacher'),
+        whatSystem: t('youtubeQuizPage.classroomFlow.steps.selectStrategy.whatSystem'),
+        backendReq: t('youtubeQuizPage.classroomFlow.steps.selectStrategy.backendReq'),
+        status: 'demo',
+      },
+      {
+        id: 'export',
+        number: 5,
+        title: t('youtubeQuizPage.classroomFlow.steps.export.title'),
+        Icon: Download,
+        whatTeacher: t('youtubeQuizPage.classroomFlow.steps.export.whatTeacher'),
+        whatSystem: t('youtubeQuizPage.classroomFlow.steps.export.whatSystem'),
+        backendReq: t('youtubeQuizPage.classroomFlow.steps.export.backendReq'),
+        status: 'demo',
+      },
+      {
+        id: 'reuse',
+        number: 6,
+        title: t('youtubeQuizPage.classroomFlow.steps.reuse.title'),
+        Icon: RefreshCw,
+        whatTeacher: t('youtubeQuizPage.classroomFlow.steps.reuse.whatTeacher'),
+        whatSystem: t('youtubeQuizPage.classroomFlow.steps.reuse.whatSystem'),
+        backendReq: t('youtubeQuizPage.classroomFlow.steps.reuse.backendReq'),
+        status: 'future',
+      },
+    ],
+    [t]
+  )
+
+  const progressIndicators = useMemo<ProgressIndicator[]>(
+    () => [
+      { label: t('youtubeQuizPage.classroomFlow.progressVideo'), status: 'complete' },
+      { label: t('youtubeQuizPage.classroomFlow.progressQuiz'), status: 'complete' },
+      { label: t('youtubeQuizPage.classroomFlow.progressStrategy'), status: 'in-progress' },
+      { label: t('youtubeQuizPage.classroomFlow.progressExport'), status: 'demo' },
+    ],
+    [t]
+  )
+
+  const active = workflowSteps.find((s) => s.id === activeId) ?? null
 
   return (
     <section>
@@ -112,16 +138,13 @@ export function ClassroomUseFlow() {
           <div>
             <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
               <Layers className="h-5 w-5 text-red-500" />
-              How to Use This Quiz in Class
+              {t('youtubeQuizPage.classroomFlow.title')}
             </h3>
-            <p className="mt-1 text-sm text-gray-500">
-              Click each step to see what you do, what the system prepares, and what's coming next.
-            </p>
+            <p className="mt-1 text-sm text-gray-500">{t('youtubeQuizPage.classroomFlow.hint')}</p>
           </div>
 
-          {/* Progress tracker */}
           <div className="flex flex-wrap gap-2">
-            {PROGRESS_INDICATORS.map((p) => (
+            {progressIndicators.map((p) => (
               <span
                 key={p.label}
                 className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${
@@ -142,9 +165,9 @@ export function ClassroomUseFlow() {
         </div>
 
         <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
-          {WORKFLOW_STEPS.map((step) => {
+          {workflowSteps.map((step) => {
             const isActive = activeId === step.id
-            const cfg = STATUS_CONFIG[step.status]
+            const cfg = statusConfig[step.status]
             const Icon = step.Icon
             return (
               <button
@@ -188,29 +211,29 @@ export function ClassroomUseFlow() {
               <div>
                 <p className="font-semibold text-gray-900">{active.title}</p>
                 <span
-                  className={`inline-block rounded-full border px-2 py-0.5 text-xs font-semibold ${STATUS_CONFIG[active.status].badgeCls}`}
+                  className={`inline-block rounded-full border px-2 py-0.5 text-xs font-semibold ${statusConfig[active.status].badgeCls}`}
                 >
-                  {STATUS_CONFIG[active.status].label}
+                  {statusConfig[active.status].label}
                 </span>
               </div>
             </div>
 
             <div className="grid gap-4 text-sm md:grid-cols-3">
               <StepDetail
-                title="What the teacher does"
+                title={t('youtubeQuizPage.classroomFlow.whatTeacherDoes')}
                 content={active.whatTeacher}
                 cls="border-blue-200 bg-blue-50 text-blue-900"
               />
               <StepDetail
-                title="What the system prepares"
+                title={t('youtubeQuizPage.classroomFlow.whatSystemPrepares')}
                 content={active.whatSystem}
                 cls="border-green-200 bg-green-50 text-green-900"
               />
               <StepDetail
-                title="Backend requirement"
+                title={t('youtubeQuizPage.classroomFlow.backendRequirement')}
                 content={active.backendReq}
                 cls="border-gray-200 bg-white text-gray-700"
-                note="Backend-handoff note"
+                note={t('youtubeQuizPage.classroomFlow.backendNote')}
               />
             </div>
           </div>

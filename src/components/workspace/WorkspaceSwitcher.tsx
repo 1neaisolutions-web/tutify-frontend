@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { switchActiveMembership, fetchMemberships } from '../../redux/features/membership/membershipSlice';
 import { setActiveMembership as setAuthActiveMembership } from '../../redux/features/auth/authSlice';
 import { AppDispatch } from '../../redux/store';
 import { Building2, Users, User, ChevronDown } from 'lucide-react';
 
 const WorkspaceSwitcher: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const { memberships, activeMembership, loading } = useSelector((state: any) => state.membership);
   const [isOpen, setIsOpen] = useState(false);
@@ -39,14 +41,9 @@ const WorkspaceSwitcher: React.FC = () => {
       ).unwrap();
 
       if (result.success && result.access_token) {
-        // Update tokens
         localStorage.setItem('access_token', result.access_token);
         localStorage.setItem('refresh_token', result.refresh_token);
-        
-        // Update auth state
         dispatch(setAuthActiveMembership(result.active_membership));
-        
-        // Reload page to update context
         window.location.reload();
       }
     } catch (error) {
@@ -57,11 +54,30 @@ const WorkspaceSwitcher: React.FC = () => {
   };
 
   if (memberships.length <= 1) {
-    return null; // Don't show switcher if only one membership
+    return null;
   }
 
   const currentMembership = activeMembership || memberships[0];
   const CurrentIcon = currentMembership ? getIcon(currentMembership.scope_type) : Building2;
+
+  const PERSONAL_WORKSPACE_DEFAULTS = new Set([
+    'personal workspace',
+    'personal_workspace',
+  ]);
+
+  const workspaceName = (m: any) => {
+    if (m?.scope_type === 'personal_workspace') {
+      const displayName = (m?.scope_display_name || m?.scope_name || '').trim();
+      if (
+        !displayName ||
+        PERSONAL_WORKSPACE_DEFAULTS.has(displayName.toLowerCase())
+      ) {
+        return t('tenantSelection.scope.personalWorkspace');
+      }
+      return displayName;
+    }
+    return m?.scope_display_name || m?.scope_name || t('workspace.fallbackName');
+  };
 
   return (
     <div className="relative">
@@ -71,7 +87,7 @@ const WorkspaceSwitcher: React.FC = () => {
       >
         <CurrentIcon className="w-4 h-4 text-gray-600" />
         <span className="text-sm font-medium text-gray-700">
-          {currentMembership?.scope_display_name || currentMembership?.scope_name || 'Workspace'}
+          {workspaceName(currentMembership)}
         </span>
         <ChevronDown className="w-4 h-4 text-gray-600" />
       </button>
@@ -81,11 +97,11 @@ const WorkspaceSwitcher: React.FC = () => {
           <div
             className="fixed inset-0 z-10"
             onClick={() => setIsOpen(false)}
-          ></div>
+          />
           <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg z-20 border border-gray-200">
             <div className="py-1">
               <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase">
-                Switch Workspace
+                {t('workspace.switcher.title')}
               </div>
               {memberships.map((membership: any) => {
                 const Icon = getIcon(membership.scope_type);
@@ -103,14 +119,14 @@ const WorkspaceSwitcher: React.FC = () => {
                     <Icon className="w-4 h-4" />
                     <div className="flex-1">
                       <div className="text-sm font-medium">
-                        {membership.scope_display_name || membership.scope_name || 'Workspace'}
+                        {workspaceName(membership)}
                       </div>
                       <div className="text-xs text-gray-500 capitalize">
                         {membership.role?.name?.replace('_', ' ')}
                       </div>
                     </div>
                     {isActive && (
-                      <span className="text-xs text-primary-600 font-medium">Active</span>
+                      <span className="text-xs text-primary-600 font-medium">{t('workspace.switcher.active')}</span>
                     )}
                   </button>
                 );

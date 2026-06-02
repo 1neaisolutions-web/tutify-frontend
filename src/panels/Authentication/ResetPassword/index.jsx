@@ -9,8 +9,10 @@ import { isEmpty, validatePassword } from '../../../utils/utils';
 import { resetPassword } from '../../../redux/features/auth/authSlice';
 import { useSnackbar } from '../../../hooks/useSnackbar';
 import { CustomButton, CustomInput } from '../../../components/shared';
+import { useTranslation } from 'react-i18next';
 
 export const ResetPassword = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { toast } = useSnackbar();
@@ -30,7 +32,7 @@ export const ResetPassword = () => {
     if (tokenParam) {
       setToken(tokenParam);
     } else {
-      toast.error('Invalid reset token');
+      toast.error(t('snackbar.resetPassword.invalidToken'));
       navigate('/forgot-password');
     }
   }, [searchParams, navigate, toast]);
@@ -54,18 +56,18 @@ export const ResetPassword = () => {
     let newErrors = {};
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = t('resetPassword.validation.passwordRequired');
     } else {
       const passwordValidation = validatePassword(formData.password);
       if (!passwordValidation.length) {
-        newErrors.password = 'Password must be at least 10 characters';
+        newErrors.password = t('resetPassword.validation.passwordMinLength');
       } else if (!passwordValidation.upper || !passwordValidation.lower || !passwordValidation.number || !passwordValidation.specialChar) {
-        newErrors.password = 'Password must contain uppercase, lowercase, number, and special character';
+        newErrors.password = t('resetPassword.validation.passwordComplexity');
       }
     }
 
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = t('resetPassword.validation.passwordMismatch');
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -74,7 +76,7 @@ export const ResetPassword = () => {
     }
 
     if (!token) {
-      toast.error('Invalid reset token');
+      toast.error(t('snackbar.resetPassword.invalidToken'));
       return;
     }
 
@@ -87,16 +89,16 @@ export const ResetPassword = () => {
 
       if (result?.meta?.requestStatus === 'fulfilled') {
         setLoading(false);
-        toast.success('Password reset successfully! Please login with your new password.');
+        toast.success(t('snackbar.resetPassword.success'));
         navigate('/login');
       } else {
         setLoading(false);
-        toast.error(result?.payload || 'Failed to reset password. The token may be invalid or expired.');
+        toast.error(result?.payload || t('snackbar.resetPassword.error'));
       }
     } catch (err) {
       setLoading(false);
       console.error('Reset password failed:', err);
-      toast.error('An error occurred. Please try again.');
+      toast.error(t('snackbar.genericError'));
     }
   };
 
@@ -110,32 +112,32 @@ export const ResetPassword = () => {
         <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-full mb-4">
           <GraduationCap className="w-8 h-8 text-white" />
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Reset Password</h1>
-        <p className="text-gray-600">Enter your new password</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('resetPassword.title')}</h1>
+        <p className="text-gray-600">{t('resetPassword.subtitle')}</p>
       </div>
 
       <div className="card">
         <form onSubmit={handleSubmit} className="space-y-6">
           <CustomInput
-            label="New Password"
+            label={t('resetPassword.newPasswordLabel')}
             name="password"
             type="password"
             value={formData.password}
             onChange={handleChange}
-            placeholder="••••••••"
+            placeholder={t('resetPassword.passwordPlaceholder')}
             error={!!errors.password}
             errorMsg={errors.password}
             required
           />
-          <p className="mt-1 text-xs text-gray-500">Must be at least 10 characters with uppercase, lowercase, number, and special character</p>
+          <p className="mt-1 text-xs text-gray-500">{t('resetPassword.passwordHint')}</p>
 
           <CustomInput
-            label="Confirm Password"
+            label={t('resetPassword.confirmPasswordLabel')}
             name="confirmPassword"
             type="password"
             value={formData.confirmPassword}
             onChange={handleChange}
-            placeholder="••••••••"
+            placeholder={t('resetPassword.passwordPlaceholder')}
             error={!!errors.confirmPassword}
             errorMsg={errors.confirmPassword}
             required
@@ -146,7 +148,7 @@ export const ResetPassword = () => {
             disabled={loading || isEmpty(formData)}
             className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Resetting...' : 'Reset Password'}
+            {loading ? t('resetPassword.submitting') : t('resetPassword.submit')}
           </button>
         </form>
       </div>

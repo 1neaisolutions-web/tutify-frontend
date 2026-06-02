@@ -58,11 +58,13 @@ import {
   mapTheaterStandardsList,
 } from '../../utils/dramaAdapters'
 
+import { useTranslation } from 'react-i18next'
 const CHATBOT_SLUG = 'drama-theater-director'
 
 type TabType = 'script-analysis' | 'character' | 'stage-direction' | 'production' | 'acting-methods' | 'theater-styles' | 'standards' | 'resources'
 
 const DramaTheaterDirector = () => {
+  const { t } = useTranslation()
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const [activeTab, setActiveTab] = useState<TabType>('script-analysis')
@@ -165,7 +167,7 @@ const DramaTheaterDirector = () => {
           setTheaterStandards(mapTheaterStandardsList(raw, gradeLevel))
         }
       } catch {
-        toast.error('Could not restore saved output from History.')
+        toast.error(t('dramaTheaterDirector.couldNotRestoreSavedOutputFromHistory'))
       }
     },
   })
@@ -196,13 +198,13 @@ const DramaTheaterDirector = () => {
       if (response == null) return
       setScriptAnalysis(mapScriptAnalysisResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Script analysis generated')
+      toast.success(t('dramaTheaterDirector.scriptAnalysisGenerated'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to analyze script'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('dramaTheaterDirector.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -230,13 +232,13 @@ const DramaTheaterDirector = () => {
       if (response == null) return
       setCharacterProfile(mapCharacterProfileResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Character profile generated')
+      toast.success(t('dramaTheaterDirector.characterProfileGenerated'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to generate character profile'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('dramaTheaterDirector.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -263,13 +265,13 @@ const DramaTheaterDirector = () => {
       if (response == null) return
       setStageDirection(mapStageDirectionResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Stage direction generated')
+      toast.success(t('dramaTheaterDirector.stageDirectionGenerated'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to generate stage direction'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('dramaTheaterDirector.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -297,13 +299,13 @@ const DramaTheaterDirector = () => {
       if (response == null) return
       setProductionPlan(mapProductionPlanResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Production plan generated')
+      toast.success(t('dramaTheaterDirector.productionPlanGenerated'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to generate production plan'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('dramaTheaterDirector.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -327,13 +329,13 @@ const DramaTheaterDirector = () => {
       if (response == null) return
       setActingMethods(mapActingMethodsList(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Acting methods loaded')
+      toast.success(t('dramaTheaterDirector.actingMethodsLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load acting methods'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('dramaTheaterDirector.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -357,13 +359,13 @@ const DramaTheaterDirector = () => {
       if (response == null) return
       setTheaterStyles(mapTheaterStylesList(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Theater styles loaded')
+      toast.success(t('dramaTheaterDirector.theaterStylesLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load theater styles'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('dramaTheaterDirector.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -387,13 +389,13 @@ const DramaTheaterDirector = () => {
       if (response == null) return
       setTheaterStandards(mapTheaterStandardsList(response.result, gradeLevel))
       pinFromResponse(response.conversation_id)
-      toast.success('Theater standards loaded')
+      toast.success(t('dramaTheaterDirector.theaterStandardsLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load standards'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('dramaTheaterDirector.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -401,14 +403,14 @@ const DramaTheaterDirector = () => {
   }
 
   const tabs = [
-    { id: 'script-analysis' as TabType, label: 'Script Analysis', icon: FileText },
-    { id: 'character' as TabType, label: 'Character Development', icon: Users },
-    { id: 'stage-direction' as TabType, label: 'Stage Direction', icon: Layout },
-    { id: 'production' as TabType, label: 'Production Planning', icon: Target },
-    { id: 'acting-methods' as TabType, label: 'Acting Methods', icon: Award },
-    { id: 'theater-styles' as TabType, label: 'Theater Styles', icon: Theater },
-    { id: 'standards' as TabType, label: 'Standards', icon: CheckCircle },
-    { id: 'resources' as TabType, label: 'Resources', icon: BookOpen },
+    { id: 'script-analysis' as TabType, label: t('dramaTheaterDirector.tabs.script-analysis'), icon: FileText },
+    { id: 'character' as TabType, label: t('dramaTheaterDirector.tabs.character'), icon: Users },
+    { id: 'stage-direction' as TabType, label: t('dramaTheaterDirector.tabs.stage-direction'), icon: Layout },
+    { id: 'production' as TabType, label: t('dramaTheaterDirector.tabs.production'), icon: Target },
+    { id: 'acting-methods' as TabType, label: t('dramaTheaterDirector.tabs.acting-methods'), icon: Award },
+    { id: 'theater-styles' as TabType, label: t('dramaTheaterDirector.tabs.theater-styles'), icon: Theater },
+    { id: 'standards' as TabType, label: t('dramaTheaterDirector.tabs.standards'), icon: CheckCircle },
+    { id: 'resources' as TabType, label: t('dramaTheaterDirector.tabs.resources'), icon: BookOpen },
   ]
 
   return (
@@ -432,29 +434,23 @@ const DramaTheaterDirector = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-3xl font-bold">Drama & Theater Director</h1>
+                  <h1 className="text-3xl font-bold">{t('dramaTheaterDirector.dramaTheaterDirector')}</h1>
                   <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
                     <Star className="h-3 w-3" /> 4.8★
                   </span>
                   <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" /> Premium
-                  </span>
+                    <Lock className="inline h-3 w-3 mr-1" />{t('dramaTheaterDirector.premium')}</span>
                   <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
-                    <Globe className="inline h-3 w-3 mr-1" /> International Standards
-                  </span>
+                    <Globe className="inline h-3 w-3 mr-1" />{t('dramaTheaterDirector.internationalStandards')}</span>
                 </div>
-                <p className="mt-2 text-red-100">
-                  Comprehensive theater education tools aligned with international standards (ISTA, ITI, WIAE). 
-                  Help students master script analysis, character development, stage direction, and production planning 
-                  through global theater practices. Prepare students for excellence in theater arts worldwide.
-                </p>
+                <p className="mt-2 text-blue-100">{t('dramaTheaterDirector.heroDescription')}</p>
               </div>
             </div>
             
             {/* Quick Settings */}
             <div className="flex flex-wrap gap-4 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Grade Level:</label>
+                <label className="text-sm font-medium">{t('dramaTheaterDirector.gradeLevel')}</label>
                 <select
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
@@ -463,11 +459,11 @@ const DramaTheaterDirector = () => {
                   <option>Elementary (K-5)</option>
                   <option>Middle School (6-8)</option>
                   <option>High School (9-12)</option>
-                  <option>College</option>
+                  <option>{t('dramaTheaterDirector.college')}</option>
                 </select>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Genre:</label>
+                <label className="text-sm font-medium">{t('dramaTheaterDirector.genre')}</label>
                 <select
                   value={playGenre}
                   onChange={(e) => setPlayGenre(e.target.value)}
@@ -479,7 +475,7 @@ const DramaTheaterDirector = () => {
                 </select>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Stage Type:</label>
+                <label className="text-sm font-medium">{t('dramaTheaterDirector.stageType')}</label>
                 <select
                   value={stageType}
                   onChange={(e) => setStageType(e.target.value)}
@@ -525,31 +521,25 @@ const DramaTheaterDirector = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-red-50 to-rose-50 rounded-xl p-6 border border-red-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <FileText className="h-6 w-6 text-red-600" />
-                  Script Analysis Tools
-                </h2>
+                  <FileText className="h-6 w-6 text-red-600" />{t('dramaTheaterDirector.scriptAnalysisTools')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Play Title
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('dramaTheaterDirector.playTitle')}</label>
                     <input
                       type="text"
                       value={playTitle}
                       onChange={(e) => setPlayTitle(e.target.value)}
-                      placeholder="e.g., Romeo and Juliet"
+                      placeholder={t('dramaTheaterDirector.eGRomeoAndJuliet')}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Playwright
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('dramaTheaterDirector.playwright')}</label>
                     <input
                       type="text"
                       value={playwright}
                       onChange={(e) => setPlaywright(e.target.value)}
-                      placeholder="e.g., William Shakespeare"
+                      placeholder={t('dramaTheaterDirector.eGWilliamShakespeare')}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
                     />
                   </div>
@@ -561,14 +551,10 @@ const DramaTheaterDirector = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Analyzing...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('dramaTheaterDirector.analyzing')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Analyze Script
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('dramaTheaterDirector.analyzeScript')}</>
                   )}
                 </button>
               </div>
@@ -595,7 +581,7 @@ const DramaTheaterDirector = () => {
 
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Plot Structure</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">{t('dramaTheaterDirector.plotStructure')}</h4>
                       <div className="space-y-2">
                         {Object.entries(scriptAnalysis.structure.plotStructure).map(([key, value]) => (
                           <div key={key} className="border-l-4 border-red-500 pl-4">
@@ -607,14 +593,14 @@ const DramaTheaterDirector = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Characters</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('dramaTheaterDirector.characters')}</h4>
                       <div className="space-y-3">
                         {scriptAnalysis.characters.map((character, idx) => (
                           <div key={idx} className="bg-gray-50 p-4 rounded-lg">
                             <h5 className="font-semibold text-gray-900">{character.name}</h5>
                             <p className="text-sm text-gray-600 mb-2">{character.role}</p>
                             <div>
-                              <span className="text-xs font-medium text-gray-700">Objectives:</span>
+                              <span className="text-xs font-medium text-gray-700">{t('dramaTheaterDirector.objectives')}</span>
                               <ul className="list-disc list-inside space-y-1 text-sm text-gray-700 mt-1">
                                 {character.objectives.map((obj, i) => (
                                   <li key={i}>{obj}</li>
@@ -627,7 +613,7 @@ const DramaTheaterDirector = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Themes</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('dramaTheaterDirector.themes')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {scriptAnalysis.themes.map((theme, i) => (
                           <span key={i} className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
@@ -638,7 +624,7 @@ const DramaTheaterDirector = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Cultural Context</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('dramaTheaterDirector.culturalContext')}</h4>
                       <p className="text-gray-700">{scriptAnalysis.culturalContext}</p>
                     </div>
                   </div>
@@ -652,35 +638,29 @@ const DramaTheaterDirector = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-rose-50 to-pink-50 rounded-xl p-6 border border-rose-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Users className="h-6 w-6 text-rose-600" />
-                  Character Development
-                </h2>
+                  <Users className="h-6 w-6 text-rose-600" />{t('dramaTheaterDirector.characterDevelopment')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Character Name
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('dramaTheaterDirector.characterName')}</label>
                     <input
                       type="text"
                       value={characterName}
                       onChange={(e) => setCharacterName(e.target.value)}
-                      placeholder="e.g., Hamlet"
+                      placeholder={t('dramaTheaterDirector.eGHamlet')}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Role
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('dramaTheaterDirector.role')}</label>
                     <select
                       value={characterRole}
                       onChange={(e) => setCharacterRole(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500"
                     >
-                      <option>Protagonist</option>
-                      <option>Antagonist</option>
-                      <option>Supporting</option>
-                      <option>Ensemble</option>
+                      <option>{t('dramaTheaterDirector.protagonist')}</option>
+                      <option>{t('dramaTheaterDirector.antagonist')}</option>
+                      <option>{t('dramaTheaterDirector.supporting')}</option>
+                      <option>{t('dramaTheaterDirector.ensemble')}</option>
                     </select>
                   </div>
                 </div>
@@ -691,14 +671,10 @@ const DramaTheaterDirector = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Generating...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('dramaTheaterDirector.generating')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Create Character Profile
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('dramaTheaterDirector.createCharacterProfile')}</>
                   )}
                 </button>
               </div>
@@ -710,7 +686,7 @@ const DramaTheaterDirector = () => {
                   <div className="space-y-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Physical Traits</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('dramaTheaterDirector.physicalTraits')}</h4>
                         <div className="flex flex-wrap gap-2">
                           {characterProfile.physicalTraits.map((trait, i) => (
                             <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -720,7 +696,7 @@ const DramaTheaterDirector = () => {
                         </div>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Psychological Traits</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('dramaTheaterDirector.psychologicalTraits')}</h4>
                         <div className="flex flex-wrap gap-2">
                           {characterProfile.psychologicalTraits.map((trait, i) => (
                             <span key={i} className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
@@ -732,12 +708,12 @@ const DramaTheaterDirector = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Background</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('dramaTheaterDirector.background')}</h4>
                       <p className="text-gray-700">{characterProfile.background}</p>
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Objectives</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('dramaTheaterDirector.objectives2')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {characterProfile.objectives.map((obj, i) => (
                           <li key={i}>{obj}</li>
@@ -747,7 +723,7 @@ const DramaTheaterDirector = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Obstacles</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('dramaTheaterDirector.obstacles')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {characterProfile.obstacles.map((obstacle, i) => (
                             <li key={i}>{obstacle}</li>
@@ -755,7 +731,7 @@ const DramaTheaterDirector = () => {
                         </ul>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Tactics</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('dramaTheaterDirector.tactics')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {characterProfile.tactics.map((tactic, i) => (
                             <li key={i}>{tactic}</li>
@@ -765,7 +741,7 @@ const DramaTheaterDirector = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Character Arc</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('dramaTheaterDirector.characterArc')}</h4>
                       <p className="text-gray-700">{characterProfile.arc}</p>
                     </div>
                   </div>
@@ -779,19 +755,15 @@ const DramaTheaterDirector = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-pink-50 to-red-50 rounded-xl p-6 border border-pink-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Layout className="h-6 w-6 text-pink-600" />
-                  Stage Direction & Blocking
-                </h2>
+                  <Layout className="h-6 w-6 text-pink-600" />{t('dramaTheaterDirector.stageDirectionBlocking')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Scene Name
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('dramaTheaterDirector.sceneName')}</label>
                     <input
                       type="text"
                       value={sceneName}
                       onChange={(e) => setSceneName(e.target.value)}
-                      placeholder="e.g., Act 1, Scene 1"
+                      placeholder={t('dramaTheaterDirector.eGAct1Scene1')}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500"
                     />
                   </div>
@@ -803,14 +775,10 @@ const DramaTheaterDirector = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Generating...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('dramaTheaterDirector.generating')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Generate Blocking
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('dramaTheaterDirector.generateBlocking')}</>
                       )}
                     </button>
                   </div>
@@ -823,22 +791,22 @@ const DramaTheaterDirector = () => {
                   
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Stage Type</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('dramaTheaterDirector.stageType2')}</h4>
                       <span className="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-xs font-semibold">
                         {stageDirection.stageType}
                       </span>
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Blocking</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">{t('dramaTheaterDirector.blocking')}</h4>
                       <div className="space-y-3">
                         {stageDirection.blocking.map((block, idx) => (
                           <div key={idx} className="border-l-4 border-pink-500 pl-4">
                             <h5 className="font-semibold text-gray-900">{block.character}</h5>
                             <div className="space-y-1 text-sm text-gray-700 mt-1">
-                              <div><span className="font-medium">Position:</span> {block.position}</div>
-                              <div><span className="font-medium">Movement:</span> {block.movement}</div>
-                              <div><span className="font-medium">Focus:</span> {block.focus}</div>
+                              <div><span className="font-medium">{t('dramaTheaterDirector.position')}</span> {block.position}</div>
+                              <div><span className="font-medium">{t('dramaTheaterDirector.movement')}</span> {block.movement}</div>
+                              <div><span className="font-medium">{t('dramaTheaterDirector.focus')}</span> {block.focus}</div>
                             </div>
                           </div>
                         ))}
@@ -846,15 +814,15 @@ const DramaTheaterDirector = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Stage Picture</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('dramaTheaterDirector.stagePicture')}</h4>
                       <p className="text-gray-700">{stageDirection.stagePicture}</p>
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Technical Notes</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">{t('dramaTheaterDirector.technicalNotes')}</h4>
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
-                          <h5 className="font-medium text-gray-900 mb-1">Lighting</h5>
+                          <h5 className="font-medium text-gray-900 mb-1">{t('dramaTheaterDirector.lighting')}</h5>
                           <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                             {stageDirection.technicalNotes.lighting.map((note, i) => (
                               <li key={i}>{note}</li>
@@ -862,7 +830,7 @@ const DramaTheaterDirector = () => {
                           </ul>
                         </div>
                         <div>
-                          <h5 className="font-medium text-gray-900 mb-1">Sound</h5>
+                          <h5 className="font-medium text-gray-900 mb-1">{t('dramaTheaterDirector.sound')}</h5>
                           <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                             {stageDirection.technicalNotes.sound.map((note, i) => (
                               <li key={i}>{note}</li>
@@ -870,7 +838,7 @@ const DramaTheaterDirector = () => {
                           </ul>
                         </div>
                         <div>
-                          <h5 className="font-medium text-gray-900 mb-1">Props</h5>
+                          <h5 className="font-medium text-gray-900 mb-1">{t('dramaTheaterDirector.props')}</h5>
                           <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                             {stageDirection.technicalNotes.props.map((prop, i) => (
                               <li key={i}>{prop}</li>
@@ -878,7 +846,7 @@ const DramaTheaterDirector = () => {
                           </ul>
                         </div>
                         <div>
-                          <h5 className="font-medium text-gray-900 mb-1">Costume</h5>
+                          <h5 className="font-medium text-gray-900 mb-1">{t('dramaTheaterDirector.costume')}</h5>
                           <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                             {stageDirection.technicalNotes.costume.map((note, i) => (
                               <li key={i}>{note}</li>
@@ -898,35 +866,29 @@ const DramaTheaterDirector = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-red-50 to-rose-50 rounded-xl p-6 border border-red-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Target className="h-6 w-6 text-red-600" />
-                  Production Planning
-                </h2>
+                  <Target className="h-6 w-6 text-red-600" />{t('dramaTheaterDirector.productionPlanning')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Production Title
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('dramaTheaterDirector.productionTitle')}</label>
                     <input
                       type="text"
                       value={productionTitle}
                       onChange={(e) => setProductionTitle(e.target.value)}
-                      placeholder="e.g., Our Town"
+                      placeholder={t('dramaTheaterDirector.eGOurTown')}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Duration
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('dramaTheaterDirector.duration')}</label>
                     <select
                       value={productionDuration}
                       onChange={(e) => setProductionDuration(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
                     >
-                      <option>8 weeks</option>
-                      <option>10 weeks</option>
-                      <option>12 weeks</option>
-                      <option>16 weeks</option>
+                      <option>{t('dramaTheaterDirector.kWeeks')}</option>
+                      <option>{t('dramaTheaterDirector.k0Weeks')}</option>
+                      <option>{t('dramaTheaterDirector.k2Weeks')}</option>
+                      <option>{t('dramaTheaterDirector.k6Weeks')}</option>
                     </select>
                   </div>
                 </div>
@@ -937,14 +899,10 @@ const DramaTheaterDirector = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Generating...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('dramaTheaterDirector.generating')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Generate Production Plan
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('dramaTheaterDirector.generateProductionPlan')}</>
                   )}
                 </button>
               </div>
@@ -955,7 +913,7 @@ const DramaTheaterDirector = () => {
                   
                   <div className="space-y-6">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Timeline</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">{t('dramaTheaterDirector.timeline')}</h4>
                       <div className="space-y-4">
                         {productionPlan.timeline.map((phase, idx) => (
                           <div key={idx} className="border-l-4 border-red-500 pl-4">
@@ -976,7 +934,7 @@ const DramaTheaterDirector = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Budget</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">{t('dramaTheaterDirector.budget')}</h4>
                       <div className="space-y-2">
                         {productionPlan.budget.map((item, idx) => (
                           <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -991,13 +949,13 @@ const DramaTheaterDirector = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Team Roles</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">{t('dramaTheaterDirector.teamRoles')}</h4>
                       <div className="space-y-3">
                         {productionPlan.team.map((role, idx) => (
                           <div key={idx} className="bg-gray-50 p-4 rounded-lg">
                             <h5 className="font-semibold text-gray-900 mb-2">{role.role}</h5>
                             <div>
-                              <span className="text-sm font-medium text-gray-700">Responsibilities:</span>
+                              <span className="text-sm font-medium text-gray-700">{t('dramaTheaterDirector.responsibilities')}</span>
                               <ul className="list-disc list-inside space-y-1 text-sm text-gray-700 mt-1">
                                 {role.responsibilities.map((resp, i) => (
                                   <li key={i}>{resp}</li>
@@ -1019,9 +977,7 @@ const DramaTheaterDirector = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-6 border border-amber-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Award className="h-6 w-6 text-amber-600" />
-                  Acting Techniques & Methods
-                </h2>
+                  <Award className="h-6 w-6 text-amber-600" />{t('dramaTheaterDirector.actingTechniquesMethods')}</h2>
                 <button
                   onClick={handleLoadActingMethods}
                   disabled={isGenerating}
@@ -1029,14 +985,10 @@ const DramaTheaterDirector = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('dramaTheaterDirector.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load Acting Methods
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('dramaTheaterDirector.loadActingMethods')}</>
                   )}
                 </button>
               </div>
@@ -1061,7 +1013,7 @@ const DramaTheaterDirector = () => {
                       {selectedMethod?.id === method.id && (
                         <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Key Principles</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('dramaTheaterDirector.keyPrinciples')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {method.keyPrinciples.map((principle, i) => (
                                 <li key={i}>{principle}</li>
@@ -1071,7 +1023,7 @@ const DramaTheaterDirector = () => {
 
                           <div className="grid md:grid-cols-2 gap-4">
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Techniques</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('dramaTheaterDirector.techniques')}</h4>
                               <ul className="list-disc list-inside space-y-1 text-gray-700">
                                 {method.techniques.map((technique, i) => (
                                   <li key={i}>{technique}</li>
@@ -1079,7 +1031,7 @@ const DramaTheaterDirector = () => {
                               </ul>
                             </div>
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Exercises</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('dramaTheaterDirector.exercises')}</h4>
                               <ul className="list-disc list-inside space-y-1 text-gray-700">
                                 {method.exercises.map((exercise, i) => (
                                   <li key={i}>{exercise}</li>
@@ -1089,7 +1041,7 @@ const DramaTheaterDirector = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Benefits</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('dramaTheaterDirector.benefits')}</h4>
                             <div className="flex flex-wrap gap-2">
                               {method.benefits.map((benefit, i) => (
                                 <span key={i} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
@@ -1112,9 +1064,7 @@ const DramaTheaterDirector = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-violet-50 to-purple-50 rounded-xl p-6 border border-violet-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Theater className="h-6 w-6 text-violet-600" />
-                  International Theater Styles
-                </h2>
+                  <Theater className="h-6 w-6 text-violet-600" />{t('dramaTheaterDirector.internationalTheaterStyles')}</h2>
                 <button
                   onClick={handleLoadTheaterStyles}
                   disabled={isGenerating}
@@ -1122,14 +1072,10 @@ const DramaTheaterDirector = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('dramaTheaterDirector.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load Theater Styles
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('dramaTheaterDirector.loadTheaterStyles')}</>
                   )}
                 </button>
               </div>
@@ -1158,7 +1104,7 @@ const DramaTheaterDirector = () => {
                       {selectedStyle?.id === style.id && (
                         <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Characteristics</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('dramaTheaterDirector.characteristics')}</h4>
                             <div className="flex flex-wrap gap-2">
                               {style.characteristics.map((char, i) => (
                                 <span key={i} className="px-3 py-1 bg-violet-100 text-violet-700 rounded-full text-xs font-medium">
@@ -1169,7 +1115,7 @@ const DramaTheaterDirector = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Key Practitioners</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('dramaTheaterDirector.keyPractitioners')}</h4>
                             <div className="flex flex-wrap gap-2">
                               {style.keyPractitioners.map((practitioner, i) => (
                                 <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -1180,7 +1126,7 @@ const DramaTheaterDirector = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Examples</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('dramaTheaterDirector.examples')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {style.examples.map((example, i) => (
                                 <li key={i}>{example}</li>
@@ -1201,9 +1147,7 @@ const DramaTheaterDirector = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 border border-indigo-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <CheckCircle className="h-6 w-6 text-indigo-600" />
-                  International Theater Education Standards
-                </h2>
+                  <CheckCircle className="h-6 w-6 text-indigo-600" />{t('dramaTheaterDirector.internationalTheaterEducationStandards')}</h2>
                 <button
                   onClick={handleLoadStandards}
                   disabled={isGenerating}
@@ -1211,14 +1155,10 @@ const DramaTheaterDirector = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('dramaTheaterDirector.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load Standards
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('dramaTheaterDirector.loadStandards')}</>
                   )}
                 </button>
               </div>
@@ -1250,7 +1190,7 @@ const DramaTheaterDirector = () => {
                       {selectedStandard?.id === standard.id && (
                         <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Key Components</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('dramaTheaterDirector.keyComponents')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {standard.keyComponents.map((component, i) => (
                                 <li key={i}>{component}</li>
@@ -1259,7 +1199,7 @@ const DramaTheaterDirector = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Assessment Criteria</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('dramaTheaterDirector.assessmentCriteria')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {standard.assessmentCriteria.map((criteria, i) => (
                                 <li key={i}>{criteria}</li>
@@ -1280,63 +1220,47 @@ const DramaTheaterDirector = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-rose-50 to-red-50 rounded-xl p-6 border border-rose-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <BookOpen className="h-6 w-6 text-rose-600" />
-                  Theater Resources & Repertoire
-                </h2>
-                <p className="text-gray-600">
-                  Access curated play libraries, monologue collections, and theater education resources.
-                </p>
+                  <BookOpen className="h-6 w-6 text-rose-600" />{t('dramaTheaterDirector.theaterResourcesRepertoire')}</h2>
+                <p className="text-gray-600">{t('dramaTheaterDirector.accessCuratedPlayLibrariesMonologueCollectionsAndTheate')}</p>
               </div>
 
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <FileText className="h-5 w-5 text-rose-600" />
-                    Play Library
-                  </h3>
-                  <p className="text-gray-700 mb-3">
-                    Curated collection of plays across genres and periods
-                  </p>
+                    <FileText className="h-5 w-5 text-rose-600" />{t('dramaTheaterDirector.playLibrary')}</h3>
+                  <p className="text-gray-700 mb-3">{t('dramaTheaterDirector.curatedCollectionOfPlaysAcrossGenresAndPeriods')}</p>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-                    <li>Classical plays</li>
-                    <li>Contemporary works</li>
-                    <li>One-act plays</li>
-                    <li>Student-written works</li>
-                    <li>International plays</li>
+                    <li>{t('dramaTheaterDirector.classicalPlays')}</li>
+                    <li>{t('dramaTheaterDirector.contemporaryWorks')}</li>
+                    <li>{t('dramaTheaterDirector.oneActPlays')}</li>
+                    <li>{t('dramaTheaterDirector.studentWrittenWorks')}</li>
+                    <li>{t('dramaTheaterDirector.internationalPlays')}</li>
                   </ul>
                 </div>
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <Mic className="h-5 w-5 text-rose-600" />
-                    Monologue Collection
-                  </h3>
-                  <p className="text-gray-700 mb-3">
-                    Age-appropriate monologues for auditions and practice
-                  </p>
+                    <Mic className="h-5 w-5 text-rose-600" />{t('dramaTheaterDirector.monologueCollection')}</h3>
+                  <p className="text-gray-700 mb-3">{t('dramaTheaterDirector.ageAppropriateMonologuesForAuditionsAndPractice')}</p>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-                    <li>Classical monologues</li>
-                    <li>Contemporary monologues</li>
-                    <li>Age-appropriate selections</li>
-                    <li>Genre variety</li>
-                    <li>Character types</li>
+                    <li>{t('dramaTheaterDirector.classicalMonologues')}</li>
+                    <li>{t('dramaTheaterDirector.contemporaryMonologues')}</li>
+                    <li>{t('dramaTheaterDirector.ageAppropriateSelections')}</li>
+                    <li>{t('dramaTheaterDirector.genreVariety')}</li>
+                    <li>{t('dramaTheaterDirector.characterTypes')}</li>
                   </ul>
                 </div>
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <Film className="h-5 w-5 text-rose-600" />
-                    Scene Study
-                  </h3>
-                  <p className="text-gray-700 mb-3">
-                    Scene collections with analysis guides
-                  </p>
+                    <Film className="h-5 w-5 text-rose-600" />{t('dramaTheaterDirector.sceneStudy')}</h3>
+                  <p className="text-gray-700 mb-3">{t('dramaTheaterDirector.sceneCollectionsWithAnalysisGuides')}</p>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-                    <li>Scene collections</li>
-                    <li>Analysis guides</li>
-                    <li>Performance notes</li>
-                    <li>Character breakdowns</li>
-                    <li>Directing notes</li>
+                    <li>{t('dramaTheaterDirector.sceneCollections')}</li>
+                    <li>{t('dramaTheaterDirector.analysisGuides')}</li>
+                    <li>{t('dramaTheaterDirector.performanceNotes')}</li>
+                    <li>{t('dramaTheaterDirector.characterBreakdowns')}</li>
+                    <li>{t('dramaTheaterDirector.directingNotes')}</li>
                   </ul>
                 </div>
               </div>

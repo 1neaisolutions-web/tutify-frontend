@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Gamepad2, Sparkles, RefreshCw, Download } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 type MathDomain =
   | 'fractions'
   | 'geometry'
@@ -97,6 +98,7 @@ const sampleGame: MathGameOutput = {
 }
 
 const MathGameBuilder = () => {
+  const { t } = useTranslation()
   const [inputs, setInputs] = useState<MathGameInputs>({
     grade: 5,
     math_domain: 'fractions',
@@ -210,10 +212,8 @@ const MathGameBuilder = () => {
             <Gamepad2 className="w-6 h-6 text-primary-600" />
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold text-gray-900">Math Game Builder</h1>
-            <p className="text-sm text-gray-600 mt-0.5">
-              Craft engaging math games that reinforce core concepts through play
-            </p>
+            <h1 className="text-xl font-bold text-gray-900">{t('mathGameBuilder.mathGameBuilder')}</h1>
+            <p className="text-sm text-gray-600 mt-0.5">{t('mathGameBuilder.craftEngagingMathGamesThatReinforceCoreConceptsThroughP')}</p>
           </div>
         </div>
       </div>
@@ -223,13 +223,12 @@ const MathGameBuilder = () => {
           <div className="card">
             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
               <Sparkles className="w-5 h-5 text-primary-600" />
-              <span>Game Inputs</span>
+              <span>{t('mathGameBuilder.gameInputs')}</span>
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Grade <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('mathGameBuilder.grade2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -238,14 +237,13 @@ const MathGameBuilder = () => {
                   value={inputs.grade}
                   onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
                   className="input-field"
-                  placeholder="Enter grade (1-12)"
+                  placeholder={t('common.gradePlaceholder')}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Math Domain <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('mathGameBuilder.mathDomain')}<span className="text-red-500">*</span>
                 </label>
                 <select
                   value={inputs.math_domain}
@@ -255,19 +253,18 @@ const MathGameBuilder = () => {
                   className="input-field"
                   required
                 >
-                  <option value="">Select domain</option>
-                  <option value="fractions">Fractions</option>
-                  <option value="geometry">Geometry</option>
-                  <option value="algebra">Algebra</option>
-                  <option value="data">Data</option>
-                  <option value="measurement">Measurement</option>
-                  <option value="number_operations">Number Operations</option>
+                  <option value="">{t('mathGameBuilder.selectDomain')}</option>
+                  <option value="fractions">{t('mathGameBuilder.fractions')}</option>
+                  <option value="geometry">{t('mathGameBuilder.geometry')}</option>
+                  <option value="algebra">{t('mathGameBuilder.algebra')}</option>
+                  <option value="data">{t('mathGameBuilder.data')}</option>
+                  <option value="measurement">{t('mathGameBuilder.measurement')}</option>
+                  <option value="number_operations">{t('mathGameBuilder.numberOperations')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Topic <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('mathGameBuilder.topic2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -280,21 +277,19 @@ const MathGameBuilder = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Players per Group</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('mathGameBuilder.playersPerGroup')}</label>
                 <input
                   type="number"
                   min="1"
                   value={inputs.players}
                   onChange={(e) => handleInputChange('players', parseInt(e.target.value) || '')}
                   className="input-field"
-                  placeholder="Default is 4"
+                  placeholder={t('mathGameBuilder.defaultIs4')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Materials Available
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('mathGameBuilder.materialsAvailable')}</label>
                 <div className="flex gap-2 mb-2">
                   <input
                     type="text"
@@ -309,9 +304,7 @@ const MathGameBuilder = () => {
                     className="input-field flex-1"
                     placeholder='e.g., "cards"'
                   />
-                  <button type="button" onClick={addMaterial} className="btn-primary whitespace-nowrap">
-                    Add
-                  </button>
+                  <button type="button" onClick={addMaterial} className="btn-primary whitespace-nowrap">{t('mathGameBuilder.add')}</button>
                 </div>
                 {inputs.materials_available.length > 0 && (
                   <div className="flex flex-wrap gap-2">
@@ -336,18 +329,18 @@ const MathGameBuilder = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('mathGameBuilder.duration2')}</label>
                 <input
                   type="text"
                   value={inputs.duration}
                   onChange={(e) => handleInputChange('duration', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., PT15M"
+                  placeholder={t('mathGameBuilder.eGPt15m')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Difficulty</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('mathGameBuilder.difficulty2')}</label>
                 <select
                   value={inputs.difficulty}
                   onChange={(e) =>
@@ -356,14 +349,14 @@ const MathGameBuilder = () => {
                   className="input-field"
                 >
                   <option value="">Select difficulty (optional)</option>
-                  <option value="easy">Easy</option>
-                  <option value="moderate">Moderate</option>
-                  <option value="challenging">Challenging</option>
+                  <option value="easy">{t('mathGameBuilder.easy')}</option>
+                  <option value="moderate">{t('mathGameBuilder.moderate')}</option>
+                  <option value="challenging">{t('mathGameBuilder.challenging')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Game Type</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('mathGameBuilder.gameType')}</label>
                 <select
                   value={inputs.game_type}
                   onChange={(e) =>
@@ -372,11 +365,11 @@ const MathGameBuilder = () => {
                   className="input-field"
                 >
                   <option value="">Select game type (optional)</option>
-                  <option value="competitive">Competitive</option>
-                  <option value="cooperative">Cooperative</option>
-                  <option value="puzzle">Puzzle</option>
-                  <option value="quiz">Quiz</option>
-                  <option value="movement">Movement</option>
+                  <option value="competitive">{t('mathGameBuilder.competitive')}</option>
+                  <option value="cooperative">{t('mathGameBuilder.cooperative')}</option>
+                  <option value="puzzle">{t('mathGameBuilder.puzzle')}</option>
+                  <option value="quiz">{t('mathGameBuilder.quiz')}</option>
+                  <option value="movement">{t('mathGameBuilder.movement')}</option>
                 </select>
               </div>
 
@@ -388,24 +381,22 @@ const MathGameBuilder = () => {
                   onChange={(e) => handleInputChange('include_extensions', e.target.checked)}
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />
-                <label htmlFor="include-extensions" className="ml-2 text-sm text-gray-700">
-                  Include extension variations
-                </label>
+                <label htmlFor="include-extensions" className="ml-2 text-sm text-gray-700">{t('mathGameBuilder.includeExtensionVariations')}</label>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('mathGameBuilder.language2')}</label>
                 <input
                   type="text"
                   value={inputs.language}
                   onChange={(e) => handleInputChange('language', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., en-US"
+                  placeholder={t('mathGameBuilder.eGEnUs')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Output Format</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('mathGameBuilder.outputFormat')}</label>
                 <select
                   value={inputs.output_format}
                   onChange={(e) =>
@@ -417,8 +408,8 @@ const MathGameBuilder = () => {
                   className="input-field"
                 >
                   <option value="">Select output format (optional)</option>
-                  <option value="teacher_text">Teacher Text</option>
-                  <option value="structured_json">Structured JSON</option>
+                  <option value="teacher_text">{t('mathGameBuilder.teacherText')}</option>
+                  <option value="structured_json">{t('mathGameBuilder.structuredJson')}</option>
                 </select>
               </div>
 
@@ -430,12 +421,12 @@ const MathGameBuilder = () => {
                 {isGenerating ? (
                   <>
                     <RefreshCw className="w-5 h-5 animate-spin" />
-                    <span>Generating...</span>
+                    <span>{t('mathGameBuilder.generating')}</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-5 h-5" />
-                    <span>Generate Game Plan</span>
+                    <span>{t('mathGameBuilder.generateGamePlan')}</span>
                   </>
                 )}
               </button>
@@ -447,18 +438,18 @@ const MathGameBuilder = () => {
           {output ? (
             <div className="card">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Generated Game Plan</h2>
+                <h2 className="text-lg font-semibold text-gray-900">{t('mathGameBuilder.generatedGamePlan')}</h2>
                 <div className="flex gap-2">
                   <button className="btn-secondary flex items-center space-x-2">
                     <Download className="w-4 h-4" />
-                    <span>Download</span>
+                    <span>{t('mathGameBuilder.download')}</span>
                   </button>
                   <button
                     onClick={() => setOutput(null)}
                     className="btn-secondary flex items-center space-x-2"
                   >
                     <RefreshCw className="w-4 h-4" />
-                    <span>Reset</span>
+                    <span>{t('mathGameBuilder.reset')}</span>
                   </button>
                 </div>
               </div>
@@ -468,35 +459,35 @@ const MathGameBuilder = () => {
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">{output.title}</h3>
                   <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                     <span>
-                      <strong>Grade:</strong> {output.grade}
+                      <strong>{t('mathGameBuilder.grade')}</strong> {output.grade}
                     </span>
                     <span>
-                      <strong>Domain:</strong> {output.math_domain.replace(/_/g, ' ')}
+                      <strong>{t('mathGameBuilder.domain')}</strong> {output.math_domain.replace(/_/g, ' ')}
                     </span>
                     <span>
-                      <strong>Topic:</strong> {output.topic}
+                      <strong>{t('mathGameBuilder.topic')}</strong> {output.topic}
                     </span>
                     <span>
-                      <strong>Players:</strong> {output.players}
+                      <strong>{t('mathGameBuilder.players')}</strong> {output.players}
                     </span>
                     {output.duration && (
                       <span>
-                        <strong>Duration:</strong> {output.duration}
+                        <strong>{t('mathGameBuilder.duration')}</strong> {output.duration}
                       </span>
                     )}
                     {output.difficulty && (
                       <span>
-                        <strong>Difficulty:</strong> {output.difficulty}
+                        <strong>{t('mathGameBuilder.difficulty')}</strong> {output.difficulty}
                       </span>
                     )}
                     {output.game_type && (
                       <span>
-                        <strong>Type:</strong> {output.game_type.replace(/_/g, ' ')}
+                        <strong>{t('mathGameBuilder.type')}</strong> {output.game_type.replace(/_/g, ' ')}
                       </span>
                     )}
                     {output.language && (
                       <span>
-                        <strong>Language:</strong> {output.language}
+                        <strong>{t('mathGameBuilder.language')}</strong> {output.language}
                       </span>
                     )}
                   </div>
@@ -506,7 +497,7 @@ const MathGameBuilder = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Setup Instructions</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('mathGameBuilder.setupInstructions')}</h4>
                   <ol className="list-decimal list-inside space-y-1 text-sm text-gray-700">
                     {output.setup_instructions.map((instruction, index) => (
                       <li key={index}>{instruction}</li>
@@ -515,7 +506,7 @@ const MathGameBuilder = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Materials</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('mathGameBuilder.materials')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.materials.map((material, index) => (
                       <li key={index}>{material}</li>
@@ -524,7 +515,7 @@ const MathGameBuilder = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Gameplay Rounds</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('mathGameBuilder.gameplayRounds')}</h4>
                   <div className="space-y-3">
                     {output.gameplay_rounds.map((round, index) => (
                       <div key={index} className="bg-gray-50 rounded-lg p-4">
@@ -533,7 +524,7 @@ const MathGameBuilder = () => {
                         </div>
                         <p className="text-sm text-gray-700">{round.description}</p>
                         <p className="mt-2 text-xs text-gray-600">
-                          <strong>Scoring:</strong> {round.scoring}
+                          <strong>{t('mathGameBuilder.scoring')}</strong> {round.scoring}
                         </p>
                       </div>
                     ))}
@@ -541,7 +532,7 @@ const MathGameBuilder = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Reflection Prompts</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('mathGameBuilder.reflectionPrompts')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.reflection_prompts.map((prompt, index) => (
                       <li key={index}>{prompt}</li>
@@ -551,7 +542,7 @@ const MathGameBuilder = () => {
 
                 {output.extension_variations && (
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Extension Variations</h4>
+                    <h4 className="font-semibold text-gray-900 mb-2">{t('mathGameBuilder.extensionVariations')}</h4>
                     <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                       {output.extension_variations.map((variation, index) => (
                         <li key={index}>{variation}</li>
@@ -565,12 +556,8 @@ const MathGameBuilder = () => {
             <div className="card">
               <div className="text-center py-12">
                 <Gamepad2 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Your game plan will appear here
-                </h3>
-                <p className="text-gray-600">
-                  Fill in the inputs and click "Generate Game Plan" to preview your math game outline.
-                </p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('mathGameBuilder.yourGamePlanWillAppearHere')}</h3>
+                <p className="text-gray-600">{t('mathGameBuilder.fillInTheInputsAndClickGenerateGamePlanTo')}</p>
               </div>
             </div>
           )}

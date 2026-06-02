@@ -20,6 +20,7 @@ import {
   X,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template'
@@ -38,6 +39,7 @@ interface AssessmentQuestion {
 }
 
 const FormativeAutomationModule = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -281,19 +283,13 @@ Teacher observations of student work:
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 4 of 5
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('formativeAutomationModule.module4Of5')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    30 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('formativeAutomationModule.k0Min')}</span>
                 </div>
-                <h1 className="text-3xl font-bold">Formative Assessment Automation</h1>
-                <p className="mt-2 text-indigo-100">
-                  Automate formative assessment creation and analysis to save time while maintaining quality
-                </p>
+                <h1 className="text-3xl font-bold">{t('formativeAutomationModule.formativeAssessmentAutomation')}</h1>
+                <p className="mt-2 text-indigo-100">{t('formativeAutomationModule.automateFormativeAssessmentCreationAndAnalysisToSaveTim')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm">
@@ -320,7 +316,7 @@ Teacher observations of student work:
         {/* Lessons Sidebar */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('formativeAutomationModule.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isCompleted = completedLessons.includes(lesson.id)
@@ -364,7 +360,7 @@ Teacher observations of student work:
             </div>
             <div className="mt-6 pt-6 border-t border-gray-200">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-gray-600">Progress</span>
+                <span className="text-xs text-gray-600">{t('formativeAutomationModule.progress')}</span>
                 <span className="text-xs font-semibold text-gray-900">{Math.round(moduleProgress)}%</span>
               </div>
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -387,7 +383,7 @@ Teacher observations of student work:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Video className="h-5 w-5 text-indigo-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Video Lesson</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('formativeAutomationModule.videoLesson')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                   </div>
@@ -411,7 +407,7 @@ Teacher observations of student work:
                 </div>
 
                 <div className="bg-indigo-50 rounded-lg p-6 border border-indigo-200">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Key Points</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('formativeAutomationModule.keyPoints')}</h3>
                   <ul className="space-y-2">
                     {currentLessonData.content.keyPoints?.map((point: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -429,14 +425,10 @@ Teacher observations of student work:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('formativeAutomationModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('formativeAutomationModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -449,7 +441,7 @@ Teacher observations of student work:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <BookOpen className="h-5 w-5 text-indigo-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Reading</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('formativeAutomationModule.reading')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                   </div>
@@ -471,7 +463,7 @@ Teacher observations of student work:
 
                 {currentLessonData.content.keyTakeaways && (
                   <div className="bg-indigo-50 rounded-lg p-6 border border-indigo-200">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-3">Key Takeaways</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('formativeAutomationModule.keyTakeaways')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyTakeaways.map((takeaway: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -490,14 +482,10 @@ Teacher observations of student work:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('formativeAutomationModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('formativeAutomationModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -510,7 +498,7 @@ Teacher observations of student work:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Zap className="h-5 w-5 text-indigo-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Interactive Tool</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('formativeAutomationModule.interactiveTool')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                     <p className="mt-2 text-gray-600">{currentLessonData.content.description}</p>
@@ -521,7 +509,7 @@ Teacher observations of student work:
                 </div>
 
                 <div className="bg-indigo-50 rounded-lg p-6 border border-indigo-200 mb-6">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Builder Steps</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('formativeAutomationModule.builderSteps')}</h3>
                   <ol className="space-y-2">
                     {currentLessonData.content.steps?.map((step: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -536,13 +524,11 @@ Teacher observations of student work:
 
                 <div className="bg-white rounded-lg p-6 border border-gray-200 space-y-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Assessment Generation Prompt *
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">{t('formativeAutomationModule.assessmentGenerationPrompt')}</label>
                     <textarea
                       value={assessmentPrompt}
                       onChange={(e) => setAssessmentPrompt(e.target.value)}
-                      placeholder="e.g., Create 5 formative assessment questions for 7th grade math on solving linear equations. Include a mix of multiple choice and short answer questions. Questions should assess understanding of solving one-step and two-step equations..."
+                      placeholder={t('formativeAutomationModule.eGCreate5FormativeAssessmentQuestionsFor7thGrade')}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                       rows={5}
                     />
@@ -552,9 +538,7 @@ Teacher observations of student work:
                     onClick={handleGenerateQuestions}
                     className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition flex items-center justify-center gap-2"
                   >
-                    <Zap className="h-5 w-5" />
-                    Generate Questions with AI
-                  </button>
+                    <Zap className="h-5 w-5" />{t('formativeAutomationModule.generateQuestionsWithAi')}</button>
 
                   {questions.length > 0 && (
                     <div className="pt-6 border-t border-gray-200">
@@ -583,46 +567,46 @@ Teacher observations of student work:
                   )}
 
                   <div className="pt-6 border-t border-gray-200">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-4">Add Custom Question</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('formativeAutomationModule.addCustomQuestion')}</h3>
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-semibold text-gray-900 mb-2">Question *</label>
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">{t('formativeAutomationModule.question')}</label>
                         <textarea
                           value={currentQuestion.question}
                           onChange={(e) => setCurrentQuestion({ ...currentQuestion, question: e.target.value })}
-                          placeholder="Enter your question..."
+                          placeholder={t('formativeAutomationModule.enterYourQuestion')}
                           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                           rows={3}
                         />
                       </div>
                       <div className="grid grid-cols-3 gap-4">
                         <div>
-                          <label className="block text-sm font-semibold text-gray-900 mb-2">Type</label>
+                          <label className="block text-sm font-semibold text-gray-900 mb-2">{t('formativeAutomationModule.type')}</label>
                           <select
                             value={currentQuestion.type}
                             onChange={(e) => setCurrentQuestion({ ...currentQuestion, type: e.target.value })}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                           >
-                            <option>Multiple Choice</option>
-                            <option>Short Answer</option>
-                            <option>True/False</option>
-                            <option>Essay</option>
+                            <option>{t('formativeAutomationModule.multipleChoice')}</option>
+                            <option>{t('formativeAutomationModule.shortAnswer')}</option>
+                            <option>{t('formativeAutomationModule.trueFalse')}</option>
+                            <option>{t('formativeAutomationModule.essay')}</option>
                           </select>
                         </div>
                         <div>
-                          <label className="block text-sm font-semibold text-gray-900 mb-2">Difficulty</label>
+                          <label className="block text-sm font-semibold text-gray-900 mb-2">{t('formativeAutomationModule.difficulty')}</label>
                           <select
                             value={currentQuestion.difficulty}
                             onChange={(e) => setCurrentQuestion({ ...currentQuestion, difficulty: e.target.value })}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                           >
-                            <option>Easy</option>
-                            <option>Medium</option>
-                            <option>Hard</option>
+                            <option>{t('formativeAutomationModule.easy')}</option>
+                            <option>{t('formativeAutomationModule.medium')}</option>
+                            <option>{t('formativeAutomationModule.hard')}</option>
                           </select>
                         </div>
                         <div>
-                          <label className="block text-sm font-semibold text-gray-900 mb-2">Points</label>
+                          <label className="block text-sm font-semibold text-gray-900 mb-2">{t('formativeAutomationModule.points')}</label>
                           <input
                             type="number"
                             value={currentQuestion.points}
@@ -636,18 +620,14 @@ Teacher observations of student work:
                         onClick={handleAddQuestion}
                         className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition flex items-center justify-center gap-2"
                       >
-                        <Plus className="h-5 w-5" />
-                        Add Question
-                      </button>
+                        <Plus className="h-5 w-5" />{t('formativeAutomationModule.addQuestion')}</button>
                     </div>
                   </div>
 
                   {questions.length > 0 && (
                     <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
                       <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                        <BarChart3 className="h-4 w-4 text-blue-600" />
-                        Assessment Analysis
-                      </h4>
+                        <BarChart3 className="h-4 w-4 text-blue-600" />{t('formativeAutomationModule.assessmentAnalysis')}</h4>
                       <p className="text-sm text-gray-700">
                         Total Questions: {questions.length} | Total Points: {questions.reduce((sum, q) => sum + q.points, 0)}
                       </p>
@@ -656,9 +636,7 @@ Teacher observations of student work:
                           alert('Assessment saved! You can now deploy this formative assessment.')
                         }}
                         className="mt-3 w-full px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700 transition"
-                      >
-                        Save Assessment
-                      </button>
+                      >{t('formativeAutomationModule.saveAssessment')}</button>
                     </div>
                   )}
                 </div>
@@ -670,14 +648,10 @@ Teacher observations of student work:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('formativeAutomationModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('formativeAutomationModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -690,7 +664,7 @@ Teacher observations of student work:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <FileText className="h-5 w-5 text-indigo-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Template</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('formativeAutomationModule.template')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                     <p className="mt-2 text-gray-600">{currentLessonData.content.description}</p>
@@ -701,7 +675,7 @@ Teacher observations of student work:
                 </div>
 
                 <div className="bg-white rounded-lg p-6 border border-gray-200">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-4">Template Sections</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('formativeAutomationModule.templateSections')}</h3>
                   <div className="space-y-3">
                     {currentLessonData.content.sections?.map((section: string, idx: number) => (
                       <div key={idx} className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
@@ -717,18 +691,18 @@ Teacher observations of student work:
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <button className="p-4 bg-indigo-50 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-indigo-600" />
-                    <span className="text-sm font-semibold text-gray-900">Elementary Template</span>
-                    <span className="text-xs text-gray-600">Grades K-5</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('formativeAutomationModule.elementaryTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('formativeAutomationModule.gradesK5')}</span>
                   </button>
                   <button className="p-4 bg-indigo-50 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-indigo-600" />
-                    <span className="text-sm font-semibold text-gray-900">Middle School Template</span>
-                    <span className="text-xs text-gray-600">Grades 6-8</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('formativeAutomationModule.middleSchoolTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('formativeAutomationModule.grades68')}</span>
                   </button>
                   <button className="p-4 bg-indigo-50 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-indigo-600" />
-                    <span className="text-sm font-semibold text-gray-900">High School Template</span>
-                    <span className="text-xs text-gray-600">Grades 9-12</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('formativeAutomationModule.highSchoolTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('formativeAutomationModule.grades912')}</span>
                   </button>
                 </div>
 
@@ -739,14 +713,10 @@ Teacher observations of student work:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('formativeAutomationModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('formativeAutomationModule.markAsComplete')}</>
                   )}
                 </button>
               </div>

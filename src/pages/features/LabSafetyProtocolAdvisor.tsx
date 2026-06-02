@@ -57,11 +57,13 @@ import {
   labProtocolCategoryToParam,
 } from '../../utils/labSafetyAdapters'
 
+import { useTranslation } from 'react-i18next'
 const CHATBOT_SLUG = 'lab-safety-protocol-advisor'
 
 type TabType = 'standards' | 'protocols' | 'risk-assessment' | 'chemicals' | 'equipment' | 'emergency' | 'experiment-design' | 'compliance'
 
 const LabSafetyProtocolAdvisor = () => {
+  const { t } = useTranslation()
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const [activeTab, setActiveTab] = useState<TabType>('standards')
@@ -158,7 +160,7 @@ const LabSafetyProtocolAdvisor = () => {
           setExperimentDesign(mapLabExperimentDesignResult(raw))
         }
       } catch {
-        toast.error('Could not restore saved output from History.')
+        toast.error(t('labSafetyProtocolAdvisor.couldNotRestoreSavedOutputFromHistory'))
       }
     },
   })
@@ -183,13 +185,13 @@ const LabSafetyProtocolAdvisor = () => {
       if (response == null) return
       setSafetyStandards(mapLabSafetyStandardsResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Safety standards loaded')
+      toast.success(t('labSafetyProtocolAdvisor.safetyStandardsLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load standards'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('labSafetyProtocolAdvisor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -214,13 +216,13 @@ const LabSafetyProtocolAdvisor = () => {
       if (response == null) return
       setSafetyProtocol(mapLabSafetyProtocolResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Protocol generated')
+      toast.success(t('labSafetyProtocolAdvisor.protocolGenerated'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to generate protocol'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('labSafetyProtocolAdvisor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -244,13 +246,13 @@ const LabSafetyProtocolAdvisor = () => {
       if (response == null) return
       setRiskAssessment(mapLabRiskAssessmentResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Risk assessment generated')
+      toast.success(t('labSafetyProtocolAdvisor.riskAssessmentGenerated'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to generate risk assessment'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('labSafetyProtocolAdvisor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -274,13 +276,13 @@ const LabSafetyProtocolAdvisor = () => {
       if (response == null) return
       setChemicalInfo(mapLabChemicalResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Chemical information loaded')
+      toast.success(t('labSafetyProtocolAdvisor.chemicalInformationLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load chemical info'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('labSafetyProtocolAdvisor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -304,13 +306,13 @@ const LabSafetyProtocolAdvisor = () => {
       if (response == null) return
       setEquipmentSafety(mapLabEquipmentResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Equipment safety guide loaded')
+      toast.success(t('labSafetyProtocolAdvisor.equipmentSafetyGuideLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load equipment safety'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('labSafetyProtocolAdvisor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -334,13 +336,13 @@ const LabSafetyProtocolAdvisor = () => {
       if (response == null) return
       setEmergencyProcedure(mapLabEmergencyResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Emergency procedure loaded')
+      toast.success(t('labSafetyProtocolAdvisor.emergencyProcedureLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load emergency procedure'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('labSafetyProtocolAdvisor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -366,13 +368,13 @@ const LabSafetyProtocolAdvisor = () => {
       if (response == null) return
       setExperimentDesign(mapLabExperimentDesignResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Experiment design generated')
+      toast.success(t('labSafetyProtocolAdvisor.experimentDesignGenerated'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to generate experiment design'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('labSafetyProtocolAdvisor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -380,14 +382,14 @@ const LabSafetyProtocolAdvisor = () => {
   }
 
   const tabs = [
-    { id: 'standards' as TabType, label: 'Safety Standards', icon: Shield },
-    { id: 'protocols' as TabType, label: 'Safety Protocols', icon: FileCheck },
-    { id: 'risk-assessment' as TabType, label: 'Risk Assessment', icon: AlertTriangle },
-    { id: 'chemicals' as TabType, label: 'Chemical Safety', icon: Beaker },
-    { id: 'equipment' as TabType, label: 'Equipment Safety', icon: FlaskConical },
-    { id: 'emergency' as TabType, label: 'Emergency Procedures', icon: Heart },
-    { id: 'experiment-design' as TabType, label: 'Experiment Design', icon: Lightbulb },
-    { id: 'compliance' as TabType, label: 'Compliance', icon: CheckCircle },
+    { id: 'standards' as TabType, label: t('labSafetyProtocolAdvisor.tabs.standards'), icon: Shield },
+    { id: 'protocols' as TabType, label: t('labSafetyProtocolAdvisor.tabs.protocols'), icon: FileCheck },
+    { id: 'risk-assessment' as TabType, label: t('labSafetyProtocolAdvisor.tabs.risk-assessment'), icon: AlertTriangle },
+    { id: 'chemicals' as TabType, label: t('labSafetyProtocolAdvisor.tabs.chemicals'), icon: Beaker },
+    { id: 'equipment' as TabType, label: t('labSafetyProtocolAdvisor.tabs.equipment'), icon: FlaskConical },
+    { id: 'emergency' as TabType, label: t('labSafetyProtocolAdvisor.tabs.emergency'), icon: Heart },
+    { id: 'experiment-design' as TabType, label: t('labSafetyProtocolAdvisor.tabs.experiment-design'), icon: Lightbulb },
+    { id: 'compliance' as TabType, label: t('labSafetyProtocolAdvisor.tabs.compliance'), icon: CheckCircle },
   ]
 
   return (
@@ -411,29 +413,23 @@ const LabSafetyProtocolAdvisor = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-3xl font-bold">Lab Safety & Protocol Advisor</h1>
+                  <h1 className="text-3xl font-bold">{t('labSafetyProtocolAdvisor.labSafetyProtocolAdvisor')}</h1>
                   <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
                     <Star className="h-3 w-3" /> 4.8★
                   </span>
                   <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" /> Premium
-                  </span>
+                    <Lock className="inline h-3 w-3 mr-1" />{t('labSafetyProtocolAdvisor.premium')}</span>
                   <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
-                    <Globe className="inline h-3 w-3 mr-1" /> International Standards
-                  </span>
+                    <Globe className="inline h-3 w-3 mr-1" />{t('labSafetyProtocolAdvisor.internationalStandards')}</span>
                 </div>
-                <p className="mt-2 text-red-100">
-                  Comprehensive lab safety tools aligned with international standards (ISO/IEC 17025, OSHA, GHS, IAEA, IEC). 
-                  Help teachers ensure student safety with protocols, risk assessments, chemical safety information, 
-                  and emergency procedures. Prepare students for safe laboratory work globally.
-                </p>
+                <p className="mt-2 text-blue-100">{t('labSafetyProtocolAdvisor.heroDescription')}</p>
               </div>
             </div>
             
             {/* Quick Settings */}
             <div className="flex flex-wrap gap-4 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Lab Type:</label>
+                <label className="text-sm font-medium">{t('labSafetyProtocolAdvisor.labType')}</label>
                 <select
                   value={labType}
                   onChange={(e) => setLabType(e.target.value)}
@@ -445,7 +441,7 @@ const LabSafetyProtocolAdvisor = () => {
                 </select>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Grade Level:</label>
+                <label className="text-sm font-medium">{t('labSafetyProtocolAdvisor.gradeLevel')}</label>
                 <select
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
@@ -491,13 +487,8 @@ const LabSafetyProtocolAdvisor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-xl p-6 border border-red-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Shield className="h-6 w-6 text-red-600" />
-                  International Safety Standards
-                </h2>
-                <p className="text-gray-600 mb-4">
-                  Explore major international safety standards for laboratory operations. Understand compliance 
-                  requirements and best practices for global lab safety.
-                </p>
+                  <Shield className="h-6 w-6 text-red-600" />{t('labSafetyProtocolAdvisor.internationalSafetyStandards')}</h2>
+                <p className="text-gray-600 mb-4">{t('labSafetyProtocolAdvisor.exploreMajorInternationalSafetyStandardsForLaboratoryOp')}</p>
                 <button
                   onClick={handleLoadStandards}
                   disabled={isGenerating}
@@ -505,14 +496,10 @@ const LabSafetyProtocolAdvisor = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('labSafetyProtocolAdvisor.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load Standards
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('labSafetyProtocolAdvisor.loadStandards')}</>
                   )}
                 </button>
               </div>
@@ -544,7 +531,7 @@ const LabSafetyProtocolAdvisor = () => {
                       {selectedStandard?.id === standard.id && (
                         <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Key Requirements</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.keyRequirements')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {standard.keyRequirements.map((req, i) => (
                                 <li key={i}>{req}</li>
@@ -552,7 +539,7 @@ const LabSafetyProtocolAdvisor = () => {
                             </ul>
                           </div>
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Compliance Checklist</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.complianceChecklist')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {standard.complianceChecklist.map((item, i) => (
                                 <li key={i}>{item}</li>
@@ -573,14 +560,10 @@ const LabSafetyProtocolAdvisor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl p-6 border border-orange-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <FileCheck className="h-6 w-6 text-orange-600" />
-                  Safety Protocol Generator
-                </h2>
+                  <FileCheck className="h-6 w-6 text-orange-600" />{t('labSafetyProtocolAdvisor.safetyProtocolGenerator')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Protocol Category
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('labSafetyProtocolAdvisor.protocolCategory')}</label>
                     <select
                       value={protocolCategory}
                       onChange={(e) => setProtocolCategory(e.target.value)}
@@ -599,14 +582,10 @@ const LabSafetyProtocolAdvisor = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Generating...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('labSafetyProtocolAdvisor.generating')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Generate Protocol
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('labSafetyProtocolAdvisor.generateProtocol')}</>
                       )}
                     </button>
                   </div>
@@ -634,7 +613,7 @@ const LabSafetyProtocolAdvisor = () => {
 
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Protocol Steps</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">{t('labSafetyProtocolAdvisor.protocolSteps')}</h4>
                       <div className="space-y-2">
                         {safetyProtocol.steps.map((step, i) => (
                           <div key={i} className="flex gap-3 p-3 bg-gray-50 rounded-lg">
@@ -657,7 +636,7 @@ const LabSafetyProtocolAdvisor = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Required PPE</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.requiredPpe')}</h4>
                         <div className="flex flex-wrap gap-2">
                           {safetyProtocol.requiredPPE.map((ppe, i) => (
                             <span key={i} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
@@ -667,7 +646,7 @@ const LabSafetyProtocolAdvisor = () => {
                         </div>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Potential Hazards</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.potentialHazards')}</h4>
                         <div className="flex flex-wrap gap-2">
                           {safetyProtocol.hazards.map((hazard, i) => (
                             <span key={i} className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
@@ -679,7 +658,7 @@ const LabSafetyProtocolAdvisor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Emergency Procedures</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.emergencyProcedures')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {safetyProtocol.emergencyProcedures.map((proc, i) => (
                           <li key={i}>{proc}</li>
@@ -688,7 +667,7 @@ const LabSafetyProtocolAdvisor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Compliance Standards</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.complianceStandards')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {safetyProtocol.complianceStandards.map((standard, i) => (
                           <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -708,19 +687,15 @@ const LabSafetyProtocolAdvisor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-xl p-6 border border-yellow-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <AlertTriangle className="h-6 w-6 text-yellow-600" />
-                  Risk Assessment Tool
-                </h2>
+                  <AlertTriangle className="h-6 w-6 text-yellow-600" />{t('labSafetyProtocolAdvisor.riskAssessmentTool')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Experiment Name
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('labSafetyProtocolAdvisor.experimentName')}</label>
                     <input
                       type="text"
                       value={experimentName}
                       onChange={(e) => setExperimentName(e.target.value)}
-                      placeholder="e.g., Acid-Base Titration"
+                      placeholder={t('labSafetyProtocolAdvisor.eGAcidBaseTitration')}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500"
                     />
                   </div>
@@ -732,14 +707,10 @@ const LabSafetyProtocolAdvisor = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Assessing...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('labSafetyProtocolAdvisor.assessing')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Assess Risk
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('labSafetyProtocolAdvisor.assessRisk')}</>
                       )}
                     </button>
                   </div>
@@ -761,9 +732,7 @@ const LabSafetyProtocolAdvisor = () => {
                           {riskAssessment.overallRisk.toUpperCase()} RISK
                         </span>
                         {riskAssessment.approvalRequired && (
-                          <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">
-                            Approval Required
-                          </span>
+                          <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">{t('labSafetyProtocolAdvisor.approvalRequired')}</span>
                         )}
                       </div>
                     </div>
@@ -771,7 +740,7 @@ const LabSafetyProtocolAdvisor = () => {
 
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Identified Hazards</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">{t('labSafetyProtocolAdvisor.identifiedHazards')}</h4>
                       <div className="space-y-3">
                         {riskAssessment.hazards.map((hazard, idx) => (
                           <div key={idx} className="border-l-4 border-yellow-500 pl-4">
@@ -790,7 +759,7 @@ const LabSafetyProtocolAdvisor = () => {
                             </div>
                             <p className="text-gray-700 mb-2">{hazard.description}</p>
                             <div>
-                              <span className="text-sm font-medium text-gray-700">Control Measures:</span>
+                              <span className="text-sm font-medium text-gray-700">{t('labSafetyProtocolAdvisor.controlMeasures')}</span>
                               <ul className="list-disc list-inside space-y-1 text-sm text-gray-700 mt-1">
                                 {hazard.controls.map((control, i) => (
                                   <li key={i}>{control}</li>
@@ -803,7 +772,7 @@ const LabSafetyProtocolAdvisor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Recommendations</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.recommendations')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {riskAssessment.recommendations.map((rec, i) => (
                           <li key={i}>{rec}</li>
@@ -821,19 +790,15 @@ const LabSafetyProtocolAdvisor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Beaker className="h-6 w-6 text-blue-600" />
-                  Chemical Safety Information
-                </h2>
+                  <Beaker className="h-6 w-6 text-blue-600" />{t('labSafetyProtocolAdvisor.chemicalSafetyInformation')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Chemical Name
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('labSafetyProtocolAdvisor.chemicalName')}</label>
                     <input
                       type="text"
                       value={chemicalName}
                       onChange={(e) => setChemicalName(e.target.value)}
-                      placeholder="e.g., Hydrochloric Acid"
+                      placeholder={t('labSafetyProtocolAdvisor.eGHydrochloricAcid')}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
@@ -845,14 +810,10 @@ const LabSafetyProtocolAdvisor = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Loading...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('labSafetyProtocolAdvisor.loading')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Get Safety Info
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('labSafetyProtocolAdvisor.getSafetyInfo')}</>
                       )}
                     </button>
                   </div>
@@ -866,13 +827,13 @@ const LabSafetyProtocolAdvisor = () => {
                   <div className="space-y-4">
                     {chemicalInfo.formula && (
                       <div>
-                        <span className="text-sm text-gray-600">Formula:</span>
+                        <span className="text-sm text-gray-600">{t('labSafetyProtocolAdvisor.formula')}</span>
                         <span className="ml-2 font-mono text-gray-900">{chemicalInfo.formula}</span>
                       </div>
                     )}
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">GHS Hazard Classes</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.ghsHazardClasses')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {chemicalInfo.ghsHazardClasses.map((hazard, i) => (
                           <span key={i} className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
@@ -884,7 +845,7 @@ const LabSafetyProtocolAdvisor = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Storage Requirements</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.storageRequirements')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {chemicalInfo.storageRequirements.map((req, i) => (
                             <li key={i}>{req}</li>
@@ -892,7 +853,7 @@ const LabSafetyProtocolAdvisor = () => {
                         </ul>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Incompatibilities</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.incompatibilities')}</h4>
                         <div className="flex flex-wrap gap-2">
                           {chemicalInfo.incompatibilities.map((incomp, i) => (
                             <span key={i} className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-medium">
@@ -904,7 +865,7 @@ const LabSafetyProtocolAdvisor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Required PPE</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.requiredPpe')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {chemicalInfo.ppeRequired.map((ppe, i) => (
                           <span key={i} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
@@ -915,12 +876,12 @@ const LabSafetyProtocolAdvisor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Disposal Method</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.disposalMethod')}</h4>
                       <p className="text-gray-700">{chemicalInfo.disposalMethod}</p>
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Emergency Procedures</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.emergencyProcedures')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {chemicalInfo.emergencyProcedures.map((proc, i) => (
                           <li key={i}>{proc}</li>
@@ -938,19 +899,15 @@ const LabSafetyProtocolAdvisor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <FlaskConical className="h-6 w-6 text-purple-600" />
-                  Equipment Safety Guide
-                </h2>
+                  <FlaskConical className="h-6 w-6 text-purple-600" />{t('labSafetyProtocolAdvisor.equipmentSafetyGuide')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Equipment Name
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('labSafetyProtocolAdvisor.equipmentName')}</label>
                     <input
                       type="text"
                       value={equipmentName}
                       onChange={(e) => setEquipmentName(e.target.value)}
-                      placeholder="e.g., Bunsen Burner"
+                      placeholder={t('labSafetyProtocolAdvisor.eGBunsenBurner')}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
                     />
                   </div>
@@ -962,14 +919,10 @@ const LabSafetyProtocolAdvisor = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Loading...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('labSafetyProtocolAdvisor.loading')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Get Safety Guide
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('labSafetyProtocolAdvisor.getSafetyGuide')}</>
                       )}
                     </button>
                   </div>
@@ -982,7 +935,7 @@ const LabSafetyProtocolAdvisor = () => {
                   
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Safety Features</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.safetyFeatures')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {equipmentSafety.safetyFeatures.map((feature, i) => (
                           <li key={i}>{feature}</li>
@@ -991,7 +944,7 @@ const LabSafetyProtocolAdvisor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Operating Procedures</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.operatingProcedures')}</h4>
                       <div className="space-y-2">
                         {equipmentSafety.operatingProcedures.map((proc, i) => (
                           <div key={i} className="flex gap-3 p-2 bg-gray-50 rounded">
@@ -1006,7 +959,7 @@ const LabSafetyProtocolAdvisor = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Hazards</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.hazards')}</h4>
                         <div className="flex flex-wrap gap-2">
                           {equipmentSafety.hazards.map((hazard, i) => (
                             <span key={i} className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
@@ -1016,7 +969,7 @@ const LabSafetyProtocolAdvisor = () => {
                         </div>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Required PPE</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.requiredPpe')}</h4>
                         <div className="flex flex-wrap gap-2">
                           {equipmentSafety.ppeRequired.map((ppe, i) => (
                             <span key={i} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
@@ -1028,7 +981,7 @@ const LabSafetyProtocolAdvisor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Emergency Procedures</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.emergencyProcedures')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {equipmentSafety.emergencyProcedures.map((proc, i) => (
                           <li key={i}>{proc}</li>
@@ -1037,7 +990,7 @@ const LabSafetyProtocolAdvisor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Age Appropriate</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.ageAppropriate')}</h4>
                       <p className="text-gray-700">{equipmentSafety.ageAppropriate.join(', ')}</p>
                     </div>
                   </div>
@@ -1051,24 +1004,20 @@ const LabSafetyProtocolAdvisor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-red-50 to-pink-50 rounded-xl p-6 border border-red-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Heart className="h-6 w-6 text-red-600" />
-                  Emergency Procedures
-                </h2>
+                  <Heart className="h-6 w-6 text-red-600" />{t('labSafetyProtocolAdvisor.emergencyProcedures')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Emergency Type
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('labSafetyProtocolAdvisor.emergencyType')}</label>
                     <select
                       value={emergencyType}
                       onChange={(e) => setEmergencyType(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
                     >
-                      <option value="chemical-spill">Chemical Spill</option>
-                      <option value="fire">Fire</option>
-                      <option value="medical-emergency">Medical Emergency</option>
-                      <option value="evacuation">Evacuation</option>
-                      <option value="equipment-failure">Equipment Failure</option>
+                      <option value="chemical-spill">{t('labSafetyProtocolAdvisor.chemicalSpill')}</option>
+                      <option value="fire">{t('labSafetyProtocolAdvisor.fire')}</option>
+                      <option value="medical-emergency">{t('labSafetyProtocolAdvisor.medicalEmergency')}</option>
+                      <option value="evacuation">{t('labSafetyProtocolAdvisor.evacuation')}</option>
+                      <option value="equipment-failure">{t('labSafetyProtocolAdvisor.equipmentFailure')}</option>
                     </select>
                   </div>
                   <div className="flex items-end">
@@ -1079,14 +1028,10 @@ const LabSafetyProtocolAdvisor = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Loading...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('labSafetyProtocolAdvisor.loading')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Get Procedure
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('labSafetyProtocolAdvisor.getProcedure')}</>
                       )}
                     </button>
                   </div>
@@ -1104,7 +1049,7 @@ const LabSafetyProtocolAdvisor = () => {
 
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Emergency Steps</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">{t('labSafetyProtocolAdvisor.emergencySteps')}</h4>
                       <div className="space-y-2">
                         {emergencyProcedure.steps.map((step, i) => (
                           <div key={i} className="flex gap-3 p-3 bg-red-50 rounded-lg border-l-4 border-red-500">
@@ -1118,7 +1063,7 @@ const LabSafetyProtocolAdvisor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Required PPE</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.requiredPpe')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {emergencyProcedure.ppeRequired.map((ppe, i) => (
                           <span key={i} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
@@ -1129,7 +1074,7 @@ const LabSafetyProtocolAdvisor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Emergency Contacts</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.emergencyContacts')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {emergencyProcedure.contacts.map((contact, i) => (
                           <li key={i}>{contact}</li>
@@ -1138,7 +1083,7 @@ const LabSafetyProtocolAdvisor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Follow-Up Actions</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.followUpActions')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {emergencyProcedure.followUp.map((action, i) => (
                           <li key={i}>{action}</li>
@@ -1156,30 +1101,24 @@ const LabSafetyProtocolAdvisor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Lightbulb className="h-6 w-6 text-green-600" />
-                  Experiment Design Advisor
-                </h2>
+                  <Lightbulb className="h-6 w-6 text-green-600" />{t('labSafetyProtocolAdvisor.experimentDesignAdvisor')}</h2>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Experiment Title
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('labSafetyProtocolAdvisor.experimentTitle')}</label>
                     <input
                       type="text"
                       value={experimentTitle}
                       onChange={(e) => setExperimentTitle(e.target.value)}
-                      placeholder="e.g., Photosynthesis Rate Measurement"
+                      placeholder={t('labSafetyProtocolAdvisor.eGPhotosynthesisRateMeasurement')}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Objective
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('labSafetyProtocolAdvisor.objective')}</label>
                     <textarea
                       value={experimentObjective}
                       onChange={(e) => setExperimentObjective(e.target.value)}
-                      placeholder="Describe what students will learn..."
+                      placeholder={t('labSafetyProtocolAdvisor.describeWhatStudentsWillLearn')}
                       rows={3}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
                     />
@@ -1191,14 +1130,10 @@ const LabSafetyProtocolAdvisor = () => {
                   >
                     {isGenerating ? (
                       <>
-                        <RefreshCw className="h-5 w-5 animate-spin" />
-                        Generating...
-                      </>
+                        <RefreshCw className="h-5 w-5 animate-spin" />{t('labSafetyProtocolAdvisor.generating')}</>
                     ) : (
                       <>
-                        <Sparkles className="h-5 w-5" />
-                        Generate Design
-                      </>
+                        <Sparkles className="h-5 w-5" />{t('labSafetyProtocolAdvisor.generateDesign')}</>
                     )}
                   </button>
                 </div>
@@ -1210,12 +1145,12 @@ const LabSafetyProtocolAdvisor = () => {
                   
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Objective</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.objective')}</h4>
                       <p className="text-gray-700">{experimentDesign.objective}</p>
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Materials</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.materials')}</h4>
                       <div className="space-y-2">
                         {experimentDesign.materials.map((material, i) => (
                           <div key={i} className="flex items-center justify-between p-2 bg-gray-50 rounded">
@@ -1231,7 +1166,7 @@ const LabSafetyProtocolAdvisor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Procedure</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.procedure')}</h4>
                       <div className="space-y-2">
                         {experimentDesign.procedure.map((step, i) => (
                           <div key={i} className="flex gap-3 p-2 bg-gray-50 rounded">
@@ -1245,7 +1180,7 @@ const LabSafetyProtocolAdvisor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Safety Considerations</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('labSafetyProtocolAdvisor.safetyConsiderations')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {experimentDesign.safetyConsiderations.map((consideration, i) => (
                           <li key={i}>{consideration}</li>
@@ -1254,7 +1189,7 @@ const LabSafetyProtocolAdvisor = () => {
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-gray-700">Risk Level:</span>
+                      <span className="text-sm font-medium text-gray-700">{t('labSafetyProtocolAdvisor.riskLevel')}</span>
                       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
                         experimentDesign.riskLevel === 'critical' ? 'bg-red-100 text-red-700' :
                         experimentDesign.riskLevel === 'high' ? 'bg-orange-100 text-orange-700' :
@@ -1275,24 +1210,15 @@ const LabSafetyProtocolAdvisor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 border border-indigo-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <CheckCircle className="h-6 w-6 text-indigo-600" />
-                  Compliance & Standards Alignment
-                </h2>
-                <p className="text-gray-600">
-                  This Lab Safety & Protocol Advisor aligns with major international safety standards 
-                  for laboratory operations.
-                </p>
+                  <CheckCircle className="h-6 w-6 text-indigo-600" />{t('labSafetyProtocolAdvisor.complianceStandardsAlignment')}</h2>
+                <p className="text-gray-600">{t('labSafetyProtocolAdvisor.thisLabSafetyProtocolAdvisorAlignsWithMajorInternationa')}</p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Shield className="h-5 w-5 text-indigo-600" />
-                    ISO/IEC 17025
-                  </h3>
-                  <p className="text-gray-700 mb-3">
-                    General requirements for laboratory competence
-                  </p>
+                    <Shield className="h-5 w-5 text-indigo-600" />{t('labSafetyProtocolAdvisor.isoIec17025')}</h3>
+                  <p className="text-gray-700 mb-3">{t('labSafetyProtocolAdvisor.generalRequirementsForLaboratoryCompetence')}</p>
                   <div className="space-y-2">
                     {['Technical competence', 'Quality management', 'Equipment calibration', 'Personnel qualifications'].map((item, i) => (
                       <div key={i} className="flex items-center gap-2 text-sm text-gray-700">
@@ -1305,12 +1231,8 @@ const LabSafetyProtocolAdvisor = () => {
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5 text-indigo-600" />
-                    OSHA Lab Standard
-                  </h3>
-                  <p className="text-gray-700 mb-3">
-                    29 CFR 1910.1450 - Laboratory safety requirements
-                  </p>
+                    <AlertTriangle className="h-5 w-5 text-indigo-600" />{t('labSafetyProtocolAdvisor.oshaLabStandard')}</h3>
+                  <p className="text-gray-700 mb-3">{t('labSafetyProtocolAdvisor.k9Cfr19101450LaboratorySafetyRequirements')}</p>
                   <div className="space-y-2">
                     {['Chemical Hygiene Plan', 'Hazard communication', 'Training requirements', 'Exposure limits'].map((item, i) => (
                       <div key={i} className="flex items-center gap-2 text-sm text-gray-700">
@@ -1326,9 +1248,7 @@ const LabSafetyProtocolAdvisor = () => {
                     <Beaker className="h-5 w-5 text-indigo-600" />
                     GHS (Globally Harmonized System)
                   </h3>
-                  <p className="text-gray-700 mb-3">
-                    Standardized chemical classification and labeling
-                  </p>
+                  <p className="text-gray-700 mb-3">{t('labSafetyProtocolAdvisor.standardizedChemicalClassificationAndLabeling')}</p>
                   <div className="space-y-2">
                     {['Hazard classification', 'Safety data sheets', 'Labeling requirements', 'Pictograms'].map((item, i) => (
                       <div key={i} className="flex items-center gap-2 text-sm text-gray-700">
@@ -1341,12 +1261,8 @@ const LabSafetyProtocolAdvisor = () => {
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Flame className="h-5 w-5 text-indigo-600" />
-                    NFPA 45
-                  </h3>
-                  <p className="text-gray-700 mb-3">
-                    Fire protection for laboratories using chemicals
-                  </p>
+                    <Flame className="h-5 w-5 text-indigo-600" />{t('labSafetyProtocolAdvisor.nfpa45')}</h3>
+                  <p className="text-gray-700 mb-3">{t('labSafetyProtocolAdvisor.fireProtectionForLaboratoriesUsingChemicals')}</p>
                   <div className="space-y-2">
                     {['Fire protection systems', 'Ventilation requirements', 'Storage compliance', 'Emergency planning'].map((item, i) => (
                       <div key={i} className="flex items-center gap-2 text-sm text-gray-700">

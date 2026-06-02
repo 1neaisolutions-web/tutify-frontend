@@ -33,6 +33,7 @@ import { generateGeminiResponse, languages, analyzeMultimodalInput } from '../..
 import * as chatbotApi from '../../api/chatbots'
 import { useRestoreChatbotConversationFromUrl } from '../../hooks/useRestoreChatbotConversationFromUrl'
 
+import { useTranslation } from 'react-i18next'
 interface Conversation {
   id: string
   title: string
@@ -43,6 +44,7 @@ interface Conversation {
 }
 
 const GeminiEducationSuiteChat = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [messages, setMessages] = useState<Message[]>([])
   const [inputValue, setInputValue] = useState('')
@@ -275,11 +277,11 @@ const GeminiEducationSuiteChat = () => {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold text-gray-900">Gemini Education Suite</h1>
-                <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 text-xs font-bold">PRO</span>
+                <h1 className="text-xl font-bold text-gray-900">{t('geminiEducationSuiteChat.geminiEducationSuite')}</h1>
+                <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 text-xs font-bold">{t('geminiEducationSuiteChat.pro')}</span>
               </div>
               <p className="text-xs text-gray-500 flex items-center gap-2">
-                 <Globe className="h-3 w-3" /> Multilingual • <ImageIcon className="h-3 w-3" /> Multimodal
+                <Globe className="h-3 w-3" /> {t('geminiEducationSuiteChat.multilingual')} <ImageIcon className="h-3 w-3" /> {t('geminiEducationSuiteChat.multimodal')}
               </p>
             </div>
           </div>
@@ -289,9 +291,7 @@ const GeminiEducationSuiteChat = () => {
               onClick={createNewConversation}
               className="flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
             >
-              <Plus className="h-4 w-4" />
-              New Chat
-            </button>
+              <Plus className="h-4 w-4" />{t('geminiEducationSuiteChat.newChat')}</button>
             <button
               onClick={() => setShowHistory(!showHistory)}
               className={`p-2 rounded-full transition ${showHistory ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100'}`}
@@ -313,27 +313,24 @@ const GeminiEducationSuiteChat = () => {
                      <Sparkles className="w-full h-full text-blue-500" />
                   </div>
                   <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                    <span className="text-blue-600">Gemini</span> Education Suite
-                  </h2>
-                  <p className="text-gray-600 max-w-lg mb-8">
-                    Supercharge your teaching with Google's most capable AI. Analyze images, translate content instantly, and get K-12 fine-tuned support.
-                  </p>
+                    <span className="text-blue-600">{t('geminiEducationSuiteChat.gemini')}</span>{t('geminiEducationSuiteChat.educationSuite')}</h2>
+                  <p className="text-gray-600 max-w-lg mb-8">{t('geminiEducationSuiteChat.superchargeYourTeachingWithGoogleSMostCapableAiAnalyze')}</p>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl text-left">
                     <button onClick={() => setInputValue("Analyze this diagram for a 5th grade science class...")} className="p-4 bg-white rounded-xl shadow-sm border border-gray-100 hover:border-blue-200 hover:shadow-md transition group">
                       <div className="flex items-center gap-3 mb-2">
                         <div className="p-2 bg-green-50 rounded-lg text-green-600 group-hover:bg-green-100"><ImageIcon className="h-5 w-5" /></div>
-                        <h3 className="font-semibold text-gray-900">Multimodal Analysis</h3>
+                        <h3 className="font-semibold text-gray-900">{t('geminiEducationSuiteChat.multimodalAnalysis')}</h3>
                       </div>
-                      <p className="text-sm text-gray-500">Upload images or charts for instant educational breakdown.</p>
+                      <p className="text-sm text-gray-500">{t('geminiEducationSuiteChat.uploadImagesOrChartsForInstantEducationalBreakdown')}</p>
                     </button>
                     
                     <button onClick={() => setInputValue("Create a lesson plan for Spanish speakers learning English...")} className="p-4 bg-white rounded-xl shadow-sm border border-gray-100 hover:border-blue-200 hover:shadow-md transition group">
                        <div className="flex items-center gap-3 mb-2">
                         <div className="p-2 bg-blue-50 rounded-lg text-blue-600 group-hover:bg-blue-100"><Languages className="h-5 w-5" /></div>
-                        <h3 className="font-semibold text-gray-900">Multilingual Support</h3>
+                        <h3 className="font-semibold text-gray-900">{t('geminiEducationSuiteChat.multilingualSupport')}</h3>
                       </div>
-                      <p className="text-sm text-gray-500">Generate content in 40+ languages with cultural nuance.</p>
+                      <p className="text-sm text-gray-500">{t('geminiEducationSuiteChat.generateContentIn40LanguagesWithCulturalNuance')}</p>
                     </button>
                   </div>
                 </div>
@@ -359,10 +356,10 @@ const GeminiEducationSuiteChat = () => {
                              <div className="mt-4 flex items-center gap-2 pt-2 border-t border-gray-100">
                                <button onClick={() => {
                                  navigator.clipboard.writeText(message.content)
-                               }} className="p-1.5 hover:bg-gray-100 rounded-md text-gray-400 hover:text-gray-600 transition" title="Copy">
+                               }} className="p-1.5 hover:bg-gray-100 rounded-md text-gray-400 hover:text-gray-600 transition" title={t('geminiEducationSuiteChat.copy')}>
                                  <Copy className="h-4 w-4" />
                                </button>
-                               <button onClick={() => setShowExportDialog(true)} className="p-1.5 hover:bg-gray-100 rounded-md text-gray-400 hover:text-gray-600 transition" title="Export">
+                               <button onClick={() => setShowExportDialog(true)} className="p-1.5 hover:bg-gray-100 rounded-md text-gray-400 hover:text-gray-600 transition" title={t('geminiEducationSuiteChat.export')}>
                                  <Download className="h-4 w-4" />
                                </button>
                              </div>
@@ -386,7 +383,7 @@ const GeminiEducationSuiteChat = () => {
                        </div>
                        <div className="bg-white rounded-2xl px-5 py-4 border border-gray-100 shadow-sm flex items-center gap-3">
                          <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
-                         <span className="text-sm text-gray-500">Gemini is processing...</span>
+                         <span className="text-sm text-gray-500">{t('geminiEducationSuiteChat.geminiIsProcessing')}</span>
                        </div>
                     </div>
                   )}
@@ -414,7 +411,7 @@ const GeminiEducationSuiteChat = () => {
                   onChange={(e) => setGradeLevel(e.target.value)}
                   className="px-3 py-1.5 rounded-lg border border-gray-200 text-sm bg-white hover:border-blue-300 focus:ring-2 focus:ring-blue-100 outline-none transition cursor-pointer"
                 >
-                  <option value="">Grade Level</option>
+                  <option value="">{t('geminiEducationSuiteChat.gradeLevel')}</option>
                   {['K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'].map(g => (
                     <option key={g} value={g}>Grade {g}</option>
                   ))}
@@ -425,7 +422,7 @@ const GeminiEducationSuiteChat = () => {
                    onChange={(e) => setSubject(e.target.value)}
                    className="px-3 py-1.5 rounded-lg border border-gray-200 text-sm bg-white hover:border-blue-300 focus:ring-2 focus:ring-blue-100 outline-none transition cursor-pointer"
                 >
-                  <option value="">Subject</option>
+                  <option value="">{t('geminiEducationSuiteChat.subject')}</option>
                   {['Math', 'Science', 'English', 'History', 'Art', 'Music', 'PE'].map(s => (
                     <option key={s} value={s}>{s}</option>
                   ))}
@@ -440,7 +437,9 @@ const GeminiEducationSuiteChat = () => {
                   }`}
                 >
                   <ImageIcon className="h-4 w-4" />
-                  {multimodalFiles.length > 0 ? `${multimodalFiles.length} File(s)` : 'Add Media'}
+                  {multimodalFiles.length > 0
+                    ? t('geminiEducationSuiteChat.filesCount', { count: multimodalFiles.length })
+                    : t('geminiEducationSuiteChat.addMedia')}
                 </button>
               </div>
 
@@ -451,7 +450,7 @@ const GeminiEducationSuiteChat = () => {
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Ask Gemini anything... (Try uploading an image or changing language)"
+                  placeholder={t('geminiEducationSuiteChat.inputPlaceholder')}
                   className="w-full resize-none bg-transparent px-4 py-3 pr-12 text-gray-900 placeholder-gray-400 focus:outline-none max-h-40"
                   rows={1}
                 />
@@ -467,7 +466,7 @@ const GeminiEducationSuiteChat = () => {
               </div>
               
               <div className="text-center">
-                 <p className="text-xs text-gray-400">Gemini Education Suite may display inaccurate info, including about people, so double-check its responses.</p>
+                 <p className="text-xs text-gray-400">{t('geminiEducationSuiteChat.geminiEducationSuiteMayDisplayInaccurateInfoIncludingAb')}</p>
               </div>
             </div>
           </div>
@@ -477,14 +476,14 @@ const GeminiEducationSuiteChat = () => {
         {showHistory && (
           <div className="absolute inset-y-0 right-0 w-full sm:w-80 bg-white border-l border-gray-200 shadow-xl z-20 flex flex-col">
             <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-              <h2 className="font-semibold text-gray-900">History</h2>
+              <h2 className="font-semibold text-gray-900">{t('geminiEducationSuiteChat.history')}</h2>
               <button onClick={() => setShowHistory(false)} className="p-1 hover:bg-gray-100 rounded-lg">
                 <X className="h-5 w-5 text-gray-500" />
               </button>
             </div>
             <div className="p-2 flex-1 overflow-y-auto space-y-1">
               {conversations.length === 0 ? (
-                <div className="text-center py-10 text-gray-500 text-sm">No history yet</div>
+                <div className="text-center py-10 text-gray-500 text-sm">{t('geminiEducationSuiteChat.noHistoryYet')}</div>
               ) : (
                 conversations
                   .filter(c => c.title.toLowerCase().includes(historySearchQuery.toLowerCase()))
@@ -502,7 +501,7 @@ const GeminiEducationSuiteChat = () => {
                     <div className="font-medium text-gray-900 truncate">{conv.title}</div>
                     <div className="text-xs text-gray-500 mt-1 flex items-center justify-between">
                       <span>{new Date(conv.updatedAt).toLocaleDateString()}</span>
-                      <span className="opacity-0 group-hover:opacity-100 transition-opacity">Open</span>
+                      <span className="opacity-0 group-hover:opacity-100 transition-opacity">{t('geminiEducationSuiteChat.open')}</span>
                     </div>
                   </button>
                 ))

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   Play,
@@ -35,6 +35,13 @@ import {
   clearHubSyncStatus,
 } from '../../redux/features/personalization/personalizationSlice'
 
+import { useTranslation } from 'react-i18next'
+import { catalogDifficulty } from '../../i18n/catalogLabel'
+import {
+  resolveHubItemDescription,
+  resolveHubItemSubtitle,
+  resolveHubItemTitle,
+} from '../../i18n/resolveLocalizedContent'
 // Feature flag — read once from env so component logic never depends on async hooks for this gate
 const PERSONALIZATION_ENABLED = import.meta.env.VITE_PERSONALIZATION_ENABLED === 'true'
 const SECTION_TARGETS = {
@@ -148,16 +155,15 @@ const effectiveTutorials = tutorials
 // ---------------------------------------------------------------------------
 // AI Personalization Loading Component
 // ---------------------------------------------------------------------------
-const AI_STEPS = [
-  { id: 'profile', label: 'Reading your teaching profile', detail: 'Subjects, grade band, goals, experience' },
-  { id: 'gaps', label: 'Identifying skill development opportunities', detail: 'Comparing your profile with learning outcomes data' },
-  { id: 'micro', label: 'Generating personalized micro-courses', detail: 'Creating 5–10 min learning units matched to your needs' },
-  { id: 'growth', label: 'Building your AI growth recommendations', detail: 'Ranking learning paths by potential impact' },
-  { id: 'tutorials', label: 'Curating AI-guided tutorials', detail: 'Selecting demos relevant to your classroom context' },
-  { id: 'rank', label: 'Ranking and scoring your content', detail: 'Applying personalization signals for best-fit ordering' },
-]
+const AI_STEP_IDS = ['profile', 'gaps', 'micro', 'growth', 'tutorials', 'rank'] as const
 
 function AIPersonalizationLoader() {
+  const { t } = useTranslation()
+  const aiSteps = AI_STEP_IDS.map((id) => ({
+    id,
+    label: t(`professionalLearningHub.aiSteps.${id}.label`),
+    detail: t(`professionalLearningHub.aiSteps.${id}.detail`),
+  }))
   const [activeStep, setActiveStep] = useState(0)
   const [completedSteps, setCompletedSteps] = useState<number[]>([])
   const [dots, setDots] = useState('.')
@@ -172,7 +178,7 @@ function AIPersonalizationLoader() {
 
   useEffect(() => {
     const advance = () => {
-      if (stepRef.current >= AI_STEPS.length - 1) return
+      if (stepRef.current >= AI_STEP_IDS.length - 1) return
       setCompletedSteps((prev) => [...prev, stepRef.current])
       stepRef.current += 1
       setActiveStep(stepRef.current)
@@ -190,8 +196,11 @@ function AIPersonalizationLoader() {
           <Brain className="h-5 w-5 text-purple-300" />
         </div>
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-purple-300">AI Personalization Engine</p>
-          <p className="text-lg font-semibold text-white">Building your learning profile{dots}</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-purple-300">{t('professionalLearningHub.aiPersonalizationEngine')}</p>
+          <p className="text-lg font-semibold text-white">
+            {t('professionalLearningHub.buildingLearningProfile')}
+            {dots}
+          </p>
         </div>
         <div className="ml-auto">
           <Loader2 className="h-5 w-5 text-purple-400 animate-spin" />
@@ -199,7 +208,7 @@ function AIPersonalizationLoader() {
       </div>
 
       <div className="space-y-3">
-        {AI_STEPS.map((step, idx) => {
+        {aiSteps.map((step, idx) => {
           const isDone = completedSteps.includes(idx)
           const isActive = activeStep === idx
 
@@ -235,10 +244,10 @@ function AIPersonalizationLoader() {
                 )}
               </div>
               {isDone && (
-                <span className="mt-0.5 text-xs font-semibold text-green-400 flex-shrink-0">Done</span>
+                <span className="mt-0.5 text-xs font-semibold text-green-400 flex-shrink-0">{t('professionalLearningHub.done')}</span>
               )}
               {isActive && (
-                <span className="mt-0.5 text-xs font-semibold text-purple-300 flex-shrink-0 animate-pulse">In progress</span>
+                <span className="mt-0.5 text-xs font-semibold text-purple-300 flex-shrink-0 animate-pulse">{t('professionalLearningHub.inProgress')}</span>
               )}
             </div>
           )
@@ -247,7 +256,7 @@ function AIPersonalizationLoader() {
 
       <div className="mt-8 flex items-center gap-2 rounded-2xl bg-white/5 px-4 py-3 text-xs text-white/50">
         <Sparkles className="h-4 w-4 text-purple-400 flex-shrink-0" />
-        <span>Your personalized content will appear here once the AI finishes — usually within 30–60 seconds.</span>
+        <span>{t('professionalLearningHub.yourPersonalizedContentWillAppearHereOnceTheAiFinishes')}</span>
       </div>
     </div>
   )
@@ -281,7 +290,8 @@ function HubBootstrappingScreen({
   retryEnabled?: boolean
   retryStatus?: string
 }) {
-  const headline = bootstrap?.stage_message || stage || 'Personalizing your learning hub'
+  const { t } = useTranslation()
+  const headline = bootstrap?.stage_message || stage || t('professionalLearningHub.bootstrapDefaultHeadline')
   const sub = bootstrap?.sub_status
   const pct = Math.max(0, Math.min(100, Math.round(Number(progressPercent ?? 0))))
   const showSlow =
@@ -296,20 +306,17 @@ function HubBootstrappingScreen({
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="flex items-center gap-3">
             <Brain className="h-6 w-6 text-purple-300" />
-            <h1 className="text-2xl font-semibold leading-tight">Personalizing your learning hub</h1>
+            <h1 className="text-2xl font-semibold leading-tight">{t('professionalLearningHub.personalizingYourLearningHub')}</h1>
           </div>
           <div className="text-right">
             <p className="text-3xl font-bold tabular-nums text-purple-200">{pct}%</p>
-            <p className="text-xs uppercase tracking-wide text-white/50">Orchestration progress</p>
+            <p className="text-xs uppercase tracking-wide text-white/50">{t('professionalLearningHub.orchestrationProgress')}</p>
           </div>
         </div>
         <div>
           <p className="text-lg font-semibold text-white">{headline}</p>
           {sub ? <p className="mt-2 text-sm text-purple-100/85">{sub}</p> : null}
-          <p className="mt-2 text-sm text-purple-100/70">
-            Our AI is orchestrating your first ready-to-use learning experience. Progress reflects real
-            backend milestones — not simulated animation.
-          </p>
+          <p className="mt-2 text-sm text-purple-100/70">{t('professionalLearningHub.ourAiIsOrchestratingYourFirstReadyToUseLearning')}</p>
         </div>
         <div className="h-2 w-full overflow-hidden rounded-full bg-white/15">
           <div
@@ -319,9 +326,14 @@ function HubBootstrappingScreen({
         </div>
         {bootstrap?.elapsed_seconds != null ? (
           <p className="text-xs text-white/45">
-            Elapsed {Math.floor(bootstrap.elapsed_seconds / 60)}m {Math.floor(bootstrap.elapsed_seconds % 60)}s
+            {t('professionalLearningHub.elapsedTime', {
+              minutes: Math.floor(bootstrap.elapsed_seconds / 60),
+              seconds: Math.floor(bootstrap.elapsed_seconds % 60),
+            })}
             {bootstrap.blocking_sections && bootstrap.blocking_sections.length > 0
-              ? ` · Waiting on: ${bootstrap.blocking_sections.join(', ')}`
+              ? t('professionalLearningHub.waitingOn', {
+                  sections: bootstrap.blocking_sections.join(', '),
+                })
               : ''}
           </p>
         ) : null}
@@ -332,8 +344,7 @@ function HubBootstrappingScreen({
         ) : null}
         {degraded ? (
           <div className="rounded-xl border border-rose-400/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-50">
-            Some background jobs reported issues. Your hub will still open when core content is ready; you
-            can refresh if this persists.
+            {t('professionalLearningHub.degradedBootstrapMessage')}
           </div>
         ) : null}
         {retryEnabled ? (
@@ -343,12 +354,14 @@ function HubBootstrappingScreen({
               disabled={retryStatus === 'loading'}
               className="w-full rounded-xl bg-amber-500/15 border border-amber-300/30 px-4 py-3 text-sm font-semibold text-amber-50 hover:bg-amber-500/20 disabled:opacity-60"
             >
-              {retryStatus === 'loading' ? 'Retrying…' : 'Retry bootstrapping'}
+              {retryStatus === 'loading'
+                ? t('professionalLearningHub.retrying')
+                : t('professionalLearningHub.retryBootstrapping')}
             </button>
           </div>
         ) : null}
         <div className="space-y-2 text-xs text-white/45">
-          <p>Stages: profile → personalization → micro-courses → tutorials → growth → hub assembly.</p>
+          <p>{t('professionalLearningHub.stagesProfilePersonalizationMicroCoursesTutorialsGrowth')}</p>
         </div>
       </div>
     </section>
@@ -358,14 +371,30 @@ function persistHubRouteState(_target: string, _contentId?: string, _contentType
   // API/slice integration intentionally disabled: keep frontend in dummy/local-data mode for now.
 }
 
-function toUserReason(reasonCodes: string[] | undefined): string {
+function impactLabel(impact: string, t: (key: string) => string): string {
+  switch (impact) {
+    case 'High':
+      return t('learningHubSections.impact.high')
+    case 'Medium':
+      return t('learningHubSections.impact.medium')
+    case 'Low':
+      return t('learningHubSections.impact.low')
+    default:
+      return impact
+  }
+}
+
+function toUserReason(
+  reasonCodes: string[] | undefined,
+  t: (key: string) => string,
+): string {
   const code = (reasonCodes || [])[0] || ''
   const map: Record<string, string> = {
-    profile_match: 'Matched to your teaching profile and goals.',
-    inventory_expansion: 'Recommended from your newly prepared learning inventory.',
-    quality_ranked: 'Selected as a high-quality next step for your growth.',
+    profile_match: t('professionalLearningHub.reasonProfileMatch'),
+    inventory_expansion: t('professionalLearningHub.reasonInventoryExpansion'),
+    quality_ranked: t('professionalLearningHub.reasonQualityRanked'),
   }
-  return map[code] || 'Recommended for your current learning goals.'
+  return map[code] || t('professionalLearningHub.reasonDefault')
 }
 
 function resolveHubCardRoute(course: {
@@ -406,15 +435,17 @@ function resolveHubCardRoute(course: {
 // ---------------------------------------------------------------------------
 
 function GeneratingCard({ section }: { section?: string }) {
+  const { t } = useTranslation()
+  const sectionLabel = section ? section.replace(/_/g, ' ') : t('professionalLearningHub.learningItem')
   return (
     <div className="rounded-2xl border border-purple-100 bg-purple-50 p-4 flex items-center gap-3">
       <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-purple-100">
         <Loader2 className="h-4 w-4 animate-spin text-purple-500" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-purple-900">Generating your content…</p>
+        <p className="text-sm font-semibold text-purple-900">{t('professionalLearningHub.generatingYourContent')}</p>
         <p className="text-xs text-purple-600 mt-0.5">
-          AI is preparing a new {section ? section.replace(/_/g, ' ') : 'learning item'} tailored to your profile. Usually ready in 30–60 seconds.
+          {t('professionalLearningHub.generatingCardHint', { section: sectionLabel })}
         </p>
       </div>
     </div>
@@ -422,23 +453,24 @@ function GeneratingCard({ section }: { section?: string }) {
 }
 
 function FailedCard({ onRetry, section }: { onRetry?: () => void; section?: string }) {
+  const { t } = useTranslation()
+  const sectionLabel = section ? section.replace(/_/g, ' ') : t('professionalLearningHub.contentItem')
   return (
     <div className="rounded-2xl border border-rose-100 bg-rose-50 p-4 flex items-start gap-3">
       <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-rose-100">
         <AlertTriangle className="h-4 w-4 text-rose-500" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-rose-900">Generation failed</p>
+        <p className="text-sm font-semibold text-rose-900">{t('professionalLearningHub.generationFailed')}</p>
         <p className="text-xs text-rose-600 mt-0.5">
-          A {section ? section.replace(/_/g, ' ') : 'content item'} could not be generated. It will retry automatically.
+          {t('professionalLearningHub.failedCardHint', { section: sectionLabel })}
         </p>
         {onRetry && (
           <button
             onClick={onRetry}
             className="mt-2 inline-flex items-center gap-1 rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-200"
           >
-            <RefreshCw className="h-3 w-3" /> Retry now
-          </button>
+            <RefreshCw className="h-3 w-3" />{t('professionalLearningHub.retryNow')}</button>
         )}
       </div>
     </div>
@@ -456,6 +488,7 @@ function LockedPreviewCard({
   duration?: string
   unlockHint?: string
 }) {
+  const { t } = useTranslation()
   return (
     <div className="rounded-2xl border border-gray-100 bg-gray-50/60 p-4 opacity-75 select-none">
       <div className="flex items-start justify-between gap-3">
@@ -470,7 +503,7 @@ function LockedPreviewCard({
             {title ? (
               <span className="blur-[2px] select-none">{title}</span>
             ) : (
-              'Locked content'
+              t('professionalLearningHub.lockedContent')
             )}
           </h3>
           {unlockHint && (
@@ -486,6 +519,7 @@ function LockedPreviewCard({
 }
 
 const ProfessionalLearningHub = () => {
+  const { t } = useTranslation()
   useLearningHubRouteScrollToTop()
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -498,6 +532,59 @@ const ProfessionalLearningHub = () => {
   const { usingSlate, slateMode } = hubData
 
   const showColdStart = PERSONALIZATION_ENABLED && !usingSlate && slateMode === 'no_profile'
+
+  const localizedMicroCourses = useMemo(
+    () =>
+      microCourses.map((item) => ({
+        ...item,
+        title: resolveHubItemTitle(t, item.slug, item.title),
+        category: resolveHubItemSubtitle(t, item.slug, item.category),
+        difficulty: catalogDifficulty(t, 'learningHubContent', item.difficulty),
+      })),
+    [t],
+  )
+
+  const localizedAiRecommendations = useMemo(
+    () =>
+      aiRecommendations.map((item) => ({
+        ...item,
+        skill: resolveHubItemTitle(t, item.slug, item.skill),
+        reason: resolveHubItemDescription(t, item.slug, item.reason),
+      })),
+    [t],
+  )
+
+  const localizedTutorials = useMemo(
+    () =>
+      tutorials.map((item) => ({
+        ...item,
+        title: resolveHubItemTitle(t, item.slug, item.title),
+        type: resolveHubItemSubtitle(t, item.slug, item.type),
+      })),
+    [t],
+  )
+
+  const localizedResearchInsights = useMemo(
+    () =>
+      researchInsights.map((item) => ({
+        ...item,
+        title: resolveHubItemTitle(t, item.slug, item.title),
+        summary: resolveHubItemDescription(t, item.slug, item.summary),
+        topic: resolveHubItemSubtitle(t, item.slug, item.topic),
+      })),
+    [t],
+  )
+
+  const localizedSpecialistTracks = useMemo(
+    () =>
+      specialistTracks.map((item) => ({
+        ...item,
+        title: resolveHubItemTitle(t, item.slug, item.title),
+        description: resolveHubItemDescription(t, item.slug, item.description),
+      })),
+    [t],
+  )
+
   useHubBootstrapOrchestration(!!showColdStart)
   const hubBootstrap = useSelector(selectHubBootstrap)
   const retryStatus = useSelector(selectHubBootstrapRetryStatus)
@@ -539,7 +626,7 @@ const ProfessionalLearningHub = () => {
     const stalledStates = new Set(['taking_long', 'stalled'])
     const shouldRetry =
       stalledStates.has(timeout_state || '') &&
-      Date.now() - lastProgressChangeAtRef.current > 60_000 &&
+      Date.now() - lastProgressChangeAtRef.current > 20000 &&
       autoRetryAttemptsRef.current < 2 &&
       retryStatus !== 'loading'
 
@@ -580,7 +667,11 @@ const ProfessionalLearningHub = () => {
     ? (hubData.microCourses
         ? dedup(
             hubData.microCourses.visible_items.slice(0, SECTION_DISPLAY_LIMITS.micro_courses.visible).map((item: any) => ({
-              title: item.title || item.content_id,
+              title: resolveHubItemTitle(
+                t,
+                item.content_slug || item.content_id,
+                item.title || item.content_id,
+              ),
               duration: item.display_meta?.duration || '',
               category: item.display_meta?.category || item.content_type || '',
               progress: 0,
@@ -598,15 +689,23 @@ const ProfessionalLearningHub = () => {
           )
         : [])
     : shouldUseStaticFallback
-      ? microCourses
+      ? localizedMicroCourses
       : []
 
   const effectiveAiRecommendations = hubData.usingSlate
     ? (hubData.growthRecommendations
         ? dedup(
             hubData.growthRecommendations.visible_items.slice(0, SECTION_DISPLAY_LIMITS.growth_recommendations.visible).map((item: any) => ({
-              skill: item.title || item.content_id,
-              reason: toUserReason(item.reason_codes),
+              skill: resolveHubItemTitle(
+                t,
+                item.content_slug || item.content_id,
+                item.title || item.content_id,
+              ),
+              reason: resolveHubItemDescription(
+                t,
+                item.content_slug || item.content_id,
+                toUserReason(item.reason_codes, t),
+              ),
               impact: 'High',
               estimatedTime: item.display_meta?.duration || '',
               slug:
@@ -624,15 +723,23 @@ const ProfessionalLearningHub = () => {
           )
         : [])
     : shouldUseStaticFallback
-      ? aiRecommendations
+      ? localizedAiRecommendations
       : []
 
   const effectiveTutorialsData = hubData.usingSlate
     ? (hubData.tutorials
         ? dedup(
             hubData.tutorials.visible_items.slice(0, SECTION_DISPLAY_LIMITS.tutorials.visible).map((item: any) => ({
-              title: item.title || item.content_id,
-              type: item.display_meta?.category || 'Tutorial',
+              title: resolveHubItemTitle(
+                t,
+                item.content_slug || item.content_id,
+                item.title || item.content_id,
+              ),
+              type: resolveHubItemSubtitle(
+                t,
+                item.content_slug || item.content_id,
+                item.display_meta?.category || 'Tutorial',
+              ),
               duration: item.display_meta?.duration || '',
               completed: false,
               slug: item.content_slug || item.content_id,
@@ -647,7 +754,7 @@ const ProfessionalLearningHub = () => {
           )
         : [])
     : shouldUseStaticFallback
-      ? effectiveTutorials
+      ? localizedTutorials
       : []
 
   // Research Insights: never hide the section once hub is entered.
@@ -658,10 +765,22 @@ const ProfessionalLearningHub = () => {
             (item: any) => item.content_id,
             (item: any) => item.title
           ).slice(0, SECTION_DISPLAY_LIMITS.research_insights.visible).map((item: any) => ({
-            title: item.title || item.content_id,
-            summary: item.display_meta?.summary || '',
+            title: resolveHubItemTitle(
+              t,
+              item.content_slug || item.content_id,
+              item.title || item.content_id,
+            ),
+            summary: resolveHubItemDescription(
+              t,
+              item.content_slug || item.content_id,
+              item.display_meta?.summary || '',
+            ),
             duration: item.display_meta?.duration || '6 min read',
-            topic: item.display_meta?.category || 'Research',
+            topic: resolveHubItemSubtitle(
+              t,
+              item.content_slug || item.content_id,
+              item.display_meta?.category || 'Research',
+            ),
             slug: item.content_slug || item.content_id,
             route: item.route,
             contentId: item.content_id,
@@ -670,7 +789,7 @@ const ProfessionalLearningHub = () => {
           }))
         : [])
     : shouldUseStaticFallback
-      ? researchInsights
+      ? localizedResearchInsights
       : []
 
   // Specialist tracks: never hide the section once hub is entered.
@@ -681,8 +800,16 @@ const ProfessionalLearningHub = () => {
             (item: any) => item.content_id,
             (item: any) => item.title
           ).slice(0, SECTION_DISPLAY_LIMITS.specialist_tracks.visible).map((item: any) => ({
-            title: item.title || item.content_id,
-            description: item.display_meta?.summary || '',
+            title: resolveHubItemTitle(
+              t,
+              item.content_slug || item.content_id,
+              item.title || item.content_id,
+            ),
+            description: resolveHubItemDescription(
+              t,
+              item.content_slug || item.content_id,
+              item.display_meta?.summary || '',
+            ),
             modules: item.display_meta?.module_count || 0,
             duration: item.display_meta?.duration || '',
             enrolled: false,
@@ -694,7 +821,7 @@ const ProfessionalLearningHub = () => {
           }))
         : [])
     : shouldUseStaticFallback
-      ? specialistTracks
+      ? localizedSpecialistTracks
       : []
 
   const isSlateLoading = hubData.usingSlate && hubData.loading
@@ -889,16 +1016,16 @@ const ProfessionalLearningHub = () => {
   const totalVisiblePersonalized = visibleCounts.reduce((acc, n) => acc + n, 0)
 
   const heroTitle = isAIProcessing
-    ? 'Building your personalized professional learning hub'
+    ? t('professionalLearningHub.heroTitleProcessing')
     : showColdStart
-      ? 'Complete your profile to unlock your personalized learning hub'
-      : 'Grow as fast as your students — with your personalized professional learning hub'
+      ? t('professionalLearningHub.heroTitleColdStart')
+      : t('professionalLearningHub.heroTitleDefault')
 
   const heroSubtitle = isAIProcessing
-    ? 'Our AI is preparing section-specific recommendations, tutorials, and next-step unlocks tailored to your profile.'
+    ? t('professionalLearningHub.heroSubtitleProcessing')
     : showColdStart
-      ? 'Add your subjects, grade band, and goals to enable personalized recommendations and adaptive section unlocks.'
-      : `You currently have ${totalVisiblePersonalized} personalized items ready across your learning sections.`
+      ? t('professionalLearningHub.heroSubtitleColdStart')
+      : t('professionalLearningHub.heroSubtitleReady', { count: totalVisiblePersonalized })
 
   // ─── Debounced loader visibility ─────────────────────────────────────────────
   // Only show the AI loader after 250ms of continuous processing. This prevents
@@ -946,7 +1073,7 @@ const ProfessionalLearningHub = () => {
       {PERSONALIZATION_ENABLED && hubSyncStatus === 'updating' && (
         <div className="flex items-center gap-3 rounded-2xl bg-blue-50 border border-blue-200 px-4 py-3 text-sm text-blue-900">
           <Loader2 className="h-4 w-4 flex-shrink-0 animate-spin text-blue-500" />
-          <span>Updating your recommendations based on profile changes…</span>
+          <span>{t('professionalLearningHub.updatingYourRecommendationsBasedOnProfileChanges')}</span>
         </div>
       )}
       {PERSONALIZATION_ENABLED && hubSyncStatus === 'failed' && hubSyncError && (
@@ -963,9 +1090,7 @@ const ProfessionalLearningHub = () => {
             }}
             className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800 hover:bg-amber-200 transition-colors"
           >
-            <RefreshCw className="h-3 w-3" />
-            Refresh recommendations
-          </button>
+            <RefreshCw className="h-3 w-3" />{t('professionalLearningHub.refreshRecommendations')}</button>
         </div>
       )}
 
@@ -975,36 +1100,41 @@ const ProfessionalLearningHub = () => {
         <div className="flex flex-col gap-8 xl:flex-row xl:items-center xl:justify-between">
           <div className="max-w-2xl space-y-5">
             <div className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white/90">
-              <Sparkles className="h-4 w-4" /> Growth Hub
-            </div>
+              <Sparkles className="h-4 w-4" />{t('professionalLearningHub.growthHub')}</div>
             <h1 className="text-3xl font-semibold leading-tight sm:text-4xl">{heroTitle}</h1>
             <p className="text-sm text-white/80">{heroSubtitle}</p>
             <div className="flex flex-wrap gap-4 text-xs font-semibold uppercase tracking-wide">
               <span className="rounded-full bg-white/15 px-3 py-1">
-                {isAIProcessing ? 'Preparing personalized content' : 'Adaptive learning plan'}
+                {isAIProcessing
+                  ? t('professionalLearningHub.badgePreparingContent')
+                  : t('professionalLearningHub.badgeAdaptivePlan')}
               </span>
               <span className="rounded-full bg-white/15 px-3 py-1">
-                {showColdStart ? 'Profile-driven setup' : 'Evidence-backed'}
+                {showColdStart
+                  ? t('professionalLearningHub.badgeProfileSetup')
+                  : t('professionalLearningHub.badgeEvidenceBacked')}
               </span>
-              <span className="rounded-full bg-white/15 px-3 py-1">AI-personalized</span>
+              <span className="rounded-full bg-white/15 px-3 py-1">{t('professionalLearningHub.aiPersonalized')}</span>
             </div>
           </div>
 
           <div className="grid w-full max-w-md gap-4 rounded-2xl bg-white/10 p-6 text-white backdrop-blur">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-white/70">Unlocked items</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-white/70">{t('professionalLearningHub.unlockedItems')}</p>
               <p className="mt-2 text-3xl font-semibold">{loading ? '—' : visibleUnlockedCount}</p>
-              <p className="text-xs text-white/70">Live personalized content available now</p>
+              <p className="text-xs text-white/70">{t('professionalLearningHub.livePersonalizedContentAvailableNow')}</p>
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-white/70">Prepared next</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-white/70">{t('professionalLearningHub.preparedNext')}</p>
               <p className="mt-2 text-3xl font-semibold">{loading ? '—' : preparedLockedCount}</p>
-              <p className="text-xs text-white/70">Locked preview items generated</p>
+              <p className="text-xs text-white/70">{t('professionalLearningHub.lockedPreviewItemsGenerated')}</p>
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-white/70">Hub readiness</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-white/70">{t('professionalLearningHub.hubReadiness')}</p>
               <p className="mt-2 text-3xl font-semibold">{loading ? '—' : `${hubData.globalProgressPercent}%`}</p>
-              <p className="text-xs text-white/70">{readySectionsCount}/4 minimum sections ready</p>
+              <p className="text-xs text-white/70">
+                {t('professionalLearningHub.sectionsReady', { ready: readySectionsCount })}
+              </p>
             </div>
           </div>
         </div>
@@ -1015,11 +1145,8 @@ const ProfessionalLearningHub = () => {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
-                <Zap className="h-5 w-5 text-amber-500" /> Continue Learning
-              </h2>
-              <p className="mt-1 text-sm text-gray-600">
-                Pick up where you left off.
-              </p>
+                <Zap className="h-5 w-5 text-amber-500" />{t('professionalLearningHub.continueLearning')}</h2>
+              <p className="mt-1 text-sm text-gray-600">{t('professionalLearningHub.pickUpWhereYouLeftOff')}</p>
             </div>
           </div>
 
@@ -1069,9 +1196,7 @@ const ProfessionalLearningHub = () => {
                       })
                     }}
                     className="rounded-full bg-amber-50 px-4 py-2 text-xs font-semibold text-amber-600 hover:bg-amber-100 transition"
-                  >
-                    Continue
-                  </button>
+                  >{t('professionalLearningHub.continue')}</button>
                 </div>
               </div>
             ))}
@@ -1089,14 +1214,13 @@ const ProfessionalLearningHub = () => {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
-                  <Zap className="h-5 w-5 text-amber-500" /> Personalized micro-courses
-                </h2>
-                <p className="mt-1 text-sm text-gray-600">
-                  Short 5–10 minute learning units generated by AI, aligned to your needs.
-                </p>
+                  <Zap className="h-5 w-5 text-amber-500" />{t('professionalLearningHub.personalizedMicroCourses')}</h2>
+                <p className="mt-1 text-sm text-gray-600">{t('professionalLearningHub.short510MinuteLearningUnitsGeneratedByAiAligned')}</p>
                 {hubData.usingSlate && (hubData.microCourses?.locked_preview_items?.length ?? 0) > 0 && (
                   <p className="mt-1 text-xs text-amber-700">
-                    {(hubData.microCourses?.locked_preview_items?.length ?? 0)} more prepared items will unlock as you progress.
+                    {t('professionalLearningHub.morePreparedItemsUnlock', {
+                      count: hubData.microCourses?.locked_preview_items?.length ?? 0,
+                    })}
                   </p>
                 )}
               </div>
@@ -1105,7 +1229,7 @@ const ProfessionalLearningHub = () => {
                   onClick={() => navigate('/learning-hub/sections/micro_courses')}
                   className="text-xs font-semibold uppercase tracking-wide text-amber-600 hover:text-amber-500"
                 >
-                  View all
+                  {t('professionalLearningHub.viewAll')}
                 </button>
               ) : null}
             </div>
@@ -1115,7 +1239,7 @@ const ProfessionalLearningHub = () => {
             )}
             <div className="mt-6 space-y-4">
               {isSlateLoading && displayedMicroCourses.length === 0 ? (
-                <p className="text-sm text-gray-500">Loading your personalized recommendations…</p>
+                <p className="text-sm text-gray-500">{t('professionalLearningHub.loadingYourPersonalizedRecommendations')}</p>
               ) : displayedMicroCourses.length === 0 ? (
                 <p className="text-sm text-gray-500">
                   We are generating your first {SECTION_TARGETS.micro_courses.visible} classroom-ready micro-courses and preparing the next {SECTION_TARGETS.micro_courses.visible} unlocks.
@@ -1149,7 +1273,9 @@ const ProfessionalLearningHub = () => {
                                 style={{ width: `${course.progress}%` }}
                               />
                             </div>
-                            <p className="mt-1 text-xs text-gray-500">{course.progress}% complete</p>
+                            <p className="mt-1 text-xs text-gray-500">
+                              {t('professionalLearningHub.percentComplete', { percent: course.progress })}
+                            </p>
                           </div>
                         )}
                       </div>
@@ -1162,7 +1288,11 @@ const ProfessionalLearningHub = () => {
                         onClick={() => handleCourseStart(course)}
                         className="rounded-full bg-amber-50 px-4 py-2 text-xs font-semibold text-amber-600 hover:bg-amber-100 transition"
                       >
-                        {course.progress === 0 ? 'Start' : course.progress === 100 ? 'Review' : 'Continue'}
+                        {course.progress === 0
+                          ? t('professionalLearningHub.courseStart')
+                          : course.progress === 100
+                            ? t('professionalLearningHub.courseReview')
+                            : t('professionalLearningHub.courseContinue')}
                       </button>
                     </div>
                   </div>
@@ -1177,7 +1307,7 @@ const ProfessionalLearningHub = () => {
                     title={item.title}
                     category={item.display_meta?.category}
                     duration={item.display_meta?.duration}
-                    unlockHint={item.unlock_hint || 'Complete visible items to unlock this next.'}
+                    unlockHint={item.unlock_hint || t('professionalLearningHub.unlockHintDefault')}
                   />
                 ))}
 
@@ -1201,18 +1331,15 @@ const ProfessionalLearningHub = () => {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
-                  <Play className="h-5 w-5 text-blue-500" /> AI-guided tutorials & demonstrations
-                </h2>
-                <p className="mt-1 text-sm text-gray-600">
-                  Step-by-step walkthroughs showing how to use templates effectively and apply best practices.
-                </p>
+                  <Play className="h-5 w-5 text-blue-500" />{t('professionalLearningHub.aiGuidedTutorialsDemonstrations')}</h2>
+                <p className="mt-1 text-sm text-gray-600">{t('professionalLearningHub.stepByStepWalkthroughsShowingHowToUseTemplatesEffective')}</p>
               </div>
               {shouldShowTutorialsViewAll ? (
                 <button
                   onClick={() => navigate('/learning-hub/sections/tutorials')}
                   className="text-xs font-semibold uppercase tracking-wide text-blue-600 hover:text-blue-500"
                 >
-                  View all
+                  {t('professionalLearningHub.viewAll')}
                 </button>
               ) : null}
             </div>
@@ -1244,7 +1371,7 @@ const ProfessionalLearningHub = () => {
                       onClick={() => handleTutorialWatch(tutorial)}
                       className="rounded-full bg-blue-50 px-4 py-2 text-xs font-semibold text-blue-600 hover:bg-blue-100 transition"
                     >
-                      Watch
+                      {t('professionalLearningHub.watch')}
                     </button>
                   )}
                 </div>
@@ -1258,39 +1385,40 @@ const ProfessionalLearningHub = () => {
           <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-gray-600">
-                <Target className="h-4 w-4 text-amber-500" /> AI growth recommendations
-              </h3>
+                <Target className="h-4 w-4 text-amber-500" />{t('professionalLearningHub.aiGrowthRecommendations')}</h3>
               {shouldShowGrowthViewAll ? (
                 <button
                   onClick={() => navigate('/learning-hub/sections/growth_recommendations')}
                   className="text-xs font-semibold uppercase tracking-wide text-amber-600 hover:text-amber-500"
                 >
-                  View all
+                  {t('professionalLearningHub.viewAll')}
                 </button>
               ) : null}
             </div>
             <p className="mt-2 text-xs text-gray-600">
               {displayedGrowthRecommendations.length === 0 ? (
                 growthState?.readiness_state === 'no_signal'
-                  ? 'We are analyzing your teaching patterns to identify high-impact skills.'
-                  : growthState?.readiness_state === 'signal_building' || growthState?.readiness_state === 'collecting_signal'
-                    ? `Signal progress: ${growthState?.signal_count || 0} of ${growthState?.required_signal_count || 5} collected.`
+                  ? t('professionalLearningHub.growthNoSignal')
+                  : growthState?.readiness_state === 'signal_building' ||
+                      growthState?.readiness_state === 'collecting_signal'
+                    ? t('professionalLearningHub.growthSignalProgress', {
+                        current: growthState?.signal_count || 0,
+                        required: growthState?.required_signal_count || 5,
+                      })
                     : growthState?.readiness_state === 'stalled' || growthState?.generation_stalled
-                      ? 'Growth plan generation encountered an issue. Reload the page or continue using the hub — it will retry automatically.'
-                      : 'Generating your personalized growth plan...'
+                      ? t('professionalLearningHub.growthStalled')
+                      : t('professionalLearningHub.growthGenerating')
               ) : (
-                <>
-                  Based on your usage, here are{' '}
-                  {displayedGrowthRecommendations.length === 1
-                    ? 'the skill that will'
-                    : `the ${displayedGrowthRecommendations.length} skills that will`}{' '}
-                  improve your teaching impact right now.
-                </>
+                t('professionalLearningHub.growthBasedOn', {
+                  count: displayedGrowthRecommendations.length,
+                })
               )}
             </p>
             {hubData.usingSlate && (hubData.growthRecommendations?.locked_preview_items?.length ?? 0) > 0 && (
               <p className="mt-2 text-xs text-amber-700">
-                {(hubData.growthRecommendations?.locked_preview_items?.length ?? 0)} additional recommendations are prepared and locked.
+                {t('professionalLearningHub.growthAdditionalLocked', {
+                  count: hubData.growthRecommendations?.locked_preview_items?.length ?? 0,
+                })}
               </p>
             )}
 
@@ -1305,7 +1433,9 @@ const ProfessionalLearningHub = () => {
               {displayedGrowthRecommendations.map((rec: any, idx: number) => (
                 <div key={rec.contentId || rec.slug} className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
                   <div className="flex items-center justify-between">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Skill {idx + 1}</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                      {t('professionalLearningHub.skillN', { n: idx + 1 })}
+                    </p>
                     <span
                       className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
                         rec.impact === 'High'
@@ -1315,7 +1445,7 @@ const ProfessionalLearningHub = () => {
                             : 'bg-blue-100 text-blue-700'
                       }`}
                     >
-                      {rec.impact} impact
+                      {t('professionalLearningHub.impactSuffix', { impact: impactLabel(rec.impact, t) })}
                     </span>
                   </div>
                   <h4 className="mt-2 text-sm font-semibold text-gray-900">{rec.skill}</h4>
@@ -1326,7 +1456,7 @@ const ProfessionalLearningHub = () => {
                       onClick={() => handleStartPath(rec)}
                       className="text-xs font-semibold text-amber-600 hover:text-amber-500 transition"
                     >
-                      Start path
+                      {t('professionalLearningHub.startPath')}
                     </button>
                   </div>
                 </div>
@@ -1337,29 +1467,28 @@ const ProfessionalLearningHub = () => {
           {showStaticPanels && <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-gray-600">
-                <Award className="h-4 w-4 text-green-500" /> Certificates & progress
-              </h3>
+                <Award className="h-4 w-4 text-green-500" />{t('professionalLearningHub.certificatesProgress')}</h3>
             </div>
 
             <div className="mt-4 space-y-3">
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Unlocked now</p>
-                <p className="mt-1 text-sm font-semibold text-gray-900">{visibleUnlockedCount} items across your sections</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">{t('professionalLearningHub.unlockedNow')}</p>
+                <p className="mt-1 text-sm font-semibold text-gray-900">
+                  {t('professionalLearningHub.itemsAcrossSections', { count: visibleUnlockedCount })}
+                </p>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Ready sections</p>
-                <p className="mt-1 text-sm font-semibold text-gray-900">{readySectionsCount} sections meet minimum readiness</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">{t('professionalLearningHub.readySections')}</p>
+                <p className="mt-1 text-sm font-semibold text-gray-900">
+                  {t('professionalLearningHub.sectionsMeetReadiness', { count: readySectionsCount })}
+                </p>
               </div>
             </div>
 
             <div className="mt-6 rounded-2xl bg-gray-50 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Yearly growth report</p>
-              <p className="mt-2 text-sm text-gray-700">
-                Download your complete evidence log of completed training for appraisals and portfolios.
-              </p>
-              <button className="mt-3 w-full rounded-full bg-gray-900 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white hover:bg-gray-800">
-                Export report
-              </button>
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">{t('professionalLearningHub.yearlyGrowthReport')}</p>
+              <p className="mt-2 text-sm text-gray-700">{t('professionalLearningHub.downloadYourCompleteEvidenceLogOfCompletedTrainingForAp')}</p>
+              <button className="mt-3 w-full rounded-full bg-gray-900 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white hover:bg-gray-800">{t('professionalLearningHub.exportReport')}</button>
             </div>
           </div>}
         </aside>
@@ -1369,12 +1498,8 @@ const ProfessionalLearningHub = () => {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
-              <FileText className="h-5 w-5 text-purple-500" /> Research insights library
-            </h2>
-            <p className="mt-1 text-sm text-gray-600">
-              Simplified, teacher-friendly summaries of top educational research — evidence-backed teaching in
-              minutes.
-            </p>
+              <FileText className="h-5 w-5 text-purple-500" />{t('professionalLearningHub.researchInsightsLibrary')}</h2>
+            <p className="mt-1 text-sm text-gray-600">{t('professionalLearningHub.simplifiedTeacherFriendlySummariesOfTopEducationalResea')}</p>
           </div>
           {shouldShowResearchViewAll ? (
             <button
@@ -1406,7 +1531,7 @@ const ProfessionalLearningHub = () => {
                   onClick={() => handleResearchReadMore(insight)}
                   className="text-xs font-semibold text-purple-600 hover:text-purple-500 transition"
                 >
-                  Read more
+                  {t('professionalLearningHub.readMore')}
                 </button>
               </div>
             </div>
@@ -1418,18 +1543,15 @@ const ProfessionalLearningHub = () => {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
-              <GraduationCap className="h-5 w-5 text-indigo-500" /> Specialist deep-dive tracks
-            </h2>
-            <p className="mt-1 text-sm text-gray-600">
-              Advanced structured tracks for building niche expertise. Build a niche. Grow your expertise.
-            </p>
+              <GraduationCap className="h-5 w-5 text-indigo-500" />{t('professionalLearningHub.specialistDeepDiveTracks')}</h2>
+            <p className="mt-1 text-sm text-gray-600">{t('professionalLearningHub.advancedStructuredTracksForBuildingNicheExpertiseBuildA')}</p>
           </div>
           {shouldShowSpecialistViewAll ? (
             <button
               onClick={() => navigate('/learning-hub/sections/specialist_tracks')}
               className="text-xs font-semibold uppercase tracking-wide text-indigo-600 hover:text-indigo-500"
             >
-              View all
+              {t('professionalLearningHub.viewAll')}
             </button>
           ) : null}
         </div>
@@ -1449,17 +1571,15 @@ const ProfessionalLearningHub = () => {
               }`}
             >
               <div className="flex items-center justify-between">
-                <p className="text-xs font-semibold uppercase tracking-wide text-indigo-600">Specialist track</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-indigo-600">{t('professionalLearningHub.specialistTrack')}</p>
                 {track.enrolled && (
-                  <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-semibold text-indigo-700">
-                    Enrolled
-                  </span>
+                  <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-semibold text-indigo-700">{t('professionalLearningHub.enrolled')}</span>
                 )}
               </div>
               <h3 className="mt-2 text-sm font-semibold text-gray-900">{track.title}</h3>
               <p className="mt-2 text-xs text-gray-600">{track.description}</p>
               <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
-                <span>{track.modules} modules</span>
+                <span>{t('professionalLearningHub.modulesCount', { count: track.modules })}</span>
                 <span>{track.duration}</span>
               </div>
               <button
@@ -1471,7 +1591,9 @@ const ProfessionalLearningHub = () => {
                     : 'border border-gray-200 bg-white text-gray-700 hover:border-indigo-200 hover:text-indigo-600'
                 }`}
               >
-                {track.enrolled ? 'Continue track' : 'Enroll now'}
+                {track.enrolled
+                  ? t('professionalLearningHub.continueTrack')
+                  : t('professionalLearningHub.enrollNow')}
               </button>
             </div>
           ))}
@@ -1481,16 +1603,12 @@ const ProfessionalLearningHub = () => {
       {showStaticPanels && <section className="rounded-3xl border border-gray-200 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-6 text-white shadow-md">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/60">Coming soon</p>
-            <h2 className="text-2xl font-semibold">Community Q&A</h2>
-            <p className="text-sm text-white/75">
-              Teachers can ask questions, share tips, get solutions — AI moderates and assists. Connect with educators
-              worldwide.
-            </p>
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/60">{t('professionalLearningHub.comingSoon')}</p>
+            <h2 className="text-2xl font-semibold">{t('professionalLearningHub.communityQA')}</h2>
+            <p className="text-sm text-white/75">{t('professionalLearningHub.teachersCanAskQuestionsShareTipsGetSolutionsAiModerates')}</p>
           </div>
           <button className="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white/80 hover:bg-white/10">
-            <Users className="h-4 w-4" /> Join waitlist
-          </button>
+            <Users className="h-4 w-4" />{t('professionalLearningHub.joinWaitlist')}</button>
         </div>
       </section>}
     </div>

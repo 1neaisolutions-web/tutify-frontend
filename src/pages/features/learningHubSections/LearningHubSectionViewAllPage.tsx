@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import axiosInstance from '../../../redux/http'
 
 type SectionItem = {
@@ -20,20 +21,19 @@ type SectionItem = {
   }
 }
 
-const sectionTitle: Record<string, string> = {
-  micro_courses: 'Personalized Micro-Courses',
-  growth_recommendations: 'AI Growth Recommendations',
-  tutorials: 'AI-Guided Tutorials',
-  research_insights: 'Research Insights',
-  specialist_tracks: 'Specialist Deep-Dive Tracks',
-}
-
 export default function LearningHubSectionViewAllPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { section } = useParams()
   const [items, setItems] = useState<SectionItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  const sectionTitle = (sectionKey: string) => {
+    const key = `learningHubSections.sections.${sectionKey}` as const
+    const translated = t(key)
+    return translated !== key ? translated : t('learningHubSections.sectionFallback')
+  }
 
   useEffect(() => {
     let mounted = true
@@ -51,7 +51,7 @@ export default function LearningHubSectionViewAllPage() {
         setItems(merged)
       } catch (e: any) {
         if (!mounted) return
-        setError(e?.response?.data?.detail || e?.message || 'Failed to load section')
+        setError(e?.response?.data?.detail || e?.message || t('learningHubSections.loadSectionFailed'))
       } finally {
         if (mounted) setLoading(false)
       }
@@ -60,7 +60,7 @@ export default function LearningHubSectionViewAllPage() {
     return () => {
       mounted = false
     }
-  }, [section])
+  }, [section, t])
 
   const grouped = useMemo(() => {
     const visible = items.filter((i) => i.bucket === 'visible')
@@ -83,22 +83,22 @@ export default function LearningHubSectionViewAllPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-gray-900">{sectionTitle[section || ''] || 'Section'}</h1>
+        <h1 className="text-2xl font-semibold text-gray-900">{sectionTitle(section || '')}</h1>
         <button
           onClick={() => navigate('/learning-hub')}
           className="rounded-full border border-gray-300 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-gray-700 hover:bg-gray-50"
         >
-          Back to hub
+          {t('learningHubSections.backToHub')}
         </button>
       </div>
 
-      {loading && <p className="text-sm text-gray-500">Loading section items...</p>}
+      {loading && <p className="text-sm text-gray-500">{t('learningHubSections.loadingSection')}</p>}
       {error && <p className="text-sm text-rose-600">{error}</p>}
 
       {!loading && !error && (
         <div className="space-y-6">
           <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-700">Available now</h2>
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-700">{t('learningHubSections.availableNow')}</h2>
             <div className="mt-3 space-y-3">
               {grouped.visible.map((item) => (
                 <button
@@ -115,12 +115,12 @@ export default function LearningHubSectionViewAllPage() {
                   </p>
                 </button>
               ))}
-              {grouped.visible.length === 0 && <p className="text-sm text-gray-400">No unlocked items yet.</p>}
+              {grouped.visible.length === 0 && <p className="text-sm text-gray-400">{t('learningHubSections.noUnlockedItems')}</p>}
             </div>
           </section>
 
           <section className="rounded-2xl border border-amber-200 bg-amber-50 p-5 shadow-sm">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-amber-800">Locked preview</h2>
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-amber-800">{t('learningHubSections.lockedPreview')}</h2>
             <div className="mt-3 space-y-3">
               {grouped.locked.map((item) => (
                 <div key={item.assignment_id} className="rounded-xl border border-amber-100 bg-white p-4">
@@ -129,7 +129,7 @@ export default function LearningHubSectionViewAllPage() {
                   {item.unlock_hint && <p className="mt-1 text-xs text-gray-600">{item.unlock_hint}</p>}
                 </div>
               ))}
-              {grouped.locked.length === 0 && <p className="text-sm text-gray-400">No locked preview items.</p>}
+              {grouped.locked.length === 0 && <p className="text-sm text-gray-400">{t('learningHubSections.noLockedPreview')}</p>}
             </div>
           </section>
 

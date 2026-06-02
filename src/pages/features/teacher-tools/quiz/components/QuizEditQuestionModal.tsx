@@ -1,5 +1,7 @@
 // @ts-expect-error — JS module
 import { CustomModal } from '../../../../../components/shared/CustomModal'
+import { useTranslation } from 'react-i18next'
+import i18n from 'i18next'
 import { Minus, Plus } from 'lucide-react'
 import { useState } from 'react'
 import {
@@ -27,7 +29,7 @@ type Props = {
 }
 
 function defaultMcqOptions(): string[] {
-  return ['Option A', 'Option B', 'Option C', 'Option D']
+  return ['A', 'B', 'C', 'D'].map((letter) => i18n.t('quiz.editModal.choicePlaceholder', { letter }))
 }
 
 function draftFromStub(s: QuizQuestionStub): QuizQuestionStub {
@@ -68,7 +70,7 @@ function QuizEditQuestionModalInner({
   const [draft, setDraft] = useState<QuizQuestionStub>(() => draftFromStub(stub))
 
   const fallbackPrompt = isNew
-    ? 'New question — replace this text with your full prompt.'
+    ? t('quiz.editModal.newQuestionFallback')
     : stub.prompt
 
   const setType = (t: QuizQuestionStub['type']) => {
@@ -108,16 +110,16 @@ function QuizEditQuestionModalInner({
     <CustomModal
       open={open}
       close={onClose}
-      title={modalTitle ?? 'Edit question'}
-      primaryButtonText={isNew ? 'Add question' : 'Save changes'}
+      title={modalTitle ?? t('quiz.editQuestionTitle')}
+      primaryButtonText={isNew ? t('quiz.review.modalAddQuestion') : t('exam.saveChanges')}
       handleSave={() => {
         submit()
       }}
     >
       <div id={formId} className="max-h-[min(72vh,640px)] overflow-y-auto py-1">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-indigo-100 bg-indigo-50/60 px-3 py-2">
-          <p className="text-xs font-semibold text-indigo-900">Question composer</p>
-          <p className="text-xs text-indigo-800/80">Changes apply to review, PDF, and print handout.</p>
+          <p className="text-xs font-semibold text-indigo-900">{t('quiz.editModal.composerTitle')}</p>
+          <p className="text-xs text-indigo-800/80">{t('quiz.editModal.composerHint')}</p>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
@@ -128,9 +130,9 @@ function QuizEditQuestionModalInner({
               onChange={(e) => setType(e.target.value as QuizQuestionStub['type'])}
               className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm shadow-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
             >
-              <option value="mcq">Multiple choice</option>
-              <option value="tf">True / false</option>
-              <option value="short">Short answer</option>
+              <option value="mcq">{t('teacherTools.multipleChoice')}</option>
+              <option value="tf">{t('teacherTools.trueFalse')}</option>
+              <option value="short">{t('teacherTools.shortAnswer')}</option>
             </select>
           </label>
           <label className="block text-sm font-medium text-gray-800">
@@ -150,8 +152,8 @@ function QuizEditQuestionModalInner({
         <section className="mt-5 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
           <div className="flex flex-wrap items-end justify-between gap-2 border-b border-gray-100 pb-3">
             <div>
-              <h3 className="text-sm font-semibold text-gray-900">Question text</h3>
-              <p className="mt-0.5 text-xs text-gray-500">This is the full stem students see on screen and on paper.</p>
+              <h3 className="text-sm font-semibold text-gray-900">{t('quiz.editModal.questionText')}</h3>
+              <p className="mt-0.5 text-xs text-gray-500">{t('quiz.editModal.questionTextHint')}</p>
             </div>
             <span className="text-xs tabular-nums text-gray-500">
               {draft.prompt.length}/{PROMPT_MAX}
@@ -162,7 +164,7 @@ function QuizEditQuestionModalInner({
             maxLength={PROMPT_MAX}
             onChange={(e) => setDraft((d) => ({ ...d, prompt: e.target.value }))}
             rows={8}
-            placeholder="Write the full question stem here. Be explicit about what evidence or format you expect…"
+            placeholder={t('quiz.editModal.promptPlaceholder')}
             className="mt-3 w-full resize-y rounded-xl border border-gray-200 bg-gray-50/40 px-3 py-3 font-sans text-sm leading-relaxed text-gray-900 placeholder:text-gray-400 focus:border-indigo-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-100"
           />
         </section>
@@ -170,7 +172,7 @@ function QuizEditQuestionModalInner({
         {draft.type === 'mcq' && (
           <section className="mt-5 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
             <div className="border-b border-gray-100 pb-3">
-              <h3 className="text-sm font-semibold text-gray-900">Answer choices</h3>
+              <h3 className="text-sm font-semibold text-gray-900">{t('quiz.editModal.answerChoices')}</h3>
               <p className="mt-0.5 text-xs text-gray-500">
                 {MCQ_OPTION_BOUNDS.min}–{MCQ_OPTION_BOUNDS.max} options. Labels A–F map to order below.
               </p>
@@ -193,7 +195,7 @@ function QuizEditQuestionModalInner({
                       })
                     }}
                     className="min-w-0 flex-1 rounded-xl border border-gray-200 px-3 py-2 text-sm focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-                    placeholder={`Choice ${String.fromCharCode(65 + i)}`}
+                    placeholder={t('quiz.editModal.choicePlaceholder', { letter: String.fromCharCode(65 + i) })}
                   />
                   <button
                     type="button"
@@ -231,7 +233,7 @@ function QuizEditQuestionModalInner({
         {draft.type === 'short' && (
           <section className="mt-5 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
             <div className="border-b border-gray-100 pb-3">
-              <h3 className="text-sm font-semibold text-gray-900">Response space (print and PDF)</h3>
+              <h3 className="text-sm font-semibold text-gray-900">{t('quiz.editModal.responseSpace')}</h3>
               <p className="mt-0.5 text-xs text-gray-500">
                 Ruled lines appear under this question on the student handout. Adjust before print or export.
               </p>
@@ -240,7 +242,7 @@ function QuizEditQuestionModalInner({
               <div className="flex items-center gap-1 rounded-xl border border-gray-200 bg-gray-50 p-1">
                 <button
                   type="button"
-                  aria-label="Fewer lines"
+                  aria-label={t('quiz.editModal.ariaFewerLines')}
                   disabled={clampResponseLines(draft.responseLines) <= SHORT_RESPONSE_LINES.min}
                   onClick={() =>
                     setDraft((d) =>
@@ -261,7 +263,7 @@ function QuizEditQuestionModalInner({
                 </span>
                 <button
                   type="button"
-                  aria-label="More lines"
+                  aria-label={t('quiz.editModal.ariaMoreLines')}
                   disabled={clampResponseLines(draft.responseLines) >= SHORT_RESPONSE_LINES.max}
                   onClick={() =>
                     setDraft((d) =>
@@ -283,7 +285,7 @@ function QuizEditQuestionModalInner({
               </p>
             </div>
             <div className="mt-4 rounded-xl border border-dashed border-gray-200 bg-gray-50/80 px-3 py-3">
-              <p className="text-xs font-medium text-gray-600">Quick preview (matches default handout line height)</p>
+              <p className="text-xs font-medium text-gray-600">{t('quiz.editModal.quickPreview')}</p>
               <ShortAnswerHandoutLines
                 responseLines={draft.type === 'short' ? draft.responseLines : undefined}
                 ruledLineSpacingPx={DEFAULT_HANDOUT_LAYOUT.ruledLineSpacingPx}
@@ -296,7 +298,7 @@ function QuizEditQuestionModalInner({
 
         {draft.type === 'tf' && (
           <section className="mt-5 rounded-2xl border border-gray-200 bg-amber-50/40 p-4">
-            <h3 className="text-sm font-semibold text-gray-900">True / false layout</h3>
+            <h3 className="text-sm font-semibold text-gray-900">{t('quiz.editModal.tfLayout')}</h3>
             <p className="mt-1 text-xs text-gray-600">
               The handout shows ○ True and ○ False under the statement. Edit the stem above to refine the claim.
             </p>
@@ -308,6 +310,7 @@ function QuizEditQuestionModalInner({
 }
 
 export function QuizEditQuestionModal({ open, stub, ...rest }: Props) {
+  const { t } = useTranslation()
   if (!open || !stub) return null
   return <QuizEditQuestionModalInner key={stub.id} stub={stub} {...rest} />
 }

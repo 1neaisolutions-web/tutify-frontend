@@ -26,6 +26,7 @@ import {
   Microscope,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template' | 'project'
@@ -47,6 +48,7 @@ interface Phenomenon {
 }
 
 const PhenomenaDrivenModule = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -279,14 +281,10 @@ Consider:
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 5
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('phenomenaDrivenModule.module5')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    90 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('phenomenaDrivenModule.k0Min')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
                     <Star className="h-3 w-3" />
@@ -296,16 +294,14 @@ Consider:
                     }, 0)} / {lessons.reduce((sum, l) => sum + l.points, 0)} points
                   </span>
                 </div>
-                <h1 className="text-3xl font-bold">Phenomena-Driven Instruction</h1>
-                <p className="mt-2 text-purple-100">
-                  Learn to use authentic phenomena to drive student inquiry and make science relevant and engaging
-                </p>
+                <h1 className="text-3xl font-bold">{t('phenomenaDrivenModule.phenomenaDrivenInstruction')}</h1>
+                <p className="mt-2 text-purple-100">{t('phenomenaDrivenModule.learnToUseAuthenticPhenomenaToDriveStudentInquiryAnd')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm mb-4">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4" />
-                <span>High Impact</span>
+                <span>{t('phenomenaDrivenModule.highImpact')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Trophy className="w-4 h-4" />
@@ -330,7 +326,7 @@ Consider:
         {/* Sidebar */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('phenomenaDrivenModule.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isActive = idx === currentLesson
@@ -390,9 +386,7 @@ Consider:
                 </div>
                 {completedLessons.includes(currentLessonData.id) && (
                   <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-semibold flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4" />
-                    Completed
-                  </span>
+                    <CheckCircle2 className="h-4 w-4" />{t('phenomenaDrivenModule.completed')}</span>
                 )}
               </div>
             </div>
@@ -412,7 +406,7 @@ Consider:
                 </div>
                 {currentLessonData.content.keyPoints && (
                   <div className="bg-purple-50 rounded-xl p-6 border border-purple-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Points</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('phenomenaDrivenModule.keyPoints')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyPoints.map((point: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -434,7 +428,7 @@ Consider:
                 </div>
                 {currentLessonData.content.keyTakeaways && (
                   <div className="bg-purple-50 rounded-xl p-6 border border-purple-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Takeaways</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('phenomenaDrivenModule.keyTakeaways')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyTakeaways.map((takeaway: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -459,25 +453,21 @@ Consider:
                       onClick={() => setShowPhenomenaSelector(true)}
                       className="w-full px-6 py-4 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition flex items-center justify-center gap-2"
                     >
-                      <Zap className="h-5 w-5" />
-                      Launch Phenomena Library
-                    </button>
+                      <Zap className="h-5 w-5" />{t('phenomenaDrivenModule.launchPhenomenaLibrary')}</button>
                   ) : (
                     <div className="bg-white rounded-xl p-6 border-2 border-purple-200">
                       <div className="flex items-center gap-3 mb-4">
                         <Search className="h-5 w-5 text-purple-600" />
                         <input
                           type="text"
-                          placeholder="Search phenomena..."
+                          placeholder={t('phenomenaDrivenModule.searchPhenomena')}
                           className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100"
                         />
                         <button className="px-4 py-2 rounded-lg bg-purple-100 text-purple-700 text-sm font-semibold hover:bg-purple-200 flex items-center gap-2">
-                          <Filter className="h-4 w-4" />
-                          Filter
-                        </button>
+                          <Filter className="h-4 w-4" />{t('phenomenaDrivenModule.filter')}</button>
                       </div>
                       <div className="space-y-4">
-                        <h4 className="text-base font-semibold text-gray-900">Example Phenomena</h4>
+                        <h4 className="text-base font-semibold text-gray-900">{t('phenomenaDrivenModule.examplePhenomena')}</h4>
                         {phenomenaExamples.map((phenomenon, idx) => (
                           <div key={idx} className="bg-purple-50 rounded-lg p-5 border border-purple-200 hover:border-purple-300 transition">
                             <div className="flex items-start justify-between mb-3">
@@ -494,19 +484,19 @@ Consider:
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
                                   <div>
-                                    <p className="font-semibold text-gray-600 mb-1">DCIs:</p>
+                                    <p className="font-semibold text-gray-600 mb-1">{t('phenomenaDrivenModule.dcis')}</p>
                                     {phenomenon.dci.map((dci, dIdx) => (
                                       <p key={dIdx} className="text-gray-700">{dci}</p>
                                     ))}
                                   </div>
                                   <div>
-                                    <p className="font-semibold text-gray-600 mb-1">SEPs:</p>
+                                    <p className="font-semibold text-gray-600 mb-1">{t('phenomenaDrivenModule.seps')}</p>
                                     {phenomenon.sep.map((sep, sIdx) => (
                                       <p key={sIdx} className="text-gray-700">{sep}</p>
                                     ))}
                                   </div>
                                   <div>
-                                    <p className="font-semibold text-gray-600 mb-1">CCCs:</p>
+                                    <p className="font-semibold text-gray-600 mb-1">{t('phenomenaDrivenModule.cccs')}</p>
                                     {phenomenon.ccc.map((ccc, cIdx) => (
                                       <p key={cIdx} className="text-gray-700">{ccc}</p>
                                     ))}
@@ -540,32 +530,30 @@ Consider:
                       onClick={() => setShowUnitPlanner(true)}
                       className="w-full px-6 py-4 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
                     >
-                      <Rocket className="h-5 w-5" />
-                      Launch Unit Planner
-                    </button>
+                      <Rocket className="h-5 w-5" />{t('phenomenaDrivenModule.launchUnitPlanner')}</button>
                   ) : (
                     <div className="bg-white rounded-xl p-6 border-2 border-green-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Phenomena-Based Unit Planner</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('phenomenaDrivenModule.phenomenaBasedUnitPlanner')}</h3>
                       <div className="space-y-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Unit Title</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('phenomenaDrivenModule.unitTitle')}</label>
                           <input
                             type="text"
                             value={unitData.title}
                             onChange={(e) => setUnitData({ ...unitData, title: e.target.value })}
-                            placeholder="e.g., Investigating Plant Growth"
+                            placeholder={t('phenomenaDrivenModule.eGInvestigatingPlantGrowth')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('phenomenaDrivenModule.gradeLevel')}</label>
                             <select
                               value={unitData.gradeLevel}
                               onChange={(e) => setUnitData({ ...unitData, gradeLevel: e.target.value })}
                               className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                             >
-                              <option value="">Select grade</option>
+                              <option value="">{t('phenomenaDrivenModule.selectGrade')}</option>
                               {['K', '1', '2', '3', '4', '5', 'MS', 'HS'].map((grade) => (
                                 <option key={grade} value={grade}>
                                   {grade === 'MS' ? 'Middle School' : grade === 'HS' ? 'High School' : `Grade ${grade}`}
@@ -575,42 +563,42 @@ Consider:
                           </div>
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Anchor Phenomenon</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('phenomenaDrivenModule.anchorPhenomenon')}</label>
                           <textarea
                             value={unitData.phenomenon}
                             onChange={(e) => setUnitData({ ...unitData, phenomenon: e.target.value })}
                             rows={3}
-                            placeholder="Describe the anchor phenomenon that will drive this unit..."
+                            placeholder={t('phenomenaDrivenModule.describeTheAnchorPhenomenonThatWillDriveThisUnit')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Performance Expectations</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('phenomenaDrivenModule.performanceExpectations')}</label>
                           <textarea
                             value={unitData.performanceExpectations}
                             onChange={(e) => setUnitData({ ...unitData, performanceExpectations: e.target.value })}
                             rows={2}
-                            placeholder="List NGSS performance expectations..."
+                            placeholder={t('phenomenaDrivenModule.listNgssPerformanceExpectations')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Investigations</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('phenomenaDrivenModule.investigations')}</label>
                           <textarea
                             value={unitData.investigations}
                             onChange={(e) => setUnitData({ ...unitData, investigations: e.target.value })}
                             rows={4}
-                            placeholder="Describe the investigations students will conduct..."
+                            placeholder={t('phenomenaDrivenModule.describeTheInvestigationsStudentsWillConduct')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Assessments</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('phenomenaDrivenModule.assessments')}</label>
                           <textarea
                             value={unitData.assessments}
                             onChange={(e) => setUnitData({ ...unitData, assessments: e.target.value })}
                             rows={3}
-                            placeholder="Describe how you will assess student understanding..."
+                            placeholder={t('phenomenaDrivenModule.describeHowYouWillAssessStudentUnderstanding')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
@@ -618,9 +606,7 @@ Consider:
                           <button
                             onClick={handleUnitSubmit}
                             className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition"
-                          >
-                            Save Unit Plan
-                          </button>
+                          >{t('phenomenaDrivenModule.saveUnitPlan')}</button>
                           <button
                             onClick={() => setShowUnitPlanner(false)}
                             className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition"
@@ -634,7 +620,7 @@ Consider:
                 </div>
 
                 <div className="bg-white rounded-xl p-6 border-2 border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Project Requirements</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('phenomenaDrivenModule.projectRequirements')}</h3>
                   <ol className="space-y-3">
                     {currentLessonData.content.requirements.map((req: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
@@ -656,9 +642,7 @@ Consider:
                 disabled={currentLesson === 0}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
-                <ArrowLeft className="h-4 w-4" />
-                Previous
-              </button>
+                <ArrowLeft className="h-4 w-4" />{t('phenomenaDrivenModule.previous')}</button>
 
               <button
                 onClick={() => {
@@ -671,18 +655,12 @@ Consider:
               >
                 {completedLessons.includes(currentLessonData.id) ? (
                   <>
-                    <CheckCircle2 className="h-4 w-4" />
-                    Marked Complete
-                  </>
+                    <CheckCircle2 className="h-4 w-4" />{t('phenomenaDrivenModule.markedComplete')}</>
                 ) : currentLesson === lessons.length - 1 ? (
                   <>
-                    <Trophy className="h-4 w-4" />
-                    Complete Module
-                  </>
+                    <Trophy className="h-4 w-4" />{t('phenomenaDrivenModule.completeModule')}</>
                 ) : (
-                  <>
-                    Complete & Next
-                    <ArrowRight className="h-4 w-4" />
+                  <>{t('phenomenaDrivenModule.completeNext')}<ArrowRight className="h-4 w-4" />
                   </>
                 )}
               </button>
@@ -695,7 +673,7 @@ Consider:
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-600 mb-4">
                 <Trophy className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Module Complete!</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('phenomenaDrivenModule.moduleComplete')}</h3>
               <p className="text-gray-700 mb-6">
                 You've earned {lessons.reduce((sum, l) => sum + l.points, 0)} points. Excellent work!
               </p>
@@ -706,9 +684,7 @@ Consider:
                 >
                   Continue to Next Module
                 </button>
-                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                  Download Certificate
-                </button>
+                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">{t('phenomenaDrivenModule.downloadCertificate')}</button>
               </div>
             </div>
           )}

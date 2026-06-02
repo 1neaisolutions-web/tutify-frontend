@@ -1,0 +1,318 @@
+{
+  "common": {
+    "loading": "로드 중…",
+    "cancel": "취소",
+    "search": "검색",
+    "addNew": "새로 추가",
+    "save": "저장",
+    "upload": "업로드",
+    "delete": "삭제",
+    "export": "내보내기",
+    "all": "All",
+    "back": "뒤로",
+    "comingSoon": "출시 예정",
+    "comingSoonHint": "이 기능은 아직 사용할 수 없습니다.",
+    "noDataFound": "데이터를 찾을 수 없음",
+    "noDataFoundHint": "필터를 조정하거나 검색해보세요.",
+    "retry": "다시 시도",
+    "showLess": "적게 보기",
+    "showMore": "더 보기"
+  },
+  "app": {
+    "name": "교사 보조",
+    "studentName": "학생 도우미"
+  },
+  "languageDropdown": {
+    "loading": "언어 로드 중...",
+    "placeholder": "언어 선택",
+    "searchPlaceholder": "언어 검색…",
+    "listLabel": "언어:",
+    "noMatch": "\"__ PH0 __\" 와 (과) 일치하는 언어가 없습니다",
+    "count": "__ PH0 __ 언어",
+    "count_one": "__ PH0 __ 언어",
+    "count_other": "__ PH0 __ 언어",
+    "countAvailable": "사용 가능",
+    "countMatch": "\"__ PH0 __\" 와 (과) 일치"
+  },
+  "layout": {
+    "activateCredits": "크레딧 활성화",
+    "credits": "크레디트",
+    "messages": "메시지",
+    "notifications": "토",
+    "newCount": "__ PH0 __ 신규",
+    "noMessages": "메시지가 없습니다",
+    "noMessagesHint": "메시지를 받으면 여기에 표시됩니다.",
+    "noNotifications": "새로운 알람이 없습니다",
+    "noNotificationsHint": "새로운 소식이 있으면 여기에 표시됩니다.",
+    "viewAllMessages": "메시지",
+    "viewAllNotifications": "모든 알림 보기",
+    "signOut": "로그아웃",
+    "signingOut": "로그아웃 중...",
+    "allCaughtUp": "다 따라잡았습니다!",
+    "noNewNotifications": "새로운 알림 없음",
+    "noNotificationsYet": "아직 알림이 없습니다",
+    "notificationsEmptyHint": "새로운 소식이 있으면 여기에 표시됩니다."
+  },
+  "settings": {
+    "tabs": {
+      "general": "일반",
+      "notifications": "토",
+      "plan": "플랜 및 크레딧",
+      "integrations": "인터그레이션",
+      "developer": "개발진",
+      "export": "내보내기"
+    },
+    "general": {
+      "title": "일반 설정",
+      "language": {
+        "label": "언어",
+        "change": "변경",
+        "uiFallback": "인터페이스는 영어로 표시됩니다. 프로필과 날짜에 대한 기본 설정 (__ PH0 __) 이 저장되었습니다."
+      },
+      "timezone": {
+        "label": "시간대",
+        "adjust": "조정",
+        "currentTime": "현재 시간 :",
+        "noMatch": "검색 조건에 일치하는 시간대가 없습니다"
+      },
+      "theme": {
+        "label": "인터페이스 테마",
+        "light": "라이트",
+        "dark": "다크",
+        "system": "시스템",
+        "followsDevice": "(장치를 따름)"
+      },
+      "syncSaving": "저장 중입니다…",
+      "syncSaved": "저장했습니다",
+      "syncError": "이미지 저장 실패"
+    },
+    "notifications": {
+      "title": "토",
+      "productUpdates": "제품 업데이트",
+      "lessonReminders": "레슨 리마인더",
+      "weeklyInsights": "주간 인사이트",
+      "channels": {
+        "emailAndApp": "이메일 및 앱",
+        "emailOnly": "이메일만",
+        "appOnly": "앱 전용"
+      },
+      "currentChannel": "현재 채널: __ PH0 __",
+      "edit": "편집",
+      "manageDefaults": "알림 기본값 관리"
+    },
+    "integrations": {
+      "title": "인터그레이션",
+      "addNew": "새 통합 추가",
+      "status": {
+        "connected": "연결됨",
+        "available": "사용 가능",
+        "comingSoon": "출시 예정"
+      },
+      "googleClassroom": {
+        "name": "구글 교실",
+        "description": "과제와 명단을 자동으로 동기화합니다."
+      },
+      "microsoftTeams": {
+        "name": "Microsoft Teams",
+        "description": "Teams 회의 및 과제 동기화를 활성화합니다."
+      },
+      "canvasLms": {
+        "name": "캔버스 LMS",
+        "description": "Canvas 사용자를 위한 직접적인 gradebook 통합."
+      }
+    },
+    "developer": {
+      "title": "개발자 액세스",
+      "connectedApps": "연결된 앱",
+      "connectedAppsDesc": "3개의 앱에서 교수 업무 공간에 액세스할 수 있습니다.",
+      "manageTokens": "API 토큰 관리"
+    },
+    "export": {
+      "title": "내보내기 백업",
+      "downloadData": "작업 공간 데이터 다운로드",
+      "downloadDataDesc": "템플릿, 평가 및 채팅 내역",
+      "scheduleBackups": "주간 백업 예약"
+    },
+    "plan": {
+      "yourCredits": "귀하의 크레딧",
+      "memberSince": "회원가입일: __ PH0 __",
+      "activateCode": "+ 코드 활성화",
+      "creditsRemaining": "/__ PH0 __ 크레딧",
+      "remainingPct": "__ PH0 __ % 남음",
+      "expires": "만료일: __ PH0 __",
+      "autoRenewing": "자동 갱신",
+      "noActiveCredits": "활성화된 크레딧이 없습니다. 시작하려면 코드를 활성화하세요.",
+      "activateCreditsLink": "크레딧 활성화 →",
+      "usageBreakdown": "사용 내역",
+      "last30Days": "지난 30일",
+      "activity": "활동",
+      "activityFallback": "활동",
+      "left": "__ PH0 __ 남음"
+    }
+  },
+  "nav": {
+    "dashboard": "대시보드",
+    "teacherTools": "교사용 도구",
+    "teacherToolsOverview": "개요",
+    "teacherToolsAnalytics": "분석",
+    "quiz": "퀴즈",
+    "assignment": "미션",
+    "worksheet": "워크시트",
+    "exams": "시험",
+    "templates": "템플릿 라이브러리",
+    "chatbots": "특수 챗봇",
+    "youtubeQuiz": "YouTube 퀴즈 생성기",
+    "pixgen": "PixGen (AI Media Studio)",
+    "learningHub": "전문 학습 허브",
+    "personalization": "개인화",
+    "administration": "센터 관리부",
+    "reporting": "Reporting**",
+    "assessment": "평가",
+    "contentManagement": "컨텐츠 관리",
+    "history": "기록",
+    "analytics": "분석",
+    "useCases": "사용 사례 둘러보기",
+    "profile": "프로필",
+    "settings": "설정",
+    "accessCodes": "액세스 코드",
+    "contentPacks": "콘텐츠 팩",
+    "documents": "문서",
+    "learningHubContent": "학습 허브 콘텐츠",
+    "organization": "조성",
+    "parent": "부모",
+    "school": "학교",
+    "uploadDocument": "문서 업로드"
+  },
+  "workspace": {
+    "fallbackName": "워크스페이스",
+    "scopeType": {
+      "institution": "제도",
+      "organization": "조성",
+      "personal": "개인"
+    },
+    "switcher": {
+      "title": "작업 공간 전환",
+      "active": "활성화"
+    }
+  },
+  "login": {
+    "subtitle": "로그인하십시오",
+    "emailLabel": "이메일 주소",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "비밀번호",
+    "rememberMe": "로그인 정보 저장",
+    "forgotPassword": "비밀번호를 잊으셨나요?",
+    "signIn": "로그인",
+    "signingIn": "Signing in...",
+    "noAccount": "계정이 없나요?",
+    "signUpLink": "가입하기",
+    "error": "로그인에 실패했습니다. 자격 증명을 확인하십시오."
+  },
+  "teacherTools": {
+    "breadcrumbTeacherTools": "교사용 도구",
+    "breadcrumbTemplates": "템플릿",
+    "edit": "편집",
+    "duplicate": "복제",
+    "archive": "아카이브",
+    "delete": "삭제",
+    "toolAssign": "파견",
+    "toolSheet": "시트",
+    "toolExam": "시험",
+    "range7d": "지난 7일",
+    "range30d": "지난 30일",
+    "rangeAll": "전체 기간",
+    "previewData": "데이터 미리 보기",
+    "previewDataHint": "— 실제 결과는 학생들이 제출한 후에 여기에 표시됩니다.",
+    "statContentCreated": "콘텐츠 생성됨",
+    "overview": {
+      "kpiTotalActive": "총 활성 항목",
+      "kpiScheduledWeek": "이번 주 예정",
+      "kpiPendingDrafts": "초안 보류 중",
+      "kpiPublished": "게시된 항목",
+      "kpiAvgQuizScore": "평균 퀴즈 점수",
+      "kpiQuizzesTaken": "퀴즈"
+    }
+  },
+  "quiz": {
+    "breadcrumb": "퀴즈"
+  },
+  "assignment": {
+    "breadcrumb": "미션"
+  },
+  "worksheet": {
+    "breadcrumb": "워크시트"
+  },
+  "exam": {
+    "breadcrumb": "시험",
+    "detail": {
+      "tabs": {
+        "analytics": "분석",
+        "results": "결과",
+        "candidates": "지원자"
+      }
+    },
+    "statMarks": "마크"
+  },
+  "status": {
+    "draft": "검토 대기 중",
+    "published": "게시됨",
+    "active": "활성화",
+    "closed": "닫기",
+    "graded": "완료",
+    "submitted": "등록일",
+    "pending": "대기",
+    "archived": "보관됨",
+    "completed": "완료됨",
+    "upcoming": "다음 경기",
+    "ongoing": "진행 중",
+    "cancelled": "취소",
+    "late": "늦음",
+    "onTime": "정시에"
+  },
+  "dashboard": {
+    "recentActivity": "최근 활동",
+    "viewAll": "모두 보기",
+    "teacherToolsOverview": "교사 도구 개요",
+    "greetingMorning": "좋은 아침입니다, {{name}}",
+    "greetingAfternoon": "안녕하세요, {{name}}",
+    "greetingEvening": "안녕하세요, {{name}}",
+    "defaultName": "선생님",
+    "workspaceReady": "작업 공간이 준비되었습니다.",
+    "activeContent": "작업 공간에 활성 항목 {{count}}개",
+    "createFirstQuiz": "시작하려면 첫 번째 퀴즈를 만드세요.",
+    "createFirstQuizCta": "퀴즈 만들기",
+    "totalContent": "총 콘텐츠",
+    "thisWeek": "이번 주",
+    "draftBacklog": "대기 중인 초안",
+    "published": "게시됨",
+    "dayStreak": "연속 일수",
+    "upcomingDeadlines": "다가오는 마감일",
+    "noDeadlines": "다가오는 마감일 없음",
+    "noActivity": "최근 활동 없음",
+    "draftsToFinish": "완료할 초안",
+    "all": "전체",
+    "noDrafts": "초안 없음",
+    "coreWorkflows": "핵심 워크플로",
+    "dueToday": "오늘 마감",
+    "dueInDays": "{{count}}일 후 마감",
+    "dueSoon": "곧 마감: {{title}}",
+    "continueDraft": "초안 계속: {{title}}",
+    "tools": {
+      "quiz": "퀴즈",
+      "assignment": "미션",
+      "worksheet": "워크시트",
+      "exam": "시험"
+    }
+  },
+  "tenantSelection": {
+    "title": "작업 공간 선택",
+    "subtitle": "계속하려면 작업 공간을 선택하세요",
+    "workspace": "워크스페이스",
+    "signingIn": "Signing in...",
+    "scope": {
+      "institution": "제도",
+      "organization": "조성",
+      "personalWorkspace": "개인 작업 공간"
+    }
+  }
+}

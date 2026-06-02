@@ -17,6 +17,8 @@ import { normalizeStreamingContent } from '../../components/ai/SectionRenderer'
 import { formatLessonFlowArrayAsMarkdownTable } from '../../lib/formatLessonFlow'
 import NoCreditsCard from '../../components/NoCreditsCard'
 
+import { useTranslation } from 'react-i18next'
+import { catalogLabel, catalogTemplateFieldOption, localizeTemplateFields } from '../../i18n/catalogLabel'
 type TemplateField = {
   name: string
   type: string
@@ -30,6 +32,7 @@ type TemplateField = {
 }
 
 const TemplateRunner = () => {
+  const { t } = useTranslation()
   const { slug } = useParams<{ slug: string }>()
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -126,7 +129,7 @@ const TemplateRunner = () => {
 
   useEffect(() => {
     if (!slug) {
-      setError('Template not found.')
+      setError(t('templateRunner.templateNotFound'))
       setLoading(false)
       return
     }
@@ -145,7 +148,7 @@ const TemplateRunner = () => {
       })
       .catch((err) => {
         if (controller.signal.aborted) return
-        setError(err instanceof Error ? err.message : 'Unable to load template.')
+        setError(err instanceof Error ? err.message : t('templateRunner.unableToLoadTemplate'))
       })
       .finally(() => {
         if (!controller.signal.aborted) {
@@ -238,6 +241,11 @@ const TemplateRunner = () => {
     console.warn('Unknown input_schema format:', schema)
     return []
   }, [template])
+
+  const localizedFields = useMemo(
+    () => localizeTemplateFields(t, slug, schemaFields),
+    [t, slug, schemaFields],
+  )
 
   // Initialize formValues synchronously with schemaFields
   const initialFormValues = useMemo(() => {
@@ -578,7 +586,7 @@ const TemplateRunner = () => {
     if (exemplarNoticeTimeoutRef.current) {
       window.clearTimeout(exemplarNoticeTimeoutRef.current)
     }
-    setExemplarNotice('Exemplar is ready!')
+    setExemplarNotice(t('templateRunner.exemplarReady'))
     exemplarNoticeTimeoutRef.current = window.setTimeout(() => setExemplarNotice(null), 3000)
 
     setTimeout(() => {
@@ -602,7 +610,16 @@ const TemplateRunner = () => {
 
     const missing = schemaFields.filter((field) => field.required && !formValues[field.name]?.trim())
     if (missing.length > 0) {
-      setSubmitError(`Please fill in: ${missing.map((field) => field.label ?? field.name).join(', ')}`)
+      setSubmitError(
+        t('templateRunner.fillRequiredFields', {
+          fields: missing
+            .map((field) => {
+              const localized = localizedFields.find((f) => f.name === field.name)
+              return localized?.label ?? field.label ?? field.name
+            })
+            .join(', '),
+        }),
+      )
       return
     }
 
@@ -1113,7 +1130,7 @@ const TemplateRunner = () => {
     // Create a new window for printing
     const printWindow = window.open('', '_blank')
     if (!printWindow) {
-      alert('Please allow popups to print')
+      alert(t('templateRunner.allowPopupsToPrint'))
       return
     }
 
@@ -1125,7 +1142,7 @@ const TemplateRunner = () => {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>${template?.title || 'Generated Content'}</title>
+          <title>${template?.title || t('templateRunner.generatedContent')}</title>
           <style>
             @media print {
               @page {
@@ -1230,7 +1247,7 @@ const TemplateRunner = () => {
         <textarea 
           {...commonProps} 
           rows={field.type === 'array' ? 4 : 8} 
-          placeholder={field.type === 'array' ? (field.placeholder || 'One item per line or comma-separated') : field.placeholder} 
+          placeholder={field.type === 'array' ? (field.placeholder || t('templateRunner.arrayFieldPlaceholder')) : field.placeholder} 
           className={`${commonProps.className} resize-y min-h-[120px]`} 
         />
       )
@@ -1244,12 +1261,20 @@ const TemplateRunner = () => {
       
       return (
         <select {...commonProps}>
-          <option value="">Select {field.label ?? field.name}</option>
-          {(field.options ?? []).map((option) => (
-            <option key={option} value={option}>
-              {isBoolean ? (option === 'true' ? 'Yes' : 'No') : option}
-            </option>
-          ))}
+          <option value="">
+            {t('templateRunner.selectField', { label: field.label ?? field.name })}
+          </option>
+          {(schemaFields.find((f) => f.name === field.name)?.options ?? field.options ?? []).map(
+            (option) => (
+              <option key={option} value={option}>
+                {isBoolean
+                  ? option === 'true'
+                    ? t('common.yes')
+                    : t('common.no')
+                  : catalogTemplateFieldOption(t, slug, field.name, option)}
+              </option>
+            ),
+          )}
         </select>
       )
     }
@@ -1566,7 +1591,10 @@ const TemplateRunner = () => {
       .replace(/^### (.+)$/gm, '<h3 class="text-xl font-semibold text-gray-900 mb-3 mt-5">$1</h3>')
       .replace(/^#### (.+)$/gm, '<h4 class="text-lg font-semibold text-gray-900 mb-2 mt-4">$1</h4>')
     formatted = formatted.replace(/^- (.+)$/gm, '<li class="text-[15px] leading-[1.8] text-gray-800 mb-1">$1</li>')
-    formatted = formatted.replace(/(<li class="text-\[15px\] leading-\[1\.8\] text-gray-800 mb-1">.*<\/li>\n?)+/g, (match) => '<ul class="mb-4 ml-6 space-y-1 list-disc">' + match + '</ul>')
+    formatted = formatted.replace(
+      /(<li class="text-\[15px\] leading-\[1\.8\] text-gray-800 mb-1">.*<\/li>\n?)+/g,
+      (match) => `<ul class="mb-4 ml-6 space-y-1 list-disc">${match}</ul>`,
+    )
     formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-gray-900">$1</strong>')
     formatted = formatted.replace(/^\d+\.\s+(.+)$/gm, '<li class="text-[15px] leading-[1.8] text-gray-800 mb-1">$1</li>')
     const lines = formatted.split('\n')
@@ -1595,9 +1623,7 @@ const TemplateRunner = () => {
                 <FileText className="h-6 w-6 text-gray-400" />
               </div>
             </div>
-            <p className="text-sm text-gray-500 leading-relaxed">
-              Try a variety of inputs and input lengths to get the best results.
-            </p>
+            <p className="text-sm text-gray-500 leading-relaxed">{t('templateRunner.tryAVarietyOfInputsAndInputLengthsToGet')}</p>
           </div>
         </div>
       )
@@ -1624,7 +1650,7 @@ const TemplateRunner = () => {
         <div className="max-w-[800px] mx-auto py-8">
           <div className="flex items-center gap-3 text-gray-600">
             <Loader2 className="h-5 w-5 animate-spin text-indigo-500 flex-shrink-0" />
-            <span className="text-[15px]">Generating lesson plan...</span>
+            <span className="text-[15px]">{t('templateRunner.generatingLessonPlan')}</span>
           </div>
         </div>
       )
@@ -1632,9 +1658,7 @@ const TemplateRunner = () => {
 
     if (!isStreaming && streamedContent && !sections.length) {
       return (
-        <div className="max-w-[800px] mx-auto py-4 text-sm text-gray-500">
-          Content generated. If sections do not appear, try running again.
-        </div>
+        <div className="max-w-[800px] mx-auto py-4 text-sm text-gray-500">{t('templateRunner.contentGeneratedIfSectionsDoNotAppearTryRunningAgain')}</div>
       )
     }
 
@@ -1666,7 +1690,7 @@ const TemplateRunner = () => {
       <div className="flex h-screen items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
-          <p className="text-sm text-gray-500">Loading template...</p>
+          <p className="text-sm text-gray-500">{t('templateRunner.loadingTemplate')}</p>
         </div>
       </div>
     )
@@ -1676,14 +1700,12 @@ const TemplateRunner = () => {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-center space-y-4">
-          <p className="text-sm text-gray-600">{error ?? 'Template not found.'}</p>
+          <p className="text-sm text-gray-600">{error ?? t('templateRunner.templateNotFound')}</p>
           <button
             onClick={() => navigate('/templates')}
             className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
           >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Templates
-          </button>
+            <ArrowLeft className="h-4 w-4" />{t('templateRunner.backToTemplates')}</button>
         </div>
       </div>
     )
@@ -1696,12 +1718,12 @@ const TemplateRunner = () => {
         <nav className="mb-6">
           <ol className="flex items-center gap-2 text-sm text-gray-600">
             <li>
-              <Link to="/templates" className="hover:text-gray-900">
-                Templates
-              </Link>
+              <Link to="/templates" className="hover:text-gray-900">{t('templateRunner.templates')}</Link>
             </li>
             <li className="text-gray-400">/</li>
-            <li className="text-gray-900 font-medium">{template.title}</li>
+            <li className="text-gray-900 font-medium">
+              {catalogLabel(t, 'templatesLibrary', slug, 'title', template.title ?? '')}
+            </li>
           </ol>
         </nav>
 
@@ -1709,9 +1731,19 @@ const TemplateRunner = () => {
         <div className="mb-6">
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-3xl font-semibold text-gray-900 mb-2">{template.title}</h1>
-              {template.description && (
-                <p className="text-sm text-gray-600">{template.description}</p>
+              <h1 className="text-3xl font-semibold text-gray-900 mb-2">
+                {catalogLabel(t, 'templatesLibrary', slug, 'title', template.title ?? '')}
+              </h1>
+              {(template.description || catalogLabel(t, 'templatesLibrary', slug, 'description', '')) && (
+                <p className="text-sm text-gray-600">
+                  {catalogLabel(
+                    t,
+                    'templatesLibrary',
+                    slug,
+                    'description',
+                    template.description ?? '',
+                  )}
+                </p>
               )}
           </div>
           {parsedOutput && !isStreaming && (
@@ -1722,12 +1754,10 @@ const TemplateRunner = () => {
               >
                 {copied ? (
                   <>
-                    <Check className="h-3.5 w-3.5 text-green-600" /> Copied
-                  </>
+                    <Check className="h-3.5 w-3.5 text-green-600" />{t('templateRunner.copied')}</>
                 ) : (
                   <>
-                      <Copy className="h-3.5 w-3.5" /> Copy
-                  </>
+                      <Copy className="h-3.5 w-3.5" />{t('templateRunner.copy')}</>
                 )}
               </button>
               <button
@@ -1735,9 +1765,7 @@ const TemplateRunner = () => {
                 disabled={isStreaming}
                 className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
               >
-                <RefreshCw className={`h-3.5 w-3.5 ${isStreaming ? 'animate-spin' : ''}`} />
-                Regenerate
-              </button>
+                <RefreshCw className={`h-3.5 w-3.5 ${isStreaming ? 'animate-spin' : ''}`} />{t('templateRunner.regenerate')}</button>
             </div>
           )}
         </div>
@@ -1766,7 +1794,7 @@ const TemplateRunner = () => {
                 ) : (
                   <ChevronDown className="h-4 w-4 text-gray-600" />
                 )}
-                <span className="text-sm font-medium text-gray-900">Prompt Editor</span>
+                <span className="text-sm font-medium text-gray-900">{t('templateRunner.promptEditor')}</span>
               </div>
             </button>
 
@@ -1781,9 +1809,7 @@ const TemplateRunner = () => {
                         disabled={isStreaming}
                         className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        <FileText className="h-3.5 w-3.5" />
-                        Show exemplar
-                      </button>
+                        <FileText className="h-3.5 w-3.5" />{t('templateRunner.showExemplar')}</button>
                     </div>
                   )}
 
@@ -1793,7 +1819,7 @@ const TemplateRunner = () => {
                     </div>
                   )}
 
-                  {schemaFields.map((field) => (
+                  {localizedFields.map((field) => (
                     <div key={field.name} className="space-y-2">
                       <label htmlFor={field.name} className="block text-sm font-medium text-gray-900">
                         {field.label ?? field.name}
@@ -1816,14 +1842,10 @@ const TemplateRunner = () => {
                   >
                     {isStreaming ? (
                       <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Generating...
-                      </>
+                        <Loader2 className="h-4 w-4 animate-spin" />{t('templateRunner.generating')}</>
                     ) : (
                       <>
-                        <Send className="h-4 w-4" />
-                        Generate
-                      </>
+                        <Send className="h-4 w-4" />{t('templateRunner.generate')}</>
                     )}
                   </button>
                 </form>
@@ -1835,7 +1857,7 @@ const TemplateRunner = () => {
         {/* Output/Preview Section */}
         {schemaFields.length === 0 && (
           <div className="mb-8 rounded-lg border border-gray-200 bg-gray-50 p-8 text-center">
-            <p className="text-sm text-gray-500">This template does not define any input fields yet.</p>
+            <p className="text-sm text-gray-500">{t('templateRunner.thisTemplateDoesNotDefineAnyInputFieldsYet')}</p>
           </div>
         )}
 
@@ -1849,71 +1871,61 @@ const TemplateRunner = () => {
             )}
             {/* AI Message Header */}
             <div className="mb-4">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">AI Response:</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('templateRunner.aiResponse')}</h2>
               
               {/* Action Buttons Row */}
               <div className="flex items-center gap-2 flex-wrap mb-4">
                 <button
                   onClick={() => handleCopyToClipboard()}
                   className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                  title="Copy"
+                  title={t('templateRunner.copy')}
                 >
                   {copied ? (
                     <>
-                      <Check className="h-3.5 w-3.5 text-green-600" />
-                      Copied
-                    </>
+                      <Check className="h-3.5 w-3.5 text-green-600" />{t('templateRunner.copied')}</>
                   ) : (
                     <>
-                      <Copy className="h-3.5 w-3.5" />
-                      Copy
-                    </>
+                      <Copy className="h-3.5 w-3.5" />{t('templateRunner.copy')}</>
                   )}
                 </button>
                 
                 <button
                   onClick={handleExport}
                   className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                  title="Export as DOCX"
+                  title={t('templateRunner.exportAsDocx')}
                 >
-                  <Download className="h-3.5 w-3.5" />
-                  Export
-                </button>
+                  <Download className="h-3.5 w-3.5" />{t('templateRunner.export')}</button>
                 
                 <button
                   onClick={handlePrint}
                   className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                  title="Print content"
+                  title={t('templateRunner.printContent')}
                 >
-                  <Printer className="h-3.5 w-3.5" />
-                  Print
-                </button>
+                  <Printer className="h-3.5 w-3.5" />{t('templateRunner.print')}</button>
                 
                 <button
                   onClick={() => setShowPromptEditor(true)}
                   className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                  title="Edit"
+                  title={t('templateRunner.edit')}
                 >
-                  <Edit className="h-3.5 w-3.5" />
-                  Edit
-                </button>
+                  <Edit className="h-3.5 w-3.5" />{t('templateRunner.edit')}</button>
                 
                 <div className="flex items-center gap-1 border-l border-gray-300 pl-2 ml-2">
                   <button
                     className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
-                    title="Translate"
+                    title={t('templateRunner.translate')}
                   >
                     <Languages className="h-4 w-4 text-gray-600" />
                   </button>
                   <button
                     className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
-                    title="Read aloud"
+                    title={t('templateRunner.readAloud')}
                   >
                     <Volume2 className="h-4 w-4 text-gray-600" />
                   </button>
                   <button
                     className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
-                    title="Bookmark"
+                    title={t('templateRunner.bookmark')}
                   >
                     <Bookmark className="h-4 w-4 text-gray-600" />
                   </button>
@@ -1922,13 +1934,13 @@ const TemplateRunner = () => {
                 <div className="flex items-center gap-1 border-l border-gray-300 pl-2 ml-2">
                   <button
                     className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
-                    title="Like"
+                    title={t('templateRunner.like')}
                   >
                     <ThumbsUp className="h-4 w-4 text-gray-600" />
                   </button>
                   <button
                     className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
-                    title="Dislike"
+                    title={t('templateRunner.dislike')}
                   >
                     <ThumbsDown className="h-4 w-4 text-gray-600" />
                   </button>
@@ -1946,9 +1958,7 @@ const TemplateRunner = () => {
             {/* Review Prompt - Only show after completion, not during streaming */}
             {parsedOutput && !isStreaming && (
               <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-sm text-blue-900">
-                  Please review the generated content to ensure it matches your expectations and classroom needs.
-                </p>
+                <p className="text-sm text-blue-900">{t('templateRunner.pleaseReviewTheGeneratedContentToEnsureItMatchesYour')}</p>
               </div>
             )}
           </div>

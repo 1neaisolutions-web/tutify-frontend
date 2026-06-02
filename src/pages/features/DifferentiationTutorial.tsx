@@ -34,6 +34,7 @@ import {
 import { youtubeWatchUrlToEmbedUrl, type LearningHubMediaVideo } from '../../features/learningHub/contentModel'
 import { useTutorialProgress } from '../../hooks/useTutorialProgress'
 
+import { useTranslation } from 'react-i18next'
 interface ClassroomExample {
   scenario: string
   challenge: string
@@ -44,6 +45,7 @@ interface ClassroomExample {
 }
 
 export function DifferentiationTutorialView({ item }: { item: LearningHubSectionItem }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const contentId =
@@ -93,9 +95,7 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
 
   if (!hydrated) {
     return (
-      <div className="flex min-h-[240px] items-center justify-center rounded-2xl border border-gray-200 bg-white p-8 text-sm text-gray-600">
-        Restoring your tutorial progress…
-      </div>
+      <div className="flex min-h-[240px] items-center justify-center rounded-2xl border border-gray-200 bg-white p-8 text-sm text-gray-600">{t('differentiationTutorial.restoringYourTutorialProgress')}</div>
     )
   }
 
@@ -150,7 +150,7 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
         {/* Sidebar - Step Navigation */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Tutorial Steps</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('differentiationTutorial.tutorialSteps')}</h3>
             <div className="space-y-2">
               {tutorialSteps.map((step, idx) => {
                 const isActive = idx === currentStep
@@ -295,14 +295,14 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
 
                 {currentStepData.content.data.description && (
                   <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">About This Video</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('differentiationTutorial.aboutThisVideo')}</h3>
                     <p className="text-sm text-gray-700">{currentStepData.content.data.description}</p>
                   </div>
                 )}
 
                 {currentStepData.content.data.keyPoints && (
                   <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Points</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('differentiationTutorial.keyPoints')}</h3>
                     <ul className="space-y-2">
                       {currentStepData.content.data.keyPoints.map((point: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -345,16 +345,12 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
                               </div>
 
                               <div className="mb-4">
-                                <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">
-                                  Differentiation Strategy
-                                </h4>
+                                <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">{t('differentiationTutorial.differentiationStrategy')}</h4>
                                 <p className="text-gray-900 font-medium">{ex.differentiationStrategy}</p>
                               </div>
 
                               <div className="mb-4">
-                                <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">
-                                  Implementation
-                                </h4>
+                                <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">{t('differentiationTutorial.implementation')}</h4>
                                 <ul className="space-y-2">
                                   {ex.implementation.map((item, itemIdx) => (
                                     <li key={itemIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -368,14 +364,12 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
                               </div>
 
                               <div className="mb-4 bg-white rounded-lg p-4 border border-indigo-200">
-                                <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">Results</h4>
+                                <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">{t('differentiationTutorial.results')}</h4>
                                 <p className="text-gray-900">{ex.results}</p>
                               </div>
 
                               <div>
-                                <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">
-                                  Student Feedback
-                                </h4>
+                                <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">{t('differentiationTutorial.studentFeedback')}</h4>
                                 <div className="space-y-2">
                                   {ex.studentFeedback.map((feedback, feedbackIdx) => (
                                     <div key={feedbackIdx} className="bg-white rounded-lg p-3 border border-indigo-200">
@@ -399,19 +393,19 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
                             <div className="space-y-2 text-sm text-gray-800">
                               {example.task ? (
                                 <p>
-                                  <span className="font-semibold">Task: </span>
+                                  <span className="font-semibold">{t('differentiationTutorial.task')}</span>
                                   {String(example.task)}
                                 </p>
                               ) : null}
                               {example.output ? (
                                 <p>
-                                  <span className="font-semibold">Output: </span>
+                                  <span className="font-semibold">{t('differentiationTutorial.output')}</span>
                                   {String(example.output)}
                                 </p>
                               ) : null}
                               {example.result ? (
                                 <p>
-                                  <span className="font-semibold">Result: </span>
+                                  <span className="font-semibold">{t('differentiationTutorial.result')}</span>
                                   {String(example.result)}
                                 </p>
                               ) : null}
@@ -424,22 +418,22 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
                   {!exampleList && classroom ? (
                     <div className="space-y-4">
                       <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Classroom Context</h3>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('differentiationTutorial.classroomContext')}</h3>
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Grade</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">{t('differentiationTutorial.grade')}</p>
                             <p className="text-sm font-semibold text-gray-900">{String(classroom.grade ?? '—')}</p>
                           </div>
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Subject</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">{t('differentiationTutorial.subject')}</p>
                             <p className="text-sm font-semibold text-gray-900">{String(classroom.subject ?? '—')}</p>
                           </div>
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Students</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">{t('differentiationTutorial.students')}</p>
                             <p className="text-sm font-semibold text-gray-900">{String(classroom.students ?? '—')}</p>
                           </div>
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Diversity</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">{t('differentiationTutorial.diversity')}</p>
                             <p className="text-sm font-semibold text-gray-900">{String(classroom.diversity ?? '—')}</p>
                           </div>
                         </div>
@@ -447,14 +441,14 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
 
                       {d.challenge ? (
                         <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-                          <h3 className="text-lg font-semibold text-gray-900 mb-2">Challenge</h3>
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('differentiationTutorial.challenge')}</h3>
                           <p className="text-gray-700">{String(d.challenge)}</p>
                         </div>
                       ) : null}
 
                       {d.approach ? (
                         <div className="bg-green-50 rounded-xl p-6 border border-green-200">
-                          <h3 className="text-lg font-semibold text-gray-900 mb-2">Approach</h3>
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('differentiationTutorial.approach')}</h3>
                           <p className="text-gray-700">{String(d.approach)}</p>
                         </div>
                       ) : null}
@@ -484,43 +478,43 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {example.tier1 && (
                               <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
-                                <p className="text-xs font-semibold text-blue-700 mb-1">Tier 1</p>
+                                <p className="text-xs font-semibold text-blue-700 mb-1">{t('differentiationTutorial.tier1')}</p>
                                 <p className="text-sm text-gray-700">{example.tier1}</p>
                               </div>
                             )}
                             {example.tier2 && (
                               <div className="bg-green-50 rounded-lg p-3 border border-green-200">
-                                <p className="text-xs font-semibold text-green-700 mb-1">Tier 2</p>
+                                <p className="text-xs font-semibold text-green-700 mb-1">{t('differentiationTutorial.tier2')}</p>
                                 <p className="text-sm text-gray-700">{example.tier2}</p>
                               </div>
                             )}
                             {example.tier3 && (
                               <div className="bg-purple-50 rounded-lg p-3 border border-purple-200">
-                                <p className="text-xs font-semibold text-purple-700 mb-1">Tier 3</p>
+                                <p className="text-xs font-semibold text-purple-700 mb-1">{t('differentiationTutorial.tier3')}</p>
                                 <p className="text-sm text-gray-700">{example.tier3}</p>
                               </div>
                             )}
                             {example.visual && (
                               <div className="bg-amber-50 rounded-lg p-3 border border-amber-200">
-                                <p className="text-xs font-semibold text-amber-700 mb-1">Visual Learner</p>
+                                <p className="text-xs font-semibold text-amber-700 mb-1">{t('differentiationTutorial.visualLearner')}</p>
                                 <p className="text-sm text-gray-700">{example.visual}</p>
                               </div>
                             )}
                             {example.kinesthetic && (
                               <div className="bg-red-50 rounded-lg p-3 border border-red-200">
-                                <p className="text-xs font-semibold text-red-700 mb-1">Kinesthetic Learner</p>
+                                <p className="text-xs font-semibold text-red-700 mb-1">{t('differentiationTutorial.kinestheticLearner')}</p>
                                 <p className="text-sm text-gray-700">{example.kinesthetic}</p>
                               </div>
                             )}
                             {example.auditory && (
                               <div className="bg-cyan-50 rounded-lg p-3 border border-cyan-200">
-                                <p className="text-xs font-semibold text-cyan-700 mb-1">Auditory Learner</p>
+                                <p className="text-xs font-semibold text-cyan-700 mb-1">{t('differentiationTutorial.auditoryLearner')}</p>
                                 <p className="text-sm text-gray-700">{example.auditory}</p>
                               </div>
                             )}
                             {example.reading && (
                               <div className="bg-indigo-50 rounded-lg p-3 border border-indigo-200">
-                                <p className="text-xs font-semibold text-indigo-700 mb-1">Reading/Writing Learner</p>
+                                <p className="text-xs font-semibold text-indigo-700 mb-1">{t('differentiationTutorial.readingWritingLearner')}</p>
                                 <p className="text-sm text-gray-700">{example.reading}</p>
                               </div>
                             )}
@@ -541,11 +535,11 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
                         (pair, idx: number) => (
                           <div key={idx} className="grid gap-3 md:grid-cols-2 rounded-lg border border-purple-200 bg-white p-4">
                             <div className="rounded-lg bg-gray-50 p-3">
-                              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Weak</p>
+                              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">{t('differentiationTutorial.weak')}</p>
                               <p className="text-sm text-gray-800">{pair.weak}</p>
                             </div>
                             <div className="rounded-lg bg-purple-50 p-3">
-                              <p className="text-xs font-semibold uppercase tracking-wide text-purple-800 mb-1">Strong</p>
+                              <p className="text-xs font-semibold uppercase tracking-wide text-purple-800 mb-1">{t('differentiationTutorial.strong')}</p>
                               <p className="text-sm font-medium text-purple-900">{pair.strong}</p>
                             </div>
                           </div>
@@ -563,7 +557,7 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
                       {(currentStepData.content.data.examples as Array<{ roles: string[]; benefit?: string }>).map(
                         (ex, idx: number) => (
                           <div key={idx} className="rounded-lg border border-purple-200 bg-white p-5">
-                            <p className="text-xs font-semibold uppercase tracking-wide text-gray-600 mb-2">Roles</p>
+                            <p className="text-xs font-semibold uppercase tracking-wide text-gray-600 mb-2">{t('differentiationTutorial.roles')}</p>
                             <ul className="mb-3 flex flex-wrap gap-2">
                               {ex.roles.map((role: string, rIdx: number) => (
                                 <li
@@ -576,7 +570,7 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
                             </ul>
                             {ex.benefit ? (
                               <p className="text-sm text-gray-800">
-                                <span className="font-semibold text-gray-900">Why it works: </span>
+                                <span className="font-semibold text-gray-900">{t('differentiationTutorial.whyItWorks')}</span>
                                 {ex.benefit}
                               </p>
                             ) : null}
@@ -592,7 +586,7 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
                    currentStepData.content.data.examples.length > 0 &&
                    typeof currentStepData.content.data.examples[0] === 'string' && (
                     <div className="mb-6">
-                      <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">Product Options</h4>
+                      <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">{t('differentiationTutorial.productOptions')}</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                         {currentStepData.content.data.examples.map((option: string, optIdx: number) => (
                           <div key={optIdx} className="bg-white rounded-lg p-4 border border-purple-200 text-sm text-gray-700 shadow-sm hover:shadow-md transition">
@@ -609,14 +603,14 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
                   {/* Rubrics info */}
                   {currentStepData.content.data.rubrics && (
                     <div className="mb-6 bg-white rounded-lg p-4 border border-purple-200">
-                      <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-2">Rubric Guidelines</h4>
+                      <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-2">{t('differentiationTutorial.rubricGuidelines')}</h4>
                       <p className="text-sm text-gray-700">{currentStepData.content.data.rubrics}</p>
                     </div>
                   )}
 
                   {currentStepData.content.data.implementation && (
                     <div className="mb-6">
-                      <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">Implementation Steps</h4>
+                      <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">{t('differentiationTutorial.implementationSteps')}</h4>
                       <ul className="space-y-2">
                         {currentStepData.content.data.implementation.map((step: string, stepIdx: number) => (
                           <li key={stepIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -630,7 +624,7 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
 
                   {currentStepData.content.data.steps && (
                     <div className="mb-6">
-                      <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">Action Steps</h4>
+                      <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">{t('differentiationTutorial.actionSteps')}</h4>
                       <ol className="space-y-2">
                         {currentStepData.content.data.steps.map((step: string, stepIdx: number) => (
                           <li key={stepIdx} className="flex items-start gap-3 text-sm text-gray-700">
@@ -646,7 +640,7 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
 
                   {currentStepData.content.data.resources && (
                     <div className="bg-white rounded-lg p-4 border border-purple-200">
-                      <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">Resources</h4>
+                      <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">{t('differentiationTutorial.resources')}</h4>
                       <ul className="space-y-2">
                         {currentStepData.content.data.resources.map((resource: string, resIdx: number) => (
                           <li key={resIdx} className="flex items-center gap-2 text-sm text-gray-700">
@@ -665,7 +659,7 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
               <div className="space-y-6">
                 {currentStepData.content.data.strategies && (
                   <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Strategies</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('differentiationTutorial.strategies')}</h3>
                     <ul className="space-y-3">
                       {currentStepData.content.data.strategies.map((strategy: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
@@ -679,7 +673,7 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
 
                 {currentStepData.content.data.tools && (
                   <div className="bg-green-50 rounded-xl p-6 border border-green-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Assessment Tools</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('differentiationTutorial.assessmentTools')}</h3>
                     <ul className="space-y-2">
                       {currentStepData.content.data.tools.map((tool: string, idx: number) => (
                         <li key={idx} className="flex items-center gap-2 text-sm text-gray-700">
@@ -700,7 +694,7 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
                           {challenge.challenge}
                         </h4>
                         <div className="bg-white rounded-lg p-4 border border-amber-200 mt-3">
-                          <p className="text-sm font-semibold text-gray-700 mb-1">Solution:</p>
+                          <p className="text-sm font-semibold text-gray-700 mb-1">{t('differentiationTutorial.solution')}</p>
                           <p className="text-sm text-gray-700">{challenge.solution}</p>
                         </div>
                       </div>
@@ -712,7 +706,7 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
                  !currentStepData.content.data.tools && 
                  !currentStepData.content.data.challenges && (
                   <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 text-center">
-                    <p className="text-sm text-gray-600">Content coming soon...</p>
+                    <p className="text-sm text-gray-600">{t('differentiationTutorial.contentComingSoon')}</p>
                   </div>
                 )}
               </div>
@@ -724,16 +718,14 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
              currentStepData.content.type !== 'interactive' && 
              currentStepData.content.type !== 'text' && (
               <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 text-center">
-                <p className="text-sm text-gray-600">Content type not recognized. Please contact support.</p>
+                <p className="text-sm text-gray-600">{t('differentiationTutorial.contentTypeNotRecognizedPleaseContactSupport')}</p>
               </div>
             )}
 
             {/* Key Takeaways */}
             <div className="mt-8 pt-6 border-t border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <Lightbulb className="h-5 w-5 text-amber-600" />
-                Key Takeaways
-              </h3>
+                <Lightbulb className="h-5 w-5 text-amber-600" />{t('differentiationTutorial.keyTakeaways')}</h3>
               <ul className="space-y-2">
                 {currentStepData.keyTakeaways.map((takeaway, idx) => (
                   <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -747,12 +739,10 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
             {/* Reflection Prompt */}
             <div className="mt-6 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-200">
               <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                <Brain className="h-5 w-5 text-indigo-600" />
-                Reflection
-              </h3>
+                <Brain className="h-5 w-5 text-indigo-600" />{t('differentiationTutorial.reflection')}</h3>
               <p className="text-gray-700 mb-4">{currentStepData.reflection}</p>
               <textarea
-                placeholder="Type your reflection here..."
+                placeholder={t('differentiationTutorial.typeYourReflectionHere')}
                 rows={3}
                 className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
               />
@@ -765,9 +755,7 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
                 disabled={currentStep === 0}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
-                <ArrowLeft className="h-4 w-4" />
-                Previous
-              </button>
+                <ArrowLeft className="h-4 w-4" />{t('differentiationTutorial.previous')}</button>
 
               <div className="flex items-center gap-2">
                 <button className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
@@ -805,9 +793,7 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
                 >
                   Back to Learning Hub
                 </button>
-                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                  Download Certificate
-                </button>
+                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">{t('differentiationTutorial.downloadCertificate')}</button>
               </div>
             </div>
           )}

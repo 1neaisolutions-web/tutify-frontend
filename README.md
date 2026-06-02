@@ -145,6 +145,42 @@ The app includes a mock authentication system for MVP purposes. In production, y
 4. Implement analytics + monitoring
 5. Harden auth flows (JWT/Clerk integration)
 
+## Internationalization (i18n)
+
+After adding or changing keys in `src/locales/en-US.json`, or syncing API catalog content:
+
+```bash
+npm run i18n:sync-catalog      # pull template + learning-hub catalog keys into en-US
+npm run i18n:merge-all         # sync key structure to every locale bundle
+npm run i18n:translate-priority-all   # machine-translate priority route namespaces (resumable)
+npm run i18n:fix-priority-english     # re-translate keys still identical to English (Google + MyMemory)
+npm run i18n:force-shell-keys         # force-translate nav/layout/settings labels via MyMemory
+```
+
+Single locale or resume after interruption:
+
+```bash
+node scripts/translate-priority-namespaces.mjs fr-FR
+node scripts/translate-priority-namespaces.mjs --all --resume
+node scripts/translate-priority-namespaces.mjs --all --skip=zh-CN,de-DE
+```
+
+Shell nav + dashboard overrides for new language prefixes:
+
+```bash
+npm run i18n:translate-shells
+npm run i18n:translate-dashboard
+npm run i18n:merge-all
+```
+
+Before release:
+
+```bash
+npm run i18n:validate:strict   # all fullLocales, priority namespaces must differ from English
+npm run test:i18n
+npm run i18n:audit-routes
+```
+
 ## License
 
 This project is proprietary software.

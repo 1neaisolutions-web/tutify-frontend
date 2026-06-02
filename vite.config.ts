@@ -27,6 +27,12 @@ export default defineConfig(({ mode }) => {
       include: ['better-react-mathjax'],
     },
     server: {
+      // Locale JSON is eagerly imported via import.meta.glob in src/i18n/index.ts.
+      // Batch i18n scripts rewrite these files frequently — without ignore, Vite HMR
+      // full-reloads the app every few seconds while translation runs.
+      watch: {
+        ignored: ['**/src/locales/**'],
+      },
       proxy: {
         '/api': {
           target: apiProxyTarget,

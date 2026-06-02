@@ -1,4 +1,32 @@
+import { useTranslation } from 'react-i18next'
 import type { ContentStatus, SubmissionStatus } from '../types'
+
+const STATUS_I18N: Record<string, string> = {
+  draft: 'status.draft',
+  published: 'status.published',
+  active: 'status.active',
+  closed: 'status.closed',
+  graded: 'status.graded',
+  submitted: 'status.submitted',
+  pending: 'status.pending',
+  archived: 'status.archived',
+  completed: 'status.completed',
+  upcoming: 'status.upcoming',
+  ongoing: 'status.ongoing',
+  cancelled: 'status.cancelled',
+  late: 'status.late',
+  on_time: 'status.onTime',
+  scheduled: 'status.upcoming',
+  overdue: 'status.late',
+  pending_review: 'status.pending',
+  missing: 'status.pending',
+  not_started: 'status.pending',
+  late_submitted: 'status.late',
+  under_review: 'status.pending',
+  in_progress: 'status.ongoing',
+  auto_submitted: 'status.submitted',
+  missed: 'status.late',
+}
 
 const contentMap: Record<ContentStatus, string> = {
   draft: 'bg-gray-100 text-gray-700 border-gray-200',
@@ -25,10 +53,6 @@ const submissionMap: Record<SubmissionStatus, string> = {
   missed: 'bg-red-100 text-red-800 border-red-200',
 }
 
-function formatLabel(s: string) {
-  return s.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
-}
-
 export function TeacherToolsStatusBadge({
   kind,
   value,
@@ -36,13 +60,16 @@ export function TeacherToolsStatusBadge({
   kind: 'content' | 'submission'
   value: ContentStatus | SubmissionStatus
 }) {
+  const { t } = useTranslation()
   const cls =
     kind === 'content'
       ? contentMap[value as ContentStatus] ?? contentMap.draft
       : submissionMap[value as SubmissionStatus] ?? submissionMap.not_started
+  const key = STATUS_I18N[value]
+  const label = key ? t(key) : value.replace(/_/g, ' ')
   return (
     <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${cls}`}>
-      {formatLabel(value)}
+      {label}
     </span>
   )
 }

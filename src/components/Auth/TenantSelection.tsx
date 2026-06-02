@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { completeLoginChallenge } from '../../redux/features/auth/authSlice';
 import { setAuthToken } from '../../redux/http';
@@ -31,6 +32,7 @@ const TenantSelection: React.FC<TenantSelectionProps> = ({
   onSuccess,
   onError,
 }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const [selectedMembership, setSelectedMembership] = useState<Membership | null>(null);
   const [loading, setLoading] = useState(false);
@@ -51,11 +53,11 @@ const TenantSelection: React.FC<TenantSelectionProps> = ({
   const getScopeLabel = (scopeType: string) => {
     switch (scopeType) {
       case 'institution':
-        return 'Institution';
+        return t('tenantSelection.scope.institution');
       case 'organization':
-        return 'Organization';
+        return t('tenantSelection.scope.organization');
       case 'personal_workspace':
-        return 'Personal Workspace';
+        return t('tenantSelection.scope.personalWorkspace');
       default:
         return scopeType;
     }
@@ -87,10 +89,10 @@ const TenantSelection: React.FC<TenantSelectionProps> = ({
           onSuccess();
         }, 100);
       } else {
-        onError('Failed to complete login');
+        onError(t('tenantSelection.loginFailed'));
       }
     } catch (error: any) {
-      onError(error || 'Failed to select workspace');
+      onError(error || t('tenantSelection.selectFailed'));
     } finally {
       setLoading(false);
     }
@@ -100,9 +102,9 @@ const TenantSelection: React.FC<TenantSelectionProps> = ({
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl w-full">
         <div className="bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Select Workspace</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('tenantSelection.title')}</h2>
           <p className="text-gray-600 mb-6">
-            You have access to multiple workspaces. Please select one to continue.
+            {t('tenantSelection.subtitle')}
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -128,7 +130,7 @@ const TenantSelection: React.FC<TenantSelectionProps> = ({
                     </div>
                     <div className="ml-4 flex-1">
                       <h3 className="text-lg font-semibold text-gray-900">
-                        {membership.scope_display_name || membership.scope_name || 'Workspace'}
+                        {membership.scope_display_name || membership.scope_name || t('tenantSelection.workspace')}
                       </h3>
                       <p className="text-sm text-gray-600 mt-1">
                         {getScopeLabel(membership.scope_type)}
@@ -152,7 +154,7 @@ const TenantSelection: React.FC<TenantSelectionProps> = ({
 
           {loading && (
             <div className="mt-4 text-center text-gray-600">
-              Signing you in...
+              {t('tenantSelection.signingIn')}
             </div>
           )}
         </div>

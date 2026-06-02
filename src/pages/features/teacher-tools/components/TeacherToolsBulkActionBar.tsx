@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 interface Props {
   selectedCount: number
   onClear: () => void
@@ -5,11 +6,12 @@ interface Props {
 }
 
 export function TeacherToolsBulkActionBar({ selectedCount, onClear, children }: Props) {
+  const { t } = useTranslation()
   if (selectedCount < 1) return null
   return (
     <div className="sticky top-0 z-20 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary-200 bg-primary-50 px-4 py-3 shadow-sm">
       <p className="text-sm font-semibold text-primary-900">
-        {selectedCount} selected
+        {t('teacherTools.selectedCount', { count: selectedCount })}
       </p>
       <div className="flex flex-wrap items-center gap-2">{children}</div>
       <button
@@ -17,7 +19,7 @@ export function TeacherToolsBulkActionBar({ selectedCount, onClear, children }: 
         onClick={onClear}
         className="text-xs font-semibold text-primary-700 hover:text-primary-900"
       >
-        Clear
+        {t('teacherTools.clear')}
       </button>
     </div>
   )

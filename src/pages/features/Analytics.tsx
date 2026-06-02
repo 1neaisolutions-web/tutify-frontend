@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
 import isoWeek from 'dayjs/plugin/isoWeek'
 import { BarChart3, CheckCircle, Download, Target, TrendingDown, TrendingUp, Users } from 'lucide-react'
@@ -11,20 +12,14 @@ import { Link } from 'react-router-dom'
 
 dayjs.extend(isoWeek)
 
-const PERIODS: { label: string; value: AnalyticsPeriod }[] = [
-  { label: '7 days', value: '7d' },
-  { label: '30 days', value: '30d' },
-  { label: '90 days', value: '90d' },
-  { label: '1 year', value: '365d' },
-]
-
 function exportCSV(
   trend: { date: string; quiz: number; assignment: number; worksheet: number; exam: number; total: number }[],
   period: AnalyticsPeriod,
+  header: string[],
 ) {
-  const header = ['Date', 'Quiz', 'Assignment', 'Worksheet', 'Exam', 'Total']
+  const headerRow = header
   const rows = trend.map((p) => [p.date, p.quiz, p.assignment, p.worksheet, p.exam, p.total])
-  const csv = [header, ...rows].map((r) => r.join(',')).join('\n')
+  const csv = [headerRow, ...rows].map((r) => r.join(',')).join('\n')
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
@@ -54,7 +49,30 @@ function KPISkeleton() {
 }
 
 const Analytics = () => {
+  const { t } = useTranslation()
   const [period, setPeriod] = useState<AnalyticsPeriod>('30d')
+
+  const periods = useMemo(
+    (): { label: string; value: AnalyticsPeriod }[] => [
+      { label: t('analyticsPage.period7d'), value: '7d' },
+      { label: t('analyticsPage.period30d'), value: '30d' },
+      { label: t('analyticsPage.period90d'), value: '90d' },
+      { label: t('analyticsPage.period365d'), value: '365d' },
+    ],
+    [t],
+  )
+
+  const csvHeaders = useMemo(
+    () => [
+      t('analyticsPage.csvDate'),
+      t('analyticsPage.seriesQuiz'),
+      t('analyticsPage.seriesAssignment'),
+      t('analyticsPage.seriesWorksheet'),
+      t('analyticsPage.seriesExam'),
+      t('analyticsPage.csvTotal'),
+    ],
+    [t],
+  )
 
   const { data, isLoading, isFetching } = useGetAnalyticsQuery(period)
   const { data: stats } = useGetStatsQuery()
@@ -78,14 +96,19 @@ const Analytics = () => {
     dataLabels: { enabled: false },
     grid: { borderColor: '#F3F4F6' },
     plotOptions: { bar: { borderRadius: 3 } },
-    tooltip: { y: { formatter: (v: number) => `${v} item${v !== 1 ? 's' : ''}` } },
+    tooltip: {
+      y: {
+        formatter: (v: number) =>
+          t('analyticsPage.tooltipItems', { count: v }),
+      },
+    },
   }
 
   const trendSeries = [
-    { name: 'Quiz', data: (data?.trend ?? []).map((p) => p.quiz) },
-    { name: 'Assignment', data: (data?.trend ?? []).map((p) => p.assignment) },
-    { name: 'Worksheet', data: (data?.trend ?? []).map((p) => p.worksheet) },
-    { name: 'Exam', data: (data?.trend ?? []).map((p) => p.exam) },
+    { name: t('analyticsPage.seriesQuiz'), data: (data?.trend ?? []).map((p) => p.quiz) },
+    { name: t('analyticsPage.seriesAssignment'), data: (data?.trend ?? []).map((p) => p.assignment) },
+    { name: t('analyticsPage.seriesWorksheet'), data: (data?.trend ?? []).map((p) => p.worksheet) },
+    { name: t('analyticsPage.seriesExam'), data: (data?.trend ?? []).map((p) => p.exam) },
   ]
 
   const gradeLabels = (data?.by_grade ?? []).map((g) => g.label)
@@ -112,11 +135,11 @@ const Analytics = () => {
     <div className="space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Content Analytics</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Your content creation activity and patterns over time.</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('analyticsPage.title')}</h1>
+          <p className="text-sm text-gray-500 mt-0.5">{t('analyticsPage.subtitle')}</p>
         </div>
         <div className="flex items-center gap-1 rounded-xl bg-gray-100 p-1">
-          {PERIODS.map((p) => (
+          {periods.map((p) => (
             <button
               key={p.value}
               onClick={() => setPeriod(p.value)}
@@ -136,33 +159,38 @@ const Analytics = () => {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[
             {
-              label: `Created (${period})`,
+              label: t('analyticsPage.createdPeriod', { period }),
               value: data?.velocity.this_period ?? 0,
               sub:
                 vel && vel.prev_period > 0
-                  ? `${vel.change_pct > 0 ? '+' : ''}${vel.change_pct.toFixed(0)}% vs prev period`
+                  ? t('analyticsPage.vsPrevPeriod', {
+                      pct: `${vel.change_pct > 0 ? '+' : ''}${vel.change_pct.toFixed(0)}`,
+                    })
                   : '',
               icon: TrendingUp,
               color: 'text-blue-600 bg-blue-100',
             },
             {
-              label: 'Published',
+              label: t('analyticsPage.published'),
               value: data?.total_published ?? stats?.summary.total_published ?? 0,
-              sub: 'total across all tools',
+              sub: t('analyticsPage.totalAcrossTools'),
               icon: CheckCircle,
               color: 'text-green-600 bg-green-100',
             },
             {
-              label: 'Active Classes',
+              label: t('analyticsPage.activeClasses'),
               value: data?.active_class_keys ?? 0,
-              sub: 'distinct class keys',
+              sub: t('analyticsPage.distinctClassKeys'),
               icon: Users,
               color: 'text-violet-600 bg-violet-100',
             },
             {
-              label: 'Avg Quiz Score',
+              label: t('analyticsPage.avgQuizScore'),
               value: data?.avg_quiz_score != null ? `${data.avg_quiz_score}%` : '—',
-              sub: data?.avg_quiz_score != null ? 'across published quizzes' : 'no quiz data yet',
+              sub:
+                data?.avg_quiz_score != null
+                  ? t('analyticsPage.acrossPublishedQuizzes')
+                  : t('analyticsPage.noQuizData'),
               icon: Target,
               color: 'text-amber-600 bg-amber-100',
             },
@@ -186,13 +214,13 @@ const Analytics = () => {
       {!isLoading && isEmpty && (
         <div className="card text-center py-16">
           <BarChart3 className="h-12 w-12 text-gray-200 mx-auto mb-4" />
-          <h3 className="font-semibold text-gray-900">No content yet</h3>
-          <p className="text-sm text-gray-500 mt-1">Create quizzes, assignments, or worksheets to see your analytics here.</p>
+          <h3 className="font-semibold text-gray-900">{t('analyticsPage.emptyTitle')}</h3>
+          <p className="text-sm text-gray-500 mt-1">{t('analyticsPage.emptyHint')}</p>
           <Link
             to="/teacher-tools/quiz/create"
             className="mt-4 inline-block rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-700"
           >
-            Create your first quiz
+            {t('analyticsPage.createFirstQuiz')}
           </Link>
         </div>
       )}
@@ -201,20 +229,24 @@ const Analytics = () => {
         <div className={`card transition-opacity ${isFetching ? 'opacity-60' : ''}`}>
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="font-semibold text-gray-900">Creation trend</h2>
-              <p className="text-xs text-gray-400">Items created per {data?.bucket_size ?? 'day'}</p>
+              <h2 className="font-semibold text-gray-900">{t('analyticsPage.creationTrend')}</h2>
+              <p className="text-xs text-gray-400">
+                {t('analyticsPage.itemsPerBucket', {
+                  bucket: data?.bucket_size === 'week' ? t('analyticsPage.bucketWeek') : t('analyticsPage.bucketDay'),
+                })}
+              </p>
             </div>
             <button
-              onClick={() => data && exportCSV(data.trend, period)}
+              onClick={() => data && exportCSV(data.trend, period, csvHeaders)}
               className="flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:border-gray-300 hover:bg-gray-50"
             >
-              <Download className="h-3.5 w-3.5" /> Export CSV
+              <Download className="h-3.5 w-3.5" /> {t('analyticsPage.exportCsv')}
             </button>
           </div>
           {isLoading ? (
             <ChartSkeleton height={260} />
           ) : (data?.trend.length ?? 0) === 0 ? (
-            <p className="text-sm text-gray-400 text-center py-16">No items created in this period.</p>
+            <p className="text-sm text-gray-400 text-center py-16">{t('analyticsPage.noItemsInPeriod')}</p>
           ) : (
             <ReactApexChart type="bar" height={260} options={trendOptions} series={trendSeries} />
           )}
@@ -224,11 +256,11 @@ const Analytics = () => {
       {!isEmpty && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="card">
-            <h2 className="font-semibold text-gray-900 mb-4">Subject coverage</h2>
+            <h2 className="font-semibold text-gray-900 mb-4">{t('analyticsPage.subjectCoverage')}</h2>
             {isLoading ? (
               <ChartSkeleton height={200} />
             ) : (data?.by_subject.length ?? 0) === 0 ? (
-              <p className="text-sm text-gray-400 text-center py-10">No subject data yet.</p>
+              <p className="text-sm text-gray-400 text-center py-10">{t('analyticsPage.noSubjectData')}</p>
             ) : (
               <ul className="space-y-3">
                 {data!.by_subject.map(({ label, count }) => {
@@ -251,11 +283,11 @@ const Analytics = () => {
           </div>
 
           <div className="card">
-            <h2 className="font-semibold text-gray-900 mb-4">Grade distribution</h2>
+            <h2 className="font-semibold text-gray-900 mb-4">{t('analyticsPage.gradeDistribution')}</h2>
             {isLoading ? (
               <ChartSkeleton height={200} />
             ) : gradeValues.length === 0 ? (
-              <p className="text-sm text-gray-400 text-center py-10">No grade data yet.</p>
+              <p className="text-sm text-gray-400 text-center py-10">{t('analyticsPage.noGradeData')}</p>
             ) : (
               <ReactApexChart type="donut" height={220} options={gradeOptions} series={gradeValues} />
             )}
@@ -266,12 +298,14 @@ const Analytics = () => {
       {!isEmpty && data && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="card">
-            <h2 className="font-semibold text-gray-900 mb-1">Content velocity</h2>
-            <p className="text-xs text-gray-400 mb-4">This period vs the one before it.</p>
+            <h2 className="font-semibold text-gray-900 mb-1">{t('analyticsPage.contentVelocity')}</h2>
+            <p className="text-xs text-gray-400 mb-4">{t('analyticsPage.periodComparison')}</p>
             <div className="flex items-center gap-4">
               <div>
                 <p className="text-5xl font-bold text-gray-900">{data.velocity.this_period}</p>
-                <p className="text-sm text-gray-500 mt-1">items created this {period}</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  {t('analyticsPage.itemsCreatedThisPeriod', { period })}
+                </p>
               </div>
               <div>
                 {data.velocity.change_pct > 0 ? (
@@ -285,20 +319,22 @@ const Analytics = () => {
                     <span className="text-lg font-semibold">{data.velocity.change_pct.toFixed(0)}%</span>
                   </div>
                 ) : (
-                  <span className="text-sm text-gray-400">Same as previous period</span>
+                  <span className="text-sm text-gray-400">{t('analyticsPage.sameAsPrevious')}</span>
                 )}
-                <p className="text-xs text-gray-400 mt-1">Previous: {data.velocity.prev_period} items</p>
+                <p className="text-xs text-gray-400 mt-1">
+                  {t('analyticsPage.previousItems', { count: data.velocity.prev_period })}
+                </p>
               </div>
             </div>
           </div>
 
           <div className="card">
-            <h2 className="font-semibold text-gray-900 mb-4">Content pipeline</h2>
+            <h2 className="font-semibold text-gray-900 mb-4">{t('analyticsPage.contentPipeline')}</h2>
             <div className="space-y-3">
               {[
-                { label: 'Draft', value: data.total_draft, colour: 'bg-gray-400' },
-                { label: 'Published', value: data.total_published, colour: 'bg-green-500' },
-                { label: 'Archived', value: data.total_archived, colour: 'bg-gray-200' },
+                { label: t('analyticsPage.draft'), value: data.total_draft, colour: 'bg-gray-400' },
+                { label: t('analyticsPage.published'), value: data.total_published, colour: 'bg-green-500' },
+                { label: t('analyticsPage.archived'), value: data.total_archived, colour: 'bg-gray-200' },
               ].map(({ label, value, colour }) => {
                 const total = data.total_draft + data.total_published + data.total_archived || 1
                 return (

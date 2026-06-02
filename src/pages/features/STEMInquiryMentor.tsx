@@ -53,7 +53,9 @@ import { useSnackbar } from '../../hooks/useSnackbar'
 import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
+import { resolveApiMessage } from '../../i18n/resolveApiMessage'
 
+import { useTranslation } from 'react-i18next'
 interface NGSSInvestigation {
   phenomenon: string
   performanceExpectation: string
@@ -113,6 +115,7 @@ interface InquiryGuidance {
 }
 
 const STEMInquiryMentor = () => {
+  const { t } = useTranslation()
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const CHATBOT_SLUG = 'stem-inquiry-mentor'
@@ -163,7 +166,7 @@ const STEMInquiryMentor = () => {
 
   const handleNGSSInvestigation = async () => {
     if (!topic.trim()) {
-      toast.error('Please enter a phenomenon or topic')
+      toast.error(t('sTEMInquiryMentor.pleaseEnterAPhenomenonOrTopic'))
       return
     }
     
@@ -188,15 +191,18 @@ const STEMInquiryMentor = () => {
       
       setNGSSInvestigation(response.result as NGSSInvestigation)
       pinFromResponse(response.conversation_id)
-      toast.success('NGSS investigation generated successfully')
+      toast.success(t('sTEMInquiryMentor.ngssInvestigationGeneratedSuccessfully'))
     } catch (error: any) {
       if (captureApiError(error)) return
       console.error('Error generating NGSS investigation:', error)
-      const errorMessage = error?.detail || error?.message || 'Failed to generate investigation'
+      const errorMessage = resolveApiMessage(
+        t,
+        error?.detail || error?.message || 'Failed to generate investigation',
+      )
       toast.error(errorMessage)
       
       if (error?.status === 403 || errorMessage.includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('sTEMInquiryMentor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -205,7 +211,7 @@ const STEMInquiryMentor = () => {
 
   const handleEngineeringChallenge = async () => {
     if (!topic.trim()) {
-      toast.error('Please enter an engineering problem')
+      toast.error(t('sTEMInquiryMentor.pleaseEnterAnEngineeringProblem'))
       return
     }
     
@@ -229,15 +235,18 @@ const STEMInquiryMentor = () => {
       
       setEngineeringChallenge(response.result as EngineeringChallenge)
       pinFromResponse(response.conversation_id)
-      toast.success('Engineering challenge generated successfully')
+      toast.success(t('sTEMInquiryMentor.engineeringChallengeGeneratedSuccessfully'))
     } catch (error: any) {
       if (captureApiError(error)) return
       console.error('Error generating engineering challenge:', error)
-      const errorMessage = error?.detail || error?.message || 'Failed to generate challenge'
+      const errorMessage = resolveApiMessage(
+        t,
+        error?.detail || error?.message || 'Failed to generate challenge',
+      )
       toast.error(errorMessage)
       
       if (error?.status === 403 || errorMessage.includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('sTEMInquiryMentor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -246,7 +255,7 @@ const STEMInquiryMentor = () => {
 
   const handleInquiryGuidance = async () => {
     if (!topic.trim()) {
-      toast.error('Please enter a topic')
+      toast.error(t('sTEMInquiryMentor.pleaseEnterATopic'))
       return
     }
     
@@ -270,15 +279,18 @@ const STEMInquiryMentor = () => {
       
       setInquiryGuidance(response.result as InquiryGuidance)
       pinFromResponse(response.conversation_id)
-      toast.success('Inquiry guidance generated successfully')
+      toast.success(t('sTEMInquiryMentor.inquiryGuidanceGeneratedSuccessfully'))
     } catch (error: any) {
       if (captureApiError(error)) return
       console.error('Error generating inquiry guidance:', error)
-      const errorMessage = error?.detail || error?.message || 'Failed to generate guidance'
+      const errorMessage = resolveApiMessage(
+        t,
+        error?.detail || error?.message || 'Failed to generate guidance',
+      )
       toast.error(errorMessage)
       
       if (error?.status === 403 || errorMessage.includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('sTEMInquiryMentor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -286,12 +298,12 @@ const STEMInquiryMentor = () => {
   }
 
   const tabs = [
-    { id: 'investigation', label: 'NGSS Investigations', icon: FlaskConical },
-    { id: 'engineering', label: 'Engineering Design', icon: Wrench },
-    { id: 'inquiry', label: 'Inquiry Guidance', icon: Brain },
-    { id: 'data', label: 'Data & Modeling', icon: LineChart },
-    { id: 'assessment', label: 'Assessment Tools', icon: ClipboardCheck },
-    { id: 'alignment', label: 'NGSS Alignment', icon: Target },
+    { id: 'investigation', label: t('sTEMInquiryMentor.tabs.investigation'), icon: FlaskConical },
+    { id: 'engineering', label: t('sTEMInquiryMentor.tabs.engineering'), icon: Wrench },
+    { id: 'inquiry', label: t('sTEMInquiryMentor.tabs.inquiry'), icon: Brain },
+    { id: 'data', label: t('sTEMInquiryMentor.tabs.data'), icon: LineChart },
+    { id: 'assessment', label: t('sTEMInquiryMentor.tabs.assessment'), icon: ClipboardCheck },
+    { id: 'alignment', label: t('sTEMInquiryMentor.tabs.alignment'), icon: Target },
   ]
 
   return (
@@ -315,36 +327,32 @@ const STEMInquiryMentor = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-3xl font-bold">STEM Inquiry Mentor</h1>
+                  <h1 className="text-3xl font-bold">{t('sTEMInquiryMentor.stemInquiryMentor')}</h1>
                   <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
                     <Star className="h-3 w-3" /> 4.9★
                   </span>
                   <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" /> Premium
-                  </span>
+                    <Lock className="inline h-3 w-3 mr-1" />{t('sTEMInquiryMentor.premium')}</span>
                 </div>
-                <p className="mt-2 text-blue-100">
-                  NGSS-aligned investigations, engineering design challenges, and scientific method guidance 
-                  for inquiry-based STEM learning.
-                </p>
+                <p className="mt-2 text-blue-100">{t('sTEMInquiryMentor.ngssAlignedInvestigationsEngineeringDesignChallengesAnd')}</p>
               </div>
             </div>
             <div className="flex flex-wrap gap-3 mt-6">
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <Target className="h-4 w-4" />
-                <span>NGSS-Aligned</span>
+                <span>{t('sTEMInquiryMentor.ngssAligned')}</span>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <Wrench className="h-4 w-4" />
-                <span>Engineering Design</span>
+                <span>{t('sTEMInquiryMentor.engineeringDesign')}</span>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <Brain className="h-4 w-4" />
-                <span>Inquiry-Based</span>
+                <span>{t('sTEMInquiryMentor.inquiryBased')}</span>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <LineChart className="h-4 w-4" />
-                <span>Data Analysis</span>
+                <span>{t('sTEMInquiryMentor.dataAnalysis')}</span>
               </div>
             </div>
           </div>
@@ -356,7 +364,7 @@ const STEMInquiryMentor = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Investigations Created</p>
+              <p className="text-sm font-medium text-gray-600">{t('sTEMInquiryMentor.investigationsCreated')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">1,847</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
@@ -367,7 +375,7 @@ const STEMInquiryMentor = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Engineering Challenges</p>
+              <p className="text-sm font-medium text-gray-600">{t('sTEMInquiryMentor.engineeringChallenges')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">623</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600">
@@ -378,7 +386,7 @@ const STEMInquiryMentor = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Students Engaged</p>
+              <p className="text-sm font-medium text-gray-600">{t('sTEMInquiryMentor.studentsEngaged')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">4,523</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-100 text-teal-600">
@@ -389,7 +397,7 @@ const STEMInquiryMentor = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">NGSS Standards</p>
+              <p className="text-sm font-medium text-gray-600">{t('sTEMInquiryMentor.ngssStandards')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">156</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600">
@@ -430,25 +438,21 @@ const STEMInquiryMentor = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-1 space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Subject Area
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('sTEMInquiryMentor.subjectArea')}</label>
                     <select
                       value={subject}
                       onChange={(e) => setSubject(e.target.value as any)}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
                     >
-                      <option value="biology">Biology</option>
-                      <option value="chemistry">Chemistry</option>
-                      <option value="physics">Physics</option>
-                      <option value="earth-science">Earth Science</option>
-                      <option value="engineering">Engineering</option>
+                      <option value="biology">{t('sTEMInquiryMentor.biology')}</option>
+                      <option value="chemistry">{t('sTEMInquiryMentor.chemistry')}</option>
+                      <option value="physics">{t('sTEMInquiryMentor.physics')}</option>
+                      <option value="earth-science">{t('sTEMInquiryMentor.earthScience')}</option>
+                      <option value="engineering">{t('sTEMInquiryMentor.engineering')}</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Grade Level
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('sTEMInquiryMentor.gradeLevel')}</label>
                     <select
                       value={gradeLevel}
                       onChange={(e) => setGradeLevel(e.target.value)}
@@ -456,20 +460,18 @@ const STEMInquiryMentor = () => {
                     >
                       {[6, 7, 8, 9, 10, 11, 12].map((grade) => (
                         <option key={grade} value={grade}>
-                          Grade {grade}
+                          {t('common.gradeOption', { grade })}
                         </option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Phenomenon or Topic
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('sTEMInquiryMentor.phenomenonOrTopic')}</label>
                     <input
                       type="text"
                       value={topic}
                       onChange={(e) => setTopic(e.target.value)}
-                      placeholder="e.g., Why do objects float? How do plants grow?"
+                      placeholder={t('sTEMInquiryMentor.eGWhyDoObjectsFloatHowDoPlantsGrow')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
                     />
                   </div>
@@ -480,14 +482,10 @@ const STEMInquiryMentor = () => {
                   >
                     {isGenerating ? (
                       <>
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                        Generating...
-                      </>
+                        <RefreshCw className="h-4 w-4 animate-spin" />{t('sTEMInquiryMentor.generating')}</>
                     ) : (
                       <>
-                        <Sparkles className="h-4 w-4" />
-                        Generate Investigation
-                      </>
+                        <Sparkles className="h-4 w-4" />{t('sTEMInquiryMentor.generateInvestigation')}</>
                     )}
                   </button>
                 </div>
@@ -497,20 +495,16 @@ const STEMInquiryMentor = () => {
                     <div className="space-y-6">
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Lightbulb className="h-5 w-5 text-blue-600" />
-                          Phenomena
-                        </h3>
+                          <Lightbulb className="h-5 w-5 text-blue-600" />{t('sTEMInquiryMentor.phenomena')}</h3>
                         <p className="text-gray-700 text-lg font-medium">{ngssInvestigation.phenomenon ?? 'N/A'}</p>
                       </div>
 
                       <div className="rounded-2xl border border-gray-200 bg-white p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Target className="h-5 w-5 text-indigo-600" />
-                          NGSS Alignment
-                        </h3>
+                          <Target className="h-5 w-5 text-indigo-600" />{t('sTEMInquiryMentor.ngssAlignment')}</h3>
                         <div className="space-y-4">
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">Performance Expectation</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('sTEMInquiryMentor.performanceExpectation')}</p>
                             <p className="text-sm font-mono text-gray-900 bg-gray-50 p-2 rounded">{ngssInvestigation.performanceExpectation ?? 'N/A'}</p>
                           </div>
                           <div>
@@ -544,20 +538,18 @@ const STEMInquiryMentor = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <FlaskConical className="h-5 w-5 text-green-600" />
-                          Investigation Plan
-                        </h3>
+                          <FlaskConical className="h-5 w-5 text-green-600" />{t('sTEMInquiryMentor.investigationPlan')}</h3>
                         <div className="space-y-4">
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">Research Question</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('sTEMInquiryMentor.researchQuestion')}</p>
                             <p className="text-sm text-gray-700 bg-white p-3 rounded border border-green-200">{ngssInvestigation.investigationPlan?.question ?? 'N/A'}</p>
                           </div>
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">Hypothesis</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('sTEMInquiryMentor.hypothesis')}</p>
                             <p className="text-sm text-gray-700 bg-white p-3 rounded border border-green-200">{ngssInvestigation.investigationPlan?.hypothesis ?? 'N/A'}</p>
                           </div>
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Materials</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('sTEMInquiryMentor.materials')}</p>
                             <ul className="space-y-1">
                               {(ngssInvestigation.investigationPlan?.materials ?? []).map((material, idx) => (
                                 <li key={idx} className="text-sm text-gray-700 flex items-start gap-2 bg-white p-2 rounded border border-green-200">
@@ -568,7 +560,7 @@ const STEMInquiryMentor = () => {
                             </ul>
                           </div>
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Procedure</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('sTEMInquiryMentor.procedure')}</p>
                             <ol className="space-y-1">
                               {(ngssInvestigation.investigationPlan?.procedure ?? []).map((step, idx) => (
                                 <li key={idx} className="text-sm text-gray-700 flex items-start gap-2 bg-white p-2 rounded border border-green-200">
@@ -581,11 +573,11 @@ const STEMInquiryMentor = () => {
                             </ol>
                           </div>
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">Data Collection</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('sTEMInquiryMentor.dataCollection')}</p>
                             <p className="text-sm text-gray-700 bg-white p-3 rounded border border-green-200">{ngssInvestigation.investigationPlan?.dataCollection ?? 'N/A'}</p>
                           </div>
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">Analysis</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('sTEMInquiryMentor.analysis')}</p>
                             <p className="text-sm text-gray-700 bg-white p-3 rounded border border-green-200">{ngssInvestigation.investigationPlan?.analysis ?? 'N/A'}</p>
                           </div>
                         </div>
@@ -593,12 +585,10 @@ const STEMInquiryMentor = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <ClipboardCheck className="h-5 w-5 text-purple-600" />
-                          Assessment
-                        </h3>
+                          <ClipboardCheck className="h-5 w-5 text-purple-600" />{t('sTEMInquiryMentor.assessment')}</h3>
                         <div className="space-y-4">
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Formative Assessment</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('sTEMInquiryMentor.formativeAssessment')}</p>
                             <ul className="space-y-1">
                               {(ngssInvestigation.assessment?.formative ?? []).map((item, idx) => (
                                 <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
@@ -609,23 +599,19 @@ const STEMInquiryMentor = () => {
                             </ul>
                           </div>
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">Summative Assessment</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('sTEMInquiryMentor.summativeAssessment')}</p>
                             <p className="text-sm text-gray-700 bg-white p-3 rounded border border-purple-200">{ngssInvestigation.assessment?.summative ?? 'N/A'}</p>
                           </div>
                         </div>
                       </div>
 
                       <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                        <Download className="h-4 w-4" />
-                        Download Investigation Plan
-                      </button>
+                        <Download className="h-4 w-4" />{t('sTEMInquiryMentor.downloadInvestigationPlan')}</button>
                     </div>
                   ) : (
                     <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
                       <FlaskConical className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm font-medium text-gray-600">
-                        Enter a phenomenon or topic to generate an NGSS-aligned investigation plan
-                      </p>
+                      <p className="text-sm font-medium text-gray-600">{t('sTEMInquiryMentor.enterAPhenomenonOrTopicToGenerateAnNgssAligned')}</p>
                     </div>
                   )}
                 </div>
@@ -639,21 +625,17 @@ const STEMInquiryMentor = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-1 space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Engineering Problem
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('sTEMInquiryMentor.engineeringProblem')}</label>
                     <textarea
                       value={topic}
                       onChange={(e) => setTopic(e.target.value)}
-                      placeholder="e.g., Design a water filtration system, Create a bridge that can support weight..."
+                      placeholder={t('sTEMInquiryMentor.eGDesignAWaterFiltrationSystemCreateABridge')}
                       rows={4}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Grade Level
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('sTEMInquiryMentor.gradeLevel')}</label>
                     <select
                       value={gradeLevel}
                       onChange={(e) => setGradeLevel(e.target.value)}
@@ -661,7 +643,7 @@ const STEMInquiryMentor = () => {
                     >
                       {[6, 7, 8, 9, 10, 11, 12].map((grade) => (
                         <option key={grade} value={grade}>
-                          Grade {grade}
+                          {t('common.gradeOption', { grade })}
                         </option>
                       ))}
                     </select>
@@ -673,14 +655,10 @@ const STEMInquiryMentor = () => {
                   >
                     {isGenerating ? (
                       <>
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                        Generating...
-                      </>
+                        <RefreshCw className="h-4 w-4 animate-spin" />{t('sTEMInquiryMentor.generating')}</>
                     ) : (
                       <>
-                        <Sparkles className="h-4 w-4" />
-                        Generate Challenge
-                      </>
+                        <Sparkles className="h-4 w-4" />{t('sTEMInquiryMentor.generateChallenge')}</>
                     )}
                   </button>
                 </div>
@@ -690,18 +668,14 @@ const STEMInquiryMentor = () => {
                     <div className="space-y-6">
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                          <Wrench className="h-5 w-5 text-blue-600" />
-                          Engineering Problem
-                        </h3>
+                          <Wrench className="h-5 w-5 text-blue-600" />{t('sTEMInquiryMentor.engineeringProblem')}</h3>
                         <p className="text-gray-700 text-lg font-medium">{engineeringChallenge.problem ?? 'N/A'}</p>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="rounded-xl border border-gray-200 bg-red-50 p-4">
                           <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                            <AlertCircle className="h-4 w-4 text-red-600" />
-                            Constraints
-                          </h4>
+                            <AlertCircle className="h-4 w-4 text-red-600" />{t('sTEMInquiryMentor.constraints')}</h4>
                           <ul className="space-y-1">
                             {(engineeringChallenge.constraints ?? []).map((constraint, idx) => (
                               <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
@@ -713,9 +687,7 @@ const STEMInquiryMentor = () => {
                         </div>
                         <div className="rounded-xl border border-gray-200 bg-green-50 p-4">
                           <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                            <Target className="h-4 w-4 text-green-600" />
-                            Success Criteria
-                          </h4>
+                            <Target className="h-4 w-4 text-green-600" />{t('sTEMInquiryMentor.successCriteria')}</h4>
                           <ul className="space-y-1">
                             {(engineeringChallenge.criteria ?? []).map((criterion, idx) => (
                               <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
@@ -729,9 +701,7 @@ const STEMInquiryMentor = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-white p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Compass className="h-5 w-5 text-indigo-600" />
-                          Engineering Design Cycle
-                        </h3>
+                          <Compass className="h-5 w-5 text-indigo-600" />{t('sTEMInquiryMentor.engineeringDesignCycle')}</h3>
                         <div className="space-y-4">
                           {Object.entries(engineeringChallenge.designCycle ?? {}).map(([stage, activities]) => (
                             <div key={stage} className="rounded-lg border-2 border-indigo-200 bg-indigo-50 p-4">
@@ -756,17 +726,13 @@ const STEMInquiryMentor = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-teal-50 to-cyan-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                          <Globe className="h-5 w-5 text-teal-600" />
-                          Real-World Context
-                        </h3>
+                          <Globe className="h-5 w-5 text-teal-600" />{t('sTEMInquiryMentor.realWorldContext')}</h3>
                         <p className="text-gray-700">{engineeringChallenge.realWorldContext ?? 'N/A'}</p>
                       </div>
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Target className="h-5 w-5 text-purple-600" />
-                          NGSS Alignment
-                        </h3>
+                          <Target className="h-5 w-5 text-purple-600" />{t('sTEMInquiryMentor.ngssAlignment')}</h3>
                         <ul className="space-y-1">
                           {(engineeringChallenge.ngssAlignment ?? []).map((standard, idx) => (
                             <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
@@ -778,16 +744,12 @@ const STEMInquiryMentor = () => {
                       </div>
 
                       <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                        <Download className="h-4 w-4" />
-                        Download Engineering Challenge
-                      </button>
+                        <Download className="h-4 w-4" />{t('sTEMInquiryMentor.downloadEngineeringChallenge')}</button>
                     </div>
                   ) : (
                     <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
                       <Wrench className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm font-medium text-gray-600">
-                        Enter an engineering problem to generate a complete design challenge
-                      </p>
+                      <p className="text-sm font-medium text-gray-600">{t('sTEMInquiryMentor.enterAnEngineeringProblemToGenerateACompleteDesignChall')}</p>
                     </div>
                   )}
                 </div>
@@ -801,21 +763,17 @@ const STEMInquiryMentor = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-1 space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Topic
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('sTEMInquiryMentor.topic')}</label>
                     <input
                       type="text"
                       value={topic}
                       onChange={(e) => setTopic(e.target.value)}
-                      placeholder="e.g., Plant Growth, Chemical Reactions"
+                      placeholder={t('sTEMInquiryMentor.eGPlantGrowthChemicalReactions')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Grade Level
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('sTEMInquiryMentor.gradeLevel')}</label>
                     <select
                       value={gradeLevel}
                       onChange={(e) => setGradeLevel(e.target.value)}
@@ -823,7 +781,7 @@ const STEMInquiryMentor = () => {
                     >
                       {[6, 7, 8, 9, 10, 11, 12].map((grade) => (
                         <option key={grade} value={grade}>
-                          Grade {grade}
+                          {t('common.gradeOption', { grade })}
                         </option>
                       ))}
                     </select>
@@ -835,14 +793,10 @@ const STEMInquiryMentor = () => {
                   >
                     {isGenerating ? (
                       <>
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                        Generating...
-                      </>
+                        <RefreshCw className="h-4 w-4 animate-spin" />{t('sTEMInquiryMentor.generating')}</>
                     ) : (
                       <>
-                        <Sparkles className="h-4 w-4" />
-                        Generate Guidance
-                      </>
+                        <Sparkles className="h-4 w-4" />{t('sTEMInquiryMentor.generateGuidance')}</>
                     )}
                   </button>
                 </div>
@@ -852,9 +806,7 @@ const STEMInquiryMentor = () => {
                     <div className="space-y-6">
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Brain className="h-5 w-5 text-blue-600" />
-                          Inquiry Questions
-                        </h3>
+                          <Brain className="h-5 w-5 text-blue-600" />{t('sTEMInquiryMentor.inquiryQuestions')}</h3>
                         <div className="space-y-4">
                           {(inquiryGuidance.questions ?? []).map((q, idx) => {
                             const levelColors = {
@@ -879,16 +831,14 @@ const STEMInquiryMentor = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-white p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Lightbulb className="h-5 w-5 text-amber-600" />
-                          Hypothesis Framework
-                        </h3>
+                          <Lightbulb className="h-5 w-5 text-amber-600" />{t('sTEMInquiryMentor.hypothesisFramework')}</h3>
                         <div className="space-y-3">
                           <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Template</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('sTEMInquiryMentor.template')}</p>
                             <p className="text-sm font-mono text-gray-900">{inquiryGuidance.hypothesisFramework?.template ?? 'N/A'}</p>
                           </div>
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Examples</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('sTEMInquiryMentor.examples')}</p>
                             <ul className="space-y-2">
                               {(inquiryGuidance.hypothesisFramework?.examples ?? []).map((example, idx) => (
                                 <li key={idx} className="text-sm text-gray-700 bg-gray-50 p-3 rounded border border-gray-200">
@@ -902,20 +852,18 @@ const STEMInquiryMentor = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <FlaskConical className="h-5 w-5 text-green-600" />
-                          Experimental Design
-                        </h3>
+                          <FlaskConical className="h-5 w-5 text-green-600" />{t('sTEMInquiryMentor.experimentalDesign')}</h3>
                         <div className="space-y-3">
                           <div className="bg-white rounded-lg p-4 border border-green-200">
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Variables</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('sTEMInquiryMentor.variables')}</p>
                             <p className="text-sm text-gray-700 whitespace-pre-line">{inquiryGuidance.experimentalDesign?.variables ?? 'N/A'}</p>
                           </div>
                           <div className="bg-white rounded-lg p-4 border border-green-200">
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Controls</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('sTEMInquiryMentor.controls')}</p>
                             <p className="text-sm text-gray-700 whitespace-pre-line">{inquiryGuidance.experimentalDesign?.controls ?? 'N/A'}</p>
                           </div>
                           <div className="bg-white rounded-lg p-4 border border-green-200">
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Procedure</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('sTEMInquiryMentor.procedure')}</p>
                             <p className="text-sm text-gray-700 whitespace-pre-line">{inquiryGuidance.experimentalDesign?.procedure ?? 'N/A'}</p>
                           </div>
                         </div>
@@ -923,12 +871,10 @@ const STEMInquiryMentor = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <LineChart className="h-5 w-5 text-indigo-600" />
-                          Data Analysis
-                        </h3>
+                          <LineChart className="h-5 w-5 text-indigo-600" />{t('sTEMInquiryMentor.dataAnalysis')}</h3>
                         <div className="space-y-3">
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Analysis Methods</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('sTEMInquiryMentor.analysisMethods')}</p>
                             <ul className="space-y-1">
                               {(inquiryGuidance.dataAnalysis?.methods ?? []).map((method, idx) => (
                                 <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
@@ -939,7 +885,7 @@ const STEMInquiryMentor = () => {
                             </ul>
                           </div>
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Tools</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('sTEMInquiryMentor.tools')}</p>
                             <ul className="space-y-1">
                               {(inquiryGuidance.dataAnalysis?.tools ?? []).map((tool, idx) => (
                                 <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
@@ -950,23 +896,19 @@ const STEMInquiryMentor = () => {
                             </ul>
                           </div>
                           <div className="bg-white rounded-lg p-4 border border-indigo-200">
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Interpretation Guidance</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('sTEMInquiryMentor.interpretationGuidance')}</p>
                             <p className="text-sm text-gray-700">{inquiryGuidance.dataAnalysis?.interpretation ?? 'N/A'}</p>
                           </div>
                         </div>
                       </div>
 
                       <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                        <Download className="h-4 w-4" />
-                        Download Inquiry Guide
-                      </button>
+                        <Download className="h-4 w-4" />{t('sTEMInquiryMentor.downloadInquiryGuide')}</button>
                     </div>
                   ) : (
                     <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
                       <Brain className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm font-medium text-gray-600">
-                        Enter a topic to generate inquiry guidance with questions, hypothesis frameworks, and experimental design
-                      </p>
+                      <p className="text-sm font-medium text-gray-600">{t('sTEMInquiryMentor.enterATopicToGenerateInquiryGuidanceWithQuestionsHypoth')}</p>
                     </div>
                   )}
                 </div>
@@ -979,12 +921,8 @@ const STEMInquiryMentor = () => {
             <div className="space-y-6">
               <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <LineChart className="h-6 w-6 text-indigo-600" />
-                  Data Analysis & Modeling Tools
-                </h3>
-                <p className="text-sm text-gray-600 mb-6">
-                  AI-powered tools for data collection, graphing, statistical analysis, and scientific modeling.
-                </p>
+                  <LineChart className="h-6 w-6 text-indigo-600" />{t('sTEMInquiryMentor.dataAnalysisModelingTools')}</h3>
+                <p className="text-sm text-gray-600 mb-6">{t('sTEMInquiryMentor.aiPoweredToolsForDataCollectionGraphingStatisticalAnaly')}</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {[
                     { name: 'Graph Generator', icon: LineChart, description: 'Create line, bar, scatter plots with data analysis' },
@@ -1000,9 +938,7 @@ const STEMInquiryMentor = () => {
                       </div>
                       <h4 className="text-base font-semibold text-gray-900 mb-2">{tool.name}</h4>
                       <p className="text-sm text-gray-600 mb-4">{tool.description}</p>
-                      <button className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">
-                        Launch Tool
-                      </button>
+                      <button className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">{t('sTEMInquiryMentor.launchTool')}</button>
                     </div>
                   ))}
                 </div>
@@ -1015,12 +951,8 @@ const STEMInquiryMentor = () => {
             <div className="space-y-6">
               <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <ClipboardCheck className="h-6 w-6 text-purple-600" />
-                  Assessment & Feedback Tools
-                </h3>
-                <p className="text-sm text-gray-600 mb-6">
-                  Create NGSS-aligned assessments with automated feedback and rubric generation.
-                </p>
+                  <ClipboardCheck className="h-6 w-6 text-purple-600" />{t('sTEMInquiryMentor.assessmentFeedbackTools')}</h3>
+                <p className="text-sm text-gray-600 mb-6">{t('sTEMInquiryMentor.createNgssAlignedAssessmentsWithAutomatedFeedbackAndRub')}</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {[
                     { type: 'Performance Task', icon: Target, description: '3D assessment aligned to performance expectations', color: 'blue' },
@@ -1034,9 +966,7 @@ const STEMInquiryMentor = () => {
                       </div>
                       <h4 className="text-base font-semibold text-gray-900 mb-2">{assessment.type}</h4>
                       <p className="text-sm text-gray-600 mb-4">{assessment.description}</p>
-                      <button className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">
-                        Create Assessment
-                      </button>
+                      <button className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">{t('sTEMInquiryMentor.createAssessment')}</button>
                     </div>
                   ))}
                 </div>
@@ -1049,12 +979,8 @@ const STEMInquiryMentor = () => {
             <div className="space-y-6">
               <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-teal-50 to-cyan-50 p-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Target className="h-6 w-6 text-teal-600" />
-                  NGSS & Curriculum Alignment Engine
-                </h3>
-                <p className="text-sm text-gray-600 mb-6">
-                  Automatically align investigations, activities, and assessments with NGSS standards and performance expectations.
-                </p>
+                  <Target className="h-6 w-6 text-teal-600" />{t('sTEMInquiryMentor.ngssCurriculumAlignmentEngine')}</h3>
+                <p className="text-sm text-gray-600 mb-6">{t('sTEMInquiryMentor.automaticallyAlignInvestigationsActivitiesAndAssessment')}</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {[
                     { feature: 'Performance Expectation Mapping', icon: Target },
@@ -1080,79 +1006,63 @@ const STEMInquiryMentor = () => {
 
       {/* Additional Features Section */}
       <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-6">Advanced AI-Powered Capabilities</h2>
+        <h2 className="text-2xl font-semibold text-gray-900 mb-6">{t('sTEMInquiryMentor.advancedAiPoweredCapabilities')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 mb-4">
               <Target className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">NGSS Alignment Engine</h3>
-            <p className="text-sm text-gray-600">
-              Automatic mapping to performance expectations, DCIs, SEPs, and CCCs with alignment reports.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('sTEMInquiryMentor.ngssAlignmentEngine')}</h3>
+            <p className="text-sm text-gray-600">{t('sTEMInquiryMentor.automaticMappingToPerformanceExpectationsDcisSepsAndCcc')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-cyan-50 to-teal-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600 mb-4">
               <Wand2 className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Inquiry Design Copilot</h3>
-            <p className="text-sm text-gray-600">
-              AI-assisted generation of phenomena-driven investigations with full lab plans and materials lists.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('sTEMInquiryMentor.inquiryDesignCopilot')}</h3>
+            <p className="text-sm text-gray-600">{t('sTEMInquiryMentor.aiAssistedGenerationOfPhenomenaDrivenInvestigationsWith')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-teal-50 to-green-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-100 text-teal-600 mb-4">
               <Wrench className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Engineering Challenge Generator</h3>
-            <p className="text-sm text-gray-600">
-              Create authentic engineering design challenges with constraints, criteria, and design cycle guidance.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('sTEMInquiryMentor.engineeringChallengeGenerator')}</h3>
+            <p className="text-sm text-gray-600">{t('sTEMInquiryMentor.createAuthenticEngineeringDesignChallengesWithConstrain')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600 mb-4">
               <Brain className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Critical Thinking Coach</h3>
-            <p className="text-sm text-gray-600">
-              Guide students through hypothesis formation, experimental design, and evidence-based reasoning.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('sTEMInquiryMentor.criticalThinkingCoach')}</h3>
+            <p className="text-sm text-gray-600">{t('sTEMInquiryMentor.guideStudentsThroughHypothesisFormationExperimentalDesi')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-emerald-50 to-blue-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 mb-4">
               <LineChart className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Data & Modeling Assistant</h3>
-            <p className="text-sm text-gray-600">
-              Automated graphing, statistical analysis, and scientific modeling with interpretation guidance.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('sTEMInquiryMentor.dataModelingAssistant')}</h3>
+            <p className="text-sm text-gray-600">{t('sTEMInquiryMentor.automatedGraphingStatisticalAnalysisAndScientificModeli')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 mb-4">
               <ClipboardCheck className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Assessment Automation</h3>
-            <p className="text-sm text-gray-600">
-              Generate rubrics, provide automated feedback, and create 3D performance assessments.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('sTEMInquiryMentor.assessmentAutomation')}</h3>
+            <p className="text-sm text-gray-600">{t('sTEMInquiryMentor.generateRubricsProvideAutomatedFeedbackAndCreate3dPerfo')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 mb-4">
               <Users className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Differentiation & Accessibility</h3>
-            <p className="text-sm text-gray-600">
-              Automatically adapt investigations for diverse learners with multiple entry points and supports.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('sTEMInquiryMentor.differentiationAccessibility')}</h3>
+            <p className="text-sm text-gray-600">{t('sTEMInquiryMentor.automaticallyAdaptInvestigationsForDiverseLearnersWithM')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600 mb-4">
               <Settings className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Classroom Integration</h3>
-            <p className="text-sm text-gray-600">
-              Seamless integration with LMS, gradebooks, and classroom management tools for workflow efficiency.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('sTEMInquiryMentor.classroomIntegration')}</h3>
+            <p className="text-sm text-gray-600">{t('sTEMInquiryMentor.seamlessIntegrationWithLmsGradebooksAndClassroomManagem')}</p>
           </div>
         </div>
       </div>

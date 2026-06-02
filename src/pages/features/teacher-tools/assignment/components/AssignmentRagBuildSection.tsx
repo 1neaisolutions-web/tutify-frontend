@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import {
   AlertCircle,
   BookMarked,
@@ -77,14 +78,18 @@ function StepHeader({
   )
 }
 
-const ASSIGNMENT_TYPES = [
-  'Structured response',
-  'Essay',
-  'Research report',
-  'Presentation',
+const ASSIGNMENT_TYPE_OPTIONS = [
+  { value: 'Structured response', labelKey: 'assignment.rag.assignmentTypes.structuredResponse' },
+  { value: 'Essay', labelKey: 'assignment.rag.assignmentTypes.essay' },
+  { value: 'Research report', labelKey: 'assignment.rag.assignmentTypes.researchReport' },
+  { value: 'Presentation', labelKey: 'assignment.rag.assignmentTypes.presentation' },
 ] as const
 
-const RIGOR_OPTIONS = ['Standard', 'Advanced (IB-aligned)', 'Cambridge IGCSE'] as const
+const RIGOR_OPTION_KEYS = [
+  { value: 'Standard', labelKey: 'assignment.rag.rigorOptions.standard' },
+  { value: 'Advanced (IB-aligned)', labelKey: 'assignment.rag.rigorOptions.advancedIb' },
+  { value: 'Cambridge IGCSE', labelKey: 'assignment.rag.rigorOptions.cambridgeIgcse' },
+] as const
 
 export type TopicVolumeMode = 'balanced' | 'per_topic'
 
@@ -141,6 +146,8 @@ export function AssignmentRagBuildSection({
   onGeneratorInstructionsChange,
   activeStepId,
 }: Props) {
+  const { t } = useTranslation()
+
   const selectedBooks = rag.selectedBookIds
     .map((id) => getBookById(id, rag.catalog as unknown as DemoBook[]))
     .filter(Boolean)
@@ -159,37 +166,37 @@ export function AssignmentRagBuildSection({
           <StepHeader
             step={1}
             tone="blue"
-            kicker="Assignment identity"
-            title="Basics"
-            subtitle="Name the assignment, set type and due date, and tune subject and cohort for catalog alignment."
+            kicker={t('assignment.rag.basicsKicker')}
+            title={t('assignment.rag.basicsTitle')}
+            subtitle={t('assignment.rag.basicsSubtitle')}
           />
         </div>
         <div className="grid gap-4 p-6 md:grid-cols-3">
           <label className="block text-sm font-medium text-gray-800">
-            Title <span className="text-red-500">*</span>
+            {t('teacherTools.title')} <span className="text-red-500">*</span>
             <input
               value={title}
               onChange={(e) => onTitleChange(e.target.value)}
-              placeholder="e.g. Comparative analysis — primary sources (Grade 9)"
+              placeholder={t('assignment.rag.titlePlaceholder')}
               className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm ring-primary-500/20 focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
             />
           </label>
           <label className="block text-sm font-medium text-gray-800">
-            Assignment type
+            {t('assignment.rag.assignmentType')}
             <select
               value={assignmentType}
               onChange={(e) => onAssignmentTypeChange(e.target.value)}
               className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
             >
-              {ASSIGNMENT_TYPES.map((t) => (
-                <option key={t} value={t}>
-                  {t}
+              {ASSIGNMENT_TYPE_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {t(opt.labelKey)}
                 </option>
               ))}
             </select>
           </label>
           <label className="block text-sm font-medium text-gray-800">
-            Due date
+            {t('assignment.rag.dueDate')}
             <input
               type="date"
               value={dueAt.length >= 10 ? dueAt.slice(0, 10) : dueAt}
@@ -198,7 +205,7 @@ export function AssignmentRagBuildSection({
             />
           </label>
           <label className="block text-sm font-medium text-gray-800">
-            Subject
+            {t('teacherTools.subject')}
             <select
               value={subject}
               onChange={(e) => onSubjectChange(e.target.value)}
@@ -212,7 +219,7 @@ export function AssignmentRagBuildSection({
             </select>
           </label>
           <label className="block text-sm font-medium text-gray-800">
-            Grade / cohort
+            {t('teacherTools.gradeCohort')}
             <select
               value={grade}
               onChange={(e) => onGradeChange(e.target.value)}
@@ -228,29 +235,29 @@ export function AssignmentRagBuildSection({
         </div>
         <div className="space-y-4 px-6 pb-6">
           <label className="block text-sm font-medium text-gray-800">
-            International rigor profile
+            {t('assignment.rag.rigorProfile')}
             <select
               value={rigorProfile}
               onChange={(e) => onRigorProfileChange(e.target.value)}
               className="mt-1.5 w-full max-w-xl rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
             >
-              {RIGOR_OPTIONS.map((r) => (
-                <option key={r} value={r}>
-                  {r}
+              {RIGOR_OPTION_KEYS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {t(opt.labelKey)}
                 </option>
               ))}
             </select>
           </label>
           <label className="block text-sm font-medium text-gray-800">
-            Student-facing instructions
+            {t('teacherTools.studentInstructions')}
             <textarea
               rows={3}
               value={studentInstructions}
               onChange={(e) => onStudentInstructionsChange(e.target.value)}
-              placeholder="What students see after publish — deadlines, format, and tone."
+              placeholder={t('assignment.rag.instructionsPlaceholder')}
               className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
             />
-            <span className="mt-1 block text-xs text-gray-500">Shown to students after you publish.</span>
+            <span className="mt-1 block text-xs text-gray-500">{t('assignment.rag.instructionsHint')}</span>
           </label>
         </div>
       </section>
@@ -262,9 +269,9 @@ export function AssignmentRagBuildSection({
           <StepHeader
             step={2}
             tone="teal"
-            kicker="Retrieval sources"
-            title="Source materials"
-            subtitle="Pick any published pack in your workspace (any board or publisher). Retrieval uses indexed chunks; titles and topic strands come from pack and document metadata."
+            kicker={t('assignment.rag.sourcesKicker')}
+            title={t('assignment.rag.sourcesTitle')}
+            subtitle={t('assignment.rag.sourcesSubtitle')}
           />
         </div>
         <div className="space-y-5 p-6">
@@ -276,9 +283,9 @@ export function AssignmentRagBuildSection({
               className="mt-0.5 rounded border-gray-300"
             />
             <span>
-              <span className="block font-semibold text-gray-900">Generate without source materials</span>
+              <span className="block font-semibold text-gray-900">{t('teacherTools.generateWithoutSources')}</span>
               <span className="mt-0.5 block text-xs text-gray-600">
-                Use topic-only generation. Catalog retrieval is skipped and source selection is hidden.
+                {t('quiz.rag.generateWithoutSourcesHint')}
               </span>
             </span>
           </label>
@@ -290,13 +297,13 @@ export function AssignmentRagBuildSection({
                 <input
                   value={rag.catalogQuery}
                   onChange={(e) => rag.setCatalogQuery(e.target.value)}
-                  placeholder="Search title, author, ISBN, or topic strand..."
+                  placeholder={t('teacherTools.catalogSearchPlaceholder')}
                   className="w-full rounded-xl border border-gray-200 bg-gray-50/80 py-2.5 pl-10 pr-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
-                  aria-label="Search catalog"
+                  aria-label={t('teacherTools.ariaSearch')}
                 />
                 {rag.catalogBusy && (
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-emerald-700">
-                    Updating…
+                    {t('history.updating')}
                   </span>
                 )}
               </div>
@@ -305,14 +312,14 @@ export function AssignmentRagBuildSection({
                 <div className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-950">
                   <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" aria-hidden />
                   <div className="min-w-0 flex-1">
-                    <p className="font-semibold">Could not load catalog</p>
+                    <p className="font-semibold">{t('quiz.rag.catalogLoadFailed')}</p>
                     <p className="mt-0.5 text-xs text-red-900/80">{rag.catalogError}</p>
                     <button
                       type="button"
                       onClick={rag.retryCatalog}
                       className="mt-2 rounded-full bg-red-600 px-3 py-1 text-xs font-semibold text-white hover:bg-red-700"
                     >
-                      Retry
+                      {t('teacherTools.retry')}
                     </button>
                   </div>
                 </div>
@@ -357,7 +364,7 @@ export function AssignmentRagBuildSection({
                         </span>
                       </div>
                       <p className="mt-2 text-xs text-gray-600">
-                        {b.authors} · {b.indexedSections} sections indexed
+                        {b.authors} · {t('teacherTools.sectionsIndexed', { count: b.indexedSections })}
                       </p>
                     </button>
                   )
@@ -369,25 +376,23 @@ export function AssignmentRagBuildSection({
                   <Search className="h-8 w-8 text-gray-300" aria-hidden />
                   {rag.catalogQuery.trim() ? (
                     <>
-                      <p className="mt-2 text-sm font-medium text-gray-800">No catalog titles match this search</p>
+                      <p className="mt-2 text-sm font-medium text-gray-800">{t('quiz.rag.noSearchMatch')}</p>
                       <p className="mt-1 max-w-sm text-xs text-gray-600">
-                        Try a shorter query, adjust subject or grade above, or clear the search field.
+                        {t('quiz.rag.noSearchMatchHint')}
                       </p>
                       <button
                         type="button"
                         onClick={() => rag.setCatalogQuery('')}
                         className="mt-4 rounded-full bg-gray-900 px-4 py-2 text-xs font-semibold text-white hover:bg-gray-800"
                       >
-                        Clear search
+                        {t('teacherTools.clearSearch')}
                       </button>
                     </>
                   ) : (
                     <>
-                      <p className="mt-2 text-sm font-medium text-gray-800">No catalog titles for this subject and grade</p>
+                      <p className="mt-2 text-sm font-medium text-gray-800">{t('quiz.rag.noCatalogForGrade')}</p>
                       <p className="mt-1 max-w-sm text-xs text-gray-600">
-                        The list shows <span className="font-medium">active content packs</span> with{' '}
-                        <span className="font-medium">published</span> documents. Adjust filters or use &quot;Generate without
-                        source materials&quot; above.
+                        {t('assignment.rag.noCatalogHint')}
                       </p>
                     </>
                   )}
@@ -397,11 +402,11 @@ export function AssignmentRagBuildSection({
               <div className="rounded-2xl border border-gray-100 bg-slate-50/60 p-4">
                 <p className="flex items-center gap-2 text-sm font-semibold text-gray-900">
                   <BookMarked className="h-4 w-4 text-indigo-600" aria-hidden />
-                  Selected for retrieval ({selectedBooks.length})
+                  {t('quiz.rag.selectedForRetrieval', { count: selectedBooks.length })}
                 </p>
                 {selectedBooks.length === 0 ? (
                   <p className="mt-3 text-sm text-gray-600">
-                    No materials selected yet. Pick one title above to enable topic strands and retrieval scope.
+                    {t('assignment.rag.noMaterialsSelectedShort')}
                   </p>
                 ) : (
                   <ul className="mt-3 space-y-2">
@@ -421,7 +426,7 @@ export function AssignmentRagBuildSection({
                             type="button"
                             onClick={() => rag.removeBook(b.id)}
                             className="shrink-0 rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-700"
-                            aria-label={`Remove ${b.title}`}
+                            aria-label={`${t('teacherTools.remove')} ${b.title}`}
                           >
                             <X className="h-4 w-4" />
                           </button>
@@ -434,7 +439,7 @@ export function AssignmentRagBuildSection({
             </>
           ) : (
             <div className="rounded-2xl border border-dashed border-emerald-200 bg-emerald-50/70 p-4 text-sm text-emerald-900">
-              Source selection is disabled for this run. Generation will rely on your scope prompt and assignment settings only.
+              {t('quiz.rag.topicOnlySourcesDisabled')}
             </div>
           )}
         </div>
@@ -447,9 +452,9 @@ export function AssignmentRagBuildSection({
           <StepHeader
             step={3}
             tone="amber"
-            kicker="Scope definition"
-            title="Topics & refinement"
-            subtitle="Strands come from the book's PDF outline or chapter map when available; otherwise they are grouped by page ranges. Pick one or more, then optionally narrow with the hint below."
+            kicker={t('assignment.rag.scopeKicker')}
+            title={t('assignment.rag.scopeTitle')}
+            subtitle={t('assignment.rag.scopeSubtitle')}
           />
         </div>
         <div className="space-y-5 p-6">
@@ -457,9 +462,9 @@ export function AssignmentRagBuildSection({
             <div className="flex gap-3 rounded-2xl border border-amber-200 bg-amber-50/80 px-4 py-4 text-sm text-amber-950">
               <AlertCircle className="h-5 w-5 shrink-0 text-amber-600" aria-hidden />
               <div>
-                <p className="font-semibold">Select a material to browse available topics</p>
+                <p className="font-semibold">{t('assignment.rag.selectMaterialForTopics')}</p>
                 <p className="mt-1 text-amber-900/90">
-                  Topic strands are derived from the catalog metadata attached to each approved title.
+                  {t('assignment.rag.topicsFromCatalogHint')}
                 </p>
               </div>
             </div>
@@ -467,16 +472,17 @@ export function AssignmentRagBuildSection({
             <>
               {!rag.generateWithoutSources ? (
                 <div>
-                  <label className="block text-sm font-medium text-gray-800">Search & select topic strands</label>
+                  <label className="block text-sm font-medium text-gray-800">{t('teacherTools.topicStrandsHeading')}</label>
                   <p className="mt-1 text-xs text-gray-500">
-                    Strands update when your material selection changes.{rag.topicsIndexing ? ' Refreshing index…' : ''}
+                    {t('quiz.rag.topicsRefreshHint')}
+                    {rag.topicsIndexing ? ` ${t('quiz.rag.topicsRefreshing')}` : ''}
                   </p>
                   <div className="relative mt-2">
                     <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                     <input
                       value={rag.topicQuery}
                       onChange={(e) => rag.setTopicQuery(e.target.value)}
-                      placeholder="Type to filter (e.g. argument, evidence...)"
+                      placeholder={t('assignment.rag.topicFilterPlaceholder')}
                       className="w-full rounded-xl border border-gray-200 py-2.5 pl-10 pr-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
                     />
                   </div>
@@ -484,7 +490,7 @@ export function AssignmentRagBuildSection({
                   {rag.topicsError && !rag.topicsIndexing && (
                     <div className="mt-2 flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs text-amber-900">
                       <AlertCircle className="h-4 w-4 shrink-0 text-amber-600" aria-hidden />
-                      <span>Topics unavailable — {rag.topicsError}</span>
+                      <span>{t('quiz.rag.topicsUnavailable')} {rag.topicsError}</span>
                     </div>
                   )}
 
@@ -495,20 +501,20 @@ export function AssignmentRagBuildSection({
                       {rag.topicOptionsFiltered.length === 0 ? (
                         <p className="px-2 py-6 text-center text-xs text-gray-600">
                           {rag.topicQuery.trim()
-                            ? `No topics match "${rag.topicQuery.trim()}".`
+                            ? t('quiz.rag.noTopicsMatch', { query: rag.topicQuery.trim() })
                             : rag.availableTopics.length === 0
-                              ? 'No topic strands returned for this selection. Try refreshing the page, or use Scope refinement below to steer generation.'
-                              : 'No topics match your filter.'}
+                              ? t('quiz.rag.noTopicsReturned')
+                              : t('quiz.rag.noTopicsFilter')}
                         </p>
                       ) : (
                         <div className="flex flex-wrap gap-2">
-                          {rag.topicOptionsFiltered.map((t) => {
-                            const active = rag.selectedTopics.includes(t)
+                          {rag.topicOptionsFiltered.map((topic) => {
+                            const active = rag.selectedTopics.includes(topic)
                             return (
                               <button
-                                key={t}
+                                key={topic}
                                 type="button"
-                                onClick={() => rag.toggleTopic(t)}
+                                onClick={() => rag.toggleTopic(topic)}
                                 className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
                                   active
                                     ? 'border-emerald-500 bg-emerald-600 text-white shadow-sm'
@@ -516,7 +522,7 @@ export function AssignmentRagBuildSection({
                                 }`}
                               >
                                 {active ? <Check className="h-3 w-3" /> : <ChevronRight className="h-3 w-3 opacity-40" />}
-                                {t}
+                                {topic}
                               </button>
                             )
                           })}
@@ -528,27 +534,29 @@ export function AssignmentRagBuildSection({
                   {rag.selectedTopics.length > 0 && (
                     <div className="mt-3">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-xs font-semibold text-gray-600">Selected ({rag.selectedTopics.length})</span>
+                        <span className="text-xs font-semibold text-gray-600">
+                          {t('quiz.rag.selectedTopics', { count: rag.selectedTopics.length })}
+                        </span>
                         <button
                           type="button"
                           onClick={() => rag.clearAllTopics()}
                           className="text-xs font-semibold text-emerald-800 hover:text-emerald-700"
                         >
-                          Clear all topics
+                          {t('quiz.rag.clearAllTopics')}
                         </button>
                       </div>
                       <div className="mt-2 flex flex-wrap gap-2">
-                        {rag.selectedTopics.map((t) => (
+                        {rag.selectedTopics.map((topic) => (
                           <span
-                            key={t}
+                            key={topic}
                             className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-900 ring-1 ring-emerald-200"
                           >
-                            {t}
+                            {topic}
                             <button
                               type="button"
-                              onClick={() => rag.toggleTopic(t)}
+                              onClick={() => rag.toggleTopic(topic)}
                               className="rounded-full p-0.5 hover:bg-emerald-100"
-                              aria-label={`Remove ${t}`}
+                              aria-label={`${t('teacherTools.remove')} ${topic}`}
                             >
                               <X className="h-3.5 w-3.5" />
                             </button>
@@ -560,27 +568,33 @@ export function AssignmentRagBuildSection({
                 </div>
               ) : (
                 <div className="rounded-xl border border-gray-200 bg-gray-50/70 px-4 py-3 text-sm text-gray-700">
-                  Topic strands are hidden in no-source mode. Use the scope refinement prompt below to define what to generate.
+                  {t('quiz.rag.topicOnlyStrandsHidden')}
                 </div>
               )}
 
               <label className="block text-sm font-medium text-gray-800">
-                Scope refinement {rag.generateWithoutSources ? <span className="text-red-500">*</span> : '(optional)'}
+                {rag.generateWithoutSources ? (
+                  <>
+                    {t('teacherTools.scopeRefinement')} <span className="text-red-500">*</span>
+                  </>
+                ) : (
+                  t('teacherTools.scopeRefinementOptional')
+                )}
                 <textarea
                   rows={2}
                   value={rag.scopeRefinement}
                   onChange={(e) => rag.setScopeRefinement(e.target.value)}
                   placeholder={
                     rag.generateWithoutSources
-                      ? 'e.g. Focus on Grade 5 fraction and decimal word problems with exam-style reasoning'
-                      : 'Focus on word problems, exam-style reasoning, and common misconceptions'
+                      ? t('quiz.rag.scopePlaceholderNoSource')
+                      : t('teacherTools.scopeRefinementPlaceholder')
                   }
                   className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-100"
                 />
                 <span className="mt-1 block text-xs text-gray-500">
                   {rag.generateWithoutSources
-                    ? 'Required in no-source mode so the generator still has clear scope.'
-                    : 'Acts as a retrieval hint paired with the strands above.'}
+                    ? t('quiz.rag.scopeRequiredNoSource')
+                    : t('quiz.rag.scopeHintWithSource')}
                 </span>
               </label>
 
@@ -589,26 +603,26 @@ export function AssignmentRagBuildSection({
                   <div>
                     <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-indigo-700">
                       <Layers className="h-4 w-4" aria-hidden />
-                      Scope preview
+                      {t('quiz.rag.scopePreview')}
                     </p>
                     <p className="mt-2 text-sm font-semibold text-gray-900">
-                      {rag.generateWithoutSources ? 'Topic-only scope preview' : 'Retrieval window (demo estimate)'}
+                      {rag.generateWithoutSources ? t('quiz.rag.topicOnlyScopePreview') : t('quiz.rag.retrievalWindow')}
                     </p>
                   </div>
                   <Sparkles className="h-5 w-5 text-indigo-400" aria-hidden />
                 </div>
                 <dl className="mt-4 grid gap-3 sm:grid-cols-3">
                   <div className="rounded-xl bg-white/90 px-3 py-3 ring-1 ring-gray-100">
-                    <dt className="text-[11px] font-semibold uppercase text-gray-500">Sources</dt>
+                    <dt className="text-[11px] font-semibold uppercase text-gray-500">{t('quiz.rag.sources')}</dt>
                     <dd className="mt-1 text-2xl font-bold text-gray-900">{rag.selectedBookIds.length}</dd>
                   </div>
                   <div className="rounded-xl bg-white/90 px-3 py-3 ring-1 ring-gray-100">
-                    <dt className="text-[11px] font-semibold uppercase text-gray-500">Topic strands</dt>
+                    <dt className="text-[11px] font-semibold uppercase text-gray-500">{t('quiz.rag.topicStrands')}</dt>
                     <dd className="mt-1 text-2xl font-bold text-gray-900">{rag.selectedTopics.length}</dd>
                   </div>
                   <div className="rounded-xl bg-white/90 px-3 py-3 ring-1 ring-gray-100">
                     <dt className="text-[11px] font-semibold uppercase text-gray-500">
-                      {rag.generateWithoutSources ? 'Segments (n/a)' : 'Segments matched'}
+                      {rag.generateWithoutSources ? t('quiz.rag.segmentsNa') : t('quiz.rag.segmentsMatched')}
                     </dt>
                     <dd className="mt-1 text-2xl font-bold text-indigo-700">
                       {rag.generateWithoutSources ? '—' : rag.estimatedSegments}
@@ -617,8 +631,8 @@ export function AssignmentRagBuildSection({
                 </dl>
                 <p className="mt-4 text-xs leading-relaxed text-gray-600">
                   {rag.generateWithoutSources
-                    ? 'No-source mode bypasses retrieval and generates from your prompt, subject, and cohort settings only.'
-                    : 'Generation will prioritise approved catalog content. In production, counts come from your vector index after filtering by subject, cohort, and licensing.'}
+                    ? t('quiz.rag.scopePreviewNoSource')
+                    : t('quiz.rag.scopePreviewWithSource')}
                 </p>
               </div>
             </>
@@ -633,17 +647,17 @@ export function AssignmentRagBuildSection({
           <StepHeader
             step={4}
             tone="purple"
-            kicker="Assignment design"
-            title="Generation parameters"
-            subtitle="Volume, difficulty, and optional generator notes for this retrieval pass."
+            kicker={t('assignment.rag.designKicker')}
+            title={t('assignment.rag.designTitle')}
+            subtitle={t('assignment.rag.designSubtitle')}
           />
         </div>
         <div className="space-y-5 p-6">
           <div className="rounded-2xl border border-gray-100 bg-gray-50/80 p-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <p className="text-sm font-semibold text-gray-900">Topic volume</p>
-                <p className="mt-0.5 text-xs text-gray-600">Balanced mix or explicit per-topic count emphasis.</p>
+                <p className="text-sm font-semibold text-gray-900">{t('assignment.rag.topicVolume')}</p>
+                <p className="mt-0.5 text-xs text-gray-600">{t('assignment.rag.topicVolumeHint')}</p>
               </div>
               <div className="inline-flex rounded-xl border border-gray-200 bg-white p-1 shadow-sm" role="group">
                 <button
@@ -653,7 +667,7 @@ export function AssignmentRagBuildSection({
                     topicMixMode === 'balanced' ? 'bg-indigo-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
-                  Balanced mix
+                  {t('teacherTools.balancedMix')}
                 </button>
                 <button
                   type="button"
@@ -662,21 +676,21 @@ export function AssignmentRagBuildSection({
                     topicMixMode === 'per_topic' ? 'bg-indigo-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
-                  Per-topic count
+                  {t('assignment.rag.perTopicCount')}
                 </button>
               </div>
             </div>
 
             <div className="mt-4 flex flex-wrap items-end gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-800">Total topics</label>
+                <label className="block text-sm font-medium text-gray-800">{t('assignment.rag.totalTopics')}</label>
                 <div className="mt-1.5 inline-flex items-center rounded-xl border border-gray-200 bg-white shadow-sm">
                   <button
                     type="button"
                     onClick={() => bumpTopicCount(-1)}
                     disabled={topicCount <= ASSIGNMENT_TOPIC_COUNT.min}
                     className="rounded-l-xl p-2.5 text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
-                    aria-label="Decrease topic count"
+                    aria-label={t('assignment.rag.ariaDecreaseTopics')}
                   >
                     <Minus className="h-4 w-4" />
                   </button>
@@ -688,7 +702,7 @@ export function AssignmentRagBuildSection({
                     onClick={() => bumpTopicCount(1)}
                     disabled={topicCount >= ASSIGNMENT_TOPIC_COUNT.max}
                     className="rounded-r-xl p-2.5 text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
-                    aria-label="Increase topic count"
+                    aria-label={t('assignment.rag.ariaIncreaseTopics')}
                   >
                     <Plus className="h-4 w-4" />
                   </button>
@@ -696,12 +710,12 @@ export function AssignmentRagBuildSection({
               </div>
             </div>
             <p className="mt-3 text-xs text-gray-600">
-              Each topic generates one section in the assignment brief with its own objective, tasks, and scaffolding.
+              {t('assignment.rag.topicVolumeFootnote')}
             </p>
           </div>
 
           <fieldset>
-            <legend className="text-sm font-medium text-gray-800">Difficulty profile</legend>
+            <legend className="text-sm font-medium text-gray-800">{t('teacherTools.difficultyProfile')}</legend>
             <div className="mt-2 grid gap-2 sm:grid-cols-3">
               {DIFFICULTY_OPTIONS.map((d) => (
                 <label
@@ -725,15 +739,15 @@ export function AssignmentRagBuildSection({
           </fieldset>
 
           <label className="block text-sm font-medium text-gray-800">
-            Generator instructions (optional)
+            {t('quiz.rag.generatorInstructions')}
             <textarea
               rows={2}
               value={generatorInstructions}
               onChange={(e) => onGeneratorInstructionsChange(e.target.value)}
-              placeholder="e.g. Emphasise real-world application, include a reflection question at the end of each topic section"
+              placeholder={t('assignment.rag.generatorPlaceholder')}
               className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-100"
             />
-            <span className="mt-1 block text-xs text-gray-500">Merged with retrieval scope when the job runs.</span>
+            <span className="mt-1 block text-xs text-gray-500">{t('quiz.rag.generatorHint')}</span>
           </label>
         </div>
       </section>

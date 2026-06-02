@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const STORAGE_KEY = 'tutify_student_notes_v1';
 
 const NoteDetail = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -35,16 +37,14 @@ const NoteDetail = () => {
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between gap-4">
         <div>
           <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{note?.title || 'Note'}</h1>
-          <p className="text-sm text-gray-600 dark:text-gray-300">Demo note detail</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.notes.detail.subtitle')}</p>
         </div>
         <div className="flex gap-2">
           <button
             type="button"
             onClick={() => navigate('/student/notes')}
             className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900"
-          >
-            Back
-          </button>
+          >{t('studentPanel.common.back')}</button>
           <button type="button" onClick={remove} className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700">
             Delete
           </button>
@@ -56,7 +56,7 @@ const NoteDetail = () => {
           {note ? (
             <p className="text-sm text-gray-800 dark:text-gray-100 whitespace-pre-wrap">{note.content || '—'}</p>
           ) : (
-            <p className="text-sm text-gray-700 dark:text-gray-200">Note not found.</p>
+            <p className="text-sm text-gray-700 dark:text-gray-200">{t('studentPanel.notes.detail.notFound')}</p>
           )}
         </div>
       </div>

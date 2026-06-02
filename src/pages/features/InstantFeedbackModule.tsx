@@ -20,6 +20,7 @@ import {
   X,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template'
@@ -38,6 +39,7 @@ interface FeedbackPrompt {
 }
 
 const InstantFeedbackModule = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -255,19 +257,13 @@ Provided after learning to summarize performance:
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 3 of 5
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('instantFeedbackModule.module3Of5')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    35 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('instantFeedbackModule.k5Min')}</span>
                 </div>
-                <h1 className="text-3xl font-bold">Instant Feedback Loops</h1>
-                <p className="mt-2 text-indigo-100">
-                  Implement AI-powered feedback systems that provide immediate, actionable feedback to students
-                </p>
+                <h1 className="text-3xl font-bold">{t('instantFeedbackModule.instantFeedbackLoops')}</h1>
+                <p className="mt-2 text-indigo-100">{t('instantFeedbackModule.implementAiPoweredFeedbackSystemsThatProvideImmediateAc')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm">
@@ -294,7 +290,7 @@ Provided after learning to summarize performance:
         {/* Lessons Sidebar */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('instantFeedbackModule.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isCompleted = completedLessons.includes(lesson.id)
@@ -338,7 +334,7 @@ Provided after learning to summarize performance:
             </div>
             <div className="mt-6 pt-6 border-t border-gray-200">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-gray-600">Progress</span>
+                <span className="text-xs text-gray-600">{t('instantFeedbackModule.progress')}</span>
                 <span className="text-xs font-semibold text-gray-900">{Math.round(moduleProgress)}%</span>
               </div>
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -361,7 +357,7 @@ Provided after learning to summarize performance:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Video className="h-5 w-5 text-indigo-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Video Lesson</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('instantFeedbackModule.videoLesson')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                   </div>
@@ -385,7 +381,7 @@ Provided after learning to summarize performance:
                 </div>
 
                 <div className="bg-indigo-50 rounded-lg p-6 border border-indigo-200">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Key Points</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('instantFeedbackModule.keyPoints')}</h3>
                   <ul className="space-y-2">
                     {currentLessonData.content.keyPoints?.map((point: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -403,14 +399,10 @@ Provided after learning to summarize performance:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('instantFeedbackModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('instantFeedbackModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -423,7 +415,7 @@ Provided after learning to summarize performance:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <BookOpen className="h-5 w-5 text-indigo-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Reading</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('instantFeedbackModule.reading')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                   </div>
@@ -445,7 +437,7 @@ Provided after learning to summarize performance:
 
                 {currentLessonData.content.keyTakeaways && (
                   <div className="bg-indigo-50 rounded-lg p-6 border border-indigo-200">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-3">Key Takeaways</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('instantFeedbackModule.keyTakeaways')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyTakeaways.map((takeaway: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -464,14 +456,10 @@ Provided after learning to summarize performance:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('instantFeedbackModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('instantFeedbackModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -484,7 +472,7 @@ Provided after learning to summarize performance:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Zap className="h-5 w-5 text-indigo-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Interactive Tool</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('instantFeedbackModule.interactiveTool')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                     <p className="mt-2 text-gray-600">{currentLessonData.content.description}</p>
@@ -495,7 +483,7 @@ Provided after learning to summarize performance:
                 </div>
 
                 <div className="bg-indigo-50 rounded-lg p-6 border border-indigo-200 mb-6">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Design Steps</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('instantFeedbackModule.designSteps')}</h3>
                   <ol className="space-y-2">
                     {currentLessonData.content.steps?.map((step: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -510,14 +498,12 @@ Provided after learning to summarize performance:
 
                 <div className="bg-white rounded-lg p-6 border border-gray-200 space-y-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Feedback Prompt Name *
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">{t('instantFeedbackModule.feedbackPromptName')}</label>
                     <input
                       type="text"
                       value={currentPrompt.name}
                       onChange={(e) => setCurrentPrompt({ ...currentPrompt, name: e.target.value })}
-                      placeholder="e.g., Writing Feedback - Argumentative Essay"
+                      placeholder={t('instantFeedbackModule.eGWritingFeedbackArgumentativeEssay')}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     />
                   </div>
@@ -529,7 +515,7 @@ Provided after learning to summarize performance:
                     <textarea
                       value={currentPrompt.prompt}
                       onChange={(e) => setCurrentPrompt({ ...currentPrompt, prompt: e.target.value })}
-                      placeholder="e.g., Provide specific, actionable feedback on this student's argumentative essay. Focus on: 1) Thesis clarity, 2) Evidence quality, 3) Organization, 4) Writing mechanics. Use a supportive tone and provide concrete suggestions for improvement..."
+                      placeholder={t('instantFeedbackModule.feedbackPromptPlaceholder')}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                       rows={6}
                     />
@@ -537,30 +523,26 @@ Provided after learning to summarize performance:
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">
-                        Use Case
-                      </label>
+                      <label className="block text-sm font-semibold text-gray-900 mb-2">{t('instantFeedbackModule.useCase')}</label>
                       <input
                         type="text"
                         value={currentPrompt.useCase}
                         onChange={(e) => setCurrentPrompt({ ...currentPrompt, useCase: e.target.value })}
-                        placeholder="e.g., Argumentative essays, Math problems"
+                        placeholder={t('instantFeedbackModule.eGArgumentativeEssaysMathProblems')}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">
-                        Tone
-                      </label>
+                      <label className="block text-sm font-semibold text-gray-900 mb-2">{t('instantFeedbackModule.tone')}</label>
                       <select
                         value={currentPrompt.tone}
                         onChange={(e) => setCurrentPrompt({ ...currentPrompt, tone: e.target.value })}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                       >
-                        <option value="Supportive">Supportive</option>
-                        <option value="Encouraging">Encouraging</option>
-                        <option value="Direct">Direct</option>
-                        <option value="Constructive">Constructive</option>
+                        <option value="Supportive">{t('instantFeedbackModule.supportive')}</option>
+                        <option value="Encouraging">{t('instantFeedbackModule.encouraging')}</option>
+                        <option value="Direct">{t('instantFeedbackModule.direct')}</option>
+                        <option value="Constructive">{t('instantFeedbackModule.constructive')}</option>
                       </select>
                     </div>
                   </div>
@@ -569,9 +551,7 @@ Provided after learning to summarize performance:
                     onClick={handleAddPrompt}
                     className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition flex items-center justify-center gap-2"
                   >
-                    <Plus className="h-5 w-5" />
-                    Add Feedback Prompt
-                  </button>
+                    <Plus className="h-5 w-5" />{t('instantFeedbackModule.addFeedbackPrompt')}</button>
 
                   {feedbackPrompts.length > 0 && (
                     <div className="pt-6 border-t border-gray-200">
@@ -605,9 +585,7 @@ Provided after learning to summarize performance:
                         }}
                         className="mt-4 w-full px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition flex items-center justify-center gap-2"
                       >
-                        <MessageSquare className="h-5 w-5" />
-                        Save Feedback Library
-                      </button>
+                        <MessageSquare className="h-5 w-5" />{t('instantFeedbackModule.saveFeedbackLibrary')}</button>
                     </div>
                   )}
                 </div>
@@ -619,14 +597,10 @@ Provided after learning to summarize performance:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('instantFeedbackModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('instantFeedbackModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -639,7 +613,7 @@ Provided after learning to summarize performance:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <FileText className="h-5 w-5 text-indigo-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Template</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('instantFeedbackModule.template')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                     <p className="mt-2 text-gray-600">{currentLessonData.content.description}</p>
@@ -650,7 +624,7 @@ Provided after learning to summarize performance:
                 </div>
 
                 <div className="bg-white rounded-lg p-6 border border-gray-200">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-4">Template Sections</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('instantFeedbackModule.templateSections')}</h3>
                   <div className="space-y-3">
                     {currentLessonData.content.sections?.map((section: string, idx: number) => (
                       <div key={idx} className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
@@ -666,18 +640,18 @@ Provided after learning to summarize performance:
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <button className="p-4 bg-indigo-50 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-indigo-600" />
-                    <span className="text-sm font-semibold text-gray-900">Elementary Template</span>
-                    <span className="text-xs text-gray-600">Grades K-5</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('instantFeedbackModule.elementaryTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('instantFeedbackModule.gradesK5')}</span>
                   </button>
                   <button className="p-4 bg-indigo-50 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-indigo-600" />
-                    <span className="text-sm font-semibold text-gray-900">Middle School Template</span>
-                    <span className="text-xs text-gray-600">Grades 6-8</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('instantFeedbackModule.middleSchoolTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('instantFeedbackModule.grades68')}</span>
                   </button>
                   <button className="p-4 bg-indigo-50 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-indigo-600" />
-                    <span className="text-sm font-semibold text-gray-900">High School Template</span>
-                    <span className="text-xs text-gray-600">Grades 9-12</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('instantFeedbackModule.highSchoolTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('instantFeedbackModule.grades912')}</span>
                   </button>
                 </div>
 
@@ -688,14 +662,10 @@ Provided after learning to summarize performance:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('instantFeedbackModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('instantFeedbackModule.markAsComplete')}</>
                   )}
                 </button>
               </div>

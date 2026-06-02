@@ -1,6 +1,8 @@
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const ExamTake = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -8,8 +10,8 @@ const ExamTake = () => {
     <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Exam Take</h1>
-          <p className="text-sm text-gray-600 dark:text-gray-300">Exam {id} (demo placeholder).</p>
+          <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.exam.takePage.title')}</h1>
+          <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.exam.takePage.subtitle', { id })}</p>
         </div>
         <button
           type="button"
@@ -22,9 +24,7 @@ const ExamTake = () => {
 
       <div className="px-6 py-6 max-w-3xl">
         <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4">
-          <p className="text-sm text-gray-700 dark:text-gray-200">
-            Phase 1 demo: exam-taking UI is scaffolded. In Phase 2 this will include sections, timers, and answer review rules.
-          </p>
+          <p className="text-sm text-gray-700 dark:text-gray-200">{t('studentPanel.exam.takePage.placeholder')}</p>
         </div>
       </div>
     </div>

@@ -20,6 +20,7 @@ import {
   X,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template'
@@ -39,6 +40,7 @@ interface RubricCriteria {
 }
 
 const AutomatedRubricsModule = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -266,19 +268,13 @@ Break performance into multiple criteria:
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 2 of 5
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('automatedRubricsModule.module2Of5')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    30 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('automatedRubricsModule.k0Min')}</span>
                 </div>
-                <h1 className="text-3xl font-bold">Automated Rubric Generation</h1>
-                <p className="mt-2 text-indigo-100">
-                  Learn how to use AI to create detailed, standards-aligned rubrics quickly while maintaining quality
-                </p>
+                <h1 className="text-3xl font-bold">{t('automatedRubricsModule.automatedRubricGeneration')}</h1>
+                <p className="mt-2 text-indigo-100">{t('automatedRubricsModule.learnHowToUseAiToCreateDetailedStandardsAligned')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm">
@@ -305,7 +301,7 @@ Break performance into multiple criteria:
         {/* Lessons Sidebar */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('automatedRubricsModule.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isCompleted = completedLessons.includes(lesson.id)
@@ -349,7 +345,7 @@ Break performance into multiple criteria:
             </div>
             <div className="mt-6 pt-6 border-t border-gray-200">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-gray-600">Progress</span>
+                <span className="text-xs text-gray-600">{t('automatedRubricsModule.progress')}</span>
                 <span className="text-xs font-semibold text-gray-900">{Math.round(moduleProgress)}%</span>
               </div>
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -372,7 +368,7 @@ Break performance into multiple criteria:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Video className="h-5 w-5 text-indigo-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Video Lesson</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('automatedRubricsModule.videoLesson')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                   </div>
@@ -396,7 +392,7 @@ Break performance into multiple criteria:
                 </div>
 
                 <div className="bg-indigo-50 rounded-lg p-6 border border-indigo-200">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Key Points</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('automatedRubricsModule.keyPoints')}</h3>
                   <ul className="space-y-2">
                     {currentLessonData.content.keyPoints?.map((point: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -414,14 +410,10 @@ Break performance into multiple criteria:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('automatedRubricsModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('automatedRubricsModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -434,7 +426,7 @@ Break performance into multiple criteria:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <BookOpen className="h-5 w-5 text-indigo-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Reading</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('automatedRubricsModule.reading')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                   </div>
@@ -456,7 +448,7 @@ Break performance into multiple criteria:
 
                 {currentLessonData.content.keyTakeaways && (
                   <div className="bg-indigo-50 rounded-lg p-6 border border-indigo-200">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-3">Key Takeaways</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('automatedRubricsModule.keyTakeaways')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyTakeaways.map((takeaway: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -475,14 +467,10 @@ Break performance into multiple criteria:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('automatedRubricsModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('automatedRubricsModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -495,7 +483,7 @@ Break performance into multiple criteria:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Zap className="h-5 w-5 text-indigo-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Interactive Tool</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('automatedRubricsModule.interactiveTool')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                     <p className="mt-2 text-gray-600">{currentLessonData.content.description}</p>
@@ -506,7 +494,7 @@ Break performance into multiple criteria:
                 </div>
 
                 <div className="bg-indigo-50 rounded-lg p-6 border border-indigo-200 mb-6">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Generation Steps</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('automatedRubricsModule.generationSteps')}</h3>
                   <ol className="space-y-2">
                     {currentLessonData.content.steps?.map((step: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -521,32 +509,26 @@ Break performance into multiple criteria:
 
                 <div className="bg-white rounded-lg p-6 border border-gray-200 space-y-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Rubric Generation Prompt *
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">{t('automatedRubricsModule.rubricGenerationPrompt')}</label>
                     <textarea
                       value={rubricPrompt}
                       onChange={(e) => setRubricPrompt(e.target.value)}
-                      placeholder="e.g., Create a rubric for a 5th grade science project on ecosystems. Include criteria for research, presentation, and scientific accuracy. Align to NGSS standards..."
+                      placeholder={t('automatedRubricsModule.eGCreateARubricForA5thGradeScience')}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                       rows={5}
                     />
-                    <p className="text-xs text-gray-500 mt-2">
-                      Tip: Include learning objectives, standards, assessment type, and grade level for best results.
-                    </p>
+                    <p className="text-xs text-gray-500 mt-2">{t('automatedRubricsModule.tipIncludeLearningObjectivesStandardsAssessmentTypeAndG')}</p>
                   </div>
 
                   <button
                     onClick={handleGenerateRubric}
                     className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition flex items-center justify-center gap-2"
                   >
-                    <Zap className="h-5 w-5" />
-                    Generate Rubric with AI
-                  </button>
+                    <Zap className="h-5 w-5" />{t('automatedRubricsModule.generateRubricWithAi')}</button>
 
                   {rubricCriteria.length > 0 && (
                     <div className="pt-6 border-t border-gray-200">
-                      <h3 className="text-sm font-semibold text-gray-900 mb-4">Rubric Criteria</h3>
+                      <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('automatedRubricsModule.rubricCriteria')}</h3>
                       <div className="space-y-4">
                         {rubricCriteria.map((criteria, idx) => (
                           <div key={idx} className="border border-gray-200 rounded-lg p-4">
@@ -561,19 +543,19 @@ Break performance into multiple criteria:
                             </div>
                             <div className="grid grid-cols-4 gap-3 text-xs">
                               <div>
-                                <p className="font-semibold text-green-700 mb-1">Excellent</p>
+                                <p className="font-semibold text-green-700 mb-1">{t('automatedRubricsModule.excellent2')}</p>
                                 <p className="text-gray-600">{criteria.excellent}</p>
                               </div>
                               <div>
-                                <p className="font-semibold text-blue-700 mb-1">Proficient</p>
+                                <p className="font-semibold text-blue-700 mb-1">{t('automatedRubricsModule.proficient2')}</p>
                                 <p className="text-gray-600">{criteria.proficient}</p>
                               </div>
                               <div>
-                                <p className="font-semibold text-amber-700 mb-1">Developing</p>
+                                <p className="font-semibold text-amber-700 mb-1">{t('automatedRubricsModule.developing')}</p>
                                 <p className="text-gray-600">{criteria.developing}</p>
                               </div>
                               <div>
-                                <p className="font-semibold text-red-700 mb-1">Beginning</p>
+                                <p className="font-semibold text-red-700 mb-1">{t('automatedRubricsModule.beginning')}</p>
                                 <p className="text-gray-600">{criteria.beginning}</p>
                               </div>
                             </div>
@@ -584,55 +566,55 @@ Break performance into multiple criteria:
                   )}
 
                   <div className="pt-6 border-t border-gray-200">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-4">Add Custom Criterion</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('automatedRubricsModule.addCustomCriterion')}</h3>
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-semibold text-gray-900 mb-2">Criterion Name *</label>
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">{t('automatedRubricsModule.criterionName')}</label>
                         <input
                           type="text"
                           value={currentCriterion.criterion}
                           onChange={(e) => setCurrentCriterion({ ...currentCriterion, criterion: e.target.value })}
-                          placeholder="e.g., Research Quality"
+                          placeholder={t('automatedRubricsModule.eGResearchQuality')}
                           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm font-semibold text-gray-900 mb-2">Excellent *</label>
+                          <label className="block text-sm font-semibold text-gray-900 mb-2">{t('automatedRubricsModule.excellent')}</label>
                           <textarea
                             value={currentCriterion.excellent}
                             onChange={(e) => setCurrentCriterion({ ...currentCriterion, excellent: e.target.value })}
-                            placeholder="Description of excellent performance..."
+                            placeholder={t('automatedRubricsModule.descriptionOfExcellentPerformance')}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                             rows={2}
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-semibold text-gray-900 mb-2">Proficient *</label>
+                          <label className="block text-sm font-semibold text-gray-900 mb-2">{t('automatedRubricsModule.proficient')}</label>
                           <textarea
                             value={currentCriterion.proficient}
                             onChange={(e) => setCurrentCriterion({ ...currentCriterion, proficient: e.target.value })}
-                            placeholder="Description of proficient performance..."
+                            placeholder={t('automatedRubricsModule.descriptionOfProficientPerformance')}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                             rows={2}
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-semibold text-gray-900 mb-2">Developing</label>
+                          <label className="block text-sm font-semibold text-gray-900 mb-2">{t('automatedRubricsModule.developing')}</label>
                           <textarea
                             value={currentCriterion.developing}
                             onChange={(e) => setCurrentCriterion({ ...currentCriterion, developing: e.target.value })}
-                            placeholder="Description of developing performance..."
+                            placeholder={t('automatedRubricsModule.descriptionOfDevelopingPerformance')}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                             rows={2}
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-semibold text-gray-900 mb-2">Beginning</label>
+                          <label className="block text-sm font-semibold text-gray-900 mb-2">{t('automatedRubricsModule.beginning')}</label>
                           <textarea
                             value={currentCriterion.beginning}
                             onChange={(e) => setCurrentCriterion({ ...currentCriterion, beginning: e.target.value })}
-                            placeholder="Description of beginning performance..."
+                            placeholder={t('automatedRubricsModule.descriptionOfBeginningPerformance')}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                             rows={2}
                           />
@@ -642,9 +624,7 @@ Break performance into multiple criteria:
                         onClick={handleAddCriterion}
                         className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition flex items-center justify-center gap-2"
                       >
-                        <Plus className="h-5 w-5" />
-                        Add Criterion
-                      </button>
+                        <Plus className="h-5 w-5" />{t('automatedRubricsModule.addCriterion')}</button>
                     </div>
                   </div>
 
@@ -655,9 +635,7 @@ Break performance into multiple criteria:
                       }}
                       className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition flex items-center justify-center gap-2"
                     >
-                      <ClipboardCheck className="h-5 w-5" />
-                      Save Rubric
-                    </button>
+                      <ClipboardCheck className="h-5 w-5" />{t('automatedRubricsModule.saveRubric')}</button>
                   )}
                 </div>
 
@@ -668,14 +646,10 @@ Break performance into multiple criteria:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('automatedRubricsModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('automatedRubricsModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -688,7 +662,7 @@ Break performance into multiple criteria:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <FileText className="h-5 w-5 text-indigo-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Template</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('automatedRubricsModule.template')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                     <p className="mt-2 text-gray-600">{currentLessonData.content.description}</p>
@@ -699,7 +673,7 @@ Break performance into multiple criteria:
                 </div>
 
                 <div className="bg-white rounded-lg p-6 border border-gray-200">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-4">Template Sections</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('automatedRubricsModule.templateSections')}</h3>
                   <div className="space-y-3">
                     {currentLessonData.content.sections?.map((section: string, idx: number) => (
                       <div key={idx} className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
@@ -715,18 +689,18 @@ Break performance into multiple criteria:
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <button className="p-4 bg-indigo-50 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-indigo-600" />
-                    <span className="text-sm font-semibold text-gray-900">Elementary Template</span>
-                    <span className="text-xs text-gray-600">Grades K-5</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('automatedRubricsModule.elementaryTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('automatedRubricsModule.gradesK5')}</span>
                   </button>
                   <button className="p-4 bg-indigo-50 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-indigo-600" />
-                    <span className="text-sm font-semibold text-gray-900">Middle School Template</span>
-                    <span className="text-xs text-gray-600">Grades 6-8</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('automatedRubricsModule.middleSchoolTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('automatedRubricsModule.grades68')}</span>
                   </button>
                   <button className="p-4 bg-indigo-50 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-indigo-600" />
-                    <span className="text-sm font-semibold text-gray-900">High School Template</span>
-                    <span className="text-xs text-gray-600">Grades 9-12</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('automatedRubricsModule.highSchoolTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('automatedRubricsModule.grades912')}</span>
                   </button>
                 </div>
 
@@ -737,14 +711,10 @@ Break performance into multiple criteria:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('automatedRubricsModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('automatedRubricsModule.markAsComplete')}</>
                   )}
                 </button>
               </div>

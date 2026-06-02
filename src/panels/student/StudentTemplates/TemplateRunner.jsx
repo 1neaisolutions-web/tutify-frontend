@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -18,6 +19,7 @@ const fakeGenerate = (templateId, values) => {
 };
 
 const StudentTemplateRunner = () => {
+  const { t } = useTranslation();
   const { templateId } = useParams();
   const navigate = useNavigate();
   const meta = templateMeta[templateId] || { title: 'Template', fields: ['Input'] };
@@ -39,15 +41,13 @@ const StudentTemplateRunner = () => {
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between gap-4">
         <div>
           <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{meta.title}</h1>
-          <p className="text-sm text-gray-600 dark:text-gray-300">Fill inputs → generate a demo draft.</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.templates.runner.subtitle')}</p>
         </div>
         <button
           type="button"
           onClick={() => navigate('/student/templates')}
           className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900"
-        >
-          Back
-        </button>
+        >{t('studentPanel.common.back')}</button>
       </div>
 
       <div className="px-6 py-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -73,7 +73,7 @@ const StudentTemplateRunner = () => {
         </div>
 
         <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4">
-          <h2 className="font-semibold text-gray-900 dark:text-gray-100">Output</h2>
+          <h2 className="font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.templates.runner.outputTitle')}</h2>
           <pre className="mt-3 whitespace-pre-wrap text-sm text-gray-800 dark:text-gray-100 rounded-lg bg-gray-50 dark:bg-gray-900/40 p-4 min-h-[240px]">
             {output || (loading ? 'Thinking…' : 'Run a template to see output.')}
           </pre>

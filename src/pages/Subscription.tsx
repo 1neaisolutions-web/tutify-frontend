@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import * as subscriptionApi from '../api/subscriptions'
 // @ts-ignore - useSnackbar is a JS file
 import { useSnackbar } from '../hooks/useSnackbar'
+import { useTranslation } from 'react-i18next'
 import {
   Crown,
   Check,
@@ -58,6 +59,7 @@ const FEATURES: SubscriptionFeatures = {
 }
 
 const Subscription = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { toast } = useSnackbar()
   const [loading, setLoading] = useState(true)
@@ -93,7 +95,7 @@ const Subscription = () => {
       }
     } catch (error) {
       console.error('Error loading subscription data:', error)
-      toast.error('Failed to load subscription information')
+      toast.error(t('snackbar.subscription.loadFailed'))
     } finally {
       setLoading(false)
     }

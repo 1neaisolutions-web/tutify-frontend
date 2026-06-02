@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   ArrowLeft,
   ArrowRight,
@@ -20,6 +21,7 @@ import type {
 } from '../../../features/learningHub/types'
 import { youtubeWatchUrlToEmbedUrl } from '../../../features/learningHub/contentModel'
 import { resolveSpecialistDeepDiveRenderProfile } from '../../../features/learningHub/specialistDeepDiveTrackShell'
+import { resolveHubItemDescription, resolveHubItemTitle } from '../../../i18n/resolveLocalizedContent'
 import { useLearningHubContentScrollToTop } from '../../../features/learningHub/useLearningHubScrollToTop'
 
 const theme = {
@@ -66,6 +68,7 @@ interface SpecialistDeepDiveTrackRendererProps {
 }
 
 export function SpecialistDeepDiveTrackRenderer({ item }: SpecialistDeepDiveTrackRendererProps) {
+  const { t: tr } = useTranslation()
   const navigate = useNavigate()
   const content = item.specialistDeepDiveContent
   if (!content || content.type !== 'track') {
@@ -152,7 +155,7 @@ export function SpecialistDeepDiveTrackRenderer({ item }: SpecialistDeepDiveTrac
         return (
           <div className="space-y-3">
             <h3 className="text-xl font-bold text-gray-900">
-              {block.media.title ?? 'Video'}
+              {block.media.title ?? tr('learningHubSections.video')}
             </h3>
             {block.media.duration && (
               <p className="text-sm text-gray-500 flex items-center gap-1">
@@ -163,7 +166,7 @@ export function SpecialistDeepDiveTrackRenderer({ item }: SpecialistDeepDiveTrac
             {embed ? (
               <div className="aspect-video w-full overflow-hidden rounded-xl border border-gray-200 bg-black shadow-sm">
                 <iframe
-                  title={block.media.title ?? 'Video'}
+                  title={block.media.title ?? tr('learningHubSections.video')}
                   src={embed}
                   className="h-full w-full"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -171,7 +174,7 @@ export function SpecialistDeepDiveTrackRenderer({ item }: SpecialistDeepDiveTrac
                 />
               </div>
             ) : (
-              <p className="text-sm text-gray-600">This video URL could not be embedded.</p>
+              <p className="text-sm text-gray-600">{tr('learningHubSections.videoEmbedFailed')}</p>
             )}
           </div>
         )
@@ -202,7 +205,7 @@ export function SpecialistDeepDiveTrackRenderer({ item }: SpecialistDeepDiveTrac
                 <h3 className="text-lg font-bold text-gray-900 mb-2">{block.title}</h3>
                 <p className="text-gray-700 mb-4">{block.prompt}</p>
                 <div className={`bg-white rounded-lg p-4 border ${theme.primaryBorder}`}>
-                  <p className="text-sm font-semibold text-gray-700 mb-2">Tips</p>
+                  <p className="text-sm font-semibold text-gray-700 mb-2">{tr('learningHubSections.tips')}</p>
                   <ul className="space-y-1">
                     {block.tips.map((tip) => (
                       <li key={tip} className="text-sm text-gray-600 flex items-start gap-2">
@@ -223,7 +226,7 @@ export function SpecialistDeepDiveTrackRenderer({ item }: SpecialistDeepDiveTrac
             <p className="text-gray-700 mb-4 leading-relaxed">{block.scenario}</p>
             {block.discussionQuestions && block.discussionQuestions.length > 0 && (
               <div>
-                <p className="text-sm font-semibold text-amber-900 mb-2">Discussion</p>
+                <p className="text-sm font-semibold text-amber-900 mb-2">{tr('learningHubSections.discussion')}</p>
                 <ul className="space-y-2 text-sm text-gray-700">
                   {block.discussionQuestions.map((q) => (
                     <li key={q} className="flex gap-2">
@@ -263,18 +266,18 @@ export function SpecialistDeepDiveTrackRenderer({ item }: SpecialistDeepDiveTrac
         <div className="rounded-2xl border border-indigo-200 bg-white p-8 text-center shadow-sm">
           <Award className="mx-auto mb-4 h-16 w-16 text-indigo-600" />
           <h2 className="text-2xl font-bold text-gray-900">
-            {content.certification?.title ?? 'Track complete'}
+            {content.certification?.title ?? tr('learningHubSections.trackComplete')}
           </h2>
           <p className="mt-2 text-gray-600">
             {content.certification?.body ??
-              'You have completed all modules in this specialist deep-dive track.'}
+              tr('learningHubSections.trackCompleteHint')}
           </p>
           <button
             type="button"
             onClick={() => navigate('/learning-hub')}
             className={`mt-6 rounded-full px-8 py-3 text-sm font-semibold text-white ${theme.primaryButton}`}
           >
-            Back to Learning Hub
+            {tr('learningHubSections.backToLearningHub')}
           </button>
         </div>
       </div>
@@ -297,12 +300,12 @@ export function SpecialistDeepDiveTrackRenderer({ item }: SpecialistDeepDiveTrac
               <span className="text-white/80">•</span>
               <span className="text-sm text-white/80">{item.duration ?? ''}</span>
             </div>
-            <h1 className="mb-3 text-3xl font-bold">{item.title}</h1>
-            <p className="text-lg text-white/90">{content.heroDescription}</p>
+            <h1 className="mb-3 text-3xl font-bold">{displayTitle}</h1>
+            <p className="text-lg text-white/90">{heroDescription}</p>
             <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-white/90">
               <span className="flex items-center gap-1">
                 <Layers className="h-4 w-4" />
-                Module {mi + 1} of {modules.length}
+                {tr('learningHubSections.moduleOf', { current: mi + 1, total: modules.length })}
               </span>
               <span className="flex items-center gap-1">
                 <BookOpen className="h-4 w-4" />
@@ -310,7 +313,7 @@ export function SpecialistDeepDiveTrackRenderer({ item }: SpecialistDeepDiveTrac
               </span>
               <span className="flex items-center gap-1">
                 <Clock className="h-4 w-4" />
-                {Math.round(progressPct)}% through content
+                {tr('learningHubSections.throughContent', { percent: Math.round(progressPct) })}
               </span>
             </div>
             <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/20">
@@ -334,7 +337,7 @@ export function SpecialistDeepDiveTrackRenderer({ item }: SpecialistDeepDiveTrac
         <div className="lg:col-span-1">
           <div className="sticky top-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-600">
-              Track modules
+              {tr('learningHubSections.trackModules')}
             </h3>
             <div className="space-y-3">
               {modules.map((mod, mIdx) => (
@@ -381,7 +384,7 @@ export function SpecialistDeepDiveTrackRenderer({ item }: SpecialistDeepDiveTrac
             </div>
             {content.outcomes && content.outcomes.length > 0 && (
               <div className="mt-6 border-t border-gray-100 pt-4">
-                <p className="mb-2 text-xs font-semibold uppercase text-gray-500">Outcomes</p>
+                <p className="mb-2 text-xs font-semibold uppercase text-gray-500">{tr('learningHubSections.outcomes')}</p>
                 <ul className="space-y-1 text-xs text-gray-600">
                   {content.outcomes.slice(0, 4).map((o) => (
                     <li key={o} className="flex gap-1">
@@ -399,7 +402,7 @@ export function SpecialistDeepDiveTrackRenderer({ item }: SpecialistDeepDiveTrac
           <div ref={contentTopRef} className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
             <div className="mb-6 border-b border-gray-200 pb-6">
               <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-indigo-700">
-                Step {stepIndex + 1} of {totalSteps}
+                {tr('learningHubSections.stepOf', { current: stepIndex + 1, total: totalSteps })}
               </p>
               <p className="text-sm text-gray-500">
                 {currentModule.title} · {currentLesson.duration}
@@ -417,17 +420,17 @@ export function SpecialistDeepDiveTrackRenderer({ item }: SpecialistDeepDiveTrac
                 className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ArrowLeft className="h-4 w-4" />
-                Previous
+                {tr('learningHubSections.previous')}
               </button>
               <span className="text-sm text-gray-500">
-                Block {bi + 1} of {currentLesson.contentBlocks.length}
+                {tr('learningHubSections.blockOf', { current: bi + 1, total: currentLesson.contentBlocks.length })}
               </span>
               <button
                 type="button"
                 onClick={handleNext}
                 className={`flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition ${theme.primaryButton}`}
               >
-                {isLastStep ? 'Finish track' : 'Next'}
+                {isLastStep ? tr('learningHubSections.finishTrack') : tr('learningHubSections.next')}
                 <ArrowRight className="h-4 w-4" />
               </button>
             </div>
@@ -436,11 +439,11 @@ export function SpecialistDeepDiveTrackRenderer({ item }: SpecialistDeepDiveTrac
           {content.assessment && (
             <div className="mt-6 rounded-2xl border border-indigo-100 bg-indigo-50/60 p-6">
               <p className="text-sm font-semibold text-indigo-900">
-                {content.assessment.title ?? 'Track assessment'}
+                {content.assessment.title ?? tr('learningHubSections.trackAssessment')}
               </p>
               <p className="mt-1 text-sm text-gray-700">{content.assessment.description}</p>
               {content.assessment.points != null && (
-                <p className="mt-2 text-xs text-indigo-700">Portfolio points: {content.assessment.points}</p>
+                <p className="mt-2 text-xs text-indigo-700">{tr('learningHubSections.portfolioPoints', { points: content.assessment.points })}</p>
               )}
             </div>
           )}

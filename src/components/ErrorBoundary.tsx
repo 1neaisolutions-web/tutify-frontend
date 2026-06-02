@@ -1,4 +1,5 @@
 import { Component, ErrorInfo, ReactNode } from 'react'
+import i18n from '../i18n'
 
 interface Props {
   children: ReactNode
@@ -45,7 +46,6 @@ export class ErrorBoundary extends Component<Props, State> {
       error: null,
       errorInfo: null,
     })
-    // Reload current page to recover without forcing logout/navigation.
     window.location.reload()
   }
 
@@ -72,6 +72,8 @@ export class ErrorBoundary extends Component<Props, State> {
         return this.props.fallback
       }
 
+      const t = (key: string) => i18n.t(key)
+
       return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
           <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
@@ -91,10 +93,10 @@ export class ErrorBoundary extends Component<Props, State> {
               </svg>
             </div>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              Something went wrong
+              {t('error.boundary.title')}
             </h1>
             <p className="text-gray-600 mb-6">
-              We're sorry, but something unexpected happened. Please try refreshing the page.
+              {t('error.boundary.message')}
             </p>
             {import.meta.env.DEV && this.state.error && (
               <div className="mb-6 p-4 bg-red-50 rounded-lg text-left">
@@ -110,14 +112,14 @@ export class ErrorBoundary extends Component<Props, State> {
             )}
             <div className="flex gap-3">
               <button onClick={this.handleReset} className="flex-1 btn-primary">
-                Refresh page
+                {t('error.boundary.refresh')}
               </button>
               {!this.isAuthenticatedUser() && (
                 <button
                   onClick={() => { window.location.href = '/login' }}
                   className="flex-1 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
                 >
-                  Go to Login
+                  {t('error.boundary.goToLogin')}
                 </button>
               )}
               {this.isAuthenticatedUser() && (
@@ -125,7 +127,7 @@ export class ErrorBoundary extends Component<Props, State> {
                   onClick={this.handleGoToHome}
                   className="flex-1 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
                 >
-                  Go to Dashboard
+                  {t('error.boundary.goToDashboard')}
                 </button>
               )}
             </div>

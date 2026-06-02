@@ -49,6 +49,7 @@ import {
   Code,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface SyllabusDesign {
   courseTitle: string
   learningOutcomes: string[]
@@ -99,6 +100,7 @@ interface StudentCenteredMethod {
 }
 
 const UNECAcademicDevelopment = () => {
+  const { t } = useTranslation()
   const [activeTab, setActiveTab] = useState<'pedagogy' | 'syllabus' | 'assessment' | 'digital' | 'student-centered' | 'chat'>('pedagogy')
   const [isGenerating, setIsGenerating] = useState(false)
   const [syllabusDesign, setSyllabusDesign] = useState<SyllabusDesign | null>(null)
@@ -285,19 +287,13 @@ const UNECAcademicDevelopment = () => {
                 <GraduationCap className="h-8 w-8" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold">UNEC Academic Development & Innovation</h1>
-                <p className="text-indigo-100 mt-1">
-                  Strengthen academic development and apply innovative methods in teaching
-                </p>
+                <h1 className="text-3xl font-bold">{t('uNECAcademicDevelopment.unecAcademicDevelopmentInnovation')}</h1>
+                <p className="text-indigo-100 mt-1">{t('uNECAcademicDevelopment.strengthenAcademicDevelopmentAndApplyInnovativeMethodsI')}</p>
               </div>
             </div>
           </div>
           <div className="mt-4 bg-white/10 rounded-lg p-4 backdrop-blur-sm">
-            <p className="text-sm text-white/90">
-              This program improves teachers' knowledge and skills on pedagogical values, syllabus design, 
-              assessment, digital literacy, AI integration, and student-centered teaching methods to create 
-              a more efficient and high-quality teaching environment.
-            </p>
+            <p className="text-sm text-white/90">{t('uNECAcademicDevelopment.thisProgramImprovesTeachersKnowledgeAndSkillsOnPedagogi')}</p>
           </div>
         </div>
       </div>
@@ -307,12 +303,12 @@ const UNECAcademicDevelopment = () => {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 mb-6">
           <div className="flex border-b border-gray-200 overflow-x-auto">
             {[
-              { id: 'pedagogy', label: 'Pedagogical Values', icon: BookOpen },
-              { id: 'syllabus', label: 'Syllabus Design', icon: FileEdit },
-              { id: 'assessment', label: 'Assessment & Rubrics', icon: ClipboardList },
-              { id: 'digital', label: 'Digital & AI Tools', icon: Cpu },
-              { id: 'student-centered', label: 'Student-Centered Methods', icon: Users },
-              { id: 'chat', label: 'Chat', icon: MessageSquare },
+              { id: 'pedagogy', label: t('uNECAcademicDevelopment.tabs.pedagogy'), icon: BookOpen },
+              { id: 'syllabus', label: t('uNECAcademicDevelopment.tabs.syllabus'), icon: FileEdit },
+              { id: 'assessment', label: t('uNECAcademicDevelopment.tabs.assessment'), icon: ClipboardList },
+              { id: 'digital', label: t('uNECAcademicDevelopment.tabs.digital'), icon: Cpu },
+              { id: 'student-centered', label: t('uNECAcademicDevelopment.tabs.student-centered'), icon: Users },
+              { id: 'chat', label: t('uNECAcademicDevelopment.tabs.chat'), icon: MessageSquare },
             ].map((tab) => {
               const Icon = tab.icon
               return (
@@ -339,10 +335,8 @@ const UNECAcademicDevelopment = () => {
           {activeTab === 'pedagogy' && (
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
               <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Basic Principles of Teaching and Pedagogical Values</h2>
-                <p className="text-gray-600">
-                  Core values and principles that guide effective teaching practices
-                </p>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('uNECAcademicDevelopment.basicPrinciplesOfTeachingAndPedagogicalValues')}</h2>
+                <p className="text-gray-600">{t('uNECAcademicDevelopment.coreValuesAndPrinciplesThatGuideEffectiveTeachingPracti')}</p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-4 mb-6">
@@ -363,25 +357,23 @@ const UNECAcademicDevelopment = () => {
 
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200">
                 <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <Lightbulb className="h-5 w-5 text-blue-600" />
-                  Key Principles
-                </h3>
+                  <Lightbulb className="h-5 w-5 text-blue-600" />{t('uNECAcademicDevelopment.keyPrinciples')}</h3>
                 <ul className="space-y-2">
                   <li className="flex items-start gap-2 text-sm text-gray-700">
                     <span className="text-blue-600 mt-1">•</span>
-                    <span><strong>Student-Centered Learning:</strong> Focus on student needs, interests, and active participation</span>
+                    <span><strong>{t('uNECAcademicDevelopment.studentCenteredLearning')}</strong>{t('uNECAcademicDevelopment.focusOnStudentNeedsInterestsAndActiveParticipation')}</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm text-gray-700">
                     <span className="text-blue-600 mt-1">•</span>
-                    <span><strong>Continuous Improvement:</strong> Regular reflection and adaptation of teaching methods</span>
+                    <span><strong>{t('uNECAcademicDevelopment.continuousImprovement')}</strong>{t('uNECAcademicDevelopment.regularReflectionAndAdaptationOfTeachingMethods')}</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm text-gray-700">
                     <span className="text-blue-600 mt-1">•</span>
-                    <span><strong>Evidence-Based Practice:</strong> Use research and data to inform instructional decisions</span>
+                    <span><strong>{t('uNECAcademicDevelopment.evidenceBasedPractice')}</strong>{t('uNECAcademicDevelopment.useResearchAndDataToInformInstructionalDecisions')}</span>
                   </li>
                   <li className="flex items-start gap-2 text-sm text-gray-700">
                     <span className="text-blue-600 mt-1">•</span>
-                    <span><strong>Innovation:</strong> Embrace new technologies and methodologies to enhance learning</span>
+                    <span><strong>{t('uNECAcademicDevelopment.innovation')}</strong>{t('uNECAcademicDevelopment.embraceNewTechnologiesAndMethodologiesToEnhanceLearning')}</span>
                   </li>
                 </ul>
               </div>
@@ -392,10 +384,8 @@ const UNECAcademicDevelopment = () => {
           {activeTab === 'syllabus' && (
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
               <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Syllabus Design and Subject Design</h2>
-                <p className="text-gray-600">
-                  Create comprehensive, well-structured course syllabi that align with learning objectives
-                </p>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('uNECAcademicDevelopment.syllabusDesignAndSubjectDesign')}</h2>
+                <p className="text-gray-600">{t('uNECAcademicDevelopment.createComprehensiveWellStructuredCourseSyllabiThatAlign')}</p>
               </div>
 
               <button
@@ -405,14 +395,10 @@ const UNECAcademicDevelopment = () => {
               >
                 {isGenerating ? (
                   <>
-                    <RefreshCw className="h-5 w-5 animate-spin" />
-                    Generating Syllabus...
-                  </>
+                    <RefreshCw className="h-5 w-5 animate-spin" />{t('uNECAcademicDevelopment.generatingSyllabus')}</>
                 ) : (
                   <>
-                    <FileEdit className="h-5 w-5" />
-                    Generate Syllabus Template
-                  </>
+                    <FileEdit className="h-5 w-5" />{t('uNECAcademicDevelopment.generateSyllabusTemplate')}</>
                 )}
               </button>
 
@@ -424,9 +410,7 @@ const UNECAcademicDevelopment = () => {
 
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                      <Target className="h-5 w-5 text-green-600" />
-                      Learning Outcomes
-                    </h4>
+                      <Target className="h-5 w-5 text-green-600" />{t('uNECAcademicDevelopment.learningOutcomes')}</h4>
                     <ul className="space-y-2">
                       {syllabusDesign.learningOutcomes.map((outcome, idx) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -439,9 +423,7 @@ const UNECAcademicDevelopment = () => {
 
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                      <Layout className="h-5 w-5 text-blue-600" />
-                      Course Structure
-                    </h4>
+                      <Layout className="h-5 w-5 text-blue-600" />{t('uNECAcademicDevelopment.courseStructure')}</h4>
                     <div className="space-y-4">
                       {syllabusDesign.courseStructure.map((module, idx) => (
                         <div key={idx} className="border-l-4 border-primary-500 pl-4 py-2">
@@ -452,7 +434,7 @@ const UNECAcademicDevelopment = () => {
                             </span>
                           </div>
                           <div className="mb-2">
-                            <p className="text-xs font-medium text-gray-600 mb-1">Topics:</p>
+                            <p className="text-xs font-medium text-gray-600 mb-1">{t('uNECAcademicDevelopment.topics')}</p>
                             <ul className="flex flex-wrap gap-2">
                               {module.topics.map((topic, tIdx) => (
                                 <span
@@ -465,7 +447,7 @@ const UNECAcademicDevelopment = () => {
                             </ul>
                           </div>
                           <div>
-                            <p className="text-xs font-medium text-gray-600 mb-1">Assessments:</p>
+                            <p className="text-xs font-medium text-gray-600 mb-1">{t('uNECAcademicDevelopment.assessments')}</p>
                             <ul className="flex flex-wrap gap-2">
                               {module.assessments.map((assessment, aIdx) => (
                                 <span
@@ -485,9 +467,7 @@ const UNECAcademicDevelopment = () => {
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                        <PenTool className="h-5 w-5 text-purple-600" />
-                        Teaching Methods
-                      </h4>
+                        <PenTool className="h-5 w-5 text-purple-600" />{t('uNECAcademicDevelopment.teachingMethods')}</h4>
                       <ul className="space-y-2">
                         {syllabusDesign.teachingMethods.map((method, idx) => (
                           <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -500,9 +480,7 @@ const UNECAcademicDevelopment = () => {
 
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                        <BookMarked className="h-5 w-5 text-indigo-600" />
-                        Resources
-                      </h4>
+                        <BookMarked className="h-5 w-5 text-indigo-600" />{t('uNECAcademicDevelopment.resources')}</h4>
                       <ul className="space-y-2">
                         {syllabusDesign.resources.map((resource, idx) => (
                           <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -516,9 +494,7 @@ const UNECAcademicDevelopment = () => {
 
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                      <BarChart3 className="h-5 w-5 text-amber-600" />
-                      Assessment Plan
-                    </h4>
+                      <BarChart3 className="h-5 w-5 text-amber-600" />{t('uNECAcademicDevelopment.assessmentPlan')}</h4>
                     <div className="space-y-3">
                       {syllabusDesign.assessmentPlan.map((assessment, idx) => (
                         <div key={idx} className="border border-gray-200 rounded-lg p-4">
@@ -540,10 +516,8 @@ const UNECAcademicDevelopment = () => {
           {activeTab === 'assessment' && (
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
               <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Assessment and Rubrics</h2>
-                <p className="text-gray-600">
-                  Design effective assessment strategies and comprehensive rubrics for student evaluation
-                </p>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('uNECAcademicDevelopment.assessmentAndRubrics')}</h2>
+                <p className="text-gray-600">{t('uNECAcademicDevelopment.designEffectiveAssessmentStrategiesAndComprehensiveRubr')}</p>
               </div>
 
               <button
@@ -553,21 +527,17 @@ const UNECAcademicDevelopment = () => {
               >
                 {isGenerating ? (
                   <>
-                    <RefreshCw className="h-5 w-5 animate-spin" />
-                    Generating Rubric...
-                  </>
+                    <RefreshCw className="h-5 w-5 animate-spin" />{t('uNECAcademicDevelopment.generatingRubric')}</>
                 ) : (
                   <>
-                    <ClipboardList className="h-5 w-5" />
-                    Generate Assessment Rubric
-                  </>
+                    <ClipboardList className="h-5 w-5" />{t('uNECAcademicDevelopment.generateAssessmentRubric')}</>
                 )}
               </button>
 
               {rubricDesign && (
                 <div className="mt-8 space-y-6 border-t border-gray-200 pt-6">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-xl font-bold text-gray-900">Assessment Rubric</h3>
+                    <h3 className="text-xl font-bold text-gray-900">{t('uNECAcademicDevelopment.assessmentRubric')}</h3>
                     <span className="text-sm font-semibold text-gray-600">
                       Total Points: {rubricDesign.totalPoints}
                     </span>
@@ -584,9 +554,9 @@ const UNECAcademicDevelopment = () => {
                           <table className="w-full text-sm">
                             <thead>
                               <tr className="border-b border-gray-200">
-                                <th className="text-left py-2 px-3 font-semibold text-gray-700">Level</th>
-                                <th className="text-left py-2 px-3 font-semibold text-gray-700">Description</th>
-                                <th className="text-right py-2 px-3 font-semibold text-gray-700">Points</th>
+                                <th className="text-left py-2 px-3 font-semibold text-gray-700">{t('uNECAcademicDevelopment.level')}</th>
+                                <th className="text-left py-2 px-3 font-semibold text-gray-700">{t('uNECAcademicDevelopment.description')}</th>
+                                <th className="text-right py-2 px-3 font-semibold text-gray-700">{t('uNECAcademicDevelopment.points')}</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -614,12 +584,8 @@ const UNECAcademicDevelopment = () => {
           {activeTab === 'digital' && (
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
               <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                  Creating Teaching Materials with Digital Literacy and AI
-                </h2>
-                <p className="text-gray-600">
-                  Leverage digital tools and artificial intelligence to create engaging teaching materials
-                </p>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('uNECAcademicDevelopment.creatingTeachingMaterialsWithDigitalLiteracyAndAi')}</h2>
+                <p className="text-gray-600">{t('uNECAcademicDevelopment.leverageDigitalToolsAndArtificialIntelligenceToCreateEn')}</p>
               </div>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
@@ -661,17 +627,13 @@ const UNECAcademicDevelopment = () => {
 
                   <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-6 border border-purple-200">
                     <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                      <Brain className="h-5 w-5 text-purple-600" />
-                      AI Integration Strategy
-                    </h4>
+                      <Brain className="h-5 w-5 text-purple-600" />{t('uNECAcademicDevelopment.aiIntegrationStrategy')}</h4>
                     <p className="text-sm text-gray-700">{digitalMaterial.aiIntegration}</p>
                   </div>
 
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                      <Compass className="h-5 w-5 text-blue-600" />
-                      Implementation Steps
-                    </h4>
+                      <Compass className="h-5 w-5 text-blue-600" />{t('uNECAcademicDevelopment.implementationSteps')}</h4>
                     <ol className="space-y-3">
                       {digitalMaterial.steps.map((step, idx) => (
                         <li key={idx} className="flex gap-3">
@@ -686,9 +648,7 @@ const UNECAcademicDevelopment = () => {
 
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                      <Lightbulb className="h-5 w-5 text-amber-600" />
-                      Examples
-                    </h4>
+                      <Lightbulb className="h-5 w-5 text-amber-600" />{t('uNECAcademicDevelopment.examples')}</h4>
                     <ul className="space-y-2">
                       {digitalMaterial.examples.map((example, idx) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -707,10 +667,8 @@ const UNECAcademicDevelopment = () => {
           {activeTab === 'student-centered' && (
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
               <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Student-Centered Teaching Methods</h2>
-                <p className="text-gray-600">
-                  Explore methods that put students at the center of the learning process
-                </p>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('uNECAcademicDevelopment.studentCenteredTeachingMethods')}</h2>
+                <p className="text-gray-600">{t('uNECAcademicDevelopment.exploreMethodsThatPutStudentsAtTheCenterOfThe')}</p>
               </div>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
@@ -751,9 +709,7 @@ const UNECAcademicDevelopment = () => {
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                        <CheckCircle2 className="h-5 w-5 text-green-600" />
-                        Benefits
-                      </h4>
+                        <CheckCircle2 className="h-5 w-5 text-green-600" />{t('uNECAcademicDevelopment.benefits')}</h4>
                       <ul className="space-y-2">
                         {studentCenteredMethod.benefits.map((benefit, idx) => (
                           <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -766,9 +722,7 @@ const UNECAcademicDevelopment = () => {
 
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                        <AlertCircle className="h-5 w-5 text-amber-600" />
-                        Challenges
-                      </h4>
+                        <AlertCircle className="h-5 w-5 text-amber-600" />{t('uNECAcademicDevelopment.challenges')}</h4>
                       <ul className="space-y-2">
                         {studentCenteredMethod.challenges.map((challenge, idx) => (
                           <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -782,9 +736,7 @@ const UNECAcademicDevelopment = () => {
 
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                      <Compass className="h-5 w-5 text-blue-600" />
-                      Implementation Steps
-                    </h4>
+                      <Compass className="h-5 w-5 text-blue-600" />{t('uNECAcademicDevelopment.implementationSteps')}</h4>
                     <ol className="space-y-3">
                       {studentCenteredMethod.implementation.map((step, idx) => (
                         <li key={idx} className="flex gap-3">
@@ -799,9 +751,7 @@ const UNECAcademicDevelopment = () => {
 
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                      <Lightbulb className="h-5 w-5 text-purple-600" />
-                      Examples
-                    </h4>
+                      <Lightbulb className="h-5 w-5 text-purple-600" />{t('uNECAcademicDevelopment.examples')}</h4>
                     <ul className="space-y-2">
                       {studentCenteredMethod.examples.map((example, idx) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -820,18 +770,14 @@ const UNECAcademicDevelopment = () => {
           {activeTab === 'chat' && (
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
               <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Chat with Your Academic Development Coach</h2>
-                <p className="text-gray-600">
-                  Ask questions about syllabus design, assessment, digital tools, AI integration, or student-centered methods
-                </p>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('uNECAcademicDevelopment.chatWithYourAcademicDevelopmentCoach')}</h2>
+                <p className="text-gray-600">{t('uNECAcademicDevelopment.askQuestionsAboutSyllabusDesignAssessmentDigitalToolsAi')}</p>
               </div>
 
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center">
                 <MessageSquare className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Start a Conversation</h3>
-                <p className="text-gray-600 mb-6">
-                  Ask me anything about UNEC's Academic Development program, pedagogical methods, or teaching innovation
-                </p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('uNECAcademicDevelopment.startAConversation')}</h3>
+                <p className="text-gray-600 mb-6">{t('uNECAcademicDevelopment.askMeAnythingAboutUnecSAcademicDevelopmentProgramPedago')}</p>
                 <div className="flex flex-wrap gap-2 justify-center">
                   {[
                     'How do I design an effective syllabus?',

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { FileText, Sparkles, RefreshCw, Download } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 type NewsletterAudience = 'parents' | 'community' | 'school_leadership'
 type NewsletterTone = 'celebratory' | 'informative' | 'reflective'
 
@@ -60,6 +61,7 @@ const sampleNewsletter: NewsletterOutput = {
 }
 
 const NewsletterArticleGenerator = () => {
+  const { t } = useTranslation()
   const [inputs, setInputs] = useState<NewsletterInputs>({
     topic: 'STEM Week Highlights',
     audience: 'parents',
@@ -163,10 +165,8 @@ const NewsletterArticleGenerator = () => {
             <FileText className="w-6 h-6 text-primary-600" />
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold text-gray-900">Newsletter Article Generator</h1>
-            <p className="text-sm text-gray-600 mt-0.5">
-              Craft ready-to-share newsletter stories tailored to your audience
-            </p>
+            <h1 className="text-xl font-bold text-gray-900">{t('newsletterArticleGenerator.newsletterArticleGenerator')}</h1>
+            <p className="text-sm text-gray-600 mt-0.5">{t('newsletterArticleGenerator.craftReadyToShareNewsletterStoriesTailoredToYourAudienc')}</p>
           </div>
         </div>
       </div>
@@ -176,13 +176,12 @@ const NewsletterArticleGenerator = () => {
           <div className="card">
             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
               <Sparkles className="w-5 h-5 text-primary-600" />
-              <span>Story Inputs</span>
+              <span>{t('newsletterArticleGenerator.storyInputs')}</span>
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Topic <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('newsletterArticleGenerator.topic')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -195,8 +194,7 @@ const NewsletterArticleGenerator = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Audience <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('newsletterArticleGenerator.audience2')}<span className="text-red-500">*</span>
                 </label>
                 <select
                   value={inputs.audience}
@@ -206,15 +204,15 @@ const NewsletterArticleGenerator = () => {
                   className="input-field"
                   required
                 >
-                  <option value="">Select audience</option>
-                  <option value="parents">Parents</option>
-                  <option value="community">Community</option>
-                  <option value="school_leadership">School Leadership</option>
+                  <option value="">{t('newsletterArticleGenerator.selectAudience')}</option>
+                  <option value="parents">{t('newsletterArticleGenerator.parents')}</option>
+                  <option value="community">{t('newsletterArticleGenerator.community')}</option>
+                  <option value="school_leadership">{t('newsletterArticleGenerator.schoolLeadership')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Tone</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('newsletterArticleGenerator.tone2')}</label>
                 <select
                   value={inputs.tone}
                   onChange={(e) =>
@@ -223,14 +221,14 @@ const NewsletterArticleGenerator = () => {
                   className="input-field"
                 >
                   <option value="">Select tone (optional)</option>
-                  <option value="celebratory">Celebratory</option>
-                  <option value="informative">Informative</option>
-                  <option value="reflective">Reflective</option>
+                  <option value="celebratory">{t('newsletterArticleGenerator.celebratory')}</option>
+                  <option value="informative">{t('newsletterArticleGenerator.informative')}</option>
+                  <option value="reflective">{t('newsletterArticleGenerator.reflective')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Word Count</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('newsletterArticleGenerator.wordCount')}</label>
                 <input
                   type="number"
                   min="50"
@@ -239,14 +237,12 @@ const NewsletterArticleGenerator = () => {
                     handleInputChange('word_count', parseInt(e.target.value) || '')
                   }
                   className="input-field"
-                  placeholder="e.g., 250"
+                  placeholder={t('newsletterArticleGenerator.eG250')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Key Activities
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('newsletterArticleGenerator.keyActivities')}</label>
                 <div className="flex gap-2 mb-2">
                   <input
                     type="text"
@@ -265,9 +261,7 @@ const NewsletterArticleGenerator = () => {
                     type="button"
                     onClick={addActivity}
                     className="btn-primary whitespace-nowrap"
-                  >
-                    Add
-                  </button>
+                  >{t('newsletterArticleGenerator.add')}</button>
                 </div>
                 {inputs.key_activities.length > 0 && (
                   <div className="flex flex-wrap gap-2">
@@ -292,13 +286,13 @@ const NewsletterArticleGenerator = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('newsletterArticleGenerator.language2')}</label>
                 <input
                   type="text"
                   value={inputs.language}
                   onChange={(e) => handleInputChange('language', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., en-US"
+                  placeholder={t('newsletterArticleGenerator.eGEnUs')}
                 />
               </div>
 
@@ -310,12 +304,12 @@ const NewsletterArticleGenerator = () => {
                 {isGenerating ? (
                   <>
                     <RefreshCw className="w-5 h-5 animate-spin" />
-                    <span>Generating...</span>
+                    <span>{t('newsletterArticleGenerator.generating')}</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-5 h-5" />
-                    <span>Generate Article</span>
+                    <span>{t('newsletterArticleGenerator.generateArticle')}</span>
                   </>
                 )}
               </button>
@@ -327,18 +321,18 @@ const NewsletterArticleGenerator = () => {
           {output ? (
             <div className="card">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Generated Newsletter Article</h2>
+                <h2 className="text-lg font-semibold text-gray-900">{t('newsletterArticleGenerator.generatedNewsletterArticle')}</h2>
                 <div className="flex gap-2">
                   <button className="btn-secondary flex items-center space-x-2">
                     <Download className="w-4 h-4" />
-                    <span>Download</span>
+                    <span>{t('newsletterArticleGenerator.download')}</span>
                   </button>
                   <button
                     onClick={() => setOutput(null)}
                     className="btn-secondary flex items-center space-x-2"
                   >
                     <RefreshCw className="w-4 h-4" />
-                    <span>Reset</span>
+                    <span>{t('newsletterArticleGenerator.reset')}</span>
                   </button>
                 </div>
               </div>
@@ -348,21 +342,21 @@ const NewsletterArticleGenerator = () => {
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">{output.title}</h3>
                   <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                     <span>
-                      <strong>Audience:</strong> {output.audience}
+                      <strong>{t('newsletterArticleGenerator.audience')}</strong> {output.audience}
                     </span>
                     {output.tone && (
                       <span>
-                        <strong>Tone:</strong> {output.tone}
+                        <strong>{t('newsletterArticleGenerator.tone')}</strong> {output.tone}
                       </span>
                     )}
                     {output.word_count && (
                       <span>
-                        <strong>Approx. Word Count:</strong> {output.word_count}
+                        <strong>{t('newsletterArticleGenerator.approxWordCount')}</strong> {output.word_count}
                       </span>
                     )}
                     {output.language && (
                       <span>
-                        <strong>Language:</strong> {output.language}
+                        <strong>{t('newsletterArticleGenerator.language')}</strong> {output.language}
                       </span>
                     )}
                   </div>
@@ -370,7 +364,7 @@ const NewsletterArticleGenerator = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Highlights</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('newsletterArticleGenerator.highlights')}</h4>
                   <div className="space-y-3">
                     {output.highlights.map((section, index) => (
                       <div key={index} className="bg-gray-50 rounded-lg p-4">
@@ -382,19 +376,19 @@ const NewsletterArticleGenerator = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Quote</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('newsletterArticleGenerator.quote')}</h4>
                   <blockquote className="border-l-4 border-primary-400 pl-4 italic text-gray-700 text-sm">
                     {output.quote}
                   </blockquote>
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Closing</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('newsletterArticleGenerator.closing')}</h4>
                   <p className="text-sm text-gray-700">{output.closing}</p>
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Call to Action</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('newsletterArticleGenerator.callToAction')}</h4>
                   <p className="text-sm text-gray-700">{output.call_to_action}</p>
                 </div>
               </div>
@@ -403,12 +397,8 @@ const NewsletterArticleGenerator = () => {
             <div className="card">
               <div className="text-center py-12">
                 <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Your newsletter article will appear here
-                </h3>
-                <p className="text-gray-600">
-                  Provide the topic and audience, then click "Generate Article" to preview the story.
-                </p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('newsletterArticleGenerator.yourNewsletterArticleWillAppearHere')}</h3>
+                <p className="text-gray-600">{t('newsletterArticleGenerator.provideTheTopicAndAudienceThenClickGenerateArticleTo')}</p>
               </div>
             </div>
           )}

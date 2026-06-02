@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Youtube, Play, CheckCircle2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useSnackbar } from '../../../hooks/useSnackbar'
 import { ApiError } from '../../../api/client'
+import { resolveApiMessage } from '../../../i18n/resolveApiMessage'
 import {
   getVideoRecommendations,
   type VideoLibraryChannel,
@@ -43,6 +45,7 @@ interface Props {
 }
 
 export function QuickStartVideoSources({ onVideoPicked, onAfterVideoSelect }: Props) {
+  const { t } = useTranslation()
   const { toast } = useSnackbar()
   const [channels, setChannels] = useState<VideoLibraryChannel[]>([])
   const [loadState, setLoadState] = useState<'idle' | 'loading' | 'error'>('idle')
@@ -64,9 +67,9 @@ export function QuickStartVideoSources({ onVideoPicked, onAfterVideoSelect }: Pr
       } catch (e) {
         if (cancelled) return
         setLoadState('error')
-        let msg = 'Could not load recommendations.'
+        let msg = t('youtubeQuizPage.quickStart.loadFailed')
         if (e instanceof ApiError && typeof e.message === 'string' && e.message.trim()) {
-          msg = e.message
+          msg = resolveApiMessage(t, e.message)
         }
         setLoadMessage(msg)
         toast.error(msg)
@@ -82,7 +85,7 @@ export function QuickStartVideoSources({ onVideoPicked, onAfterVideoSelect }: Pr
   const handleSelectVideo = (video: VideoLibraryVideo) => {
     setSelectedVideoId(video.id)
     setSelectedTitle(video.title)
-    toast.success(`"${video.title}" added — link field updated above.`)
+    toast.success(t('youtubeQuizPage.quickStart.videoAdded', { title: video.title }))
     onVideoPicked?.({ videoId: video.id, youtubeUrl: video.youtubeUrl, title: video.title })
     onAfterVideoSelect?.()
   }
@@ -94,13 +97,11 @@ export function QuickStartVideoSources({ onVideoPicked, onAfterVideoSelect }: Pr
     >
       <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-gray-600">
         <Youtube className="h-4 w-4 text-red-500" />
-        Quick Start Video Sources
+        {t('youtubeQuizPage.quickStart.title')}
       </h3>
-      <p className="mt-1 text-xs text-gray-500">
-        Pick a video — we paste it into the YouTube link at the top of the page and jump you there to review.
-      </p>
+      <p className="mt-1 text-xs text-gray-500">{t('youtubeQuizPage.quickStart.hint')}</p>
       {loadState === 'loading' && (
-        <p className="mt-1 text-xs text-gray-500">Loading recommendations…</p>
+        <p className="mt-1 text-xs text-gray-500">{t('youtubeQuizPage.quickStart.loading')}</p>
       )}
       {loadState === 'error' && loadMessage && (
         <p className="mt-1 text-xs text-gray-500">{loadMessage}</p>
@@ -109,7 +110,9 @@ export function QuickStartVideoSources({ onVideoPicked, onAfterVideoSelect }: Pr
       {selectedTitle && (
         <div className="mt-3 flex items-center gap-2 rounded-xl border border-green-200 bg-green-50 px-3 py-2 text-xs font-semibold text-green-700">
           <CheckCircle2 className="h-3.5 w-3.5 flex-shrink-0" />
-          <span className="truncate">Selected: {selectedTitle}</span>
+          <span className="truncate">
+            {t('youtubeQuizPage.quickStart.selected', { title: selectedTitle })}
+          </span>
         </div>
       )}
 
@@ -163,12 +166,14 @@ export function QuickStartVideoSources({ onVideoPicked, onAfterVideoSelect }: Pr
                         <span>{v.duration}</span>
                         <span>{v.subject}</span>
                         <span className={v.transcript ? 'text-green-600' : 'text-gray-400'}>
-                          {v.transcript ? '✓ Transcript' : 'No transcript'}
+                          {v.transcript
+                            ? t('youtubeQuizPage.quickStart.transcript')
+                            : t('youtubeQuizPage.quickStart.noTranscript')}
                         </span>
                       </div>
 
                       <p className="mt-1.5 text-[10px] text-gray-500">
-                        Best quiz:{' '}
+                        {t('youtubeQuizPage.quickStart.bestQuiz')}{' '}
                         <span className="font-medium text-gray-700">{v.bestQuizType}</span>
                       </p>
 
@@ -183,11 +188,12 @@ export function QuickStartVideoSources({ onVideoPicked, onAfterVideoSelect }: Pr
                       >
                         {selectedVideoId === v.id ? (
                           <span className="flex items-center justify-center gap-1">
-                            <CheckCircle2 className="h-3 w-3" /> Selected
+                            <CheckCircle2 className="h-3 w-3" />{' '}
+                            {t('youtubeQuizPage.quickStart.selectedBtn')}
                           </span>
                         ) : (
                           <span className="flex items-center justify-center gap-1">
-                            <Play className="h-3 w-3" /> Use this video
+                            <Play className="h-3 w-3" /> {t('youtubeQuizPage.quickStart.useVideo')}
                           </span>
                         )}
                       </button>

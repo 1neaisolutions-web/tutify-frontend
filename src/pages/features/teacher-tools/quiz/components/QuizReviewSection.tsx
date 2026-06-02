@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import i18n from 'i18next'
 import {
   ArrowDown,
   ArrowUp,
@@ -49,7 +51,7 @@ function blankManualStub(): QuizQuestionStub {
     type: 'mcq',
     points: 2,
     prompt: '',
-    options: ['Option A', 'Option B', 'Option C', 'Option D'],
+    options: ['A', 'B', 'C', 'D'].map((letter) => i18n.t('quiz.editModal.choicePlaceholder', { letter })),
   }
 }
 
@@ -74,6 +76,7 @@ export function QuizReviewSection({
   printOpen: printOpenProp,
   onPrintOpenChange,
 }: Props) {
+  const { t } = useTranslation()
   const [editing, setEditing] = useState<QuizQuestionStub | null>(null)
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
   const [printOpenInternal, setPrintOpenInternal] = useState(false)
@@ -88,8 +91,8 @@ export function QuizReviewSection({
       <TeacherToolsReviewHeaderCompact
         sourceTag={sourceSummaryLine}
         stats={[
-          { label: 'questions', value: stubs.length },
-          { label: 'marks', value: totalPoints },
+          { label: t('worksheet.statQuestions'), value: stubs.length },
+          { label: t('exam.statMarks'), value: totalPoints },
         ]}
         actions={
           <>
@@ -99,7 +102,7 @@ export function QuizReviewSection({
               disabled={stubs.length === 0}
               className="rounded-lg border border-indigo-200 bg-white px-2 py-1 text-xs font-semibold text-indigo-800 hover:bg-indigo-50 disabled:opacity-50"
             >
-              Print preview
+              {t('quiz.review.printPreview')}
             </button>
             <button
               type="button"
@@ -107,7 +110,7 @@ export function QuizReviewSection({
               disabled={busy || isExemplarPreview}
               className="rounded-lg border border-indigo-200 bg-white px-2 py-1 text-xs font-semibold text-indigo-800 hover:bg-indigo-50 disabled:opacity-50"
             >
-              {regeneratingAll ? 'Regenerating…' : 'Regenerate all'}
+              {regeneratingAll ? t('quiz.review.regeneratingAll') : t('quiz.review.regenerateAll')}
             </button>
             <button
               type="button"
@@ -118,7 +121,7 @@ export function QuizReviewSection({
               disabled={!canAddMoreQuestions}
               className="rounded-lg border border-emerald-200 bg-white px-2 py-1 text-xs font-semibold text-emerald-800 hover:bg-emerald-50 disabled:opacity-50"
             >
-              + Question
+              {t('quiz.review.addQuestion')}
             </button>
           </>
         }
@@ -126,14 +129,14 @@ export function QuizReviewSection({
 
       {stubs.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-12 text-center">
-          <p className="text-sm font-medium text-gray-800">No questions in this quiz yet.</p>
-          <p className="mt-1 text-sm text-gray-600">Go back and run generation again, or regenerate from the toolbar.</p>
+          <p className="text-sm font-medium text-gray-800">{t('quiz.review.emptyTitle')}</p>
+          <p className="mt-1 text-sm text-gray-600">{t('quiz.review.emptyBody')}</p>
           <button
             type="button"
             onClick={onBackToEdit}
             className="mt-4 rounded-full bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-500"
           >
-            Back to build
+            {t('quiz.review.backToBuild')}
           </button>
         </div>
       ) : (
@@ -145,7 +148,7 @@ export function QuizReviewSection({
             >
               <div className="flex flex-wrap items-start gap-3 border-b border-gray-100 bg-gray-50/80 px-4 py-3">
                 <span className="inline-flex items-center rounded-full bg-white px-2.5 py-0.5 text-xs font-semibold uppercase text-gray-600 ring-1 ring-gray-200">
-                  {q.type === 'mcq' ? 'MCQ' : q.type === 'tf' ? 'T/F' : 'Short'}
+                  {q.type === 'mcq' ? t('quiz.review.badgeMcq') : q.type === 'tf' ? t('quiz.review.badgeTf') : t('quiz.review.badgeShort')}
                 </span>
                 {q.reviewBadges?.difficulty ? (
                   <span className="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-800 ring-1 ring-indigo-100">
@@ -161,15 +164,15 @@ export function QuizReviewSection({
                   </span>
                 ) : null}
                 <span className="text-xs font-medium text-gray-500">
-                  Q{index + 1} · {q.points ?? '—'} pts
+                  {t('quiz.review.questionMarks', { num: index + 1, pts: q.points ?? '—' })}
                   {q.type === 'short' ? (
-                    <span className="ml-2 text-gray-400">· {clampResponseLines(q.responseLines)} lines</span>
+                    <span className="ml-2 text-gray-400">· {clampResponseLines(q.responseLines)} {t('quiz.review.lines')}</span>
                   ) : null}
                 </span>
                 <div className="ml-auto flex flex-wrap gap-1">
                   <button
                     type="button"
-                    title="Move up"
+                    title={t('teacherTools.moveUp')}
                     disabled={busy || index === 0}
                     onClick={() => onReorder(index, index - 1)}
                     className="rounded-lg p-1.5 text-gray-600 hover:bg-gray-200 disabled:opacity-30"
@@ -178,7 +181,7 @@ export function QuizReviewSection({
                   </button>
                   <button
                     type="button"
-                    title="Move down"
+                    title={t('teacherTools.moveDown')}
                     disabled={busy || index === stubs.length - 1}
                     onClick={() => onReorder(index, index + 1)}
                     className="rounded-lg p-1.5 text-gray-600 hover:bg-gray-200 disabled:opacity-30"
@@ -187,7 +190,7 @@ export function QuizReviewSection({
                   </button>
                   <button
                     type="button"
-                    title="Edit"
+                    title={t('exam.detail.edit')}
                     disabled={busy}
                     onClick={() => {
                       if (busy) return
@@ -200,7 +203,7 @@ export function QuizReviewSection({
                   </button>
                   <button
                     type="button"
-                    title="Regenerate this question"
+                    title={t('teacherTools.regenerateThisQuestion')}
                     disabled={busy}
                     onClick={() => {
                       if (busy) return
@@ -216,7 +219,7 @@ export function QuizReviewSection({
                   </button>
                   <button
                     type="button"
-                    title="Remove"
+                    title={t('teacherTools.remove')}
                     disabled={busy}
                     onClick={() => {
                       if (busy) return
@@ -269,7 +272,7 @@ export function QuizReviewSection({
         open={manualDraft !== null}
         stub={manualDraft}
         isNew
-        modalTitle="Add question"
+        modalTitle={t('quiz.review.modalAddQuestion')}
         formId="quiz-q-add-form"
         onClose={() => setManualDraft(null)}
         onSave={(next) => {

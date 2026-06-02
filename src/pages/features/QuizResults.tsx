@@ -15,6 +15,7 @@ import {
 import { useSnackbar } from '../../hooks/useSnackbar'
 import { getYouTubeQuizGeneration, YouTubeQuizQuestion, YouTubeQuizSection } from '../../api/youtubeQuiz'
 
+import { useTranslation } from 'react-i18next'
 interface QuizPreview {
   title: string
   summary: string
@@ -22,6 +23,7 @@ interface QuizPreview {
 }
 
 const QuizResults = () => {
+  const { t } = useTranslation()
   const { toast } = useSnackbar()
   const location = useLocation()
   const navigate = useNavigate()
@@ -73,7 +75,7 @@ const QuizResults = () => {
   if (loadingRestore) {
     return (
       <div className="flex h-96 items-center justify-center">
-        <p className="text-gray-600">Loading quiz…</p>
+        <p className="text-gray-600">{t('quizResultsPage.loadingQuiz')}</p>
       </div>
     )
   }
@@ -82,7 +84,7 @@ const QuizResults = () => {
     return (
       <div className="flex h-96 items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-600">No quiz data found. Please generate a quiz first.</p>
+          <p className="text-gray-600">{t('quizResultsPage.noQuizDataFoundPleaseGenerateAQuizFirst')}</p>
           <button
             onClick={() => navigate('/youtube-quiz')}
             className="mt-4 rounded-full bg-red-500 px-6 py-2 text-sm font-semibold text-white hover:bg-red-400"
@@ -138,15 +140,15 @@ const QuizResults = () => {
           title: quizData.title,
           text: shareText,
         })
-        toast.success('Quiz shared successfully.')
+        toast.success(t('quizResultsPage.quizSharedSuccessfully'))
         return
       }
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(shareText)
-        toast.success('Quiz copied to clipboard.')
+        toast.success(t('quizResultsPage.quizCopiedToClipboard'))
         return
       }
-      toast.warning('Sharing is not supported on this browser.')
+      toast.warning(t('quizResultsPage.sharingIsNotSupportedOnThisBrowser'))
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to share quiz.'
       toast.error(errorMessage)
@@ -156,9 +158,9 @@ const QuizResults = () => {
   const handleExportPdf = () => {
     try {
       window.print()
-      toast.success('Print dialog opened for PDF export.')
+      toast.success(t('quizResultsPage.printDialogOpenedForPdfExport'))
     } catch {
-      toast.error('Unable to open print dialog for export.')
+      toast.error(t('quizResultsPage.unableToOpenPrintDialogForExport'))
     }
   }
 
@@ -191,12 +193,12 @@ const QuizResults = () => {
       setIsWorksheetExporting(true)
       setTimeout(() => {
         window.print()
-        toast.success('Worksheet print layout opened.')
+        toast.success(t('quizResultsPage.worksheetPrintLayoutOpened'))
         setTimeout(() => setIsWorksheetExporting(false), 100)
       }, 50)
     } catch {
       setIsWorksheetExporting(false)
-      toast.error('Unable to open worksheet export.')
+      toast.error(t('quizResultsPage.unableToOpenWorksheetExport'))
     }
   }
 
@@ -227,11 +229,11 @@ const QuizResults = () => {
       return (
         <div className="mt-3 rounded-lg border border-gray-200 bg-white p-3 text-sm text-gray-700">
           <p>
-            <span className="font-semibold">Response type:</span> {question.expected_response_type || 'short_phrase'}
+            <span className="font-semibold">{t('quizResultsPage.responseType')}</span> {question.expected_response_type || 'short_phrase'}
           </p>
           {showAnswers && (
             <p className="mt-1 text-emerald-700">
-              <span className="font-semibold">Answer:</span> {String(question.answer)}
+              <span className="font-semibold">{t('quizResultsPage.answer')}</span> {String(question.answer)}
             </p>
           )}
         </div>
@@ -240,10 +242,10 @@ const QuizResults = () => {
 
     return (
       <div className="mt-3 rounded-lg border border-gray-200 bg-white p-3 text-sm text-gray-700">
-        <p className="text-gray-600">Long response prompt.</p>
+        <p className="text-gray-600">{t('quizResultsPage.longResponsePrompt')}</p>
         {showAnswers && question.sample_answer && (
           <p className="mt-2">
-            <span className="font-semibold text-gray-900">Sample answer:</span> {question.sample_answer}
+            <span className="font-semibold text-gray-900">{t('quizResultsPage.sampleAnswer')}</span> {question.sample_answer}
           </p>
         )}
         {showAnswers && question.rubric_points && question.rubric_points.length > 0 && (
@@ -277,14 +279,12 @@ const QuizResults = () => {
             onClick={() => navigate('/youtube-quiz')}
             className="inline-flex w-fit items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-4 py-2 text-sm font-semibold text-gray-800 transition hover:border-gray-300 hover:bg-white"
           >
-            <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden />
-            Back to Generator
-          </button>
+            <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden />{t('quizResultsPage.backToGenerator')}</button>
 
           <div
             className="flex flex-wrap items-center gap-2 sm:justify-end"
             role="toolbar"
-            aria-label="Quiz actions"
+            aria-label={t('quizResultsPage.quizActions')}
           >
             <button
               type="button"
@@ -299,25 +299,19 @@ const QuizResults = () => {
               onClick={handleShare}
               className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-800 shadow-sm transition hover:bg-gray-50"
             >
-              <Share2 className="h-4 w-4 shrink-0" aria-hidden />
-              Share
-            </button>
+              <Share2 className="h-4 w-4 shrink-0" aria-hidden />{t('quizResultsPage.share')}</button>
             <button
               type="button"
               onClick={handleExportPdf}
               className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm transition hover:border-red-200 hover:bg-red-50"
             >
-              <Download className="h-4 w-4 shrink-0" aria-hidden />
-              Export PDF
-            </button>
+              <Download className="h-4 w-4 shrink-0" aria-hidden />{t('quizResultsPage.exportPdf')}</button>
             <button
               type="button"
               onClick={handleExportWorksheet}
               className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-800 shadow-sm transition hover:bg-gray-50"
             >
-              <FileText className="h-4 w-4 shrink-0" aria-hidden />
-              Generate worksheet
-            </button>
+              <FileText className="h-4 w-4 shrink-0" aria-hidden />{t('quizResultsPage.generateWorksheet')}</button>
           </div>
         </div>
 
@@ -374,8 +368,8 @@ const QuizResults = () => {
         <div className="mb-6">
           <h2 className="text-2xl font-semibold text-gray-900">{quizData.title}</h2>
           <div className="mt-4 grid grid-cols-2 gap-4 text-sm text-gray-700">
-            <p>Name: ________________________</p>
-            <p>Date: ________________________</p>
+            <p>{t('quizResultsPage.name')}</p>
+            <p>{t('quizResultsPage.date')}</p>
           </div>
         </div>
         <ol className="space-y-4 text-sm text-gray-800">
@@ -409,11 +403,8 @@ const QuizResults = () => {
       <div className="rounded-3xl border border-gray-200 bg-gradient-to-r from-red-50 to-orange-50 p-6 print-hide print-standard">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Next steps</h3>
-            <p className="mt-1 text-sm text-gray-600">
-              Start a new quiz or save this one to your library. Use the toolbar above anytime for print, share, or answer
-              key.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900">{t('quizResultsPage.nextSteps')}</h3>
+            <p className="mt-1 text-sm text-gray-600">{t('quizResultsPage.startANewQuizOrSaveThisOneToYour')}</p>
           </div>
           <div className="flex gap-2">
             <button
@@ -422,9 +413,7 @@ const QuizResults = () => {
             >
               Generate Another
             </button>
-            <button className="rounded-full bg-red-500 px-6 py-2 text-sm font-semibold text-white hover:bg-red-400">
-              Save to Library
-            </button>
+            <button className="rounded-full bg-red-500 px-6 py-2 text-sm font-semibold text-white hover:bg-red-400">{t('quizResultsPage.saveToLibrary')}</button>
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useMemo } from 'react'
 import { FileText, Upload, X, Loader2, CheckCircle2, GitCompare } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { DocumentComparison } from '../../types/claude'
 import { synthesizeDocuments } from '../../utils/claudeUtils'
 
@@ -9,10 +10,20 @@ interface DocumentComparisonToolProps {
 }
 
 const DocumentComparisonTool = ({ onComparisonComplete, onClose }: DocumentComparisonToolProps) => {
+  const { t } = useTranslation()
   const [files, setFiles] = useState<File[]>([])
   const [isComparing, setIsComparing] = useState(false)
   const [comparison, setComparison] = useState<DocumentComparison | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const mockSimilarities = useMemo(
+    () => t('claude.docCompare.mock.similarities', { returnObjects: true }) as string[],
+    [t]
+  )
+  const mockDifferences = useMemo(
+    () => t('claude.docCompare.mock.differences', { returnObjects: true }) as string[],
+    [t]
+  )
 
   const handleFileSelect = async (selectedFiles: FileList | null) => {
     if (!selectedFiles) return
@@ -22,7 +33,6 @@ const DocumentComparisonTool = ({ onComparisonComplete, onClose }: DocumentCompa
     setIsComparing(true)
 
     try {
-      // Simulate comparison
       await new Promise((resolve) => setTimeout(resolve, 2000))
 
       const fileNames = fileArray.map((f) => f.name)
@@ -30,16 +40,8 @@ const DocumentComparisonTool = ({ onComparisonComplete, onClose }: DocumentCompa
 
       const result: DocumentComparison = {
         documents: fileNames,
-        similarities: [
-          'Common standards and learning objectives',
-          'Shared pedagogical approaches',
-          'Similar assessment strategies',
-        ],
-        differences: [
-          'Different grade level focus',
-          'Varying depth of content coverage',
-          'Different cultural perspectives',
-        ],
+        similarities: mockSimilarities,
+        differences: mockDifferences,
         standardsComparison: {
           common: ['RL.1', 'RL.2', 'OA.1'],
           unique: ['RL.3', 'OA.2'],
@@ -68,15 +70,14 @@ const DocumentComparisonTool = ({ onComparisonComplete, onClose }: DocumentCompa
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
-        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600">
               <GitCompare className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Document Comparison Tool</h2>
-              <p className="text-sm text-gray-600">Compare multiple curriculum documents</p>
+              <h2 className="text-xl font-bold text-gray-900">{t('claude.docCompare.title')}</h2>
+              <p className="text-sm text-gray-600">{t('claude.docCompare.subtitle')}</p>
             </div>
           </div>
           <button
@@ -87,9 +88,7 @@ const DocumentComparisonTool = ({ onComparisonComplete, onClose }: DocumentCompa
           </button>
         </div>
 
-        {/* Content */}
         <div className="flex-1 overflow-y-auto p-6">
-          {/* Drop Zone */}
           <div
             onDrop={handleDrop}
             onDragOver={handleDragOver}
@@ -99,10 +98,10 @@ const DocumentComparisonTool = ({ onComparisonComplete, onClose }: DocumentCompa
             <div className="text-center">
               <Upload className="h-12 w-12 mx-auto mb-4 text-blue-500" />
               <p className="text-lg font-semibold text-gray-700 mb-2">
-                Drag and drop multiple documents here, or click to browse
+                {t('claude.docCompare.dropzone.primary')}
               </p>
               <p className="text-sm text-gray-500 mb-4">
-                Upload 2 or more documents to compare (PDF, DOC, DOCX, TXT)
+                {t('claude.docCompare.dropzone.formats')}
               </p>
               <input
                 ref={fileInputRef}
@@ -115,10 +114,9 @@ const DocumentComparisonTool = ({ onComparisonComplete, onClose }: DocumentCompa
             </div>
           </div>
 
-          {/* Files List */}
           {files.length > 0 && (
             <div className="mb-6 space-y-2">
-              <h3 className="font-semibold text-gray-900">Documents Selected ({files.length})</h3>
+              <h3 className="font-semibold text-gray-900">{t('claude.docCompare.filesSelected', { count: files.length })}</h3>
               {files.map((file, idx) => (
                 <div key={idx} className="p-3 border border-gray-200 rounded-lg bg-white flex items-center gap-3">
                   <FileText className="h-5 w-5 text-blue-600" />
@@ -131,14 +129,13 @@ const DocumentComparisonTool = ({ onComparisonComplete, onClose }: DocumentCompa
             </div>
           )}
 
-          {/* Comparison Results */}
           {isComparing && (
             <div className="p-6 border-2 border-blue-200 bg-blue-50 rounded-xl">
               <div className="flex items-center gap-3">
                 <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
                 <div>
-                  <div className="font-semibold text-gray-900">Comparing documents...</div>
-                  <div className="text-sm text-gray-600">Analyzing similarities and differences</div>
+                  <div className="font-semibold text-gray-900">{t('claude.docCompare.comparing.title')}</div>
+                  <div className="text-sm text-gray-600">{t('claude.docCompare.comparing.subtitle')}</div>
                 </div>
               </div>
             </div>
@@ -146,11 +143,10 @@ const DocumentComparisonTool = ({ onComparisonComplete, onClose }: DocumentCompa
 
           {comparison && !isComparing && (
             <div className="space-y-6">
-              {/* Similarities */}
               <div className="p-5 border-2 border-green-200 bg-green-50 rounded-xl">
                 <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
                   <CheckCircle2 className="h-5 w-5 text-green-600" />
-                  Similarities
+                  {t('claude.docCompare.similarities')}
                 </h3>
                 <ul className="space-y-2">
                   {comparison.similarities.map((similarity, idx) => (
@@ -162,11 +158,10 @@ const DocumentComparisonTool = ({ onComparisonComplete, onClose }: DocumentCompa
                 </ul>
               </div>
 
-              {/* Differences */}
               <div className="p-5 border-2 border-amber-200 bg-amber-50 rounded-xl">
                 <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
                   <GitCompare className="h-5 w-5 text-amber-600" />
-                  Differences
+                  {t('claude.docCompare.differences')}
                 </h3>
                 <ul className="space-y-2">
                   {comparison.differences.map((difference, idx) => (
@@ -178,12 +173,11 @@ const DocumentComparisonTool = ({ onComparisonComplete, onClose }: DocumentCompa
                 </ul>
               </div>
 
-              {/* Standards Comparison */}
               <div className="p-5 border border-gray-200 rounded-xl bg-white">
-                <h3 className="font-semibold text-gray-900 mb-3">Standards Comparison</h3>
+                <h3 className="font-semibold text-gray-900 mb-3">{t('claude.docCompare.standards.title')}</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <div className="text-sm font-semibold text-gray-700 mb-2">Common Standards</div>
+                    <div className="text-sm font-semibold text-gray-700 mb-2">{t('claude.docCompare.standards.common')}</div>
                     <div className="flex flex-wrap gap-2">
                       {comparison.standardsComparison.common.map((std, idx) => (
                         <span
@@ -196,7 +190,7 @@ const DocumentComparisonTool = ({ onComparisonComplete, onClose }: DocumentCompa
                     </div>
                   </div>
                   <div>
-                    <div className="text-sm font-semibold text-gray-700 mb-2">Unique Standards</div>
+                    <div className="text-sm font-semibold text-gray-700 mb-2">{t('claude.docCompare.standards.unique')}</div>
                     <div className="flex flex-wrap gap-2">
                       {comparison.standardsComparison.unique.map((std, idx) => (
                         <span
@@ -211,9 +205,8 @@ const DocumentComparisonTool = ({ onComparisonComplete, onClose }: DocumentCompa
                 </div>
               </div>
 
-              {/* Synthesis */}
               <div className="p-5 border border-gray-200 rounded-xl bg-white">
-                <h3 className="font-semibold text-gray-900 mb-3">Synthesis Report</h3>
+                <h3 className="font-semibold text-gray-900 mb-3">{t('claude.docCompare.synthesis.title')}</h3>
                 <div className="text-sm text-gray-700 whitespace-pre-line leading-relaxed">
                   {comparison.synthesis}
                 </div>
@@ -222,13 +215,12 @@ const DocumentComparisonTool = ({ onComparisonComplete, onClose }: DocumentCompa
           )}
         </div>
 
-        {/* Footer */}
         <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50">
           <button
             onClick={onClose}
             className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition shadow-md"
           >
-            Close
+            {t('claude.common.close')}
           </button>
         </div>
       </div>
@@ -237,6 +229,3 @@ const DocumentComparisonTool = ({ onComparisonComplete, onClose }: DocumentCompa
 }
 
 export default DocumentComparisonTool
-
-
-

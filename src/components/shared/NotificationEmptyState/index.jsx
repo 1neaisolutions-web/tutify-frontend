@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 
 const NotificationEmptyState = ({
@@ -5,15 +6,15 @@ const NotificationEmptyState = ({
   hasNotifications = false,
   onViewAll,
 }) => {
+  const { t } = useTranslation();
   const isSmall = size === 'sm';
 
-  // Different messages based on whether user has any notifications
   const title = hasNotifications
-    ? "You're all caught up!"
-    : 'No notifications yet';
+    ? t('layout.allCaughtUp')
+    : t('layout.noNotificationsYet');
   const subtitle = hasNotifications
-    ? 'No new notifications'
-    : "We'll notify you when something happens";
+    ? t('layout.noNewNotifications')
+    : t('layout.notificationsEmptyHint');
 
   return (
     <div

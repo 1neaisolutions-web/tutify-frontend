@@ -25,6 +25,7 @@ import {
   Layers,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template' | 'project'
@@ -44,6 +45,7 @@ interface DataTool {
 }
 
 const DataLiteracyModule = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -277,14 +279,10 @@ Scientific models are representations that help us understand, explain, and pred
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 6
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('dataLiteracyModule.module6')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    105 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('dataLiteracyModule.k05Min')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
                     <Star className="h-3 w-3" />
@@ -294,16 +292,14 @@ Scientific models are representations that help us understand, explain, and pred
                     }, 0)} / {lessons.reduce((sum, l) => sum + l.points, 0)} points
                   </span>
                 </div>
-                <h1 className="text-3xl font-bold">Data Literacy & Scientific Modeling</h1>
-                <p className="mt-2 text-blue-100">
-                  Develop students' ability to collect, analyze, interpret, and communicate scientific data
-                </p>
+                <h1 className="text-3xl font-bold">{t('dataLiteracyModule.dataLiteracyScientificModeling')}</h1>
+                <p className="mt-2 text-blue-100">{t('dataLiteracyModule.developStudentsAbilityToCollectAnalyzeInterpretAndCommu')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm mb-4">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4" />
-                <span>High Impact</span>
+                <span>{t('dataLiteracyModule.highImpact')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Trophy className="w-4 h-4" />
@@ -328,7 +324,7 @@ Scientific models are representations that help us understand, explain, and pred
         {/* Sidebar */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('dataLiteracyModule.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isActive = idx === currentLesson
@@ -388,9 +384,7 @@ Scientific models are representations that help us understand, explain, and pred
                 </div>
                 {completedLessons.includes(currentLessonData.id) && (
                   <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-semibold flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4" />
-                    Completed
-                  </span>
+                    <CheckCircle2 className="h-4 w-4" />{t('dataLiteracyModule.completed')}</span>
                 )}
               </div>
             </div>
@@ -410,7 +404,7 @@ Scientific models are representations that help us understand, explain, and pred
                 </div>
                 {currentLessonData.content.keyPoints && (
                   <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Points</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('dataLiteracyModule.keyPoints')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyPoints.map((point: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -432,7 +426,7 @@ Scientific models are representations that help us understand, explain, and pred
                 </div>
                 {currentLessonData.content.keyTakeaways && (
                   <div className="bg-purple-50 rounded-xl p-6 border border-purple-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Takeaways</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('dataLiteracyModule.keyTakeaways')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyTakeaways.map((takeaway: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -457,12 +451,10 @@ Scientific models are representations that help us understand, explain, and pred
                       onClick={() => setShowVisualizationTool(true)}
                       className="w-full px-6 py-4 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2"
                     >
-                      <Zap className="h-5 w-5" />
-                      Launch Visualization Tool Selector
-                    </button>
+                      <Zap className="h-5 w-5" />{t('dataLiteracyModule.launchVisualizationToolSelector')}</button>
                   ) : (
                     <div className="bg-white rounded-xl p-6 border-2 border-blue-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Data Visualization Tools</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('dataLiteracyModule.dataVisualizationTools')}</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                         {dataTools.map((tool, idx) => (
                           <div key={idx} className="bg-blue-50 rounded-lg p-5 border border-blue-200">
@@ -487,23 +479,23 @@ Scientific models are representations that help us understand, explain, and pred
                         ))}
                       </div>
                       <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                        <h4 className="text-sm font-semibold text-gray-900 mb-2">Visualization Types</h4>
+                        <h4 className="text-sm font-semibold text-gray-900 mb-2">{t('dataLiteracyModule.visualizationTypes')}</h4>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                           <div className="flex items-center gap-2 text-sm text-gray-700">
                             <LineChart className="h-4 w-4 text-blue-600" />
-                            <span>Line Graphs</span>
+                            <span>{t('dataLiteracyModule.lineGraphs')}</span>
                           </div>
                           <div className="flex items-center gap-2 text-sm text-gray-700">
                             <BarChart3 className="h-4 w-4 text-blue-600" />
-                            <span>Bar Charts</span>
+                            <span>{t('dataLiteracyModule.barCharts')}</span>
                           </div>
                           <div className="flex items-center gap-2 text-sm text-gray-700">
                             <PieChart className="h-4 w-4 text-blue-600" />
-                            <span>Pie Charts</span>
+                            <span>{t('dataLiteracyModule.pieCharts')}</span>
                           </div>
                           <div className="flex items-center gap-2 text-sm text-gray-700">
                             <Activity className="h-4 w-4 text-blue-600" />
-                            <span>Scatter Plots</span>
+                            <span>{t('dataLiteracyModule.scatterPlots')}</span>
                           </div>
                         </div>
                       </div>
@@ -524,32 +516,30 @@ Scientific models are representations that help us understand, explain, and pred
                       onClick={() => setShowModelBuilder(true)}
                       className="w-full px-6 py-4 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
                     >
-                      <Rocket className="h-5 w-5" />
-                      Launch Activity Designer
-                    </button>
+                      <Rocket className="h-5 w-5" />{t('dataLiteracyModule.launchActivityDesigner')}</button>
                   ) : (
                     <div className="bg-white rounded-xl p-6 border-2 border-green-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Data Analysis Activity Designer</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('dataLiteracyModule.dataAnalysisActivityDesigner')}</h3>
                       <div className="space-y-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Activity Title</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('dataLiteracyModule.activityTitle')}</label>
                           <input
                             type="text"
                             value={activityData.title}
                             onChange={(e) => setActivityData({ ...activityData, title: e.target.value })}
-                            placeholder="e.g., Analyzing Plant Growth Data"
+                            placeholder={t('dataLiteracyModule.eGAnalyzingPlantGrowthData')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('dataLiteracyModule.gradeLevel')}</label>
                             <select
                               value={activityData.gradeLevel}
                               onChange={(e) => setActivityData({ ...activityData, gradeLevel: e.target.value })}
                               className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                             >
-                              <option value="">Select grade</option>
+                              <option value="">{t('dataLiteracyModule.selectGrade')}</option>
                               {['K', '1', '2', '3', '4', '5', 'MS', 'HS'].map((grade) => (
                                 <option key={grade} value={grade}>
                                   {grade === 'MS' ? 'Middle School' : grade === 'HS' ? 'High School' : `Grade ${grade}`}
@@ -558,46 +548,46 @@ Scientific models are representations that help us understand, explain, and pred
                             </select>
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Data Type</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('dataLiteracyModule.dataType')}</label>
                             <select
                               value={activityData.dataType}
                               onChange={(e) => setActivityData({ ...activityData, dataType: e.target.value })}
                               className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                             >
-                              <option value="">Select type</option>
-                              <option value="quantitative">Quantitative</option>
-                              <option value="qualitative">Qualitative</option>
-                              <option value="mixed">Mixed</option>
+                              <option value="">{t('dataLiteracyModule.selectType')}</option>
+                              <option value="quantitative">{t('dataLiteracyModule.quantitative')}</option>
+                              <option value="qualitative">{t('dataLiteracyModule.qualitative')}</option>
+                              <option value="mixed">{t('dataLiteracyModule.mixed')}</option>
                             </select>
                           </div>
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Data Collection Method</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('dataLiteracyModule.dataCollectionMethod')}</label>
                           <textarea
                             value={activityData.collectionMethod}
                             onChange={(e) => setActivityData({ ...activityData, collectionMethod: e.target.value })}
                             rows={3}
-                            placeholder="Describe how students will collect data..."
+                            placeholder={t('dataLiteracyModule.describeHowStudentsWillCollectData')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Analysis Activities</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('dataLiteracyModule.analysisActivities')}</label>
                           <textarea
                             value={activityData.analysis}
                             onChange={(e) => setActivityData({ ...activityData, analysis: e.target.value })}
                             rows={4}
-                            placeholder="Describe data analysis activities..."
+                            placeholder={t('dataLiteracyModule.describeDataAnalysisActivities')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Visualization Plan</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('dataLiteracyModule.visualizationPlan')}</label>
                           <textarea
                             value={activityData.visualization}
                             onChange={(e) => setActivityData({ ...activityData, visualization: e.target.value })}
                             rows={3}
-                            placeholder="Describe how students will visualize the data..."
+                            placeholder={t('dataLiteracyModule.describeHowStudentsWillVisualizeTheData')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
@@ -605,9 +595,7 @@ Scientific models are representations that help us understand, explain, and pred
                           <button
                             onClick={handleActivitySubmit}
                             className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition"
-                          >
-                            Save Activity
-                          </button>
+                          >{t('dataLiteracyModule.saveActivity')}</button>
                           <button
                             onClick={() => setShowModelBuilder(false)}
                             className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition"
@@ -621,7 +609,7 @@ Scientific models are representations that help us understand, explain, and pred
                 </div>
 
                 <div className="bg-white rounded-xl p-6 border-2 border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Project Requirements</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('dataLiteracyModule.projectRequirements')}</h3>
                   <ol className="space-y-3">
                     {currentLessonData.content.requirements.map((req: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
@@ -643,9 +631,7 @@ Scientific models are representations that help us understand, explain, and pred
                 disabled={currentLesson === 0}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
-                <ArrowLeft className="h-4 w-4" />
-                Previous
-              </button>
+                <ArrowLeft className="h-4 w-4" />{t('dataLiteracyModule.previous')}</button>
 
               <button
                 onClick={() => {
@@ -658,18 +644,12 @@ Scientific models are representations that help us understand, explain, and pred
               >
                 {completedLessons.includes(currentLessonData.id) ? (
                   <>
-                    <CheckCircle2 className="h-4 w-4" />
-                    Marked Complete
-                  </>
+                    <CheckCircle2 className="h-4 w-4" />{t('dataLiteracyModule.markedComplete')}</>
                 ) : currentLesson === lessons.length - 1 ? (
                   <>
-                    <Trophy className="h-4 w-4" />
-                    Complete Module
-                  </>
+                    <Trophy className="h-4 w-4" />{t('dataLiteracyModule.completeModule')}</>
                 ) : (
-                  <>
-                    Complete & Next
-                    <ArrowRight className="h-4 w-4" />
+                  <>{t('dataLiteracyModule.completeNext')}<ArrowRight className="h-4 w-4" />
                   </>
                 )}
               </button>
@@ -682,7 +662,7 @@ Scientific models are representations that help us understand, explain, and pred
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-600 mb-4">
                 <Trophy className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Module Complete!</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('dataLiteracyModule.moduleComplete')}</h3>
               <p className="text-gray-700 mb-6">
                 You've earned {lessons.reduce((sum, l) => sum + l.points, 0)} points. Great work!
               </p>
@@ -693,9 +673,7 @@ Scientific models are representations that help us understand, explain, and pred
                 >
                   Continue to Next Module
                 </button>
-                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                  Download Certificate
-                </button>
+                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">{t('dataLiteracyModule.downloadCertificate')}</button>
               </div>
             </div>
           )}

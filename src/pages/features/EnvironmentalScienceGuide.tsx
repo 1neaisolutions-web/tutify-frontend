@@ -58,12 +58,14 @@ import {
   projectCategoryUiToApi,
 } from '../../utils/environmentalAdapters'
 
+import { useTranslation } from 'react-i18next'
 const CHATBOT_SLUG = 'environmental-science-guide'
 const TEACHING_REGION = 'Global'
 
 type TabType = 'climate' | 'sustainability' | 'ecosystems' | 'regional' | 'standards' | 'projects' | 'assessment' | 'action-plan'
 
 const EnvironmentalScienceGuide = () => {
+  const { t } = useTranslation()
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const [activeTab, setActiveTab] = useState<TabType>('climate')
@@ -145,7 +147,7 @@ const EnvironmentalScienceGuide = () => {
           setActionPlan(mapEnvironmentalActionPlanResult(raw))
         }
       } catch {
-        toast.error('Could not restore saved output from History.')
+        toast.error(t('environmentalScienceGuide.couldNotRestoreSavedOutputFromHistory'))
       }
     },
   })
@@ -172,13 +174,13 @@ const EnvironmentalScienceGuide = () => {
       if (response == null) return
       setClimateImpact(mapRegionalClimateResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Climate impact loaded')
+      toast.success(t('environmentalScienceGuide.climateImpactLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load climate data'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('environmentalScienceGuide.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -202,13 +204,13 @@ const EnvironmentalScienceGuide = () => {
       if (response == null) return
       setSustainabilityProjects(mapSustainabilityProjectsResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Projects loaded')
+      toast.success(t('environmentalScienceGuide.projectsLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load projects'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('environmentalScienceGuide.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -232,13 +234,13 @@ const EnvironmentalScienceGuide = () => {
       if (response == null) return
       setEcosystemInfo(mapEcosystemResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Ecosystem profile loaded')
+      toast.success(t('environmentalScienceGuide.ecosystemProfileLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load ecosystem info'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('environmentalScienceGuide.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -262,13 +264,13 @@ const EnvironmentalScienceGuide = () => {
       if (response == null) return
       setRegionalAnalysis(mapRegionalClimateResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Regional analysis loaded')
+      toast.success(t('environmentalScienceGuide.regionalAnalysisLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load regional analysis'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('environmentalScienceGuide.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -291,13 +293,13 @@ const EnvironmentalScienceGuide = () => {
       if (response == null) return
       setEnvironmentalStandards(mapEnvironmentalStandardsResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Standards loaded')
+      toast.success(t('environmentalScienceGuide.standardsLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load standards'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('environmentalScienceGuide.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -321,13 +323,13 @@ const EnvironmentalScienceGuide = () => {
       if (response == null) return
       setSustainabilityAssessment(mapSustainabilityAssessmentResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Assessment generated')
+      toast.success(t('environmentalScienceGuide.assessmentGenerated'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to generate assessment'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('environmentalScienceGuide.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -354,13 +356,13 @@ const EnvironmentalScienceGuide = () => {
       if (response == null) return
       setActionPlan(mapEnvironmentalActionPlanResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Action plan generated')
+      toast.success(t('environmentalScienceGuide.actionPlanGenerated'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to generate action plan'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('environmentalScienceGuide.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -368,14 +370,14 @@ const EnvironmentalScienceGuide = () => {
   }
 
   const tabs = [
-    { id: 'climate' as TabType, label: 'Climate Education', icon: Sun },
-    { id: 'sustainability' as TabType, label: 'Sustainability Projects', icon: Recycle },
-    { id: 'ecosystems' as TabType, label: 'Ecological Systems', icon: TreePine },
-    { id: 'regional' as TabType, label: 'Regional Analysis', icon: MapPin },
-    { id: 'standards' as TabType, label: 'Standards', icon: CheckCircle },
-    { id: 'projects' as TabType, label: 'Project Planner', icon: Lightbulb },
-    { id: 'assessment' as TabType, label: 'Assessment Tools', icon: BarChart3 },
-    { id: 'action-plan' as TabType, label: 'Action Planning', icon: Target },
+    { id: 'climate' as TabType, label: t('environmentalScienceGuide.tabs.climate'), icon: Sun },
+    { id: 'sustainability' as TabType, label: t('environmentalScienceGuide.tabs.sustainability'), icon: Recycle },
+    { id: 'ecosystems' as TabType, label: t('environmentalScienceGuide.tabs.ecosystems'), icon: TreePine },
+    { id: 'regional' as TabType, label: t('environmentalScienceGuide.tabs.regional'), icon: MapPin },
+    { id: 'standards' as TabType, label: t('environmentalScienceGuide.tabs.standards'), icon: CheckCircle },
+    { id: 'projects' as TabType, label: t('environmentalScienceGuide.tabs.projects'), icon: Lightbulb },
+    { id: 'assessment' as TabType, label: t('environmentalScienceGuide.tabs.assessment'), icon: BarChart3 },
+    { id: 'action-plan' as TabType, label: t('environmentalScienceGuide.tabs.action-plan'), icon: Target },
   ]
 
   return (
@@ -399,29 +401,23 @@ const EnvironmentalScienceGuide = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-3xl font-bold">Environmental Science Guide</h1>
+                  <h1 className="text-3xl font-bold">{t('environmentalScienceGuide.environmentalScienceGuide')}</h1>
                   <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
                     <Star className="h-3 w-3" /> 4.9★
                   </span>
                   <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" /> Premium
-                  </span>
+                    <Lock className="inline h-3 w-3 mr-1" />{t('environmentalScienceGuide.premium')}</span>
                   <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
-                    <Globe className="inline h-3 w-3 mr-1" /> Global Focus
-                  </span>
+                    <Globe className="inline h-3 w-3 mr-1" />{t('environmentalScienceGuide.globalFocus')}</span>
                 </div>
-                <p className="mt-2 text-green-100">
-                  Comprehensive environmental science tools aligned with international standards (ISO 14001, ISO 14064, UN SDGs). 
-                  Help students understand climate change, sustainability, and ecological systems through global perspectives, 
-                  regional analysis, and hands-on projects. Prepare students to address environmental challenges worldwide.
-                </p>
+                <p className="mt-2 text-blue-100">{t('environmentalScienceGuide.heroDescription')}</p>
               </div>
             </div>
             
             {/* Quick Settings */}
             <div className="flex flex-wrap gap-4 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Grade Level:</label>
+                <label className="text-sm font-medium">{t('environmentalScienceGuide.gradeLevel')}</label>
                 <select
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
@@ -433,7 +429,7 @@ const EnvironmentalScienceGuide = () => {
                 </select>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Region:</label>
+                <label className="text-sm font-medium">{t('environmentalScienceGuide.region')}</label>
                 <select
                   value={selectedRegion}
                   onChange={(e) => setSelectedRegion(e.target.value)}
@@ -479,14 +475,10 @@ const EnvironmentalScienceGuide = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 border border-yellow-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Sun className="h-6 w-6 text-yellow-600" />
-                  Global Climate Education
-                </h2>
+                  <Sun className="h-6 w-6 text-yellow-600" />{t('environmentalScienceGuide.globalClimateEducation')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select Region
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('environmentalScienceGuide.selectRegion')}</label>
                     <select
                       value={climateRegion}
                       onChange={(e) => setClimateRegion(e.target.value)}
@@ -505,14 +497,10 @@ const EnvironmentalScienceGuide = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Loading...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('environmentalScienceGuide.loading')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Explore Climate Impact
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('environmentalScienceGuide.exploreClimateImpact')}</>
                       )}
                     </button>
                   </div>
@@ -545,7 +533,7 @@ const EnvironmentalScienceGuide = () => {
 
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Key Climate Impacts</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.keyClimateImpacts')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {climateImpact.keyImpacts.map((impact, i) => (
                           <li key={i}>{impact}</li>
@@ -555,24 +543,24 @@ const EnvironmentalScienceGuide = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Temperature Trends</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.temperatureTrends')}</h4>
                         <p className="text-gray-700">{climateImpact.temperatureTrends}</p>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Precipitation Changes</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.precipitationChanges')}</h4>
                         <p className="text-gray-700">{climateImpact.precipitationChanges}</p>
                       </div>
                     </div>
 
                     {climateImpact.seaLevelRise && (
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Sea Level Rise</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.seaLevelRise')}</h4>
                         <p className="text-gray-700">{climateImpact.seaLevelRise}</p>
                       </div>
                     )}
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Extreme Events</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.extremeEvents')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {climateImpact.extremeEvents.map((event, i) => (
                           <span key={i} className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
@@ -583,14 +571,14 @@ const EnvironmentalScienceGuide = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Case Studies</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">{t('environmentalScienceGuide.caseStudies')}</h4>
                       <div className="space-y-3">
                         {climateImpact.caseStudies.map((study, idx) => (
                           <div key={idx} className="bg-gray-50 p-4 rounded-lg">
                             <h5 className="font-semibold text-gray-900 mb-1">{study.title}</h5>
                             <p className="text-sm text-gray-700 mb-2">{study.description}</p>
                             <div>
-                              <span className="text-xs font-medium text-gray-700">Impacts:</span>
+                              <span className="text-xs font-medium text-gray-700">{t('environmentalScienceGuide.impacts')}</span>
                               <ul className="list-disc list-inside space-y-1 text-sm text-gray-700 mt-1">
                                 {study.impacts.map((impact, i) => (
                                   <li key={i}>{impact}</li>
@@ -603,7 +591,7 @@ const EnvironmentalScienceGuide = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Adaptation Strategies</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.adaptationStrategies')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {climateImpact.adaptationStrategies.map((strategy, i) => (
                           <li key={i}>{strategy}</li>
@@ -621,14 +609,10 @@ const EnvironmentalScienceGuide = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Recycle className="h-6 w-6 text-green-600" />
-                  Sustainability Projects Library
-                </h2>
+                  <Recycle className="h-6 w-6 text-green-600" />{t('environmentalScienceGuide.sustainabilityProjectsLibrary')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Project Category
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('environmentalScienceGuide.projectCategory')}</label>
                     <select
                       value={projectCategory}
                       onChange={(e) => setProjectCategory(e.target.value)}
@@ -647,14 +631,10 @@ const EnvironmentalScienceGuide = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Loading...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('environmentalScienceGuide.loading')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Load Projects
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('environmentalScienceGuide.loadProjects')}</>
                       )}
                     </button>
                   </div>
@@ -687,7 +667,7 @@ const EnvironmentalScienceGuide = () => {
                       {selectedProject?.id === project.id && (
                         <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Objectives</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.objectives')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {project.objectives.map((obj, i) => (
                                 <li key={i}>{obj}</li>
@@ -696,7 +676,7 @@ const EnvironmentalScienceGuide = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Materials</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.materials')}</h4>
                             <div className="flex flex-wrap gap-2">
                               {project.materials.map((material, i) => (
                                 <span key={i} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium">
@@ -707,7 +687,7 @@ const EnvironmentalScienceGuide = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Steps</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.steps')}</h4>
                             <div className="space-y-2">
                               {project.steps.map((step, i) => (
                                 <div key={i} className="flex gap-3 p-2 bg-gray-50 rounded">
@@ -721,7 +701,7 @@ const EnvironmentalScienceGuide = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Standards Alignment</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.standardsAlignment')}</h4>
                             <div className="flex flex-wrap gap-2">
                               {project.standardsAlignment.map((standard, i) => (
                                 <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -744,14 +724,10 @@ const EnvironmentalScienceGuide = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-xl p-6 border border-teal-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <TreePine className="h-6 w-6 text-teal-600" />
-                  Ecological Systems Understanding
-                </h2>
+                  <TreePine className="h-6 w-6 text-teal-600" />{t('environmentalScienceGuide.ecologicalSystemsUnderstanding')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Ecosystem Type
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('environmentalScienceGuide.ecosystemType')}</label>
                     <select
                       value={ecosystemType}
                       onChange={(e) => setEcosystemType(e.target.value)}
@@ -770,14 +746,10 @@ const EnvironmentalScienceGuide = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Loading...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('environmentalScienceGuide.loading')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Explore Ecosystem
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('environmentalScienceGuide.exploreEcosystem')}</>
                       )}
                     </button>
                   </div>
@@ -802,12 +774,12 @@ const EnvironmentalScienceGuide = () => {
 
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Description</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.description')}</h4>
                       <p className="text-gray-700">{ecosystemInfo.description}</p>
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Key Features</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.keyFeatures')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {ecosystemInfo.keyFeatures.map((feature, i) => (
                           <span key={i} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
@@ -819,7 +791,7 @@ const EnvironmentalScienceGuide = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Abiotic Factors</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.abioticFactors')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {ecosystemInfo.abioticFactors.map((factor, i) => (
                             <li key={i}>{factor}</li>
@@ -827,7 +799,7 @@ const EnvironmentalScienceGuide = () => {
                         </ul>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Biotic Factors</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.bioticFactors')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {ecosystemInfo.bioticFactors.map((factor, i) => (
                             <li key={i}>{factor}</li>
@@ -837,7 +809,7 @@ const EnvironmentalScienceGuide = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Energy Flow</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.energyFlow')}</h4>
                       <div className="space-y-2">
                         {ecosystemInfo.energyFlow.map((flow, i) => (
                           <div key={i} className="flex gap-2 items-center p-2 bg-gray-50 rounded">
@@ -848,7 +820,7 @@ const EnvironmentalScienceGuide = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Threats</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.threats')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {ecosystemInfo.threats.map((threat, i) => (
                           <span key={i} className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
@@ -859,7 +831,7 @@ const EnvironmentalScienceGuide = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Conservation</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.conservation')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {ecosystemInfo.conservation.map((action, i) => (
                           <li key={i}>{action}</li>
@@ -877,14 +849,10 @@ const EnvironmentalScienceGuide = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <MapPin className="h-6 w-6 text-blue-600" />
-                  Regional Climate Analysis
-                </h2>
+                  <MapPin className="h-6 w-6 text-blue-600" />{t('environmentalScienceGuide.regionalClimateAnalysis')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select Region
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('environmentalScienceGuide.selectRegion')}</label>
                     <select
                       value={selectedRegion}
                       onChange={(e) => setSelectedRegion(e.target.value)}
@@ -903,14 +871,10 @@ const EnvironmentalScienceGuide = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Analyzing...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('environmentalScienceGuide.analyzing')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Analyze Region
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('environmentalScienceGuide.analyzeRegion')}</>
                       )}
                     </button>
                   </div>
@@ -922,7 +886,7 @@ const EnvironmentalScienceGuide = () => {
                   <h3 className="text-2xl font-bold text-gray-900 mb-4">{regionalAnalysis.region}</h3>
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Key Impacts</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.keyImpacts')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {regionalAnalysis.keyImpacts.map((impact, i) => (
                           <li key={i}>{impact}</li>
@@ -930,7 +894,7 @@ const EnvironmentalScienceGuide = () => {
                       </ul>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Case Studies</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.caseStudies')}</h4>
                       <div className="space-y-3">
                         {regionalAnalysis.caseStudies.map((study, i) => (
                           <div key={i} className="bg-gray-50 p-4 rounded-lg">
@@ -951,9 +915,7 @@ const EnvironmentalScienceGuide = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <CheckCircle className="h-6 w-6 text-purple-600" />
-                  International Environmental Standards
-                </h2>
+                  <CheckCircle className="h-6 w-6 text-purple-600" />{t('environmentalScienceGuide.internationalEnvironmentalStandards')}</h2>
                 <button
                   onClick={handleLoadStandards}
                   disabled={isGenerating}
@@ -961,14 +923,10 @@ const EnvironmentalScienceGuide = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('environmentalScienceGuide.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load Standards
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('environmentalScienceGuide.loadStandards')}</>
                   )}
                 </button>
               </div>
@@ -997,7 +955,7 @@ const EnvironmentalScienceGuide = () => {
                       {selectedStandard?.id === standard.id && (
                         <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Key Principles</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.keyPrinciples')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {standard.keyPrinciples.map((principle, i) => (
                                 <li key={i}>{principle}</li>
@@ -1005,7 +963,7 @@ const EnvironmentalScienceGuide = () => {
                             </ul>
                           </div>
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Educational Relevance</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.educationalRelevance')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {standard.educationalRelevance.map((relevance, i) => (
                                 <li key={i}>{relevance}</li>
@@ -1026,13 +984,8 @@ const EnvironmentalScienceGuide = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-emerald-50 to-green-50 rounded-xl p-6 border border-emerald-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Lightbulb className="h-6 w-6 text-emerald-600" />
-                  Project-Based Learning Planner
-                </h2>
-                <p className="text-gray-600">
-                  Use the Sustainability Projects Library tab to browse project templates, then customize 
-                  them here for your specific classroom needs.
-                </p>
+                  <Lightbulb className="h-6 w-6 text-emerald-600" />{t('environmentalScienceGuide.projectBasedLearningPlanner')}</h2>
+                <p className="text-gray-600">{t('environmentalScienceGuide.useTheSustainabilityProjectsLibraryTabToBrowseProjectTe')}</p>
               </div>
             </div>
           )}
@@ -1042,24 +995,20 @@ const EnvironmentalScienceGuide = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl p-6 border border-cyan-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <BarChart3 className="h-6 w-6 text-cyan-600" />
-                  Sustainability Assessment Tools
-                </h2>
+                  <BarChart3 className="h-6 w-6 text-cyan-600" />{t('environmentalScienceGuide.sustainabilityAssessmentTools')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Assessment Category
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('environmentalScienceGuide.assessmentCategory')}</label>
                     <select
                       value={assessmentCategory}
                       onChange={(e) => setAssessmentCategory(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500"
                     >
-                      <option>Carbon Footprint</option>
-                      <option>Water Footprint</option>
-                      <option>Waste Audit</option>
-                      <option>Energy Audit</option>
-                      <option>Biodiversity Assessment</option>
+                      <option>{t('environmentalScienceGuide.carbonFootprint')}</option>
+                      <option>{t('environmentalScienceGuide.waterFootprint')}</option>
+                      <option>{t('environmentalScienceGuide.wasteAudit')}</option>
+                      <option>{t('environmentalScienceGuide.energyAudit')}</option>
+                      <option>{t('environmentalScienceGuide.biodiversityAssessment')}</option>
                     </select>
                   </div>
                   <div className="flex items-end">
@@ -1070,14 +1019,10 @@ const EnvironmentalScienceGuide = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Generating...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('environmentalScienceGuide.generating')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Generate Assessment
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('environmentalScienceGuide.generateAssessment')}</>
                       )}
                     </button>
                   </div>
@@ -1089,7 +1034,7 @@ const EnvironmentalScienceGuide = () => {
                   <h3 className="text-2xl font-bold text-gray-900 mb-4">{sustainabilityAssessment.category}</h3>
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Recommendations</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.recommendations')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {sustainabilityAssessment.recommendations.map((rec, i) => (
                           <li key={i}>{rec}</li>
@@ -1097,7 +1042,7 @@ const EnvironmentalScienceGuide = () => {
                       </ul>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Action Items</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.actionItems')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {sustainabilityAssessment.actionItems.map((item, i) => (
                           <li key={i}>{item}</li>
@@ -1115,35 +1060,29 @@ const EnvironmentalScienceGuide = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Target className="h-6 w-6 text-indigo-600" />
-                  Action Planning & Advocacy
-                </h2>
+                  <Target className="h-6 w-6 text-indigo-600" />{t('environmentalScienceGuide.actionPlanningAdvocacy')}</h2>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Action Goal
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('environmentalScienceGuide.actionGoal')}</label>
                     <input
                       type="text"
                       value={actionGoal}
                       onChange={(e) => setActionGoal(e.target.value)}
-                      placeholder="e.g., Reduce school carbon footprint by 20%"
+                      placeholder={t('environmentalScienceGuide.eGReduceSchoolCarbonFootprintBy20')}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Timeframe
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('environmentalScienceGuide.timeframe')}</label>
                     <select
                       value={actionTimeframe}
                       onChange={(e) => setActionTimeframe(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
                     >
-                      <option>1 month</option>
-                      <option>3 months</option>
-                      <option>6 months</option>
-                      <option>1 year</option>
+                      <option>{t('environmentalScienceGuide.kMonth')}</option>
+                      <option>{t('environmentalScienceGuide.kMonths')}</option>
+                      <option>{t('environmentalScienceGuide.kMonths2')}</option>
+                      <option>{t('environmentalScienceGuide.kYear')}</option>
                     </select>
                   </div>
                   <button
@@ -1153,14 +1092,10 @@ const EnvironmentalScienceGuide = () => {
                   >
                     {isGenerating ? (
                       <>
-                        <RefreshCw className="h-5 w-5 animate-spin" />
-                        Generating...
-                      </>
+                        <RefreshCw className="h-5 w-5 animate-spin" />{t('environmentalScienceGuide.generating')}</>
                     ) : (
                       <>
-                        <Sparkles className="h-5 w-5" />
-                        Generate Action Plan
-                      </>
+                        <Sparkles className="h-5 w-5" />{t('environmentalScienceGuide.generateActionPlan')}</>
                     )}
                   </button>
                 </div>
@@ -1171,7 +1106,7 @@ const EnvironmentalScienceGuide = () => {
                   <h3 className="text-2xl font-bold text-gray-900 mb-4">{actionPlan.goal}</h3>
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Objectives</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.objectives')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {actionPlan.objectives.map((obj, i) => (
                           <li key={i}>{obj}</li>
@@ -1179,7 +1114,7 @@ const EnvironmentalScienceGuide = () => {
                       </ul>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Actions</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.actions')}</h4>
                       <div className="space-y-2">
                         {actionPlan.actions.map((action, i) => (
                           <div key={i} className="border-l-4 border-indigo-500 pl-4">
@@ -1195,7 +1130,7 @@ const EnvironmentalScienceGuide = () => {
                       </div>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Success Metrics</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('environmentalScienceGuide.successMetrics')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {actionPlan.successMetrics.map((metric, i) => (
                           <li key={i}>{metric}</li>

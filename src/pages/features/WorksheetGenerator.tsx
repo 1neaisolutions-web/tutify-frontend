@@ -17,7 +17,9 @@ import { parseCreditError, type ParsedCreditError } from '../../utils/creditErro
 import NoCreditsCard from '../../components/NoCreditsCard'
 import { useRefreshCreditBalance } from '../../hooks/useRefreshCreditBalance'
 
+import { useTranslation } from 'react-i18next'
 export const WorksheetGenerator = () => {
+  const { t } = useTranslation()
   const [packs, setPacks] = useState<ContentPack[]>([])
   const [selectedPack, setSelectedPack] = useState<string>('')
   const [topicText, setTopicText] = useState('')
@@ -137,9 +139,9 @@ export const WorksheetGenerator = () => {
       await refreshCreditBalance()
 
       if (worksheet._cacheStatus === 'hit') {
-        toast.success('Worksheet loaded from cache!')
+        toast.success(t('worksheetGeneratorPage.worksheetLoadedFromCache'))
       } else {
-        toast.success('Worksheet generated successfully!')
+        toast.success(t('worksheetGeneratorPage.worksheetGeneratedSuccessfully'))
       }
     } catch (error: any) {
       const credit = parseCreditError(error)
@@ -159,19 +161,19 @@ export const WorksheetGenerator = () => {
           errorMessage.includes('401') || 
           errorMessage.includes('Unauthorized') ||
           errorMessage.includes('No auth token')) {
-        toast.error('Please log in to generate worksheets')
+        toast.error(t('worksheetGeneratorPage.pleaseLogInToGenerateWorksheets'))
         // Redirect to login after a delay
         setTimeout(() => {
           navigate('/login')
         }, 2000)
       } else if (errorMessage.includes('Network error') || errorMessage.includes('Failed to fetch')) {
-        toast.error('Network error. Check backend connection and browser console.')
+        toast.error(t('worksheetGeneratorPage.networkErrorCheckBackendConnectionAndBrowserConsole'))
         console.error('[WorksheetGenerator] Network error details:', error)
       } else if (errorMessage.includes('Topic not found')) {
-        toast.error('Topic not found. Please try a different topic.')
+        toast.error(t('worksheetGeneratorPage.topicNotFoundPleaseTryADifferentTopic'))
         console.warn('Topic not found - user should try a different topic')
       } else if (errorMessage.includes('timed out') || errorMessage.includes('timeout')) {
-        toast.error('Generation timed out. Try reducing the number of questions.')
+        toast.error(t('worksheetGeneratorPage.generationTimedOutTryReducingTheNumberOfQuestions'))
         console.warn('Timeout - suggest reducing number of questions')
       } else {
         toast.error(errorMessage)
@@ -188,7 +190,7 @@ export const WorksheetGenerator = () => {
       <div className="min-h-screen bg-gray-50 p-6">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6 flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">Generated Worksheet</h1>
+            <h1 className="text-2xl font-bold text-gray-900">{t('worksheetGeneratorPage.generatedWorksheet')}</h1>
             <button
               onClick={() => setGeneratedWorksheet(null)}
               className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
@@ -218,9 +220,7 @@ export const WorksheetGenerator = () => {
                 navigate(`/worksheets/${generatedWorksheet.id}?answers=true`)
               }}
               className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-            >
-              View with Answers
-            </button>
+            >{t('worksheetGeneratorPage.viewWithAnswers')}</button>
           </div>
         </div>
       </div>
@@ -231,22 +231,18 @@ export const WorksheetGenerator = () => {
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-4xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Generate Worksheet</h1>
-          <p className="text-gray-600 mt-1">
-            Generate worksheets from curriculum content using AI
-          </p>
+          <h1 className="text-3xl font-bold text-gray-900">{t('worksheetGeneratorPage.generateWorksheet')}</h1>
+          <p className="text-gray-600 mt-1">{t('worksheetGeneratorPage.generateWorksheetsFromCurriculumContentUsingAi')}</p>
         </div>
         
         <div className="bg-white rounded-lg shadow p-6">
           <form onSubmit={handleGenerate} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Content Pack *
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('worksheetGeneratorPage.contentPack')}</label>
               {loading ? (
                 <div className="flex items-center space-x-2 text-gray-500">
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Loading packs...</span>
+                  <span>{t('worksheetGeneratorPage.loadingPacks')}</span>
                 </div>
               ) : (
                 <select
@@ -255,7 +251,7 @@ export const WorksheetGenerator = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   required
                 >
-                  <option value="">Select a content pack...</option>
+                  <option value="">{t('worksheetGeneratorPage.selectAContentPack')}</option>
                   {(packs || []).map((pack) => (
                     <option key={pack.id} value={pack.id}>
                       {pack.name} {pack.subject ? `- ${pack.subject}` : ''}
@@ -268,7 +264,7 @@ export const WorksheetGenerator = () => {
             {selectedPackData && (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <p className="text-sm text-blue-900">
-                  <strong>Pack:</strong> {selectedPackData.name}
+                  <strong>{t('worksheetGeneratorPage.pack')}</strong> {selectedPackData.name}
                   {selectedPackData.subject && ` • ${selectedPackData.subject}`}
                   {selectedPackData.grade && ` • ${selectedPackData.grade}`}
                 </p>
@@ -276,20 +272,16 @@ export const WorksheetGenerator = () => {
             )}
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Topic *
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('worksheetGeneratorPage.topic')}</label>
               <input
                 type="text"
                 value={topicText}
                 onChange={(e) => setTopicText(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                placeholder="e.g., Fractions, Photosynthesis, World War II"
+                placeholder={t('worksheetGeneratorPage.eGFractionsPhotosynthesisWorldWarIi')}
                 required
               />
-              <p className="text-xs text-gray-500 mt-1">
-                Enter the topic or chapter you want to generate questions about
-              </p>
+              <p className="text-xs text-gray-500 mt-1">{t('worksheetGeneratorPage.enterTheTopicOrChapterYouWantToGenerateQuestions')}</p>
             </div>
             
             <div className="grid grid-cols-2 gap-4">
@@ -302,7 +294,7 @@ export const WorksheetGenerator = () => {
                   value={grade}
                   onChange={(e) => setGrade(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="e.g., Grade 5"
+                  placeholder={t('worksheetGeneratorPage.eGGrade5')}
                 />
               </div>
               <div>
@@ -314,7 +306,7 @@ export const WorksheetGenerator = () => {
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="e.g., Mathematics"
+                  placeholder={t('worksheetGeneratorPage.eGMathematics')}
                 />
               </div>
             </div>
@@ -328,17 +320,13 @@ export const WorksheetGenerator = () => {
                 value={topicId}
                 onChange={(e) => setTopicId(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                placeholder="e.g., topic-uuid-123"
+                placeholder={t('worksheetGeneratorPage.eGTopicUuid123')}
               />
-              <p className="text-xs text-gray-500 mt-1">
-                Use topic ID from content pack if available, otherwise use topic text above
-              </p>
+              <p className="text-xs text-gray-500 mt-1">{t('worksheetGeneratorPage.useTopicIdFromContentPackIfAvailableOtherwiseUse')}</p>
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Number of Questions
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('worksheetGeneratorPage.numberOfQuestions')}</label>
               <input
                 type="number"
                 min="1"
@@ -353,9 +341,7 @@ export const WorksheetGenerator = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Difficulty
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('worksheetGeneratorPage.difficulty')}</label>
               <div className="mb-3">
                 <div className="flex space-x-4">
                   <label className="flex items-center">
@@ -366,7 +352,7 @@ export const WorksheetGenerator = () => {
                       onChange={() => setDifficultyMode('single')}
                       className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
                     />
-                    <span className="ml-2 text-sm text-gray-700">Single Difficulty</span>
+                    <span className="ml-2 text-sm text-gray-700">{t('worksheetGeneratorPage.singleDifficulty')}</span>
                   </label>
                   <label className="flex items-center">
                     <input
@@ -376,7 +362,7 @@ export const WorksheetGenerator = () => {
                       onChange={() => setDifficultyMode('mix')}
                       className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
                     />
-                    <span className="ml-2 text-sm text-gray-700">Difficulty Mix</span>
+                    <span className="ml-2 text-sm text-gray-700">{t('worksheetGeneratorPage.difficultyMix')}</span>
                   </label>
                 </div>
               </div>
@@ -388,9 +374,9 @@ export const WorksheetGenerator = () => {
                     onChange={(e) => setSingleDifficulty(e.target.value as 'easy' | 'medium' | 'hard')}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   >
-                    <option value="easy">Easy</option>
-                    <option value="medium">Medium</option>
-                    <option value="hard">Hard</option>
+                    <option value="easy">{t('worksheetGeneratorPage.easy')}</option>
+                    <option value="medium">{t('worksheetGeneratorPage.medium')}</option>
+                    <option value="hard">{t('worksheetGeneratorPage.hard')}</option>
                   </select>
                   <p className="text-xs text-gray-500 mt-1">
                     All questions will be {singleDifficulty} difficulty
@@ -400,7 +386,7 @@ export const WorksheetGenerator = () => {
                 <div>
                   <div className="grid grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-xs text-gray-600 mb-1">Easy</label>
+                      <label className="block text-xs text-gray-600 mb-1">{t('worksheetGeneratorPage.easy')}</label>
                       <input
                         type="number"
                         min="0"
@@ -424,7 +410,7 @@ export const WorksheetGenerator = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs text-gray-600 mb-1">Medium</label>
+                      <label className="block text-xs text-gray-600 mb-1">{t('worksheetGeneratorPage.medium')}</label>
                       <input
                         type="number"
                         min="0"
@@ -441,7 +427,7 @@ export const WorksheetGenerator = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs text-gray-600 mb-1">Hard</label>
+                      <label className="block text-xs text-gray-600 mb-1">{t('worksheetGeneratorPage.hard')}</label>
                       <input
                         type="number"
                         min="0"
@@ -466,9 +452,7 @@ export const WorksheetGenerator = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Question Types
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('worksheetGeneratorPage.questionTypes')}</label>
               <div className="space-y-2">
                 {['mcq', 'short_answer', 'long_answer'].map((type) => (
                   <label key={type} className="flex items-center">
@@ -490,9 +474,7 @@ export const WorksheetGenerator = () => {
                   </label>
                 ))}
               </div>
-              <p className="text-xs text-gray-500 mt-1">
-                Default: MCQ and Short Answer
-              </p>
+              <p className="text-xs text-gray-500 mt-1">{t('worksheetGeneratorPage.defaultMcqAndShortAnswer')}</p>
             </div>
             
             <div>
@@ -523,17 +505,13 @@ export const WorksheetGenerator = () => {
 
             {error && !creditGate && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <p className="text-sm text-red-800 font-medium">Error</p>
+                <p className="text-sm text-red-800 font-medium">{t('worksheetGeneratorPage.error')}</p>
                 <p className="text-sm text-red-700 mt-1">{error}</p>
                 {error.includes('Topic not found') && (
-                  <p className="text-xs text-red-600 mt-2">
-                    💡 Try a different topic or check if the topic exists in this content pack.
-                  </p>
+                  <p className="text-xs text-red-600 mt-2">{t('worksheetGeneratorPage.tryADifferentTopicOrCheckIfTheTopicExists')}</p>
                 )}
                 {error.includes('timed out') && (
-                  <p className="text-xs text-red-600 mt-2">
-                    💡 Try reducing the number of questions or try again.
-                  </p>
+                  <p className="text-xs text-red-600 mt-2">{t('worksheetGeneratorPage.tryReducingTheNumberOfQuestionsOrTryAgain')}</p>
                 )}
               </div>
             )}
@@ -551,14 +529,14 @@ export const WorksheetGenerator = () => {
               ) : (
                 <>
                   <FileText className="w-5 h-5" />
-                  <span>Generate Worksheet</span>
+                  <span>{t('worksheetGeneratorPage.generateWorksheet')}</span>
                 </>
               )}
             </button>
             
             {generating && (
               <div className="text-center text-sm text-gray-600">
-                <p>⏱️ Estimated time: 30-60 seconds</p>
+                <p>{t('worksheetGeneratorPage.estimatedTime3060Seconds')}</p>
                 <p className="text-xs mt-1">Cache hits return in &lt;100ms</p>
               </div>
             )}

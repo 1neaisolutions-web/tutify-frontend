@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { ExternalLink, Layers, Pin, Trash2, X } from 'lucide-react'
 import { useDispatch } from 'react-redux'
@@ -11,7 +12,7 @@ import { CustomModal } from '../../../components/shared/CustomModal'
 import { HistoryContentPreview } from './HistoryContentPreview'
 import { DELETE_PATH_MAP, getItemRoute } from './historyRouting'
 import { formatRelativeDate } from './historyUtils'
-import { SOURCE_META } from './HistoryCard'
+import { getSourceMeta } from './historySourceMeta'
 import { StatusPill } from './StatusPill'
 
 interface Props {
@@ -20,6 +21,7 @@ interface Props {
 }
 
 export function HistoryDetailPanel({ item, onClose }: Props) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { toast } = useSnackbar()
@@ -42,13 +44,13 @@ export function HistoryDetailPanel({ item, onClose }: Props) {
         <div className="rounded-2xl bg-white p-4 shadow-sm">
           <Layers className="mx-auto h-10 w-10 text-gray-300" />
         </div>
-        <p className="mt-4 text-sm font-semibold text-gray-500">Select an item</p>
-        <p className="mt-1 max-w-[200px] text-xs text-gray-400">Click any card to preview its content and quick actions.</p>
+        <p className="mt-4 text-sm font-semibold text-gray-500">{t('historyPage.detail.selectItem')}</p>
+        <p className="mt-1 max-w-[200px] text-xs text-gray-400">{t('historyPage.detail.selectItemHint')}</p>
       </div>
     )
   }
 
-  const meta = SOURCE_META[item.sourceType]
+  const meta = getSourceMeta(t)[item.sourceType]
 
   async function handleDelete() {
     setDeletePending(true)
@@ -58,9 +60,9 @@ export function HistoryDetailPanel({ item, onClose }: Props) {
       setDeleteOpen(false)
       onClose()
       invalidateHistory()
-      toast.success('Item deleted')
+      toast.success(t('historyPage.detail.itemDeleted'))
     } catch {
-      toast.error('Could not delete item')
+      toast.error(t('historyPage.detail.itemDeleteFailed'))
     } finally {
       setDeletePending(false)
     }
@@ -94,7 +96,7 @@ export function HistoryDetailPanel({ item, onClose }: Props) {
           {item.pinned && (
             <span className="flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-600">
               <Pin className="h-2.5 w-2.5" />
-              Pinned
+              {t('historyPage.detail.pinned')}
             </span>
           )}
         </div>
@@ -105,7 +107,7 @@ export function HistoryDetailPanel({ item, onClose }: Props) {
           className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-500"
         >
           <ExternalLink className="h-4 w-4" />
-          Open {meta.label}
+          {t('historyPage.detail.openType', { type: meta.label })}
         </button>
       </div>
 
@@ -116,13 +118,17 @@ export function HistoryDetailPanel({ item, onClose }: Props) {
       <div className="border-t border-gray-100 bg-gray-50/60 px-5 py-3">
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
-            <p className="text-[11px] text-gray-400">Created {formatRelativeDate(String(item.createdAt))}</p>
+            <p className="text-[11px] text-gray-400">
+              {t('historyPage.detail.created', { date: formatRelativeDate(String(item.createdAt)) })}
+            </p>
             {item.lastUsedAt && (
-              <p className="text-[11px] text-gray-400">Last used {formatRelativeDate(String(item.lastUsedAt))}</p>
+              <p className="text-[11px] text-gray-400">
+                {t('historyPage.detail.lastUsed', { date: formatRelativeDate(String(item.lastUsedAt)) })}
+              </p>
             )}
             {item.usageCount > 0 && (
               <p className="text-[11px] text-gray-400">
-                Used {item.usageCount} time{item.usageCount !== 1 ? 's' : ''}
+                {t('historyPage.detail.usedTimes', { count: item.usageCount })}
               </p>
             )}
           </div>
@@ -132,7 +138,7 @@ export function HistoryDetailPanel({ item, onClose }: Props) {
             className="flex items-center gap-1 text-[11px] font-medium text-gray-400 transition-colors hover:text-red-500"
           >
             <Trash2 className="h-3.5 w-3.5" />
-            Delete
+            {t('history.delete')}
           </button>
         </div>
       </div>
@@ -140,14 +146,14 @@ export function HistoryDetailPanel({ item, onClose }: Props) {
       <CustomModal
         open={deleteOpen}
         close={() => setDeleteOpen(false)}
-        title="Delete this item?"
-        primaryButtonText="Delete"
+        title={t('historyPage.detail.deleteConfirmTitle')}
+        primaryButtonText={t('history.delete')}
         isDelete
         loading={deletePending}
         handleSave={handleDelete}
       >
         <p className="text-sm text-gray-600">
-          &quot;<strong>{item.title}</strong>&quot; will be permanently deleted. This cannot be undone.
+          {t('historyPage.detail.deleteConfirmBody', { title: item.title })}
         </p>
       </CustomModal>
     </div>

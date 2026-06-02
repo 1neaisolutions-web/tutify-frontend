@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import { AI_MODES, DEFAULT_AI_MODE } from '../constants/aiModes';
 import { sendCopilotMessage } from '../api/aiApi';
@@ -15,6 +16,7 @@ const MAX_MESSAGES = 50;
 const makeStorageKey = (mode) => `tutify_student_copilot_thread_${mode}`;
 
 const AICopilot = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [mode, setMode] = useState(DEFAULT_AI_MODE);
   const [messages, setMessages] = useState([]);
@@ -24,12 +26,12 @@ const AICopilot = () => {
 
   const suggestedPrompts = useMemo(
     () => [
-      "Help me understand Newton's 3rd Law",
-      'Summarise these notes and give me 5 key points',
-      'Generate 3 practice questions on photosynthesis',
-      "What should I study for tomorrow? Build a quick plan.",
+      t('studentPanel.copilot.prompts.newton'),
+      t('studentPanel.copilot.prompts.summariseNotes'),
+      t('studentPanel.copilot.prompts.photosynthesis'),
+      t('studentPanel.copilot.prompts.studyPlan'),
     ],
-    []
+    [t]
   );
 
   useEffect(() => {
@@ -99,7 +101,7 @@ const AICopilot = () => {
     } catch (e) {
       setMessages((prev) => [
         ...prev,
-        { id: `err_${Date.now()}`, role: 'assistant', text: `Sorry — something went wrong. ${e?.message || ''}`.trim() },
+        { id: `err_${Date.now()}`, role: 'assistant', text: t('studentPanel.common.sorryError', { message: e?.message || '' }).trim() },
       ]);
       setIsGenerating(false);
       setStreamingText('');
@@ -121,16 +123,16 @@ const AICopilot = () => {
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">AI Copilot</h1>
+              <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.copilot.title')}</h1>
               <p className="text-sm text-gray-600 dark:text-gray-300">
-                Ask anything. Switch modes for explain / summarise / practice.
+                {t('studentPanel.copilot.subtitle')}
               </p>
             </div>
           </div>
 
           <div className="flex flex-wrap gap-2">
             {AI_MODES.map((m) => (
-              <ModeSelectorChip key={m.key} label={m.label} active={m.key === mode} onClick={() => setMode(m.key)} />
+              <ModeSelectorChip key={m.key} label={t(`studentPanel.copilot.modes.${m.key}`)} active={m.key === mode} onClick={() => setMode(m.key)} />
             ))}
           </div>
         </div>
@@ -140,9 +142,9 @@ const AICopilot = () => {
         <div className="flex-1 px-6 py-8">
           <div className="max-w-3xl mx-auto">
             <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-6">
-              <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">Try a starter prompt</h2>
+              <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.copilot.empty.title')}</h2>
               <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
-                This is a demo-ready AI flow with simulated streaming.
+                {t('studentPanel.copilot.empty.subtitle')}
               </p>
               <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {suggestedPrompts.map((p) => (
