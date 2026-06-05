@@ -45,7 +45,6 @@ import {
   Image,
   File,
   Mic,
-  MicOff,
   Volume2,
   Settings,
   ChevronDown,
@@ -106,12 +105,11 @@ const GeneralTeachingAssistantChat = () => {
   const [showUploadMenu, setShowUploadMenu] = useState(false)
   const [botMode, setBotMode] = useState<'fastest' | 'smartest' | 'critical-thinking'>('smartest')
   const [showModeMenu, setShowModeMenu] = useState(false)
-  const [isRecording, setIsRecording] = useState(false)
   const [isListening, setIsListening] = useState(false)
   const [audioEnabled, setAudioEnabled] = useState(false)
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null)
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
-  const isRecordingRef = useRef(false)
+  const speechRecognitionRef = useRef<SpeechRecognition | null>(null)
+  const wantsListeningRef = useRef(false)
+  const voiceTranscriptRef = useRef('')
   const [responseLength, setResponseLength] = useState<'short' | 'medium' | 'long'>('medium')
   const [webSearchEnabled, setWebSearchEnabled] = useState(false)
   const [showActionsMenu, setShowActionsMenu] = useState(false)
@@ -1072,82 +1070,117 @@ const GeneralTeachingAssistantChat = () => {
     }
   }
 
-  const startRecording = async () => {
+  const getSpeechRecognitionCtor = (): SpeechRecognitionConstructor | null =>
+    window.SpeechRecognition ?? window.webkitSpeechRecognition ?? null
+
+  const finalizeVoiceInput = () => {
+    const text = voiceTranscriptRef.current.trim()
+    if (text) {
+      setInputValue((prev) => {
+        const cleaned = prev.replace(/\s*\[Audio message transcribed\]\s*/g, '').trim()
+        return cleaned ? `${cleaned} ${text}` : text
+      })
+      textareaRef.current?.focus()
+    }
+    voiceTranscriptRef.current = ''
+    speechRecognitionRef.current = null
+    wantsListeningRef.current = false
+    setIsListening(false)
+  }
+
+  const stopVoiceInput = () => {
+    wantsListeningRef.current = false
     try {
-      // Check if user has access to audio/voice features (premium)
-      if (!featureAccess.audio_transcription) {
-        toast.info('Voice input is available with Premium. Upgrade to access.')
-        return
-      }
-
-      // Stop any existing recording first
-      if (mediaRecorderRef.current && isRecordingRef.current) {
-        stopRecording()
-      }
-
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      const recorder = new MediaRecorder(stream)
-      const chunks: Blob[] = []
-
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) {
-          chunks.push(e.data)
-        }
-      }
-
-      recorder.onstop = () => {
-        try {
-          // Create blob for potential future use (speech-to-text API)
-          const blob = new Blob(chunks, { type: 'audio/webm' })
-          // Convert audio to text (mock implementation)
-          // In production, this would call a speech-to-text API with the blob
-          console.log('Audio recorded, size:', blob.size, 'bytes')
-          setIsRecording(false)
-          isRecordingRef.current = false
-          stream.getTracks().forEach((track) => track.stop())
-        } catch (error) {
-          console.error('Error in recorder onstop:', error)
-          setIsRecording(false)
-          isRecordingRef.current = false
-          stream.getTracks().forEach((track) => track.stop())
-        }
-      }
-
-      recorder.onerror = (event) => {
-        console.error('MediaRecorder error:', event)
-        setIsRecording(false)
-        stream.getTracks().forEach((track) => track.stop())
-      }
-
-      recorder.start()
-      setMediaRecorder(recorder)
-      mediaRecorderRef.current = recorder
-      setIsRecording(true)
-      isRecordingRef.current = true
+      speechRecognitionRef.current?.stop()
     } catch (error) {
-      console.error('Error accessing microphone:', error)
-      setIsRecording(false)
-      isRecordingRef.current = false
-      setMediaRecorder(null)
-      mediaRecorderRef.current = null
-      alert('Could not access microphone. Please check permissions.')
+      console.error('Error stopping voice input:', error)
+      finalizeVoiceInput()
     }
   }
 
-  const stopRecording = () => {
+  const startVoiceInput = () => {
+    const SpeechRecognitionAPI = getSpeechRecognitionCtor()
+    if (!SpeechRecognitionAPI) {
+      toast.error('Voice input is not supported in this browser. Please use Chrome or Edge.')
+      return
+    }
+
     try {
-      if (mediaRecorderRef.current && isRecordingRef.current) {
-        mediaRecorderRef.current.stop()
-        setIsRecording(false)
-        isRecordingRef.current = false
-        // In production, process the audio and convert to text
-        // For now, just simulate adding text
-        setInputValue((prev) => prev + ' [Audio message transcribed]')
+      speechRecognitionRef.current?.abort()
+    } catch {
+      // ignore
+    }
+
+    const recognition = new SpeechRecognitionAPI()
+    recognition.continuous = true
+    recognition.interimResults = true
+    recognition.lang = navigator.language || 'en-US'
+    recognition.maxAlternatives = 1
+
+    voiceTranscriptRef.current = ''
+    wantsListeningRef.current = true
+
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
+      let transcript = voiceTranscriptRef.current
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const result = event.results[i]
+        if (result.isFinal) {
+          transcript += result[0]?.transcript ?? ''
+        }
       }
+      voiceTranscriptRef.current = transcript.trim()
+    }
+
+    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+      if (event.error === 'aborted' || event.error === 'no-speech') return
+      console.error('Speech recognition error:', event.error, event.message)
+      if (event.error === 'not-allowed') {
+        toast.error('Microphone access denied. Allow the mic in your browser settings and try again.')
+      } else if (event.error === 'network') {
+        toast.error('Voice input needs an internet connection. Check your network and try again.')
+      } else {
+        toast.error('Voice input failed. Please try again.')
+      }
+      wantsListeningRef.current = false
+      speechRecognitionRef.current = null
+      setIsListening(false)
+    }
+
+    recognition.onend = () => {
+      if (wantsListeningRef.current) {
+        try {
+          recognition.start()
+        } catch {
+          finalizeVoiceInput()
+        }
+        return
+      }
+      finalizeVoiceInput()
+    }
+
+    speechRecognitionRef.current = recognition
+
+    try {
+      recognition.start()
+      setIsListening(true)
     } catch (error) {
-      console.error('Error stopping recording:', error)
-      setIsRecording(false)
-      isRecordingRef.current = false
+      console.error('Error starting voice input:', error)
+      toast.error('Could not start voice input. Please try again.')
+      wantsListeningRef.current = false
+      speechRecognitionRef.current = null
+      setIsListening(false)
+    }
+  }
+
+  const toggleVoiceInput = () => {
+    if (!featureAccess.audio_transcription) {
+      toast.info('Voice input is available with Premium. Upgrade to access.')
+      return
+    }
+    if (isListening) {
+      stopVoiceInput()
+    } else {
+      startVoiceInput()
     }
   }
 
@@ -1365,32 +1398,13 @@ const GeneralTeachingAssistantChat = () => {
         console.error('Error cleaning up timeouts:', error)
       }
 
-      // Cleanup MediaRecorder and media streams - use refs to avoid stale closures
+      // Cleanup speech recognition
       try {
-        const recorder = mediaRecorderRef.current
-        if (recorder && isRecordingRef.current) {
-          try {
-            if (recorder.state !== 'inactive') {
-              recorder.stop()
-            }
-          } catch (e) {
-            // Ignore errors when stopping already stopped recorder
-          }
-        }
-        // Stop all media tracks from recorder stream
-        if (recorder && (recorder as any).stream) {
-          try {
-            (recorder as any).stream.getTracks().forEach((track: MediaStreamTrack) => {
-              track.stop()
-            })
-          } catch (e) {
-            // Ignore errors when stopping tracks
-          }
-        }
-        mediaRecorderRef.current = null
-        isRecordingRef.current = false
+        wantsListeningRef.current = false
+        speechRecognitionRef.current?.abort()
+        speechRecognitionRef.current = null
       } catch (error) {
-        console.error('Error cleaning up MediaRecorder:', error)
+        console.error('Error cleaning up speech recognition:', error)
       }
 
       // Cleanup Speech Synthesis
@@ -2557,34 +2571,31 @@ What would you like help with today? Feel free to ask me anything about teaching
                   />
                 </div>
 
-                {/* Microphone Button - Premium Feature */}
+                {/* Microphone Button - click to start listening, click again to insert transcript */}
                 <button
-                  onClick={isRecording ? stopRecording : startRecording}
-                  disabled={!featureAccess.audio_transcription && !isRecording}
+                  type="button"
+                  onClick={toggleVoiceInput}
+                  disabled={!featureAccess.audio_transcription && !isListening}
                   className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 transition-all relative ${
-                    !featureAccess.audio_transcription && !isRecording
+                    !featureAccess.audio_transcription && !isListening
                       ? 'border-gray-200 bg-gray-50 text-gray-400 cursor-not-allowed opacity-60'
-                      : isRecording
-                      ? 'border-red-300 bg-red-50 text-red-600 animate-pulse'
+                      : isListening
+                      ? 'border-red-400 bg-red-50 text-red-600 animate-pulse shadow-sm shadow-red-100'
                       : 'border-gray-300 bg-white text-gray-600 hover:border-blue-300 hover:bg-blue-50'
                   }`}
                   title={
                     !featureAccess.audio_transcription
                       ? 'Voice input requires Premium'
-                      : isRecording
-                      ? 'Stop recording'
-                      : 'Record audio'
+                      : isListening
+                      ? 'Stop listening and add text'
+                      : 'Start voice input'
                   }
+                  aria-pressed={isListening}
+                  aria-label={isListening ? 'Stop voice input' : 'Start voice input'}
                 >
-                  {isRecording ? (
-                    <MicOff className="h-5 w-5" />
-                  ) : (
-                    <>
-                      <Mic className="h-5 w-5" />
-                      {!featureAccess.audio_transcription && (
-                        <Lock className="h-3 w-3 absolute -top-1 -right-1" />
-                      )}
-                    </>
+                  <Mic className="h-5 w-5" />
+                  {!featureAccess.audio_transcription && (
+                    <Lock className="h-3 w-3 absolute -top-1 -right-1" />
                   )}
                 </button>
 
