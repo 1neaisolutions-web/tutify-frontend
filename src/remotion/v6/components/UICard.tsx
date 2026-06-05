@@ -3,7 +3,8 @@
  * White/translucent bg, soft shadow, colored accent, spring entrance.
  */
 import React from 'react'
-import { useCurrentFrame, spring, interpolate, useVideoConfig } from 'remotion'
+import { spring, interpolate } from 'remotion'import { useCurrentFrame, useVideoConfig } from '@/remotion/shared/timelineFrame'
+
 import { theme } from '../theme'
 
 interface UICardProps {

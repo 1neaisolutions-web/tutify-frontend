@@ -2,7 +2,8 @@
  * Image Studio intro — title + cumulative copy, then handoff to PixGen UI demo.
  */
 import React from 'react'
-import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from 'remotion'
+import { AbsoluteFill, Easing, interpolate } from 'remotion'import { useCurrentFrame } from '@/remotion/shared/timelineFrame'
+
 import { loadFont } from '@remotion/google-fonts/Inter'
 import { ImageStudioCopy } from './ImageStudioIntro/ImageStudioCopy'
 import {

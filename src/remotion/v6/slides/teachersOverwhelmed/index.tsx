@@ -2,7 +2,9 @@
  * V6 slide 3 — Teachers overwhelmed (layered cards + typing headline).
  */
 import React from 'react'
-import { AbsoluteFill, interpolate, useCurrentFrame } from 'remotion'
+import { AbsoluteFill, interpolate } from 'remotion'
+import { useCurrentFrame } from '@/remotion/shared/timelineFrame'
+
 import { loadFont } from '@remotion/google-fonts/Inter'
 import { TypingHeadline } from '../../../compositions/TeachersOverwhelmedSlide/TypingHeadline'
 import {
@@ -17,7 +19,9 @@ import {
   sceneCloseProgress,
   sceneCloseScale,
 } from '../../../compositions/TeachersOverwhelmedSlide/sceneClose'
+import { problemSlideEnter } from '../../opening/problemHandoff'
 import { ScatteredCardsV6 } from './ScatteredCardsV6'
+import { TeachersEraseFlashOverlay } from './TeachersEraseFlashOverlay'
 
 const { fontFamily: interFont } = loadFont('normal', {
   weights: ['500', '700'],
@@ -29,16 +33,17 @@ export { SCENE_DURATION as TEACHERS_OVERWHELMED_V6_DURATION }
 export const TeachersOverwhelmedSlideV6: React.FC = () => {
   const frame = useCurrentFrame()
 
+  const enter = problemSlideEnter(frame)
   const contentIn = interpolate(frame, [0, SCENE_CONTENT_IN], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   })
 
   const closeOpacity = sceneCloseOpacity(frame)
-  const contentOpacity = contentIn * closeOpacity
-  const closeScale = sceneCloseScale(frame)
-  const closeBlur = sceneCloseBlur(frame)
-  const closeDriftY = sceneCloseDriftY(frame)
+  const contentOpacity = contentIn * enter.opacity * closeOpacity
+  const closeScale = sceneCloseScale(frame) * enter.scale
+  const closeBlur = sceneCloseBlur(frame) + enter.blur
+  const closeDriftY = sceneCloseDriftY(frame) + enter.translateY
   const closeT = sceneCloseProgress(frame)
   const bgOpacity = interpolate(closeT, [0, 0.45, 1], [1, 1, 0], {
     extrapolateLeft: 'clamp',
@@ -56,6 +61,7 @@ export const TeachersOverwhelmedSlideV6: React.FC = () => {
       >
         <ScatteredCardsV6 />
         <TypingHeadline fontFamily={interFont} />
+        <TeachersEraseFlashOverlay />
       </AbsoluteFill>
     </AbsoluteFill>
   )

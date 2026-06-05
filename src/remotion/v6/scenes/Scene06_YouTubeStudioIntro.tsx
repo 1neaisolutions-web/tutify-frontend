@@ -2,7 +2,9 @@
  * YouTube Fun Studio — title + cumulative tagline, then handoff to quiz UI demo.
  */
 import React from 'react'
-import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from 'remotion'
+import { AbsoluteFill, Easing, interpolate } from 'remotion'
+import { useCurrentFrame } from '@/remotion/shared/timelineFrame'
+
 import { loadFont } from '@remotion/google-fonts/Inter'
 import { YouTubeStudioCopy } from './YouTubeStudioIntro/YouTubeStudioCopy'
 import {
@@ -18,7 +20,14 @@ const { fontFamily } = loadFont('normal', {
   subsets: ['latin'],
 })
 
-export const Scene06_YouTubeStudioIntro: React.FC = () => {
+type Scene06YouTubeStudioIntroProps = {
+  /** TransitionSeries exit handles fade — keep title visible through rotate. */
+  handoffExit?: boolean
+}
+
+export const Scene06_YouTubeStudioIntro: React.FC<Scene06YouTubeStudioIntroProps> = ({
+  handoffExit = false,
+}) => {
   const frame = useCurrentFrame()
 
   const delayedIn = interpolate(frame, [CROSSFADE, CROSSFADE + 18], [0, 1], {
@@ -33,16 +42,13 @@ export const Scene06_YouTubeStudioIntro: React.FC = () => {
     easing: Easing.out(Easing.cubic),
   })
 
-  const sceneOut = interpolate(
-    frame,
-    [SCENE_FADE_START, SCENE_YOUTUBE_STUDIO_INTRO_DURATION],
-    [1, 0],
-    {
-      extrapolateLeft: 'clamp',
-      extrapolateRight: 'clamp',
-      easing: Easing.inOut(Easing.cubic),
-    },
-  )
+  const sceneOut = handoffExit
+    ? 1
+    : interpolate(frame, [SCENE_FADE_START, SCENE_YOUTUBE_STUDIO_INTRO_DURATION], [1, 0], {
+        extrapolateLeft: 'clamp',
+        extrapolateRight: 'clamp',
+        easing: Easing.inOut(Easing.cubic),
+      })
 
   const fg = delayedIn * sceneIn * sceneOut
 

@@ -1,15 +1,14 @@
 /**
- * Center typing: blinking | → word-by-word → OVERWHELMED (bold black caps) → blue select → hide.
+ * Real typewriter: char-by-char, spaces included in segments, inline blinking cursor.
  */
 import React from 'react'
-import { Easing, useCurrentFrame, interpolate, spring, useVideoConfig } from 'remotion'
+import { Easing, interpolate } from 'remotion'
+import { useCurrentFrame } from '@/remotion/shared/timelineFrame'
+
 import {
   COLOR_SLATE,
   SELECT_BLUE,
   T_CURSOR_END,
-  WORD_TEACHERS_END,
-  WORD_ARE_END,
-  WORD_OVER_END,
   HIGHLIGHT_START,
   HIGHLIGHT_END,
   CLOSE_START,
@@ -18,31 +17,20 @@ import {
   INTRO_HEADLINE,
   INTRO_HEADLINE_EMPHASIS_WEIGHT,
 } from '../shared/introHeadlineTypography'
+import { getTypingState, splitForRender } from './typingEngine'
 
 type TypingHeadlineProps = {
   fontFamily: string
 }
 
-const WORD_SPRING = { damping: 200, stiffness: 88, mass: 0.95 }
-
-const showWord = (frame: number, start: number, end: number, fps: number): number => {
-  if (frame < start) return 0
-  if (frame >= end) return 1
-  return spring({ frame: frame - start, fps, config: WORD_SPRING })
-}
+const CURSOR_BLINK_FRAMES = 16
 
 export const TypingHeadline: React.FC<TypingHeadlineProps> = ({ fontFamily }) => {
   const frame = useCurrentFrame()
-  const { fps } = useVideoConfig()
 
-  const cursorOnly = frame < T_CURSOR_END
-  const cursorBlink = Math.floor(frame / 8) % 2 === 0
-
-  const teachersP = showWord(frame, T_CURSOR_END, WORD_TEACHERS_END, fps)
-  const areP = showWord(frame, WORD_TEACHERS_END + 2, WORD_ARE_END, fps)
-  const overP = showWord(frame, WORD_ARE_END + 2, WORD_OVER_END, fps)
-
-  const lineVisible = teachersP > 0.02 || areP > 0.02 || overP > 0.02 || cursorOnly
+  const { phase, visibleText, atWordBoundary } = getTypingState(frame)
+  const { normal, emphasis } = splitForRender(visibleText)
+  const cursorBlink = Math.floor(frame / CURSOR_BLINK_FRAMES) % 2 === 0
 
   const highlightOn = frame >= HIGHLIGHT_START && frame < HIGHLIGHT_END
   const highlightFade = interpolate(
@@ -56,23 +44,58 @@ export const TypingHeadline: React.FC<TypingHeadlineProps> = ({ fontFamily }) =>
     },
   )
 
-  const wordStyle = (p: number, extra?: React.CSSProperties): React.CSSProperties => ({
-    display: 'inline-block',
-    opacity: interpolate(p, [0, 1], [0, 1], { extrapolateRight: 'clamp' }),
-    transform: `translateY(${interpolate(p, [0, 1], [10, 0], { extrapolateRight: 'clamp' })}px)`,
-    ...extra,
+  const showCursor =
+    phase === 'cursor' ||
+    phase === 'typing' ||
+    phase === 'word_pause' ||
+    phase === 'erasing' ||
+    (phase === 'done' && frame < CLOSE_START && visibleText.length > 0)
+
+  const cursorOpacity =
+    phase === 'cursor' || atWordBoundary
+      ? cursorBlink
+        ? 1
+        : 0.12
+      : cursorBlink
+        ? 0.92
+        : 0.14
+
+  const lineVisible = phase === 'cursor' || showCursor || visibleText.length > 0
+  const maskReveal = interpolate(frame, [0, 10], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+    easing: Easing.out(Easing.cubic),
+  })
+  const maskInset = interpolate(maskReveal, [0, 1], [46, 0], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  })
+  const revealOpacity = interpolate(maskReveal, [0, 1], [0.6, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  })
+  const revealBlur = interpolate(maskReveal, [0, 1], [5, 0], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
   })
 
-  const showCursorAfter =
-    (teachersP > 0.92 && areP < 0.08) ||
-    (areP > 0.92 && overP < 0.08) ||
-    (overP > 0.05 && overP < 0.98)
+  const headlineBase: React.CSSProperties = {
+    fontFamily,
+    fontSize: INTRO_HEADLINE.fontSize,
+    fontWeight: INTRO_HEADLINE.fontWeight,
+    color: COLOR_SLATE,
+    letterSpacing: INTRO_HEADLINE.letterSpacing,
+    lineHeight: INTRO_HEADLINE.lineHeight,
+    whiteSpace: 'pre',
+  }
 
-  const showTrailingCursor =
-    !cursorOnly &&
-    frame < HIGHLIGHT_START &&
-    overP < 0.98 &&
-    (showCursorAfter || (teachersP < 0.92 && frame >= T_CURSOR_END))
+  const cursorStyle: React.CSSProperties = {
+    fontWeight: 300,
+    fontSize: INTRO_HEADLINE.fontSize,
+    lineHeight: INTRO_HEADLINE.lineHeight,
+    opacity: cursorOpacity,
+    marginLeft: visibleText.length > 0 ? '0.06em' : 0,
+  }
 
   return (
     <div
@@ -85,101 +108,70 @@ export const TypingHeadline: React.FC<TypingHeadlineProps> = ({ fontFamily }) =>
         zIndex: 30,
         pointerEvents: 'none',
         padding: `0 ${INTRO_HEADLINE.paddingX}px`,
-        opacity: lineVisible ? 1 : 0,
+        opacity: lineVisible ? revealOpacity : 0,
+        clipPath: `inset(${maskInset}% 0 ${maskInset}% 0 round 18px)`,
+        filter: revealBlur > 0.2 ? `blur(${revealBlur}px)` : undefined,
       }}
     >
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'baseline',
-          justifyContent: 'center',
-          maxWidth: INTRO_HEADLINE.maxWidth,
-          fontFamily,
-          fontSize: INTRO_HEADLINE.fontSize,
-          fontWeight: INTRO_HEADLINE.fontWeight,
-          color: COLOR_SLATE,
-          letterSpacing: INTRO_HEADLINE.letterSpacing,
-          lineHeight: INTRO_HEADLINE.lineHeight,
-          textAlign: 'center',
-          gap: INTRO_HEADLINE.wordGap,
-        }}
-      >
-        {cursorOnly && (
-          <span
-            style={{
-              fontWeight: 300,
-              fontSize: INTRO_HEADLINE.fontSize,
-              opacity: cursorBlink ? 1 : 0.15,
-            }}
-          >
-            |
-          </span>
-        )}
+      {phase === 'cursor' ? (
+        <span style={{ ...headlineBase, ...cursorStyle }}>|</span>
+      ) : (
+        <div
+          style={{
+            display: 'inline-flex',
+            alignItems: 'baseline',
+            justifyContent: 'center',
+            flexWrap: 'wrap',
+            maxWidth: INTRO_HEADLINE.maxWidth,
+            textAlign: 'center',
+            ...headlineBase,
+          }}
+        >
+          {normal.length > 0 ? <span>{normal}</span> : null}
 
-        {!cursorOnly && (
-          <>
-            <span style={wordStyle(teachersP)}>Teachers</span>
-            {teachersP > 0.85 && (
-              <>
-                <span style={wordStyle(areP)}>are</span>
-                {areP > 0.85 && (
-                  <span
-                    style={{
-                      ...wordStyle(overP),
-                      position: 'relative',
-                      display: 'inline-block',
-                    }}
-                  >
-                    {(highlightOn || (frame >= HIGHLIGHT_END && highlightFade > 0)) && (
-                      <span
-                        style={{
-                          position: 'absolute',
-                          left: -10,
-                          right: -10,
-                          top: '6%',
-                          bottom: '4%',
-                          background: SELECT_BLUE,
-                          borderRadius: 8,
-                          opacity: highlightOn ? 1 : highlightFade,
-                          zIndex: 0,
-                        }}
-                      />
-                    )}
-                    <span
-                      style={{
-                        position: 'relative',
-                        zIndex: 1,
-                        fontWeight: INTRO_HEADLINE_EMPHASIS_WEIGHT,
-                        textTransform: 'uppercase',
-                        letterSpacing: INTRO_HEADLINE.letterSpacing,
-                        color:
-                          highlightOn || (frame >= HIGHLIGHT_END && highlightFade > 0.15)
-                            ? '#FFFFFF'
-                            : COLOR_SLATE,
-                        opacity: 1,
-                      }}
-                    >
-                      OVERWHELMED
-                    </span>
-                  </span>
-                )}
-              </>
-            )}
-            {showTrailingCursor && (
+          {emphasis.length > 0 ? (
+            <span
+              style={{
+                position: 'relative',
+                display: 'inline-block',
+                fontWeight: INTRO_HEADLINE_EMPHASIS_WEIGHT,
+                textTransform: 'uppercase',
+                letterSpacing: INTRO_HEADLINE.letterSpacing,
+              }}
+            >
+              {(highlightOn || (frame >= HIGHLIGHT_END && highlightFade > 0)) && (
+                <span
+                  style={{
+                    position: 'absolute',
+                    left: -10,
+                    right: -10,
+                    top: '6%',
+                    bottom: '4%',
+                    background: SELECT_BLUE,
+                    borderRadius: 8,
+                    opacity: highlightOn ? 1 : highlightFade,
+                    zIndex: 0,
+                  }}
+                />
+              )}
               <span
                 style={{
-                  fontWeight: 300,
-                  fontSize: INTRO_HEADLINE.fontSize,
-                  opacity: cursorBlink ? 0.9 : 0.12,
+                  position: 'relative',
+                  zIndex: 1,
+                  color:
+                    highlightOn || (frame >= HIGHLIGHT_END && highlightFade > 0.15)
+                      ? '#FFFFFF'
+                      : COLOR_SLATE,
                 }}
               >
-                |
+                {emphasis}
               </span>
-            )}
-          </>
-        )}
-      </div>
+            </span>
+          ) : null}
+
+          {showCursor && <span style={cursorStyle}>|</span>}
+        </div>
+      )}
     </div>
   )
 }

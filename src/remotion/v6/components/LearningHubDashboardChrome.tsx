@@ -301,3 +301,22 @@ export const LearningHubDashboardChrome: React.FC<LearningHubDashboardChromeProp
 /** Cursor target: center of featured course "Start" button (1920×1080 layout). */
 /** Featured course row #2 — Start pill (1920×1080, sidebar 256, header 64). */
 export const FEATURED_COURSE_CLICK = { x: 1242, y: 456 }
+
+/** Layout-derived targets for quiz submit beat (1920×1080). */
+const QUIZ_CARD_WIDTH = 920
+const QUIZ_MAIN_LEFT = SIDEBAR_WIDTH + CONTENT_PADDING
+const QUIZ_MAIN_WIDTH = 1920 - QUIZ_MAIN_LEFT - CONTENT_PADDING
+const QUIZ_CARD_LEFT = QUIZ_MAIN_LEFT + (QUIZ_MAIN_WIDTH - QUIZ_CARD_WIDTH) / 2
+const QUIZ_CARD_TOP = HEADER_HEIGHT + CONTENT_PADDING + 28
+const QUIZ_CARD_HEIGHT = 1080 - QUIZ_CARD_TOP - CONTENT_PADDING
+
+/** Center of real "Submit Assessment →" pill. */
+export const QUIZ_SUBMIT_BUTTON_CLICK = {
+  x: QUIZ_CARD_LEFT + QUIZ_CARD_WIDTH - 98,
+  y: QUIZ_CARD_TOP + QUIZ_CARD_HEIGHT - 46,
+}
+
+export const QUIZ_SUBMIT_CURSOR_START = {
+  x: QUIZ_CARD_LEFT + QUIZ_CARD_WIDTH * 0.52,
+  y: QUIZ_CARD_TOP + QUIZ_CARD_HEIGHT * 0.55,
+}

@@ -2,7 +2,8 @@
  * Numera-style blue gradient — overscanned so zoom/drift never reveals white edges.
  */
 import React from 'react'
-import { AbsoluteFill, useCurrentFrame, interpolate } from 'remotion'
+import { AbsoluteFill, interpolate } from 'remotion'import { useCurrentFrame } from '@/remotion/shared/timelineFrame'
+
 
 /** Edge bleed matches gradient terminus (right / bottom). */
 export const MEET_BG_EDGE = '#1D4ED8'

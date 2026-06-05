@@ -1,5 +1,6 @@
 import React from 'react'
-import { useCurrentFrame, interpolate, spring, useVideoConfig } from 'remotion'
+import { interpolate, spring } from 'remotion'import { useCurrentFrame, useVideoConfig } from '@/remotion/shared/timelineFrame'
+
 
 interface GlowOrbProps {
   color?: string

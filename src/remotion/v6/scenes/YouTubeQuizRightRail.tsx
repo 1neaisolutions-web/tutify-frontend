@@ -1,5 +1,6 @@
 import React from 'react'
-import { Img, interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion'
+import { Img, interpolate, spring } from 'remotion'import { useCurrentFrame, useVideoConfig } from '@/remotion/shared/timelineFrame'
+
 import { theme } from '../theme'
 import { DEMO_DISCUSSION_TOPICS, DEMO_THUMBNAIL } from './youtubeQuizDemoData'
 

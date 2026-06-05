@@ -2,13 +2,10 @@
  * “The future of education isn’t coming someday.” — white on sky blue.
  */
 import React from 'react'
-import { useCurrentFrame, interpolate, spring, useVideoConfig } from 'remotion'
-import {
-  LINE1_DONE,
-  LINE1_START,
-  LINE1_STAGGER,
-  P2_START,
-} from './constants'
+import { interpolate, spring } from 'remotion'
+import { useCurrentFrame, useVideoConfig } from '@/remotion/shared/timelineFrame'
+
+import { LINE1_START, LINE1_STAGGER, P2_START } from './constants'
 import { INTRO_HEADLINE } from '../../../compositions/shared/introHeadlineTypography'
 import { CLOSING_TYPE } from './typography'
 
@@ -77,11 +74,6 @@ export const FutureEducationLine: React.FC<Props> = ({ fontFamily }) => {
 
   if (frame >= P2_START) return null
 
-  const lineOpacity = interpolate(frame, [P2_START - 10, P2_START - 2], [1, 0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  })
-
   return (
     <div
       style={{
@@ -91,7 +83,7 @@ export const FutureEducationLine: React.FC<Props> = ({ fontFamily }) => {
         alignItems: 'center',
         justifyContent: 'center',
         padding: `0 ${CLOSING_TYPE.paddingX}px`,
-        opacity: lineOpacity,
+        opacity: 1,
         pointerEvents: 'none',
         zIndex: 2,
         fontFamily,

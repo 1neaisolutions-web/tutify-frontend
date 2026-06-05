@@ -12,10 +12,21 @@ export const sceneCloseProgress = (frame: number): number =>
 export const sceneCloseOpacity = (frame: number): number => 1 - sceneCloseProgress(frame)
 
 export const sceneCloseScale = (frame: number): number =>
-  interpolate(sceneCloseProgress(frame), [0, 1], [1, 0.96])
+  interpolate(sceneCloseProgress(frame), [0, 1], [1, 0.84], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+    easing: Easing.in(Easing.cubic),
+  })
 
 export const sceneCloseBlur = (frame: number): number =>
-  interpolate(sceneCloseProgress(frame), [0, 1], [0, 10])
+  interpolate(sceneCloseProgress(frame), [0, 0.45, 1], [0, 2, 16], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  })
 
 export const sceneCloseDriftY = (frame: number): number =>
-  interpolate(sceneCloseProgress(frame), [0, 1], [0, 18])
+  interpolate(sceneCloseProgress(frame), [0, 1], [0, -32], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+    easing: Easing.in(Easing.cubic),
+  })

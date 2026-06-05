@@ -1,3 +1,4 @@
+import { useCurrentFrame } from '@/remotion/shared/timelineFrame'
 /**
  * AnimatedGradientBG — Living mesh-gradient background.
  *
@@ -9,7 +10,7 @@
  *   • mix-blend-mode: screen on highlight blobs adds depth without over-saturation
  */
 import React from 'react'
-import { useCurrentFrame } from 'remotion'
+
 import { theme } from '../theme'
 
 type Variant = 'cool' | 'warm' | 'deep' | 'dawn'

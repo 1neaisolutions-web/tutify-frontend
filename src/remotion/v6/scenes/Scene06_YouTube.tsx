@@ -3,22 +3,17 @@
  * Arc: paste URL → analyse → quiz reveal (hero) → discussion topics → metrics hold.
  */
 import React from 'react'
-import {
-  AbsoluteFill,
-  Img,
-  useCurrentFrame,
-  interpolate,
-  spring,
-  useVideoConfig,
-} from 'remotion'
+import { AbsoluteFill, Img, interpolate, spring } from 'remotion'
+import { useCurrentFrame, useVideoConfig } from '@/remotion/shared/timelineFrame'
+
 import { theme } from '../theme'
-import { CROSSFADE, sceneMaster } from '../utils/sceneTransition'
+import { CROSSFADE, sceneExit, sceneMaster } from '../utils/sceneTransition'
 import { promptTypeDuration, promptTypewriter } from '../utils/promptTyping'
 import {
   FEATURE_DEMO_POST_TYPE_PAUSE,
   FEATURE_DEMO_RESULT_HOLD,
 } from '../timeline/sceneRhythm'
-import { DEMO_THUMBNAIL, DEMO_VIDEO_URL } from './youtubeQuizDemoData'
+import { DEMO_THUMBNAIL, DEMO_VIDEO_URL, QUIZ_CARD_HEIGHT, getQuizPanelLayout } from './youtubeQuizDemoData'
 import { YouTubeQuizRightRail } from './YouTubeQuizRightRail'
 import { YouTubeQuizPanel } from './YouTubeQuizPanel'
 
@@ -26,31 +21,30 @@ const RED = '#EF4444'
 const RED_DARK = '#DC2626'
 
 const PANEL_READY = 36
-const ANALYZE_DURATION = 50
+const ANALYZE_DURATION = 28
 
 const TYPE_START = PANEL_READY
 const TYPE_DURATION = promptTypeDuration(DEMO_VIDEO_URL.length)
 const TYPE_END = TYPE_START + TYPE_DURATION
 const GEN_CLICK = TYPE_END + FEATURE_DEMO_POST_TYPE_PAUSE
-const ANALYZE_START = GEN_CLICK + 10
+const ANALYZE_START = GEN_CLICK + 6
 const ANALYZE_END = ANALYZE_START + ANALYZE_DURATION
-const QUIZ_REVEAL = ANALYZE_END + 8
+const QUIZ_REVEAL = ANALYZE_END + 4
 /** Reveal spring (~0.6s) before auto-scroll through quiz. */
-const QUIZ_ENTER_FRAMES = 20
+const QUIZ_ENTER_FRAMES = 12
 const QUIZ_SCROLL_START = QUIZ_REVEAL + QUIZ_ENTER_FRAMES
-/** Scroll through full quiz (~2.8s @ 30fps). */
-const QUIZ_SCROLL_FRAMES = 84
-/** Hold fully scrolled quiz readable — matches Scene04/05 FEATURE_DEMO_RESULT_HOLD (~1s). */
+/** Scroll only in this window — then frozen (no more page movement). */
+const QUIZ_SCROLL_FRAMES = 28
+const QUIZ_SCROLL_END = QUIZ_SCROLL_START + QUIZ_SCROLL_FRAMES
+/** Hold final frame after scroll stops. */
 const QUIZ_END_HOLD = FEATURE_DEMO_RESULT_HOLD
-const TOPICS_START = QUIZ_SCROLL_START + QUIZ_SCROLL_FRAMES + QUIZ_END_HOLD
-const METRICS_START = TOPICS_START + 72
-const SCENE06_FADE_START = METRICS_START + 56 + FEATURE_DEMO_RESULT_HOLD
+const TOPICS_START = QUIZ_SCROLL_END + QUIZ_END_HOLD
+const METRICS_START = TOPICS_START + 36
+const SCENE06_FADE_START = METRICS_START + 30 + FEATURE_DEMO_RESULT_HOLD
 export const SCENE06_DURATION = SCENE06_FADE_START + CROSSFADE
 
-/** Left blueprint card height when quiz is hero (fills panel below sticky URL bar). */
-const LEFT_PANEL_HEIGHT = 836
-/** Inner quiz content is taller than viewport so Remotion can scroll through all sections. */
-const QUIZ_SCROLL_MAX = 360
+const LEFT_PANEL_HEIGHT = QUIZ_CARD_HEIGHT
+const { scrollMax: QUIZ_SCROLL_MAX, scrollViewport: QUIZ_SCROLL_VIEWPORT } = getQuizPanelLayout(LEFT_PANEL_HEIGHT)
 const THUMB_HEIGHT = 200
 const cardShell: React.CSSProperties = {
   borderRadius: 24,
@@ -87,11 +81,18 @@ const SelectField: React.FC<{ label: string; value: string }> = ({ label, value 
   </div>
 )
 
-export const Scene06_YouTube: React.FC = () => {
+type Scene06YouTubeProps = {
+  /** TransitionSeries enter handles fade — avoid double-dip at quiz start. */
+  handoffEnter?: boolean
+}
+
+export const Scene06_YouTube: React.FC<Scene06YouTubeProps> = ({ handoffEnter = false }) => {
   const frame = useCurrentFrame()
   const { fps } = useVideoConfig()
 
-  const fg = sceneMaster(frame, SCENE06_DURATION)
+  const fg = handoffEnter
+    ? sceneExit(frame, SCENE06_DURATION)
+    : sceneMaster(frame, SCENE06_DURATION)
 
   const panelP = spring({ frame: Math.max(0, frame - 8), fps, config: theme.spring.zoom })
   const panelY = interpolate(panelP, [0, 1], [28, 0])
@@ -137,14 +138,17 @@ export const Scene06_YouTube: React.FC = () => {
   const quizY = interpolate(quizP, [0, 1], [48, 0], { extrapolateRight: 'clamp' })
   const quizOp = interpolate(quizP, [0, 1], [0, 1], { extrapolateRight: 'clamp' })
 
+  /** Scroll 0→max only until QUIZ_SCROLL_END; after that position is frozen. */
   const quizScrollProgress =
-    showQuiz && frame >= QUIZ_SCROLL_START
-      ? interpolate(frame, [QUIZ_SCROLL_START, QUIZ_SCROLL_START + QUIZ_SCROLL_FRAMES], [0, 1], {
-          extrapolateLeft: 'clamp',
-          extrapolateRight: 'clamp',
-        })
-      : 0
-  const quizScrollY = quizScrollProgress * QUIZ_SCROLL_MAX
+    frame < QUIZ_SCROLL_START
+      ? 0
+      : frame < QUIZ_SCROLL_END
+        ? interpolate(frame, [QUIZ_SCROLL_START, QUIZ_SCROLL_END], [0, 1], {
+            extrapolateLeft: 'clamp',
+            extrapolateRight: 'clamp',
+          })
+        : 1
+  const quizScrollY = frame >= QUIZ_SCROLL_START ? quizScrollProgress * QUIZ_SCROLL_MAX : 0
 
   const metricsP = showMetrics
     ? interpolate(frame, [METRICS_START, METRICS_START + 50], [0, 1], {
@@ -461,7 +465,12 @@ export const Scene06_YouTube: React.FC = () => {
 
               </>
             ) : (
-              <YouTubeQuizPanel quizOp={quizOp} quizY={quizY} quizScrollY={quizScrollY} />
+              <YouTubeQuizPanel
+                quizOp={quizOp}
+                quizY={quizY}
+                quizScrollY={quizScrollY}
+                scrollViewport={QUIZ_SCROLL_VIEWPORT}
+              />
             )}
           </div>
 

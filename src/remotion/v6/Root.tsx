@@ -3,7 +3,9 @@
  * Durations: timeline/sceneDurations.ts · Transitions: utils/sceneTransition.ts
  */
 import React from 'react'
-import { AbsoluteFill, Audio, Loop, Sequence, interpolate } from 'remotion'
+import { AbsoluteFill, Audio, Easing, Loop, Sequence, interpolate } from 'remotion'
+import { useCurrentFrame } from '@/remotion/shared/timelineFrame'
+
 
 import TeachingIntro, { TEACHING_INTRO_DURATION } from './scenes/TeachingIntro/TeachingIntro'
 import EducationChangingSlide, {
@@ -11,6 +13,8 @@ import EducationChangingSlide, {
 } from './opening/EducationChangingSlideV6'
 import { OPENING_HANDOFF } from './opening/constants'
 import { OpeningHandoffOverlay } from './opening/OpeningHandoffOverlay'
+import { ProblemSlideHandoffOverlay } from './opening/ProblemSlideHandoffOverlay'
+import { PROBLEM_HANDOFF_FRAMES } from './opening/problemHandoff'
 import { Scene01_Problem, SCENE01_DURATION } from './scenes/Scene01_Problem'
 import { Scene02_Vision } from './scenes/Scene02_Vision'
 import { Scene03_Introduction } from './scenes/Scene03_Introduction'
@@ -60,6 +64,7 @@ import { SCENE10_DURATION } from './scenes/Scene10_Closing'
 import { AnimatedGradientBG } from './components/AnimatedGradientBG'
 import { KEYBOARD_SFX_LOOP_FRAMES, MUSIC_V4, SFX_V4 } from './assets'
 import { CROSSFADE, musicLevelAt } from './utils/sceneTransition'
+import { sfxAllowedAt } from './timeline/sfxCutoff'
 
 const S0 = 0
 const S1 = S0 + TEACHING_INTRO_DURATION - OPENING_HANDOFF
@@ -81,6 +86,9 @@ const S11b = S11 + SCENE07B_DURATION - CROSSFADE
 const S12 = S11b + SCENE08_DURATION - CROSSFADE
 
 export const TOTAL_DURATION_V6 = S12 + SCENE10_DURATION
+const ZOOM_TRANSITION_START = 6 * 30 + 10 // 00:06:10 @ 30fps
+const ZOOM_TRANSITION_END = 6 * 30 + 13 // 00:06:13 @ 30fps
+const ZOOM_TRANSITION_AMPLITUDE = 0.012
 
 const musicVol = (f: number): number => {
   const level = musicLevelAt(f, [
@@ -113,118 +121,203 @@ const musicVol = (f: number): number => {
   return level * fadeIn * fadeOut
 }
 
-export const TutifyDemoV6: React.FC = () => (
-  <AbsoluteFill style={{ background: '#F4F6F8' }}>
-    <Sequence from={S4 - CROSSFADE}>
-      <AnimatedGradientBG variant="cool" />
-    </Sequence>
+export const TutifyDemoV6: React.FC = () => {
+  const frame = useCurrentFrame()
+  const zoomTransitionProgress = interpolate(
+    frame,
+    [ZOOM_TRANSITION_START, ZOOM_TRANSITION_END],
+    [0, 1],
+    {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+      easing: Easing.inOut(Easing.cubic),
+    },
+  )
+  // Bell-curve zoom: smooth in, smooth out, avoids "poppy" keyframe feel.
+  const zoomTransitionScale = 1 + Math.sin(zoomTransitionProgress * Math.PI) * ZOOM_TRANSITION_AMPLITUDE
 
-    <Audio src={MUSIC_V4} volume={(f) => musicVol(f)} loop />
-
-    <Sequence from={S0} durationInFrames={TEACHING_INTRO_DURATION} premountFor={OPENING_HANDOFF}>
-      <TeachingIntro />
-    </Sequence>
-
-    <Sequence from={S1} durationInFrames={EDUCATION_SLIDE_DURATION + OPENING_HANDOFF} premountFor={OPENING_HANDOFF}>
-      <EducationChangingSlide />
-    </Sequence>
-
-    <Sequence from={S1} durationInFrames={OPENING_HANDOFF * 2}>
-      <OpeningHandoffOverlay />
-    </Sequence>
-
-    <Sequence from={S3} durationInFrames={SCENE01_DURATION} premountFor={CROSSFADE}>
-      <Scene01_Problem />
-    </Sequence>
-
-    <Sequence from={S4} durationInFrames={SCENE02_DURATION} premountFor={CROSSFADE}>
-      <Scene02_Vision />
-    </Sequence>
-
-    <Sequence
-      from={S5}
-      durationInFrames={SCENE03_DURATION}
-      premountFor={CROSSFADE}
-      style={{ backgroundColor: '#1D4ED8' }}
-    >
-      <Scene03_Introduction />
-    </Sequence>
-
-    <Sequence from={S6} durationInFrames={SCENE_AI_TEACHER_INTRO_DURATION} premountFor={CROSSFADE}>
-      <Scene04_AITeacherIntro />
-    </Sequence>
-
-    <Sequence from={S6b} durationInFrames={SCENE04_DURATION} premountFor={CROSSFADE}>
-      <Sequence
-        from={SCENE04_SFX_FRAMES.keyboardTyping.start}
-        durationInFrames={SCENE04_SFX_FRAMES.keyboardTyping.duration}
-      >
-        <Loop durationInFrames={KEYBOARD_SFX_LOOP_FRAMES}>
-          <Audio src={SFX_V4.keyboard} volume={0.3} />
-        </Loop>
+  return (
+    <AbsoluteFill style={{ background: '#F4F6F8' }}>
+      <Sequence from={S4 - CROSSFADE}>
+        <AnimatedGradientBG variant="cool" />
       </Sequence>
-      {SCENE04_SFX_FRAMES.cardAppear.map((at, i) => (
-        <Sequence key={`s4-card-${i}`} from={at}>
-          <Audio src={SFX_V4.cardAppear} volume={0.3} />
+
+      <Audio src={MUSIC_V4} volume={(f) => musicVol(f)} loop />
+
+      <AbsoluteFill
+        style={{
+          transform: `scale(${zoomTransitionScale})`,
+          transformOrigin: 'center center',
+        }}
+      >
+        <Sequence from={S0} durationInFrames={TEACHING_INTRO_DURATION} premountFor={OPENING_HANDOFF}>
+          <TeachingIntro />
         </Sequence>
-      ))}
-      <Scene04_AIAssistant />
-    </Sequence>
 
-    <Sequence from={S7} durationInFrames={SCENE_IMAGE_STUDIO_INTRO_DURATION} premountFor={CROSSFADE}>
-      <Scene05_ImageStudioIntro />
-    </Sequence>
-
-    <Sequence from={S7b} durationInFrames={SCENE05_DURATION} premountFor={CROSSFADE}>
-      {SCENE05_SFX_FRAMES.keyboardTyping.map((seg, i) => (
-        <Sequence key={`s5-kbd-${i}`} from={seg.start} durationInFrames={seg.duration}>
-          <Loop durationInFrames={KEYBOARD_SFX_LOOP_FRAMES}>
-            <Audio src={SFX_V4.keyboard} volume={0.3} />
-          </Loop>
+        <Sequence from={S1} durationInFrames={EDUCATION_SLIDE_DURATION + OPENING_HANDOFF} premountFor={OPENING_HANDOFF}>
+          <EducationChangingSlide />
         </Sequence>
-      ))}
-      <Scene05_VisualStudio />
-    </Sequence>
 
-    <Sequence from={S8} durationInFrames={SCENE_YOUTUBE_STUDIO_INTRO_DURATION} premountFor={CROSSFADE}>
-      <Scene06_YouTubeStudioIntro />
-    </Sequence>
+        <Sequence from={S1} durationInFrames={OPENING_HANDOFF * 2}>
+          <OpeningHandoffOverlay />
+        </Sequence>
 
-    <Sequence from={S9} durationInFrames={SCENE06_DURATION} premountFor={CROSSFADE}>
-      <Scene06_YouTube />
-    </Sequence>
+        <Sequence from={S3} durationInFrames={SCENE01_DURATION} premountFor={CROSSFADE}>
+          <Scene01_Problem />
+        </Sequence>
 
-    <Sequence from={S10} durationInFrames={SCENE07_INTRO_DURATION} premountFor={CROSSFADE}>
-      <Scene07_PersonalizationIntro />
-    </Sequence>
+        <Sequence from={S3} durationInFrames={PROBLEM_HANDOFF_FRAMES + 4}>
+          <ProblemSlideHandoffOverlay />
+        </Sequence>
 
-    <Sequence from={S10b} durationInFrames={SCENE07_DURATION} premountFor={CROSSFADE}>
-      <Scene07_Personalization />
-    </Sequence>
+        <Sequence from={S4} durationInFrames={SCENE02_DURATION} premountFor={CROSSFADE}>
+          <Scene02_Vision />
+        </Sequence>
 
-    <Sequence from={S11} durationInFrames={SCENE07B_DURATION} premountFor={CROSSFADE}>
-      <Sequence from={QUIZ_START + 16}><Audio src={SFX_V4.dataPing} volume={0.22} /></Sequence>
-      <Sequence from={QUIZ_SUBMIT}><Audio src={SFX_V4.completion} volume={0.32} /></Sequence>
-      <Sequence from={CERT_START}><Audio src={SFX_V4.sparkle} volume={0.36} /></Sequence>
-      <Scene07b_LearningHub />
-    </Sequence>
+        <Sequence
+          from={S5}
+          durationInFrames={SCENE03_DURATION}
+          premountFor={CROSSFADE}
+          style={{ backgroundColor: '#1D4ED8' }}
+        >
+          <Scene03_Introduction />
+        </Sequence>
 
-    <Sequence from={S11b} durationInFrames={SCENE08_DURATION} premountFor={CROSSFADE}>
-      <Sequence from={14}><Audio src={SFX_V4.sparkle} volume={0.32} /></Sequence>
-      <Sequence from={262}><Audio src={SFX_V4.dataPing} volume={0.26} /></Sequence>
-      <Sequence from={280}><Audio src={SFX_V4.dataPing} volume={0.26} /></Sequence>
-      <Sequence from={298}><Audio src={SFX_V4.dataPing} volume={0.26} /></Sequence>
-      <Sequence from={316}><Audio src={SFX_V4.dataPing} volume={0.26} /></Sequence>
-      <Sequence from={334}><Audio src={SFX_V4.dataPing} volume={0.26} /></Sequence>
-      <Sequence from={400}><Audio src={SFX_V4.sparkle} volume={0.34} /></Sequence>
-      <Scene08_Ecosystem />
-    </Sequence>
+        <Sequence from={S6} durationInFrames={SCENE_AI_TEACHER_INTRO_DURATION} premountFor={CROSSFADE}>
+          <Scene04_AITeacherIntro />
+        </Sequence>
 
-    <Sequence from={S12} durationInFrames={SCENE10_DURATION} premountFor={CROSSFADE}>
-      <Sequence from={132}><Audio src={SFX_V4.sparkle} volume={0.34} /></Sequence>
-      <Sequence from={210}><Audio src={SFX_V4.completion} volume={0.4} /></Sequence>
-      <Sequence from={FINALE_TYPE_START}><Audio src={SFX_V4.keyboard} volume={0.22} /></Sequence>
-      <Scene10_Closing />
-    </Sequence>
-  </AbsoluteFill>
-)
+        <Sequence from={S6b} durationInFrames={SCENE04_DURATION} premountFor={CROSSFADE}>
+          {sfxAllowedAt(S6b + SCENE04_SFX_FRAMES.keyboardTyping.start) ? (
+            <Sequence
+              from={SCENE04_SFX_FRAMES.keyboardTyping.start}
+              durationInFrames={SCENE04_SFX_FRAMES.keyboardTyping.duration}
+            >
+              <Loop durationInFrames={KEYBOARD_SFX_LOOP_FRAMES}>
+                <Audio src={SFX_V4.keyboard} volume={0.3} />
+              </Loop>
+            </Sequence>
+          ) : null}
+          {SCENE04_SFX_FRAMES.cardAppear.map((at, i) =>
+            sfxAllowedAt(S6b + at) ? (
+              <Sequence key={`s4-card-${i}`} from={at}>
+                <Audio src={SFX_V4.cardAppear} volume={0.3} />
+              </Sequence>
+            ) : null,
+          )}
+          <Scene04_AIAssistant />
+        </Sequence>
+
+        <Sequence from={S7} durationInFrames={SCENE_IMAGE_STUDIO_INTRO_DURATION} premountFor={CROSSFADE}>
+          <Scene05_ImageStudioIntro />
+        </Sequence>
+
+        <Sequence from={S7b} durationInFrames={SCENE05_DURATION} premountFor={CROSSFADE}>
+          {SCENE05_SFX_FRAMES.keyboardTyping.map((seg, i) =>
+            sfxAllowedAt(S7b + seg.start) ? (
+              <Sequence key={`s5-kbd-${i}`} from={seg.start} durationInFrames={seg.duration}>
+                <Loop durationInFrames={KEYBOARD_SFX_LOOP_FRAMES}>
+                  <Audio src={SFX_V4.keyboard} volume={0.3} />
+                </Loop>
+              </Sequence>
+            ) : null,
+          )}
+          <Scene05_VisualStudio />
+        </Sequence>
+
+        <Sequence from={S8} durationInFrames={SCENE_YOUTUBE_STUDIO_INTRO_DURATION} premountFor={CROSSFADE}>
+          <Scene06_YouTubeStudioIntro />
+        </Sequence>
+
+        <Sequence from={S9} durationInFrames={SCENE06_DURATION} premountFor={CROSSFADE}>
+          <Scene06_YouTube />
+        </Sequence>
+
+        <Sequence from={S10} durationInFrames={SCENE07_INTRO_DURATION} premountFor={CROSSFADE}>
+          <Scene07_PersonalizationIntro />
+        </Sequence>
+
+        <Sequence from={S10b} durationInFrames={SCENE07_DURATION} premountFor={CROSSFADE}>
+          <Scene07_Personalization />
+        </Sequence>
+
+        <Sequence from={S11} durationInFrames={SCENE07B_DURATION} premountFor={CROSSFADE}>
+          {sfxAllowedAt(S11 + QUIZ_START + 16) ? (
+            <Sequence from={QUIZ_START + 16}>
+              <Audio src={SFX_V4.dataPing} volume={0.22} />
+            </Sequence>
+          ) : null}
+          {sfxAllowedAt(S11 + QUIZ_SUBMIT) ? (
+            <Sequence from={QUIZ_SUBMIT}>
+              <Audio src={SFX_V4.completion} volume={0.32} />
+            </Sequence>
+          ) : null}
+          {sfxAllowedAt(S11 + CERT_START) ? (
+            <Sequence from={CERT_START}>
+              <Audio src={SFX_V4.sparkle} volume={0.36} />
+            </Sequence>
+          ) : null}
+          <Scene07b_LearningHub />
+        </Sequence>
+
+        <Sequence from={S11b} durationInFrames={SCENE08_DURATION} premountFor={CROSSFADE}>
+          {sfxAllowedAt(S11b + 14) ? (
+            <Sequence from={14}>
+              <Audio src={SFX_V4.sparkle} volume={0.32} />
+            </Sequence>
+          ) : null}
+          {sfxAllowedAt(S11b + 262) ? (
+            <Sequence from={262}>
+              <Audio src={SFX_V4.dataPing} volume={0.26} />
+            </Sequence>
+          ) : null}
+          {sfxAllowedAt(S11b + 280) ? (
+            <Sequence from={280}>
+              <Audio src={SFX_V4.dataPing} volume={0.26} />
+            </Sequence>
+          ) : null}
+          {sfxAllowedAt(S11b + 298) ? (
+            <Sequence from={298}>
+              <Audio src={SFX_V4.dataPing} volume={0.26} />
+            </Sequence>
+          ) : null}
+          {sfxAllowedAt(S11b + 316) ? (
+            <Sequence from={316}>
+              <Audio src={SFX_V4.dataPing} volume={0.26} />
+            </Sequence>
+          ) : null}
+          {sfxAllowedAt(S11b + 334) ? (
+            <Sequence from={334}>
+              <Audio src={SFX_V4.dataPing} volume={0.26} />
+            </Sequence>
+          ) : null}
+          {sfxAllowedAt(S11b + 400) ? (
+            <Sequence from={400}>
+              <Audio src={SFX_V4.sparkle} volume={0.34} />
+            </Sequence>
+          ) : null}
+          <Scene08_Ecosystem />
+        </Sequence>
+
+        <Sequence from={S12} durationInFrames={SCENE10_DURATION} premountFor={CROSSFADE}>
+          {sfxAllowedAt(S12 + 132) ? (
+            <Sequence from={132}>
+              <Audio src={SFX_V4.sparkle} volume={0.34} />
+            </Sequence>
+          ) : null}
+          {sfxAllowedAt(S12 + 210) ? (
+            <Sequence from={210}>
+              <Audio src={SFX_V4.completion} volume={0.4} />
+            </Sequence>
+          ) : null}
+          {sfxAllowedAt(S12 + FINALE_TYPE_START) ? (
+            <Sequence from={FINALE_TYPE_START}>
+              <Audio src={SFX_V4.keyboard} volume={0.22} />
+            </Sequence>
+          ) : null}
+          <Scene10_Closing />
+        </Sequence>
+      </AbsoluteFill>
+    </AbsoluteFill>
+  )
+}

@@ -2,7 +2,8 @@
  * Slide 3 — Typing headline + balanced scattered cards → highlight → smooth exit.
  */
 import React from 'react'
-import { AbsoluteFill, interpolate, useCurrentFrame } from 'remotion'
+import { AbsoluteFill, interpolate } from 'remotion'import { useCurrentFrame } from '@/remotion/shared/timelineFrame'
+
 import { loadFont } from '@remotion/google-fonts/Inter'
 import { TypingHeadline } from './TypingHeadline'
 

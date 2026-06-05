@@ -2,7 +2,8 @@
  * Vision stage — calm slate base with soft brand light (no heavy yellow wash).
  */
 import React from 'react'
-import { AbsoluteFill, useCurrentFrame, interpolate } from 'remotion'
+import { AbsoluteFill, interpolate } from 'remotion'import { useCurrentFrame } from '@/remotion/shared/timelineFrame'
+
 
 export const VisionBackground: React.FC = () => {
   const frame = useCurrentFrame()

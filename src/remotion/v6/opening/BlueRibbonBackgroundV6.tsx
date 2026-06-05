@@ -2,7 +2,8 @@
  * V6 slide 2 — dark saturated blue stage + glossy top/bottom ribbons (keynote reference).
  */
 import React from 'react'
-import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from 'remotion'
+import { AbsoluteFill, Easing, interpolate } from 'remotion'import { useCurrentFrame } from '@/remotion/shared/timelineFrame'
+
 import { OPENING_HANDOFF } from './constants'
 import { STAGE } from './educationStageTheme'
 

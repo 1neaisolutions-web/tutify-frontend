@@ -1,31 +1,32 @@
 /**
- * Image Studio intro — cumulative copy, Vision pacing (~11s @ 30fps).
+ * Image Studio intro — show center → fade out in place → pill + body (no rise).
  */
 import { CROSSFADE } from '../../utils/sceneTransition'
 
-export const TITLE_START = 12
-export const TAGLINE_START = 50
-export const MORPH_START = TAGLINE_START - 6
-export const TITLE_MORPH_END = TAGLINE_START + 38
-export const WORD_STAGGER = 12
-export const ROW_GAP = 10
-export const WORD_SETTLE = 28
-export const HOLD_FRAMES = 40
+export const TITLE_START = 10
+export const TITLE_IN_FRAMES = 10
+export const TITLE_HOLD_FRAMES = 14
+export const HERO_FADE_START = TITLE_START + TITLE_IN_FRAMES + TITLE_HOLD_FRAMES
+export const HERO_FADE_FRAMES = 20
+export const HERO_FADE_END = HERO_FADE_START + HERO_FADE_FRAMES
+
+export const PILL_IN_START = HERO_FADE_START + 8
+export const PILL_IN_END = HERO_FADE_END
+export const BODY_REVEAL_START = HERO_FADE_START + 12
+export const BODY_REVEAL_FRAMES = 16
+export const TAGLINE_START = HERO_FADE_START + 16
+
+export const WORD_STAGGER = 6
+export const ROW_GAP = 6
+export const WORD_IN_FRAMES = 16
+export const HOLD_FRAMES = 18
 
 export const TAGLINE_ROWS = [
-  ['Because', 'the', 'next', 'generation', 'learns', 'beyond', 'text.'],
   ['Tutify', 'helps', 'educators', 'transform', 'ideas', 'into'],
   ['visual', 'learning', 'experiences.'],
 ] as const
 
-/** Teal emphasis — premium light intro (image 2) */
-export const TAGLINE_EMPHASIS = new Set<string>([
-  'beyond',
-  'text.',
-  'educators',
-  'visual',
-  'experiences.',
-])
+export const TAGLINE_EMPHASIS = new Set<string>(['educators', 'visual', 'experiences.'])
 
 export const INK = '#111827'
 export const TEAL = '#0D9488'
@@ -46,6 +47,6 @@ function buildWordStarts(): { row: number; col: number; start: number }[] {
 export const TAGLINE_WORD_STARTS = buildWordStarts()
 
 const lastStart = TAGLINE_WORD_STARTS[TAGLINE_WORD_STARTS.length - 1]!.start
-export const TAGLINE_COMPLETE = lastStart + WORD_SETTLE
+export const TAGLINE_COMPLETE = lastStart + WORD_IN_FRAMES
 export const SCENE_FADE_START = TAGLINE_COMPLETE + HOLD_FRAMES
 export const SCENE_IMAGE_STUDIO_INTRO_DURATION = SCENE_FADE_START + CROSSFADE

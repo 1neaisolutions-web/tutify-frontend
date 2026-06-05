@@ -2,7 +2,9 @@
  * "An" rises from below · remaining words from the right — INTRO_HEADLINE scale.
  */
 import React from 'react'
-import { Easing, useCurrentFrame, interpolate, spring, useVideoConfig } from 'remotion'
+import { Easing, interpolate } from 'remotion'
+import { useCurrentFrame } from '@/remotion/shared/timelineFrame'
+
 import {
   INTRO_HEADLINE,
   INTRO_HEADLINE_EMPHASIS_WEIGHT,
@@ -23,14 +25,17 @@ const ECO_EMPHASIS = new Set<string>(['ecosystem', 'schools.'])
 
 const SLATE = '#0A1628'
 
-const SPRING_DROP = { damping: 240, stiffness: 58, mass: 1.08 }
-const SPRING_RIGHT = { damping: 230, stiffness: 65, mass: 1.05 }
+const WORD_IN_FRAMES = 18
+const gentleEase = Easing.bezier(0.33, 0, 0.18, 1)
 
-const smooth = (p: number) =>
-  interpolate(p, [0, 0.35, 0.72, 1], [0, 0.28, 0.68, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  })
+const wordProgress = (frame: number, start: number): number =>
+  frame < start
+    ? 0
+    : interpolate(frame, [start, start + WORD_IN_FRAMES], [0, 1], {
+        extrapolateLeft: 'clamp',
+        extrapolateRight: 'clamp',
+        easing: gentleEase,
+      })
 
 const ECO_TEXT_SHADOW =
   '0 1px 0 rgba(255,255,255,0.38), 0 2px 24px rgba(255,255,255,0.18)'
@@ -66,27 +71,15 @@ const EcoWord: React.FC<{
   row: number
   col: number
   frame: number
-  fps: number
   fromBelow?: boolean
-}> = ({ word, row, col, frame, fps, fromBelow }) => {
+}> = ({ word, row, col, frame, fromBelow }) => {
   const start = wordStart(row, col)
-  const raw =
-    frame >= start
-      ? spring({
-          frame: frame - start,
-          fps,
-          config: fromBelow ? SPRING_DROP : SPRING_RIGHT,
-        })
-      : 0
-  const p = smooth(raw)
-  const opacity =
-    frame < start ? 0 : interpolate(p, [0, 1], [0.38, 1], { extrapolateRight: 'clamp' })
+  const p = wordProgress(frame, start)
+  const opacity = interpolate(p, [0, 1], [0, 1], { extrapolateRight: 'clamp' })
 
-  const y = fromBelow ? interpolate(p, [0, 1], [44, 0], { extrapolateRight: 'clamp' }) : 0
-  const x = fromBelow ? 0 : interpolate(p, [0, 1], [56, 0], { extrapolateRight: 'clamp' })
-  const blur = fromBelow
-    ? interpolate(p, [0, 1], [14, 0], { extrapolateRight: 'clamp' })
-    : interpolate(p, [0, 1], [12, 0], { extrapolateRight: 'clamp' })
+  const y = fromBelow ? interpolate(p, [0, 1], [18, 0], { extrapolateRight: 'clamp' }) : 0
+  const x = fromBelow ? 0 : interpolate(p, [0, 1], [22, 0], { extrapolateRight: 'clamp' })
+  const blur = interpolate(p, [0, 1], [5, 0], { extrapolateRight: 'clamp' })
 
   const weight = ECO_EMPHASIS.has(word) ? INTRO_HEADLINE_EMPHASIS_WEIGHT : INTRO_HEADLINE.fontWeight
 
@@ -109,14 +102,13 @@ const EcoWord: React.FC<{
 
 export const EcosystemLine: React.FC<EcosystemLineProps> = ({ fontFamily, opacity }) => {
   const frame = useCurrentFrame()
-  const { fps } = useVideoConfig()
 
   if (frame < ACT2_START) return null
 
-  const act2In = interpolate(frame, [ACT2_START, ACT2_START + 24], [0, 1], {
+  const act2In = interpolate(frame, [ACT2_START, ACT2_START + 22], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
-    easing: Easing.out(Easing.cubic),
+    easing: gentleEase,
   })
 
   return (
@@ -159,7 +151,6 @@ export const EcosystemLine: React.FC<EcosystemLineProps> = ({ fontFamily, opacit
                   row={ri}
                   col={ci}
                   frame={frame}
-                  fps={fps}
                   fromBelow={ri === 0 && ci === 0}
                 />
                 {ci < row.length - 1 ? <WordGap /> : null}

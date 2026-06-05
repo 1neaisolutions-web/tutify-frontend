@@ -2,7 +2,8 @@
  * Black closing — typewriter tagline with blinking cursor (reference finale).
  */
 import React from 'react'
-import { useCurrentFrame, interpolate } from 'remotion'
+import { interpolate } from 'remotion'import { useCurrentFrame } from '@/remotion/shared/timelineFrame'
+
 import {
   FINALE_CHAR_FRAMES,
   FINALE_TAGLINE,

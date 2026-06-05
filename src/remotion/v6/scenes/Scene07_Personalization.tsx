@@ -3,17 +3,13 @@
  * Numera-inspired blue bar + profile analysis + dark bracket finale.
  */
 import React from 'react'
-import {
-  AbsoluteFill,
-  Easing,
-  Img,
-  useCurrentFrame,
-  interpolate,
-  spring,
-  useVideoConfig,
-} from 'remotion'
-import { CROSSFADE, sceneMaster } from '../utils/sceneTransition'
+import { AbsoluteFill, Easing, Img, interpolate, spring } from 'remotion'
+import { useCurrentFrame, useVideoConfig } from '@/remotion/shared/timelineFrame'
+
+import { CROSSFADE, sceneEnter, sceneMaster } from '../utils/sceneTransition'
 import { FEATURE_DEMO_RESULT_HOLD, TEXT_REVEAL_HOLD } from '../timeline/sceneRhythm'
+import { usePathwaysHandoff } from '../../v9/context/PathwaysHandoffContext'
+import { PATHWAYS_HANDOFF } from '../../v9/pathways/pathwaysHandoffTiming'
 import { loadFont } from '@remotion/google-fonts/Inter'
 import teacherAvatar from '../../v3/teacher-hero.png'
 import { cameraPush } from '../motion/presets'
@@ -30,22 +26,22 @@ const DARK_GRADIENT =
   'radial-gradient(ellipse 90% 80% at 50% 45%, #1e4a7a 0%, #0c1929 55%, #060d18 100%)'
 
 /* ── Phase timing ─────────────────────────────────────────────────────────── */
-const BAR_ZOOM_END = 48
-const BAR_SETTLE_END = 78
+const BAR_ZOOM_END = 28
+const BAR_SETTLE_END = 46
 const ANALYSIS_START = 24
-const ANALYSIS_END = 288
+const ANALYSIS_END = 160
 /** Progress bar hits 100%. */
 const PROGRESS_FULL = ANALYSIS_END - 20
 /** Keep loading UI (bar + profile + analysis) fully visible at 100%. */
 const HOLD_AT_100_END = PROGRESS_FULL + TEXT_REVEAL_HOLD
 /** Crossfade loading cards → completion cards in same slot (overlap, no jump). */
 const CARD_SWAP_START = HOLD_AT_100_END
-const CARD_SWAP_END = CARD_SWAP_START + 32
+const CARD_SWAP_END = CARD_SWAP_START + 20
 const LOADING_FADE_END = CARD_SWAP_END
 const COMPLETE_REVEAL_START = CARD_SWAP_START
 const COMPLETE_REVEAL_END = CARD_SWAP_END
 /** Hold both completion cards fully visible (~1.5s). */
-const HOLD_COMPLETE_END = CARD_SWAP_END + TEXT_REVEAL_HOLD + 12
+const HOLD_COMPLETE_END = CARD_SWAP_END + 12
 
 /** Align all white-UI blocks to the progress bar width. */
 const CONTENT_MAX_WIDTH = 1100
@@ -55,29 +51,29 @@ const WHITE_OUT_START = HOLD_COMPLETE_END
 const WHITE_OUT_END = WHITE_OUT_START + CROSSFADE
 const MAGIC_PHASE_START = WHITE_OUT_END
 /** Brief beat on dark before letter build. */
-const IT_TURNS_START = MAGIC_PHASE_START + 10
+const IT_TURNS_START = MAGIC_PHASE_START + 6
 const IT_TURNS_WORDS = [
   {
     letters: [
       { c: 'I', s: IT_TURNS_START },
-      { c: 't', s: IT_TURNS_START + 10 },
+      { c: 't', s: IT_TURNS_START + 6 },
     ],
   },
   {
     letters: [
-      { c: 't', s: IT_TURNS_START + 24 },
-      { c: 'u', s: IT_TURNS_START + 34 },
-      { c: 'r', s: IT_TURNS_START + 44 },
-      { c: 'n', s: IT_TURNS_START + 54 },
-      { c: 's', s: IT_TURNS_START + 64 },
+      { c: 't', s: IT_TURNS_START + 14 },
+      { c: 'u', s: IT_TURNS_START + 20 },
+      { c: 'r', s: IT_TURNS_START + 26 },
+      { c: 'n', s: IT_TURNS_START + 32 },
+      { c: 's', s: IT_TURNS_START + 38 },
     ],
   },
 ]
-const SOLUTION_START = IT_TURNS_START + 82
-const PATHWAYS_START = IT_TURNS_START + 140
-const PATHWAYS_ZOOM_END = PATHWAYS_START + 34
-const PATHWAYS_HOLD_END = PATHWAYS_START + 118
-const SCENE07_FADE_START = PATHWAYS_HOLD_END + TEXT_REVEAL_HOLD
+const SOLUTION_START = IT_TURNS_START + 48
+const PATHWAYS_START = IT_TURNS_START + 88
+const PATHWAYS_ZOOM_END = PATHWAYS_START + 22
+const PATHWAYS_HOLD_END = PATHWAYS_START + 68
+const SCENE07_FADE_START = PATHWAYS_HOLD_END + 12
 export const SCENE07_DURATION = SCENE07_FADE_START + CROSSFADE
 
 const TEACHER = {
@@ -166,8 +162,10 @@ const DarkPhraseStage: React.FC<{
 export const Scene07_Personalization: React.FC = () => {
   const frame = useCurrentFrame()
   const { fps } = useVideoConfig()
+  const v9Handoff = usePathwaysHandoff()
 
-  const master = sceneMaster(frame, SCENE07_DURATION)
+  const handoffActive = v9Handoff && frame >= PATHWAYS_HANDOFF.bracketCloseStart
+  const master = handoffActive ? sceneEnter(frame, CROSSFADE) : sceneMaster(frame, SCENE07_DURATION)
   const pushScale = cameraPush(frame, ANALYSIS_START, SCENE07_DURATION - ANALYSIS_START)
 
   const showPathways = frame >= PATHWAYS_START
@@ -275,17 +273,81 @@ export const Scene07_Personalization: React.FC = () => {
     fps,
     config: { damping: 180, stiffness: 48 },
   })
-  const pathScale =
+  const pathScaleBase =
     frame < PATHWAYS_ZOOM_END
       ? interpolate(pathZoomP, [0, 1], [1.45, 1.06], { extrapolateRight: 'clamp' })
       : interpolate(frame, [PATHWAYS_ZOOM_END, PATHWAYS_HOLD_END], [1.06, 1], {
           extrapolateLeft: 'clamp',
           extrapolateRight: 'clamp',
         })
+
+  const bracketCloseP = v9Handoff
+    ? interpolate(
+        frame,
+        [PATHWAYS_HANDOFF.bracketCloseStart, PATHWAYS_HANDOFF.bracketCloseEnd],
+        [0, 1],
+        {
+          extrapolateLeft: 'clamp',
+          extrapolateRight: 'clamp',
+          easing: Easing.inOut(Easing.cubic),
+        },
+      )
+    : 0
+
+  const zoomInP = v9Handoff
+    ? interpolate(frame, [PATHWAYS_HANDOFF.bracketCloseEnd, PATHWAYS_HANDOFF.zoomInEnd], [0, 1], {
+        extrapolateLeft: 'clamp',
+        extrapolateRight: 'clamp',
+        easing: Easing.in(Easing.cubic),
+      })
+    : 0
+
+  const pathScale = v9Handoff
+    ? pathScaleBase *
+      interpolate(zoomInP, [0, 1], [1, PATHWAYS_HANDOFF.zoomScaleMax], { extrapolateRight: 'clamp' })
+    : pathScaleBase
+
   const pathOp = interpolate(frame, [PATHWAYS_START, PATHWAYS_START + 20], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   })
+
+  const isBracketClosing = v9Handoff && frame >= PATHWAYS_HANDOFF.bracketCloseStart
+
+  const bracketGap =
+    isBracketClosing
+      ? interpolate(bracketCloseP, [0, 1], [PATHWAYS_HANDOFF.bracketGapOpen, 0], {
+          extrapolateRight: 'clamp',
+          easing: Easing.inOut(Easing.cubic),
+        })
+      : 28
+
+  const textSlotWidth = isBracketClosing
+    ? interpolate(
+        bracketCloseP,
+        [0, 1],
+        [PATHWAYS_HANDOFF.textSlotPx, 0],
+        { extrapolateRight: 'clamp', easing: Easing.inOut(Easing.cubic) },
+      )
+    : undefined
+
+  const textHideOpacity = isBracketClosing
+    ? interpolate(bracketCloseP, [0, 0.32, 0.72], [1, 0.25, 0], {
+        extrapolateLeft: 'clamp',
+        extrapolateRight: 'clamp',
+      })
+    : 1
+
+  const bracketOnlyGlow = isBracketClosing
+    ? interpolate(bracketCloseP, [0.82, 1], [0, 1], {
+        extrapolateLeft: 'clamp',
+        extrapolateRight: 'clamp',
+      })
+    : 0
+
+  const portalGlow = v9Handoff
+    ? interpolate(zoomInP, [0, 0.35, 1], [0, 0.45, 0.85], { extrapolateRight: 'clamp' })
+    : 0
 
   if (showPathways) {
     return (
@@ -296,6 +358,14 @@ export const Scene07_Personalization: React.FC = () => {
           opacity: master,
         }}
       >
+        {v9Handoff && portalGlow > 0 ? (
+          <AbsoluteFill
+            style={{
+              background: `radial-gradient(circle at 50% 50%, rgba(56,189,248,${portalGlow * 0.55}) 0%, transparent 52%)`,
+              opacity: portalGlow,
+            }}
+          />
+        ) : null}
         <AbsoluteFill
           style={{
             display: 'flex',
@@ -309,16 +379,37 @@ export const Scene07_Personalization: React.FC = () => {
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 28,
+              gap: bracketGap,
               fontFamily,
               fontSize: 88,
               fontWeight: 500,
               letterSpacing: '-0.03em',
+              filter:
+                bracketOnlyGlow > 0
+                  ? `drop-shadow(0 0 ${20 + bracketOnlyGlow * 36}px rgba(56,189,248,0.55))`
+                  : undefined,
             }}
           >
-            <span style={{ color: BLUE_LIGHT, fontWeight: 600, fontSize: 120 }}>[</span>
-            <span style={{ color: BLUE_LIGHT }}>complete pathways</span>
-            <span style={{ color: BLUE_LIGHT, fontWeight: 600, fontSize: 120 }}>]</span>
+            <span style={{ color: BLUE_LIGHT, fontWeight: 600, fontSize: 120, flexShrink: 0 }}>[</span>
+            {isBracketClosing ? (
+              <div
+                style={{
+                  width: textSlotWidth,
+                  maxWidth: textSlotWidth,
+                  overflow: 'hidden',
+                  opacity: textHideOpacity,
+                  flexShrink: 0,
+                  minWidth: 0,
+                }}
+              >
+                <span style={{ color: BLUE_LIGHT, display: 'inline-block', whiteSpace: 'nowrap' }}>
+                  complete pathways
+                </span>
+              </div>
+            ) : (
+              <span style={{ color: BLUE_LIGHT }}>complete pathways</span>
+            )}
+            <span style={{ color: BLUE_LIGHT, fontWeight: 600, fontSize: 120, flexShrink: 0 }}>]</span>
           </div>
         </AbsoluteFill>
       </AbsoluteFill>

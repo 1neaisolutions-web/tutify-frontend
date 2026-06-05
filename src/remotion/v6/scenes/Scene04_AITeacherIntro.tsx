@@ -3,7 +3,8 @@
  * Hands off to Scene04_AIAssistant (live generation UI).
  */
 import React from 'react'
-import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from 'remotion'
+import { AbsoluteFill, Easing, interpolate } from 'remotion'import { useCurrentFrame } from '@/remotion/shared/timelineFrame'
+
 import { loadFont } from '@remotion/google-fonts/Inter'
 import { AITeacherCopy } from './AITeacherIntro/AITeacherCopy'
 import {
@@ -21,10 +22,10 @@ const { fontFamily } = loadFont('normal', {
 export const Scene04_AITeacherIntro: React.FC = () => {
   const frame = useCurrentFrame()
 
-  const sceneIn = interpolate(frame, [0, 16], [0, 1], {
+  const sceneIn = interpolate(frame, [0, 18], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
-    easing: Easing.out(Easing.cubic),
+    easing: Easing.bezier(0.33, 0, 0.18, 1),
   })
 
   const sceneOut = interpolate(

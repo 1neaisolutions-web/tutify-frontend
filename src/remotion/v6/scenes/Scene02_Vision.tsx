@@ -7,12 +7,21 @@
  *   → word-by-word typing with cursor
  */
 import React from 'react'
-import { AbsoluteFill, useCurrentFrame, interpolate, spring, useVideoConfig } from 'remotion'
+import { AbsoluteFill, interpolate, spring } from 'remotion'
+import { useCurrentFrame, useVideoConfig } from '@/remotion/shared/timelineFrame'
+
 import { loadFont } from '@remotion/google-fonts/Inter'
 import { VisionBackground } from './VisionScene/VisionBackground'
-import { VisionCopy, VISION_LINE2_DONE, VISION_SCENE_DURATION } from './VisionScene/VisionCopy'
+import {
+  VisionCopy,
+  VISION_LINE1_WIPE_START,
+  VISION_LINE2_DONE,
+  VISION_LINE2_START,
+  VISION_SCENE_DURATION,
+} from './VisionScene/VisionCopy'
+import { VisionRadialWipeEdge, visionRadialWipeActive } from './VisionScene/VisionRadialWipe'
 import { theme } from '../theme'
-import { sceneEnter } from '../utils/sceneTransition'
+import { visionSceneEnter } from '../slides/teachersOverwhelmed/visionHandoff'
 
 const { fontFamily: interFont } = loadFont('normal', {
   weights: ['500', '700'],
@@ -32,26 +41,47 @@ export const Scene02_Vision: React.FC = () => {
   const frame = useCurrentFrame()
   const { fps } = useVideoConfig()
 
-  const fadeIn = sceneEnter(frame)
-  const fadeOut = interpolate(frame, [SCENE02_DURATION - 32, SCENE02_DURATION], [1, 0], {
+  const enter = visionSceneEnter(frame)
+  const fadeOut = interpolate(frame, [SCENE02_DURATION - 16, SCENE02_DURATION], [1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   })
-  const fgAlpha = fadeIn * fadeOut
+  const fgAlpha = enter.opacity * fadeOut
+  const enterTransform = `translateY(${enter.translateY}px) scale(${enter.scale})`
+  const enterFilter = enter.blur > 0.3 ? `blur(${enter.blur}px)` : undefined
 
-  const pillsBase = VISION_LINE2_DONE + 14
+  const pillsBase = VISION_LINE2_DONE + 8
   const pills = VALUE_PILLS.map((pill, i) => ({
     ...pill,
-    delay: pillsBase + i * 14,
+    delay: pillsBase + i * 8,
   }))
 
   const chipP = spring({ frame: Math.max(0, frame - 10), fps, config: theme.spring.gentle })
   const chipOp = interpolate(chipP, [0, 1], [0, 1]) * fgAlpha
 
+  const line1WipeActive = visionRadialWipeActive(
+    frame,
+    VISION_LINE1_WIPE_START,
+    VISION_LINE2_START,
+  )
+  const wipeKickFlash = interpolate(
+    frame,
+    [VISION_LINE1_WIPE_START, VISION_LINE1_WIPE_START + 3],
+    [0, 0.38],
+    { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' },
+  )
+
   return (
     <AbsoluteFill style={{ overflow: 'hidden' }}>
       <VisionBackground />
-      <AbsoluteFill style={{ opacity: fgAlpha }}>
+      <AbsoluteFill
+        style={{
+          opacity: fgAlpha,
+          transform: enterTransform,
+          filter: enterFilter,
+          transformOrigin: 'center center',
+        }}
+      >
         <div
           style={{
             position: 'absolute',
@@ -96,6 +126,25 @@ export const Scene02_Vision: React.FC = () => {
         </div>
 
         <VisionCopy fontFamily={interFont} fadeOut={fadeOut} />
+
+        {line1WipeActive ? (
+          <>
+            {wipeKickFlash > 0.02 ? (
+              <AbsoluteFill
+                style={{
+                  zIndex: 55,
+                  pointerEvents: 'none',
+                  background: `rgba(255,255,255,${wipeKickFlash * fgAlpha})`,
+                }}
+              />
+            ) : null}
+            <VisionRadialWipeEdge
+              frame={frame}
+              wipeStart={VISION_LINE1_WIPE_START}
+              holdUntilFrame={VISION_LINE2_START}
+            />
+          </>
+        ) : null}
 
         <div
           style={{

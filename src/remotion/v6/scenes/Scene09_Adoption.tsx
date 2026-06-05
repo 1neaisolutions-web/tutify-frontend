@@ -3,7 +3,8 @@
  * Headline beats moved to Scene 10 Closing.
  */
 import React from 'react'
-import { AbsoluteFill, useCurrentFrame, interpolate, spring, useVideoConfig } from 'remotion'
+import { AbsoluteFill, interpolate, spring } from 'remotion'import { useCurrentFrame, useVideoConfig } from '@/remotion/shared/timelineFrame'
+
 import { KineticText } from '../components/KineticText'
 import { theme } from '../theme'
 import { sceneMaster } from '../utils/sceneTransition'

@@ -1,0 +1,39 @@
+import {
+  TEACHING_INTRO_V9,
+  EDUCATION_SLIDE_V9,
+  PROBLEM_SLIDE_V9,
+  SCENE02_V9,
+  SCENE03_V9,
+  AI_TEACHER_INTRO_V9,
+  SCENE04_V9,
+  IMAGE_STUDIO_INTRO_V9,
+  SCENE05_V9,
+  YOUTUBE_STUDIO_INTRO_V9,
+  SCENE06_V9,
+  PERSO_INTRO_V9,
+  SCENE07_V9,
+  SCENE07B_V9,
+  SCENE08_V9,
+  SCENE10_V9,
+} from '../src/remotion/v9/timeline/sceneDurations.ts'
+
+const CROSS = 18
+const OPENING_HANDOFF_V9 = 36
+const S1 = TEACHING_INTRO_V9 - OPENING_HANDOFF_V9
+const S2 = S1 + EDUCATION_SLIDE_V9 - CROSS
+const S3 = S2 - CROSS
+const S4 = S3 + PROBLEM_SLIDE_V9 - CROSS
+const S5 = S4 + SCENE02_V9 - CROSS
+const S6 = S5 + SCENE03_V9 - CROSS
+const S6b = S6 + AI_TEACHER_INTRO_V9 - CROSS
+const S7 = S6b + SCENE04_V9 - CROSS
+const S7b = S7 + IMAGE_STUDIO_INTRO_V9 - CROSS
+const S8 = S7b + SCENE05_V9 - CROSS
+const S9 = S8 + YOUTUBE_STUDIO_INTRO_V9 - CROSS
+const S10 = S9 + SCENE06_V9 - CROSS
+const S10b = S10 + PERSO_INTRO_V9 - CROSS
+const S11 = S10b + SCENE07_V9 - CROSS
+const S11b = S11 + SCENE07B_V9 - CROSS
+const S12 = S11b + SCENE08_V9 - CROSS
+const total = S12 + SCENE10_V9
+console.log(JSON.stringify({ total, seconds: total / 60, max: 4500 }, null, 2))

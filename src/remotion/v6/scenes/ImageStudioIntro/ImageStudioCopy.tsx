@@ -1,15 +1,9 @@
 /**
- * AI IMAGE STUDIO — hero scale-up, smooth morph to pill, Vision word reveals.
+ * AI Image Studio — fade in at center, fade out in place (no rise), pill + body below.
  */
 import React from 'react'
-import {
-  AbsoluteFill,
-  useCurrentFrame,
-  interpolate,
-  spring,
-  useVideoConfig,
-  Easing,
-} from 'remotion'
+import { AbsoluteFill, interpolate, Easing } from 'remotion'import { useCurrentFrame } from '@/remotion/shared/timelineFrame'
+
 import {
   INTRO_HEADLINE,
   INTRO_HEADLINE_EMPHASIS_WEIGHT,
@@ -18,24 +12,23 @@ import {
   TAGLINE_ROWS,
   TAGLINE_EMPHASIS,
   TAGLINE_WORD_STARTS,
-  TAGLINE_START,
+  BODY_REVEAL_START,
+  BODY_REVEAL_FRAMES,
+  HERO_FADE_START,
+  HERO_FADE_END,
+  PILL_IN_START,
+  PILL_IN_END,
   TITLE_START,
-  MORPH_START,
-  TITLE_MORPH_END,
+  TITLE_IN_FRAMES,
+  WORD_IN_FRAMES,
   INK,
   TEAL,
   PILL_BG,
 } from './constants'
 
-const WORD_SPRING = { damping: 220, stiffness: 68, mass: 1.05 }
-const TITLE_SPRING = { damping: 230, stiffness: 62, mass: 1.05 }
-const RISE_SPRING = { damping: 32, stiffness: 110, mass: 0.95 }
-
-const smooth = Easing.inOut(Easing.cubic)
-
-const WordGap: React.FC = () => (
-  <span aria-hidden style={{ display: 'inline-block', width: INTRO_HEADLINE.wordGap }} />
-)
+const gentleEase = Easing.bezier(0.33, 0, 0.18, 1)
+const TITLE_SLOT_HEIGHT = 108
+const BODY_BLOCK_MAX_HEIGHT = 280
 
 function wordStart(row: number, col: number): number {
   return TAGLINE_WORD_STARTS.find((e) => e.row === row && e.col === col)?.start ?? 0
@@ -54,26 +47,29 @@ const BodyWord: React.FC<{
   row: number
   col: number
   frame: number
-  fps: number
-}> = ({ word, row, col, frame, fps }) => {
+  hasGapAfter: boolean
+}> = ({ word, row, col, frame, hasGapAfter }) => {
   const start = wordStart(row, col)
-  const raw = frame >= start ? spring({ frame: frame - start, fps, config: WORD_SPRING }) : 0
-  const opacity = frame < start ? 0 : interpolate(raw, [0, 1], [0, 1], { extrapolateRight: 'clamp' })
-  const y = interpolate(raw, [0, 1], [32, 0], { extrapolateRight: 'clamp' })
+  const p =
+    frame < start
+      ? 0
+      : interpolate(frame, [start, start + WORD_IN_FRAMES], [0, 1], {
+          extrapolateLeft: 'clamp',
+          extrapolateRight: 'clamp',
+          easing: gentleEase,
+        })
   const isEmphasis = TAGLINE_EMPHASIS.has(word)
-  const color = isEmphasis ? TEAL : INK
-  const weight = isEmphasis ? INTRO_HEADLINE_EMPHASIS_WEIGHT : INTRO_HEADLINE.fontWeight
 
   return (
     <span
       style={{
         display: 'inline-block',
-        fontWeight: weight,
-        color,
-        opacity,
-        transform: `translateY(${y}px)`,
-        willChange: 'transform, opacity',
+        fontWeight: isEmphasis ? INTRO_HEADLINE_EMPHASIS_WEIGHT : INTRO_HEADLINE.fontWeight,
+        color: isEmphasis ? TEAL : INK,
+        opacity: p,
+        transform: `translateY(${interpolate(p, [0, 1], [12, 0], { extrapolateRight: 'clamp' })}px)`,
         letterSpacing: INTRO_HEADLINE.letterSpacing,
+        marginRight: hasGapAfter ? INTRO_HEADLINE.wordGap : undefined,
       }}
     >
       {word}
@@ -87,58 +83,50 @@ type ImageStudioCopyProps = {
 
 export const ImageStudioCopy: React.FC<ImageStudioCopyProps> = ({ fontFamily }) => {
   const frame = useCurrentFrame()
-  const { fps } = useVideoConfig()
 
-  const titleRaw =
-    frame >= TITLE_START ? spring({ frame: frame - TITLE_START, fps, config: TITLE_SPRING }) : 0
-  const titleOp = interpolate(titleRaw, [0, 1], [0, 1], { extrapolateRight: 'clamp' })
-  const titleEnterY = interpolate(titleRaw, [0, 1], [36, 0], { extrapolateRight: 'clamp' })
-  const heroScaleIn = interpolate(titleRaw, [0, 1], [0.86, 1], { extrapolateRight: 'clamp' })
-
-  const morphT = interpolate(frame, [MORPH_START, TITLE_MORPH_END], [0, 1], {
+  const titleInP = interpolate(frame, [TITLE_START, TITLE_START + TITLE_IN_FRAMES], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
-    easing: smooth,
+    easing: gentleEase,
   })
 
-  const riseRaw =
-    frame >= MORPH_START ? spring({ frame: frame - MORPH_START, fps, config: RISE_SPRING }) : 0
-  const riseY = interpolate(riseRaw, [0, 1], [0, -72], { extrapolateRight: 'clamp', easing: smooth })
+  const titleEnterY = interpolate(titleInP, [0, 1], [12, 0], { extrapolateRight: 'clamp' })
 
-  const heroOpacity = interpolate(morphT, [0, 0.42, 0.78], [1, 0.92, 0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  })
-  const pillOpacity = interpolate(morphT, [0.18, 0.48, 0.82], [0, 0.95, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  })
-  const pillScale = interpolate(morphT, [0.18, 1], [0.94, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-    easing: smooth,
-  })
-  const heroShrink = interpolate(morphT, [0, 1], [1, 0.9], { extrapolateRight: 'clamp', easing: smooth })
-  const ruleOpacity =
-    titleOp *
-    interpolate(morphT, [0, 0.35], [interpolate(titleRaw, [0.4, 1], [0, 0.5], { extrapolateRight: 'clamp' }), 0], {
-      extrapolateRight: 'clamp',
-    })
-  const pillIconOp = interpolate(morphT, [0.45, 0.9], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  })
-  const ruleW = interpolate(titleRaw, [0, 1], [0, 200], { extrapolateRight: 'clamp' })
+  const fadeOutP =
+    frame < HERO_FADE_START
+      ? 0
+      : interpolate(frame, [HERO_FADE_START, HERO_FADE_END], [0, 1], {
+          extrapolateLeft: 'clamp',
+          extrapolateRight: 'clamp',
+          easing: gentleEase,
+        })
 
-  const bodyVisible = frame >= TAGLINE_START - 4
-  const bodyReveal = interpolate(morphT, [0.32, 0.95], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-    easing: smooth,
-  })
-  const bodyY = interpolate(bodyReveal, [0, 1], [28, 0], { extrapolateRight: 'clamp', easing: smooth })
+  const heroOp = titleInP * (1 - fadeOutP)
+  const pillOp =
+    frame < PILL_IN_START
+      ? 0
+      : interpolate(frame, [PILL_IN_START, PILL_IN_END], [0, 1], {
+          extrapolateLeft: 'clamp',
+          extrapolateRight: 'clamp',
+          easing: gentleEase,
+        })
 
-  const stackY = titleEnterY + riseY
+  const ruleW = interpolate(titleInP, [0.55, 1], [0, 200], { extrapolateRight: 'clamp' })
+  const ruleOp = heroOp * interpolate(fadeOutP, [0, 0.5], [1, 0], { extrapolateRight: 'clamp' })
+  const pillScale = interpolate(pillOp, [0, 1], [0.96, 1], { extrapolateRight: 'clamp' })
+
+  const bodyIn =
+    frame < BODY_REVEAL_START
+      ? 0
+      : interpolate(frame, [BODY_REVEAL_START, BODY_REVEAL_START + BODY_REVEAL_FRAMES], [0, 1], {
+          extrapolateLeft: 'clamp',
+          extrapolateRight: 'clamp',
+          easing: gentleEase,
+        })
+
+  const showTitleSlot = frame >= TITLE_START
+  const showPillLayer = frame >= PILL_IN_START
+  const stackY = frame < TITLE_START + TITLE_IN_FRAMES ? titleEnterY : 0
 
   return (
     <AbsoluteFill
@@ -160,123 +148,134 @@ export const ImageStudioCopy: React.FC<ImageStudioCopyProps> = ({ fontFamily }) 
           textAlign: 'center',
           maxWidth: INTRO_HEADLINE.maxWidth,
           width: '100%',
-          transform: `translateY(${stackY}px)`,
-          willChange: 'transform',
+          transform: stackY !== 0 ? `translateY(${stackY}px)` : undefined,
         }}
       >
-        <div
-          style={{
-            position: 'relative',
-            width: '100%',
-            minHeight: 52,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: '0.35em',
-          }}
-        >
+        {showTitleSlot ? (
           <div
             style={{
-              position: 'absolute',
-              inset: 0,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              opacity: titleOp * heroOpacity,
-              transform: `scale(${heroScaleIn * heroShrink})`,
-              transformOrigin: 'center center',
-              pointerEvents: 'none',
+              position: 'relative',
+              width: '100%',
+              height: TITLE_SLOT_HEIGHT,
+              marginBottom: '0.35em',
+              flexShrink: 0,
             }}
           >
             <div
               style={{
-                fontSize: INTRO_HEADLINE.fontSize,
-                fontWeight: 800,
-                letterSpacing: '-0.02em',
-                lineHeight: 1.05,
-                color: TEAL,
-              }}
-            >
-              AI Image Studio
-            </div>
-            <div
-              style={{
-                marginTop: 16,
-                height: 3,
-                width: ruleW,
-                borderRadius: 3,
-                background: `linear-gradient(90deg, transparent, ${TEAL}, transparent)`,
-                opacity: ruleOpacity,
-              }}
-            />
-          </div>
-
-          <div
-            style={{
-              position: 'absolute',
-              left: '50%',
-              top: '50%',
-              transform: `translate(-50%, -50%) scale(${pillScale})`,
-              opacity: titleOp * pillOpacity,
-              pointerEvents: 'none',
-              willChange: 'transform, opacity',
-            }}
-          >
-            <div
-              style={{
-                display: 'inline-flex',
+                position: 'absolute',
+                inset: 0,
+                display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
-                gap: 8,
-                padding: '8px 18px',
-                borderRadius: 999,
-                background: PILL_BG,
-                border: `1px solid rgba(13, 148, 136, 0.2)`,
+                justifyContent: 'center',
+                opacity: heroOp,
+                pointerEvents: 'none',
               }}
             >
-              <div style={{ opacity: pillIconOp, display: 'flex' }}>
-                <ImageIcon />
-              </div>
-              <span
+              <div
                 style={{
-                  fontSize: 13,
-                  fontWeight: 700,
-                  letterSpacing: '0.14em',
-                  textTransform: 'uppercase',
+                  fontSize: INTRO_HEADLINE.fontSize,
+                  fontWeight: 800,
+                  letterSpacing: '-0.02em',
+                  lineHeight: 1.05,
                   color: TEAL,
                   whiteSpace: 'nowrap',
                 }}
               >
                 AI Image Studio
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {bodyVisible ? (
-          <div
-            style={{
-              fontSize: INTRO_HEADLINE.fontSize,
-              fontWeight: INTRO_HEADLINE.fontWeight,
-              letterSpacing: INTRO_HEADLINE.letterSpacing,
-              lineHeight: INTRO_HEADLINE.lineHeight,
-              opacity: bodyReveal,
-              transform: `translateY(${bodyY}px)`,
-              willChange: 'transform, opacity',
-            }}
-          >
-            {TAGLINE_ROWS.map((row, ri) => (
-              <div key={ri} style={{ marginTop: ri === 0 ? 0 : '0.28em', lineHeight: 1.18 }}>
-                {row.map((word, ci) => (
-                  <React.Fragment key={`${ri}-${word}`}>
-                    <BodyWord word={word} row={ri} col={ci} frame={frame} fps={fps} />
-                    {ci < row.length - 1 ? <WordGap /> : null}
-                  </React.Fragment>
-                ))}
               </div>
-            ))}
+              <div
+                style={{
+                  marginTop: 16,
+                  height: 3,
+                  width: ruleW,
+                  borderRadius: 3,
+                  background: `linear-gradient(90deg, transparent, ${TEAL}, transparent)`,
+                  opacity: ruleOp,
+                }}
+              />
+            </div>
+
+            {showPillLayer ? (
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  opacity: pillOp,
+                  transform: `scale(${pillScale})`,
+                  pointerEvents: 'none',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    padding: '8px 18px',
+                    borderRadius: 999,
+                    background: PILL_BG,
+                    border: `1px solid rgba(13, 148, 136, 0.2)`,
+                  }}
+                >
+                  <ImageIcon />
+                  <span
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 700,
+                      letterSpacing: '0.14em',
+                      textTransform: 'uppercase',
+                      color: TEAL,
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    AI Image Studio
+                  </span>
+                </div>
+              </div>
+            ) : null}
           </div>
         ) : null}
+
+        <div
+          style={{
+            width: '100%',
+            opacity: bodyIn,
+            maxHeight:
+              frame < BODY_REVEAL_START
+                ? 0
+                : interpolate(bodyIn, [0, 1], [0, BODY_BLOCK_MAX_HEIGHT], { extrapolateRight: 'clamp' }),
+            overflow: bodyIn >= 1 ? 'visible' : 'hidden',
+            transform: `translateY(${interpolate(bodyIn, [0, 1], [8, 0], { extrapolateRight: 'clamp' })}px)`,
+          }}
+        >
+          {frame >= BODY_REVEAL_START
+            ? TAGLINE_ROWS.map((row, ri) => (
+                <div
+                  key={ri}
+                  style={{
+                    marginTop: ri === 0 ? 0 : '0.28em',
+                    fontSize: INTRO_HEADLINE.fontSize,
+                    lineHeight: 1.18,
+                  }}
+                >
+                  {row.map((word, ci) => (
+                    <BodyWord
+                      key={`${ri}-${ci}-${word}`}
+                      word={word}
+                      row={ri}
+                      col={ci}
+                      frame={frame}
+                      hasGapAfter={ci < row.length - 1}
+                    />
+                  ))}
+                </div>
+              ))
+            : null}
+        </div>
       </div>
     </AbsoluteFill>
   )

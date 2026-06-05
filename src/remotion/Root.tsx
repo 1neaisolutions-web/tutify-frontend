@@ -34,6 +34,11 @@ import {
   SCENE07_INTRO_DURATION,
 } from './v4/scenes/Scene07_PersonalizationIntro'
 import { Scene07_Personalization, SCENE07_DURATION } from './v4/scenes/Scene07_Personalization'
+import { SaaSLaunch60, SAAS_LAUNCH_60_DURATION } from './v6/SaaSLaunch60'
+import { TutifyDemoV7, TOTAL_DURATION_V7 } from './v7/Root'
+import { TutifyDemoV8, TOTAL_DURATION_V8 } from './v8/Root'
+import { TutifyDemoV9, TOTAL_DURATION_V9 } from './v9/Root'
+import { TutifyDemoV10, TOTAL_DURATION_V10 } from './v10/Root'
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -204,6 +209,53 @@ export const RemotionRoot: React.FC = () => {
         component={Scene07_Personalization}
         durationInFrames={SCENE07_DURATION}
         fps={30}
+        width={1920}
+        height={1080}
+      />
+
+      <Composition
+        id="SaaSLaunch60"
+        component={SaaSLaunch60}
+        durationInFrames={SAAS_LAUNCH_60_DURATION}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+
+      <Composition
+        id="TutifyDemoV7"
+        component={TutifyDemoV7}
+        durationInFrames={TOTAL_DURATION_V7}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+
+      <Composition
+        id="TutifyDemoV8"
+        component={TutifyDemoV8}
+        durationInFrames={TOTAL_DURATION_V8}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+
+      {/* V9 — 75s premium launch @ 60fps (full V6 storyboard, compressed pacing) */}
+      <Composition
+        id="TutifyDemoV9"
+        component={TutifyDemoV9}
+        durationInFrames={TOTAL_DURATION_V9}
+        fps={60}
+        width={1920}
+        height={1080}
+      />
+
+      {/* V10 — V9 content pacing; chapter transitions ~2× slower for visible handoffs */}
+      <Composition
+        id="TutifyDemoV10"
+        component={TutifyDemoV10}
+        durationInFrames={TOTAL_DURATION_V10}
+        fps={60}
         width={1920}
         height={1080}
       />

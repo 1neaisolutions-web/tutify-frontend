@@ -2,7 +2,9 @@
  * Scene 04 — Meet Tutify (Numera-style) + ecosystem tagline.
  */
 import React from 'react'
-import { AbsoluteFill, Easing, useCurrentFrame, interpolate } from 'remotion'
+import { AbsoluteFill, Easing, interpolate } from 'remotion'
+import { useCurrentFrame } from '@/remotion/shared/timelineFrame'
+
 import { loadFont } from '@remotion/google-fonts/Inter'
 import { BlueMeetBackground, MEET_BG_EDGE } from './IntroScene/BlueMeetBackground'
 import { MeetHeroBuild } from './IntroScene/MeetHeroBuild'
@@ -15,35 +17,36 @@ const { fontFamily: interFont } = loadFont('normal', {
   subsets: ['latin'],
 })
 
-import { SCENE03_DURATION as SCENE03_TARGET } from '../timeline/sceneDurations'
+/** Floor for timeline; actual length follows IntroScene pacing. */
+const SCENE03_MIN_DURATION = 320
 
-export const SCENE03_DURATION = Math.max(SCENE03_TARGET, INTRO_SCENE_DURATION)
+export const SCENE03_DURATION = Math.max(SCENE03_MIN_DURATION, INTRO_SCENE_DURATION)
 
 export const Scene03_Introduction: React.FC = () => {
   const frame = useCurrentFrame()
 
-  const fadeIn = interpolate(frame, [0, 18], [0, 1], {
+  const fadeIn = interpolate(frame, [0, 28], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
-    easing: Easing.out(Easing.cubic),
+    easing: Easing.bezier(0.33, 0, 0.18, 1),
   })
 
   const contentFade = interpolate(frame, [SCENE_FADE_OUT, INTRO_SCENE_DURATION], [1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
-    easing: Easing.inOut(Easing.cubic),
+    easing: Easing.out(Easing.cubic),
   })
 
-  const bgFade = interpolate(frame, [SCENE_FADE_OUT + 6, INTRO_SCENE_DURATION], [1, 0], {
+  const bgFade = interpolate(frame, [SCENE_FADE_OUT + 10, INTRO_SCENE_DURATION], [1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
-    easing: Easing.inOut(Easing.cubic),
+    easing: Easing.out(Easing.cubic),
   })
 
-  const sceneExitP = interpolate(frame, [SCENE_FADE_OUT - 4, INTRO_SCENE_DURATION - 4], [0, 1], {
+  const sceneExitP = interpolate(frame, [SCENE_FADE_OUT - 4, INTRO_SCENE_DURATION - 12], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
-    easing: Easing.inOut(Easing.cubic),
+    easing: Easing.bezier(0.33, 0, 0.18, 1),
   })
 
   return (
@@ -55,7 +58,7 @@ export const Scene03_Introduction: React.FC = () => {
       <AbsoluteFill
         style={{
           opacity: fadeIn * contentFade,
-          transform: `scale(${interpolate(sceneExitP, [0, 1], [1, 1.04])})`,
+          transform: `scale(${interpolate(sceneExitP, [0, 1], [1, 1.012])})`,
           transformOrigin: '54% 44%',
         }}
       >

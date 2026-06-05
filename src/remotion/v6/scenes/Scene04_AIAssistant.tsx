@@ -3,7 +3,8 @@
  * Center prompt → slide left → arrows to Quiz / Worksheet / Lesson Plan previews.
  */
 import React from 'react'
-import { AbsoluteFill, Easing, useCurrentFrame, interpolate, spring, useVideoConfig } from 'remotion'
+import { AbsoluteFill, Easing, interpolate, spring } from 'remotion'import { useCurrentFrame, useVideoConfig } from '@/remotion/shared/timelineFrame'
+
 import { UICard } from '../components/UICard'
 import { theme } from '../theme'
 
@@ -28,32 +29,32 @@ const RIGHT_X = 1920 - 96 - CARD_W
 const CARDS_TOP = 188
 
 const TYPE_START = 32
-const GENERATE_CLICK = 108
-const SLIDE_START = 116
-const GENERATING_END = 214
+const GENERATE_CLICK = 90
+const SLIDE_START = 96
+const GENERATING_END = 150
 
 const OUTPUT_CARDS = [
-  { icon: '🎯', title: 'Quiz', color: theme.colors.primary, delay: 172, arrowEndY: CARDS_TOP + CARD_H / 2 },
-  { icon: '📋', title: 'Worksheet', color: theme.colors.secondary, delay: 212, arrowEndY: CARDS_TOP + CARD_H + CARD_GAP + CARD_H / 2 },
-  { icon: '📚', title: 'Lesson Plan', color: theme.colors.accent, delay: 252, arrowEndY: CARDS_TOP + 2 * (CARD_H + CARD_GAP) + CARD_H / 2 },
+  { icon: '🎯', title: 'Quiz', color: theme.colors.primary, delay: 144, arrowEndY: CARDS_TOP + CARD_H / 2 },
+  { icon: '📋', title: 'Worksheet', color: theme.colors.secondary, delay: 170, arrowEndY: CARDS_TOP + CARD_H + CARD_GAP + CARD_H / 2 },
+  { icon: '📚', title: 'Lesson Plan', color: theme.colors.accent, delay: 196, arrowEndY: CARDS_TOP + 2 * (CARD_H + CARD_GAP) + CARD_H / 2 },
 ] as const
 
-const PROC_TYPE_FRAMES = 18
+const PROC_TYPE_FRAMES = 12
 
 const PROC_STEPS = [
-  { text: 'Parsing topic: The Water Cycle …', delay: 142 },
-  { text: 'Building quiz & worksheet items …', delay: 162 },
-  { text: 'Formatting lesson plan template …', delay: 182 },
+  { text: 'Parsing topic: The Water Cycle …', delay: 118 },
+  { text: 'Building quiz & worksheet items …', delay: 132 },
+  { text: 'Formatting lesson plan template …', delay: 146 },
 ] as const
 
 /** Hold full UI readable after last output card settles (~1s @ 30fps). */
-const OUTPUT_SETTLE = 28
-const SCENE04_HOLD_FRAMES = 30
+const OUTPUT_SETTLE = 18
+const SCENE04_HOLD_FRAMES = 14
 const LAST_OUTPUT_FRAME = OUTPUT_CARDS[OUTPUT_CARDS.length - 1]!.delay + OUTPUT_SETTLE
 export const SCENE04_FADE_START = LAST_OUTPUT_FRAME + SCENE04_HOLD_FRAMES
 export const SCENE04_DURATION = Math.max(SCENE04_TARGET, SCENE04_FADE_START + CROSSFADE)
 
-const TYPE_END = 98
+const TYPE_END = 84
 
 /** Local frames for Root.tsx SFX — prompt typing + output cards only (no proc-line SFX). */
 export const SCENE04_SFX_FRAMES = {
@@ -307,7 +308,7 @@ export const Scene04_AIAssistant: React.FC = () => {
   const inputScale = frame < SLIDE_START ? inputEntranceScale : 1
 
   const charCount = Math.floor(
-    interpolate(frame, [TYPE_START, 98], [0, PROMPT_TEXT.length], {
+    interpolate(frame, [TYPE_START, TYPE_END], [0, PROMPT_TEXT.length], {
       extrapolateLeft: 'clamp',
       extrapolateRight: 'clamp',
     }),
@@ -425,7 +426,7 @@ export const Scene04_AIAssistant: React.FC = () => {
             </defs>
             {OUTPUT_CARDS.map((card, i) => {
               const drawStart = card.delay - 8
-              const drawP = interpolate(frame, [drawStart, drawStart + 28], [0, 1], {
+              const drawP = interpolate(frame, [drawStart, drawStart + 16], [0, 1], {
                 extrapolateLeft: 'clamp',
                 extrapolateRight: 'clamp',
               })

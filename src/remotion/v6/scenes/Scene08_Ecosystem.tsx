@@ -5,40 +5,63 @@
  * 3. Nodes merge into Tutify nucleus
  */
 import React from 'react'
-import { AbsoluteFill, Easing, useCurrentFrame, interpolate, spring, useVideoConfig } from 'remotion'
-import { NetworkGraph, NetworkNode } from '../components/NetworkGraph'
+import { AbsoluteFill, Easing, interpolate, spring } from 'remotion'
+import { useVideoConfig as useCompositionVideoConfig } from 'remotion'
+import {
+  useCurrentFrame,
+  useTimelineScale,
+  useVideoConfig,
+  wallClockHoldFrames,
+} from '@/remotion/shared/timelineFrame'
+
+import { NetworkGraph } from '../components/NetworkGraph'
 import { EcosystemSceneBackground } from '../components/EcosystemSceneBackground'
 import { LOGO_SRC } from '../assets'
 import { theme } from '../theme'
 import { INTRO_HEADLINE } from '../../compositions/shared/introHeadlineTypography'
+import { ECOSYSTEM_HUB, ECOSYSTEM_NODES } from './ecosystemLayout'
 
 const HEADLINE_SIZE = INTRO_HEADLINE.fontSize
 
 import { CROSSFADE, sceneMaster } from '../utils/sceneTransition'
-import { TEXT_REVEAL_HOLD } from '../timeline/sceneRhythm'
 
 const ROLE_WORDS = [
   { word: 'teachers', color: '#2563EB', tint: 'rgba(37,99,235,0.10)' },
   { word: 'students', color: '#059669', tint: 'rgba(5,150,105,0.10)' },
   { word: 'parents', color: '#C2410C', tint: 'rgba(194,65,12,0.10)' },
-  { word: 'administrators', color: '#6D28D9', tint: 'rgba(109,40,217,0.10)' },
 ] as const
 
 /* ── Phases (local frames) ───────────────────────────────────────────────── */
 const CHIP_END = 24
-const HEADLINE_START = 16
-const CYCLE_START = 64
+const HEADLINE_START = 10
+const CYCLE_START = 34
 /** Role carousel — aligned with intro word stagger (~12f/word feel). */
-const CYCLE_SLOT = 44
-const CYCLE_ENTER = 16
-const CYCLE_EXIT = 14
+const CYCLE_SLOT = 25
+const CYCLE_ENTER = 10
+const CYCLE_EXIT = 8
 const CYCLE_END = CYCLE_START + CYCLE_SLOT * ROLE_WORDS.length
-const DIAGRAM_START = CYCLE_END + 12
-const MERGE_START = DIAGRAM_START + 148
-const MERGE_END = MERGE_START + 84
-const CAPTION_START = DIAGRAM_START + 34
+const DIAGRAM_START = CYCLE_END + 6
+/** Hub + caption + badges fully visible */
+const DIAGRAM_FULLY_READY = DIAGRAM_START + 86
+const PRE_SPIN_HOLD_SEC = 0.5
+const SPIN_MERGE_DURATION = 78
+/** Logo zoom-out — overlaps last frames of spin for no mid-pause */
+const HUB_ZOOM_OVERLAP = 6
+const HUB_ZOOM_DURATION = 14
+const CAPTION_START = DIAGRAM_START + 18
 
-export const SCENE08_DURATION = MERGE_END + TEXT_REVEAL_HOLD + CROSSFADE
+const computeScene08Duration = (preSpinHoldFrames: number): number =>
+  DIAGRAM_FULLY_READY +
+  preSpinHoldFrames +
+  SPIN_MERGE_DURATION +
+  HUB_ZOOM_DURATION -
+  HUB_ZOOM_OVERLAP +
+  CROSSFADE
+
+/** Authored length; V9 hold uses wallClockHoldFrames inside the scene */
+export const SCENE08_DURATION = computeScene08Duration(Math.round(PRE_SPIN_HOLD_SEC * 60))
+
+const HUB_ORIGIN = `${(ECOSYSTEM_HUB.cx / 1920) * 100}% ${(ECOSYSTEM_HUB.cy / 1080) * 100}%`
 
 /** Slide-up enter / exit for one role word in the carousel slot */
 const RoleWordCarousel: React.FC<{
@@ -118,14 +141,6 @@ const RoleWordCarousel: React.FC<{
   )
 }
 
-const ECOSYSTEM_NODES: NetworkNode[] = [
-  { id: 'teacher', label: 'Teachers', icon: '👩‍🏫', color: theme.colors.primary, x: 960, y: 248 },
-  { id: 'student', label: 'Students', icon: '👨‍🎓', color: theme.colors.secondary, x: 1255, y: 655 },
-  { id: 'parent', label: 'Parents', icon: '👨‍👩‍👧', color: theme.colors.accent, x: 665, y: 655 },
-  { id: 'admin', label: 'Administrators', icon: '🏛️', color: theme.colors.purple, x: 1285, y: 368 },
-  { id: 'school', label: 'Schools', icon: '🏫', color: theme.colors.rose, x: 635, y: 368 },
-]
-
 const NODE_STATS = [
   { nodeId: 'teacher', text: '10,200+ educators' },
   { nodeId: 'student', text: '140k+ students' },
@@ -137,6 +152,13 @@ const NODE_STATS = [
 export const Scene08_Ecosystem: React.FC = () => {
   const frame = useCurrentFrame()
   const { fps } = useVideoConfig()
+  const compositionFps = useCompositionVideoConfig().fps
+  const timelineScale = useTimelineScale()
+  const preSpinHold = wallClockHoldFrames(PRE_SPIN_HOLD_SEC, compositionFps, timelineScale)
+  const spinMergeStart = DIAGRAM_FULLY_READY + preSpinHold
+  const spinMergeEnd = spinMergeStart + SPIN_MERGE_DURATION
+  const hubZoomStart = spinMergeEnd - HUB_ZOOM_OVERLAP
+  const hubZoomEnd = hubZoomStart + HUB_ZOOM_DURATION
   const fgAlpha = sceneMaster(frame, SCENE08_DURATION)
 
   const chipOp = interpolate(frame, [4, CHIP_END], [0, 1], {
@@ -170,8 +192,32 @@ export const Scene08_Ecosystem: React.FC = () => {
     extrapolateRight: 'clamp',
   })
 
-  const mergeProgress = interpolate(frame, [MERGE_START, MERGE_END], [0, 1], {
+  const outroProgress = interpolate(frame, [spinMergeStart, spinMergeEnd], [0, 1], {
     easing: Easing.inOut(Easing.cubic),
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  })
+  const mergeProgress = outroProgress
+  const spinDeg = outroProgress * 380
+  const spinLayerOpacity =
+    frame < hubZoomStart
+      ? diagramOp
+      : interpolate(frame, [hubZoomStart, hubZoomStart + 4], [diagramOp, 0], {
+          extrapolateLeft: 'clamp',
+          extrapolateRight: 'clamp',
+        })
+
+  const hubZoomProgress = interpolate(frame, [hubZoomStart, hubZoomEnd], [0, 1], {
+    easing: Easing.out(Easing.cubic),
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  })
+  const hubPortalOpacity = interpolate(frame, [hubZoomStart, hubZoomStart + 2], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  })
+  /** Fade ecosystem layer so closing blue can show through — no grey/purple disc pause */
+  const portalHandoffOut = interpolate(hubZoomProgress, [0.35, 0.92], [1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   })
@@ -180,7 +226,7 @@ export const Scene08_Ecosystem: React.FC = () => {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   })
-  const captionHide = interpolate(frame, [MERGE_START, MERGE_START + 20], [1, 0], {
+  const captionHide = interpolate(frame, [spinMergeStart, spinMergeStart + 20], [1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   })
@@ -193,14 +239,20 @@ export const Scene08_Ecosystem: React.FC = () => {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   })
+  const badgeOutroHide = interpolate(frame, [spinMergeStart, spinMergeStart + 14], [1, 0], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  })
 
   const graphStart = DIAGRAM_START
 
   return (
     <AbsoluteFill style={{ overflow: 'hidden' }}>
-      <EcosystemSceneBackground />
+      <AbsoluteFill style={{ opacity: fgAlpha * portalHandoffOut }}>
+        <EcosystemSceneBackground />
+      </AbsoluteFill>
 
-      <AbsoluteFill style={{ opacity: fgAlpha }}>
+      <AbsoluteFill style={{ opacity: fgAlpha * portalHandoffOut }}>
 
         <div
           style={{
@@ -316,27 +368,63 @@ export const Scene08_Ecosystem: React.FC = () => {
           </div>
         </div>
 
-        {/* ── Phase 3–4: Network + merge ─────────────────────────────────── */}
-        <div style={{ position: 'absolute', inset: 0, opacity: diagramOp }}>
-          <NetworkGraph
-            centerLogoSrc={LOGO_SRC}
-            nodes={ECOSYSTEM_NODES}
-            startFrame={graphStart}
-            width={1920}
-            height={1080}
-            showStats
-            stats={NODE_STATS}
-            mergeProgress={mergeProgress}
-            enhanced
-          />
-        </div>
+        {/* ── Phase 3–4: equal-orbit hub → spin → collapse into logo ───── */}
+        {frame < hubZoomStart + 4 ? (
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              opacity: spinLayerOpacity,
+              transform: `rotate(${spinDeg}deg)`,
+              transformOrigin: HUB_ORIGIN,
+            }}
+          >
+            <NetworkGraph
+              centerLogoSrc={LOGO_SRC}
+              nodes={ECOSYSTEM_NODES}
+              startFrame={graphStart}
+              width={1920}
+              height={1080}
+              showStats
+              stats={NODE_STATS}
+              mergeProgress={mergeProgress}
+              spinProgress={outroProgress}
+              enhanced
+            />
+          </div>
+        ) : null}
+
+        {/* ── Phase 5: logo zoom-out portal (next scene enters through hub) ─ */}
+        {frame >= hubZoomStart - 1 ? (
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              opacity: hubPortalOpacity * diagramOp * portalHandoffOut,
+              transformOrigin: HUB_ORIGIN,
+            }}
+          >
+            <NetworkGraph
+              centerLogoSrc={LOGO_SRC}
+              nodes={ECOSYSTEM_NODES}
+              startFrame={graphStart}
+              width={1920}
+              height={1080}
+              showStats={false}
+              mergeProgress={1}
+              spinProgress={1}
+              hubZoomOutProgress={hubZoomProgress}
+              enhanced
+            />
+          </div>
+        ) : null}
 
         <div
           style={{
             position: 'absolute',
             left: 80,
             bottom: 108,
-            opacity: badgeOp * diagramOp,
+            opacity: badgeOp * diagramOp * badgeOutroHide,
           }}
         >
           <div
@@ -370,7 +458,7 @@ export const Scene08_Ecosystem: React.FC = () => {
             position: 'absolute',
             right: 80,
             bottom: 108,
-            opacity: badge2Op * diagramOp,
+            opacity: badge2Op * diagramOp * badgeOutroHide,
           }}
         >
           <div

@@ -12,26 +12,26 @@ export type RhythmTier =
 export const FPS = 30
 
 export const HOLD_BY_TIER: Record<RhythmTier, number> = {
-  opening: 36,
-  emotional: 42,
-  'feature-intro': 24,
-  'feature-demo': 18,
-  ecosystem: 30,
-  closing: 52,
+  opening: 18,
+  emotional: 24,
+  'feature-intro': 12,
+  'feature-demo': 10,
+  ecosystem: 16,
+  closing: 28,
 }
 
 /** Scene04_AIAssistant — hold after last output card (~1s @ 30fps). */
-export const FEATURE_DEMO_RESULT_HOLD = 30
+export const FEATURE_DEMO_RESULT_HOLD = 20
 /** Pause after prompt typing ends before Generate (Scene04 frames 98→108). */
-export const FEATURE_DEMO_POST_TYPE_PAUSE = 10
+export const FEATURE_DEMO_POST_TYPE_PAUSE = 6
 
 export const EXIT_BY_TIER: Record<RhythmTier, number> = {
-  opening: 28,
-  emotional: 24,
-  'feature-intro': 22,
-  'feature-demo': 20,
-  ecosystem: 24,
-  closing: 24,
+  opening: 14,
+  emotional: 14,
+  'feature-intro': 12,
+  'feature-demo': 10,
+  ecosystem: 12,
+  closing: 12,
 }
 
 export type BeatSpec = {
@@ -48,13 +48,13 @@ const DEFAULT_STAGGER = 10
 const DEFAULT_SETTLE = 18
 
 /** Word-by-word typography (matches AI Teacher / YouTube / Image intros). */
-export const TEXT_REVEAL_STAGGER = 12
-export const TEXT_REVEAL_SETTLE = 28
+export const TEXT_REVEAL_STAGGER = 8
+export const TEXT_REVEAL_SETTLE = 16
 export const TEXT_REVEAL_ROW_GAP = 10
 /** Read hold after a line finishes revealing (~1.3s @ 30fps). */
-export const TEXT_REVEAL_HOLD = 40
+export const TEXT_REVEAL_HOLD = 20
 /** Crossfade between headline lines. */
-export const TEXT_REVEAL_CROSSFADE = 18
+export const TEXT_REVEAL_CROSSFADE = 10
 
 /** Total scene length from word-reveal + hold + exit (no crossfade). */
 export const durationFromBeats = ({

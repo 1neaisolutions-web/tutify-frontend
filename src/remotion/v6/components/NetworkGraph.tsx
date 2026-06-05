@@ -2,7 +2,9 @@
  * NetworkGraph — ecosystem hub with optional merge-into-center finale.
  */
 import React from 'react'
-import { Img, useCurrentFrame, interpolate, spring, useVideoConfig } from 'remotion'
+import { Img, interpolate, spring } from 'remotion'
+import { useCurrentFrame, useVideoConfig } from '@/remotion/shared/timelineFrame'
+
 import { theme } from '../theme'
 
 export interface NetworkNode {
@@ -26,6 +28,10 @@ interface NetworkGraphProps {
   stats?: Array<{ nodeId: string; text: string }>
   /** 0 = spread, 1 = all nodes absorbed into center */
   mergeProgress?: number
+  /** 0–1 spin+collapse outro — tightens orbit and hub glow */
+  spinProgress?: number
+  /** 0–1 hub-only zoom-out after nodes absorbed */
+  hubZoomOutProgress?: number
   enhanced?: boolean
 }
 
@@ -40,6 +46,8 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({
   showStats = true,
   stats = [],
   mergeProgress = 0,
+  spinProgress = 0,
+  hubZoomOutProgress = 0,
   enhanced = false,
 }) => {
   const frame = useCurrentFrame()
@@ -59,10 +67,24 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({
   const centerP = spring({ frame: f, fps, config: theme.spring.zoom })
   const centerScale = interpolate(centerP, [0, 1], [0, 1])
   const merge = Math.max(0, Math.min(1, mergeProgress))
-  const centerMergeScale = 1 + merge * 0.42
-  const centerGlow = 0.06 + 0.14 * merge + 0.04 * Math.sin(f * 0.05)
-  const hubScale = centerScale * centerMergeScale
-  const hubOpacity = centerScale * (1 - merge * 0.06)
+  const spin = Math.max(0, Math.min(1, spinProgress))
+  const hubZoom = Math.max(0, Math.min(1, hubZoomOutProgress))
+  const orbitRadius =
+    nodes.length > 0 ? Math.hypot(nodes[0]!.x - cx, nodes[0]!.y - cy) : 280
+  const centerMergeScale = 1 + merge * 0.52 + spin * 0.08
+  const hubLogoZoomScale = 1 + hubZoom * 0.65
+  const centerGlow =
+    (0.06 + 0.14 * merge + 0.1 * spin + 0.04 * Math.sin(f * 0.05)) *
+    interpolate(hubZoom, [0, 0.12], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
+  const hubScale = centerScale * centerMergeScale * hubLogoZoomScale
+  const hubOpacity =
+    centerScale *
+    (1 - merge * 0.06) *
+    interpolate(hubZoom, [0, 0.45], [1, 0], {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+    })
+  const graphHidden = hubZoom > 0.02
   const hubSize = centerR * 2
   const labelOpacity = interpolate(centerScale, [0, 1], [0, 1])
 
@@ -96,9 +118,15 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({
           })
           const nx = cx + (node.x - cx) * lp
           const ny = cy + (node.y - cy) * lp
-          const mx = nx + (cx - nx) * merge
-          const my = ny + (cy - ny) * merge
-          const lineOp = (0.45 - merge * 0.42) * lp
+          const spiral = spin * 0.2 * orbitRadius * 0.08 * (i + 1)
+          const dx = nx - cx
+          const dy = ny - cy
+          const dist = Math.hypot(dx, dy) || orbitRadius
+          const orbitX = (-dy / dist) * spiral
+          const orbitY = (dx / dist) * spiral
+          const mx = nx + (cx - nx) * merge + orbitX * (1 - merge)
+          const my = ny + (cy - ny) * merge + orbitY * (1 - merge)
+          const lineOp = graphHidden ? 0 : (0.45 - merge * 0.42 - spin * 0.25) * lp
 
           const pulseCycle = ((f - lineDelay - 20) % 70) / 70
           const ppx = cx + (node.x - cx) * Math.max(0, Math.min(1, pulseCycle))
@@ -128,11 +156,19 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({
           const nodeDelay = 28 + i * 16
           const nf = Math.max(0, f - nodeDelay)
           const np = spring({ frame: nf, fps, config: theme.spring.zoom })
-          const nScale = interpolate(np, [0, 1], [0, 1]) * (1 - merge * 0.92)
-          const nOpacity = interpolate(np, [0, 1], [0, 1]) * (1 - merge * 0.95)
+          const nScale =
+            interpolate(np, [0, 1], [0, 1]) * (1 - merge * 0.92) * (1 - spin * 0.35)
+          const nOpacity = interpolate(np, [0, 1], [0, 1]) * (1 - merge * 0.98)
 
-          const px = node.x + (cx - node.x) * merge
-          const py = node.y + (cy - node.y) * merge
+          const spiral = spin * 0.2 * orbitRadius * 0.08 * (i + 1)
+          const dx = node.x - cx
+          const dy = node.y - cy
+          const dist = Math.hypot(dx, dy) || orbitRadius
+          const orbitX = (-dy / dist) * spiral
+          const orbitY = (dx / dist) * spiral
+          const px = node.x + (cx - node.x) * merge + orbitX * (1 - merge)
+          const py = node.y + (cy - node.y) * merge + orbitY * (1 - merge)
+          const nodeHidden = graphHidden || merge > 0.98
 
           const statEntry = stats.find((s) => s.nodeId === node.id)
           const sf = Math.max(0, f - nodeDelay - 18)
@@ -141,7 +177,7 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({
           const stY = interpolate(stp, [0, 1], [10, 0])
 
           return (
-            <g key={node.id} transform={`translate(${px}, ${py})`} opacity={nOpacity}>
+            <g key={node.id} transform={`translate(${px}, ${py})`} opacity={nodeHidden ? 0 : nOpacity}>
               <circle r={haloR} fill={node.color} opacity={0.1 + 0.05 * Math.sin(f * 0.04 + i)} />
               <circle
                 r={nodeR}

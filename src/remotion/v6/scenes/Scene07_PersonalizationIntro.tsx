@@ -2,7 +2,8 @@
  * Personalized Learning — opening beats (white theme, Numera-style typography).
  */
 import React from 'react'
-import { AbsoluteFill, useCurrentFrame, interpolate, spring, useVideoConfig } from 'remotion'
+import { AbsoluteFill, interpolate, spring } from 'remotion'import { useCurrentFrame, useVideoConfig } from '@/remotion/shared/timelineFrame'
+
 import { loadFont } from '@remotion/google-fonts/Inter'
 import { INTRO_HEADLINE } from '../../compositions/shared/introHeadlineTypography'
 import { CROSSFADE, sceneEnter, sceneExit } from '../utils/sceneTransition'

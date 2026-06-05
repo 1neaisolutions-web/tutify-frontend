@@ -2,7 +2,8 @@
  * Logo floats in, then joins “Tutify” wordmark (Numera-style lockup).
  */
 import React from 'react'
-import { useCurrentFrame, interpolate, spring, useVideoConfig, Img } from 'remotion'
+import { interpolate, spring, Img } from 'remotion'import { useCurrentFrame, useVideoConfig } from '@/remotion/shared/timelineFrame'
+
 import { LOGO_SRC } from '../../assets'
 import { P3_START } from './constants'
 

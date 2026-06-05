@@ -2,7 +2,8 @@
  * V6 — warm→blue wash + specular sweep during Teaching ↔ Education overlap.
  */
 import React from 'react'
-import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from 'remotion'
+import { AbsoluteFill, Easing, interpolate } from 'remotion'import { useCurrentFrame } from '@/remotion/shared/timelineFrame'
+
 import { OPENING_HANDOFF, HANDOFF_LIGHT_SWEEP_AT } from './constants'
 
 const ease = Easing.inOut(Easing.cubic)

@@ -3,7 +3,8 @@
  * Works beautifully on the light gradient background.
  */
 import React from 'react'
-import { useCurrentFrame, spring, interpolate, useVideoConfig } from 'remotion'
+import { spring, interpolate } from 'remotion'import { useCurrentFrame, useVideoConfig } from '@/remotion/shared/timelineFrame'
+
 import { LOGO_SRC } from '../assets'
 import { theme } from '../theme'
 

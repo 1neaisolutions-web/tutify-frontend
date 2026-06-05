@@ -2,11 +2,14 @@
  * Scene 10 — Closing (tight handoffs between beats)
  */
 import React from 'react'
-import { AbsoluteFill, useCurrentFrame, interpolate } from 'remotion'
+import { AbsoluteFill, interpolate } from 'remotion'
+import { useCurrentFrame } from '@/remotion/shared/timelineFrame'
+
 import { theme } from '../theme'
 import { sceneMaster } from '../utils/sceneTransition'
 import {
   SCENE10_DURATION,
+  FLIP_START,
   P2_START,
   P3_START,
   P4_START,
@@ -16,6 +19,7 @@ import {
   ClosingLightBackground,
   ClosingSkyBackground,
 } from './ClosingScene/ClosingBackgrounds'
+import { ClosingCardFlip } from './ClosingScene/ClosingCardFlip'
 import { FutureEducationLine } from './ClosingScene/FutureEducationLine'
 import { AlreadyHereLine } from './ClosingScene/AlreadyHereLine'
 import { ClosingBrandLockup } from './ClosingScene/ClosingBrandLockup'
@@ -23,17 +27,18 @@ import { ClosingFinale } from './ClosingScene/ClosingFinale'
 
 export { SCENE10_DURATION } from './ClosingScene/constants'
 
-const CROSS = 6
+const CROSS = 3
 
 export const Scene10_Closing: React.FC = () => {
   const frame = useCurrentFrame()
   const fontFamily = theme.font.display
   const master = sceneMaster(frame, SCENE10_DURATION)
 
-  const line2In = interpolate(frame, [P2_START, P2_START + CROSS], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  })
+  const flipProgress =
+    frame >= FLIP_START && frame < P2_START
+      ? (frame - FLIP_START) / (P2_START - FLIP_START)
+      : 0
+
   const lockupIn = interpolate(frame, [P3_START, P3_START + CROSS], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
@@ -49,15 +54,32 @@ export const Scene10_Closing: React.FC = () => {
   return (
     <AbsoluteFill style={{ overflow: 'hidden' }}>
       <AbsoluteFill style={{ opacity: master }}>
-        {frame < P2_START + CROSS && (
+        {frame < FLIP_START && (
           <AbsoluteFill>
             <ClosingSkyBackground />
-            {frame < P2_START && <FutureEducationLine fontFamily={fontFamily} />}
+            <FutureEducationLine fontFamily={fontFamily} />
           </AbsoluteFill>
         )}
 
+        {frame >= FLIP_START && frame < P2_START && (
+          <ClosingCardFlip
+            progress={flipProgress}
+            exiting={
+              <AbsoluteFill>
+                <ClosingSkyBackground />
+                <FutureEducationLine fontFamily={fontFamily} />
+              </AbsoluteFill>
+            }
+            entering={
+              <AbsoluteFill>
+                <ClosingLightBackground />
+              </AbsoluteFill>
+            }
+          />
+        )}
+
         {frame >= P2_START && frame < P3_START && (
-          <AbsoluteFill style={{ opacity: line2In }}>
+          <AbsoluteFill>
             <ClosingLightBackground />
             <AlreadyHereLine fontFamily={fontFamily} />
           </AbsoluteFill>

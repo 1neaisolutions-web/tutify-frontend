@@ -68,3 +68,60 @@ export const DEMO_QUIZ = {
     },
   ],
 }
+
+export const QUIZ_PANEL_HEADER_HEIGHT = 74
+
+const SCROLL_PAD_TOP = 16
+const SCROLL_PAD_BOTTOM = 12
+
+const lineCount = (text: string, charsPerLine: number): number =>
+  Math.max(1, Math.ceil(text.length / charsPerLine))
+
+const sectionChrome = (details: string): number =>
+  14 + 32 + 36 + 8 + lineCount(details, 96) * 16 + 10
+
+const mcQuestion = (prompt: string, optionCount: number): number =>
+  10 + 24 + lineCount(prompt, 88) * 18 + 8 + optionCount * 34 + Math.max(0, optionCount - 1) * 6
+
+const openQuestion = (prompt: string): number =>
+  10 + 24 + lineCount(prompt, 88) * 18 + 8 + 18
+
+export const estimateQuizContentHeight = (): number => {
+  let h = SCROLL_PAD_TOP + SCROLL_PAD_BOTTOM
+  h += lineCount(DEMO_QUIZ.summary, 98) * 18 + 16
+  for (const section of DEMO_QUIZ.sections) {
+    h += sectionChrome(section.details)
+    for (const q of section.questions) {
+      if (q.style === 'multiple_choice' && q.options) {
+        h += mcQuestion(q.prompt, q.options.length)
+      } else {
+        h += openQuestion(q.prompt)
+      }
+    }
+  }
+  return h
+}
+
+/** Left card height (matches Scene06 grid — full size beside right rail). */
+export const QUIZ_CARD_HEIGHT = 836
+
+/** Max scroll — stops at content end, never past (was 360px and showed blank). */
+const QUIZ_SCROLL_MAX_CAP = 118
+
+export type QuizPanelLayout = {
+  scrollMax: number
+  scrollViewport: number
+}
+
+export const getQuizPanelLayout = (cardHeight: number = QUIZ_CARD_HEIGHT): QuizPanelLayout => {
+  const scrollViewport = cardHeight - QUIZ_PANEL_HEADER_HEIGHT
+  const contentH = estimateQuizContentHeight()
+  /** Visible quiz area at scroll start (~first screen), not full 762px tail. */
+  const scrollWindow = 560
+  const scrollMax = Math.min(Math.max(0, contentH - scrollWindow), QUIZ_SCROLL_MAX_CAP)
+
+  return {
+    scrollMax,
+    scrollViewport,
+  }
+}

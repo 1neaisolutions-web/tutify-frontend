@@ -1,8 +1,8 @@
 import { interpolate } from 'remotion'
 
-/** Scene04_AIAssistant — prompt types frames 32→98 for the reference string below. */
+/** Scene04_AIAssistant — prompt types frames 32→84 for the reference string below. */
 const AI_TEACHER_TYPE_START = 32
-const AI_TEACHER_TYPE_END = 98
+const AI_TEACHER_TYPE_END = 84
 const AI_TEACHER_PROMPT_LEN =
   'Generate a Grade 8 science quiz, worksheet, and lesson plan on the water cycle.'.length
 

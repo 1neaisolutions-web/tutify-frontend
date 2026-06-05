@@ -3,21 +3,45 @@
  * Hub overview → micro-courses → course lessons → quiz → certificate.
  */
 import React from 'react'
-import {
-  AbsoluteFill,
-  Easing,
-  useCurrentFrame,
-  interpolate,
-  spring,
-  useVideoConfig,
-} from 'remotion'
+import { AbsoluteFill, Easing, interpolate, spring } from 'remotion'
+import { useCurrentFrame, useVideoConfig } from '@/remotion/shared/timelineFrame'
+
 import { loadFont } from '@remotion/google-fonts/Inter'
 import { theme } from '../theme'
 import { sceneMaster } from '../utils/sceneTransition'
 import {
+  PRODUCT_UI_REVEAL_DURATION,
+  productUI3DRevealIn,
+  productUI3DRevealOutBlur,
+  productUI3DRevealTransform,
+} from '../../shared/transitions/productUI3DReveal'
+import { ProductUI3DRevealOverlay } from '../../shared/transitions/ProductUI3DRevealOverlay'
+import {
   LearningHubDashboardChrome,
   FEATURED_COURSE_CLICK,
+  QUIZ_SUBMIT_BUTTON_CLICK,
+  QUIZ_SUBMIT_CURSOR_START,
 } from '../components/LearningHubDashboardChrome'
+import {
+  QUIZ_HERO_BUTTON_TARGET,
+  QUIZ_SUBMIT_CLICK_HOLD,
+  QUIZ_SUBMIT_CURSOR_LEAD,
+  QUIZ_SUBMIT_EXIT_FRAMES,
+  QUIZ_SUBMIT_ZOOM_HOLD,
+  QUIZ_SUBMIT_ZOOM_IN_FRAMES,
+  quizChromeHideOpacity,
+  quizContentFadeOpacity,
+  QUIZ_HERO_TRANSFORM_ORIGIN,
+  quizHeroCardPan,
+  quizHeroCardScale,
+  quizHeroCardTilt,
+  quizHeroHeaderPeekOpacity,
+  quizHeroSlideUpY,
+  quizSubmitButtonPress,
+  quizSubmitGlowOpacity,
+  quizZeliosPurpleOpacity,
+} from '../../shared/transitions/quizSubmitClickZoom'
+import { QuizSubmitZeliosBackdrop } from '../components/QuizSubmitZeliosBackdrop'
 import {
   DEMO_COURSE,
   DEMO_GROWTH_REC,
@@ -39,19 +63,34 @@ const INDIGO = '#4F46E5'
 
 /* ── Timeline (snappy hub cursor → click, then course path) ───────────────── */
 export const HUB_FOCUS_MICRO = 56
-export const CLICK_AT = 84
-const CLICK_END = 94
-export const COURSE_ENTER = 100
-const LESSON_START = 128
-const FRAMES_PER_STEP = 28
-export const QUIZ_START = LESSON_START + DEMO_LESSON_STEPS.length * FRAMES_PER_STEP + 10
-export const Q_SELECT_GAP = 12
+export const CLICK_AT = 70
+const CLICK_END = 78
+export const COURSE_ENTER = 84
+const LESSON_START = 102
+const FRAMES_PER_STEP = 18
+export const QUIZ_START = LESSON_START + DEMO_LESSON_STEPS.length * FRAMES_PER_STEP + 6
+export const Q_SELECT_GAP = 8
 const Q_SCROLL_STEP = 128
-export const QUIZ_SUBMIT =
-  QUIZ_START + DEMO_COURSE.quizQuestions.length * Q_SELECT_GAP + 8
-const QUIZ_RESULTS = QUIZ_SUBMIT + 6
-export const CERT_START = QUIZ_RESULTS + 10
-const CERT_HOLD = 48
+/** All questions answered — submit button becomes active. */
+export const QUIZ_READY_AT =
+  QUIZ_START + DEMO_COURSE.quizQuestions.length * Q_SELECT_GAP + 4
+/** Cursor → real submit pill (aligned to ~00:53 in TutifyDemoV10). */
+export const SUBMIT_CURSOR_TRAVEL_START = QUIZ_READY_AT - 4
+export const SUBMIT_CURSOR_ARRIVAL = QUIZ_READY_AT + 10
+/** Screen change only after cursor points at button (no click yet). */
+const SUBMIT_ON_BUTTON_HOLD = 12
+export const SUBMIT_HERO_START = SUBMIT_CURSOR_ARRIVAL + SUBMIT_ON_BUTTON_HOLD
+export const SUBMIT_FOCUS_START = SUBMIT_HERO_START
+/** Tight zoom: button + header strip above. */
+export const SUBMIT_ZOOM_END = SUBMIT_HERO_START + QUIZ_SUBMIT_ZOOM_IN_FRAMES
+/** Hold zoom, then click. */
+export const SUBMIT_CLICK_AT = SUBMIT_ZOOM_END + QUIZ_SUBMIT_ZOOM_HOLD
+export const SUBMIT_CLICK_END = SUBMIT_CLICK_AT + QUIZ_SUBMIT_CLICK_HOLD
+/** Slide up + hand off to results. */
+export const QUIZ_SUBMIT = SUBMIT_CLICK_END + QUIZ_SUBMIT_EXIT_FRAMES
+const QUIZ_RESULTS = QUIZ_SUBMIT + 4
+export const CERT_START = QUIZ_RESULTS + 6
+const CERT_HOLD = 40
 export const SCENE07B_DURATION = CERT_START + CERT_HOLD
 type Phase = 'hub' | 'course' | 'quiz' | 'certificate'
 
@@ -435,32 +474,113 @@ const CourseView: React.FC<{ stepIndex: number; stepProgress: number; enterT: nu
   )
 }
 
-const QuizView: React.FC<{ quizFrame: number; submitted: boolean }> = ({ quizFrame, submitted }) => {
+const SKY_CTA_GRADIENT = 'linear-gradient(135deg, #7DD3FC 0%, #38BDF8 42%, #0EA5E9 100%)'
+const PURPLE_CTA_GRADIENT = 'linear-gradient(135deg, #8B5CF6 0%, #6D28D9 48%, #5B21B6 100%)'
+const PURPLE_CTA_GLOW =
+  '0 0 36px rgba(124,58,237,0.5), 0 10px 28px rgba(91,33,182,0.4)'
+const SKY_CTA_GLOW = '0 8px 22px rgba(14,165,233,0.32), 0 4px 12px rgba(56,189,248,0.2)'
+
+const QuizView: React.FC<{
+  quizFrame: number
+  submitted: boolean
+  submitPress?: number
+  submitGlow?: number
+  submitReady?: boolean
+  heroMode?: boolean
+  heroScale?: number
+  heroTilt?: { rotateX: number; rotateY: number }
+  heroPanX?: number
+  heroPanY?: number
+  contentFade?: number
+  headerPeek?: number
+}> = ({
+  quizFrame,
+  submitted,
+  submitPress = 1,
+  submitGlow = 0,
+  submitReady = false,
+  heroMode = false,
+  heroScale = 1,
+  heroTilt = { rotateX: 0, rotateY: 0 },
+  heroPanX = 0,
+  heroPanY = 0,
+  contentFade = 1,
+  headerPeek = 0,
+}) => {
   const scrollY = interpolate(
     quizFrame,
     DEMO_COURSE.quizQuestions.map((_, i) => i * Q_SELECT_GAP),
     DEMO_COURSE.quizQuestions.map((_, i) => -i * Q_SCROLL_STEP),
     { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' },
   )
-  const atSubmit = quizFrame >= QUIZ_SUBMIT - QUIZ_START - 4
+  const readyToSubmit = submitReady
+  const submitPressed = submitGlow > 0.02 || submitPress < 0.95
+
+  const tealGlow = `0 0 ${44 + submitGlow * 48}px rgba(45,212,191,${0.38 + submitGlow * 0.42}), 0 28px 80px rgba(0,0,0,${0.14 + submitGlow * 0.06})`
+
+  const outerStyle: React.CSSProperties = heroMode
+    ? {
+        width: 1080,
+        height: 640,
+        transform: `
+          translate(${heroPanX}px, ${heroPanY}px)
+          perspective(1800px)
+          rotateX(${heroTilt.rotateX}deg)
+          rotateY(${heroTilt.rotateY}deg)
+          scale(${heroScale})
+        `,
+        transformOrigin: QUIZ_HERO_TRANSFORM_ORIGIN,
+      }
+    : {
+        maxWidth: 920,
+        margin: '0 auto',
+        height: '100%',
+      }
 
   return (
-    <div style={{ maxWidth: 920, margin: '0 auto', height: '100%' }}>
+    <div style={outerStyle}>
       <div
         style={{
           background: '#fff',
-          borderRadius: 24,
+          borderRadius: heroMode ? 22 : 24,
           border: '1px solid #E5E7EB',
-          padding: '22px 26px',
+          padding: heroMode ? '24px 28px' : '22px 26px',
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
+          boxShadow: heroMode ? tealGlow : '0 1px 2px rgba(0,0,0,0.05)',
         }}
       >
-        <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: '#111827' }}>Course Assessment</h2>
-        <p style={{ margin: '6px 0 12px', fontSize: 13, color: '#6B7280' }}>{DEMO_COURSE.quizSubtitle}</p>
-        <div style={{ flex: 1, overflow: 'hidden', position: 'relative', minHeight: 0 }}>
-          <div style={{ transform: `translateY(${scrollY}px)` }}>
+        <div style={{ opacity: heroMode ? headerPeek : contentFade }}>
+          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: '#111827' }}>Course Assessment</h2>
+          <p style={{ margin: '6px 0 12px', fontSize: 13, color: '#6B7280' }}>{DEMO_COURSE.quizSubtitle}</p>
+        </div>
+        <div
+          style={{
+            flex: 1,
+            overflow: 'hidden',
+            position: 'relative',
+            minHeight: 0,
+            opacity: contentFade,
+          }}
+        >
+          {heroMode && contentFade < 0.4 ? (
+            <div style={{ padding: '12px 8px 0', opacity: 0.5 }}>
+              {[72, 88, 64, 80, 55].map((w) => (
+                <div
+                  key={w}
+                  style={{
+                    height: 11,
+                    width: `${w}%`,
+                    borderRadius: 6,
+                    background: 'linear-gradient(90deg, #E9D5FF, #F3E8FF)',
+                    marginBottom: 14,
+                  }}
+                />
+              ))}
+            </div>
+          ) : null}
+          <div style={{ transform: `translateY(${scrollY}px)`, opacity: heroMode && contentFade < 0.4 ? 0 : 1 }}>
             {DEMO_COURSE.quizQuestions.map((q, idx) => {
               const selectAt = idx * Q_SELECT_GAP
               const selected =
@@ -562,13 +682,26 @@ const QuizView: React.FC<{ quizFrame: number; submitted: boolean }> = ({ quizFra
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10, flexShrink: 0 }}>
             <div
               style={{
-                padding: '12px 24px',
+                position: 'relative',
+                padding: heroMode ? '15px 34px' : '12px 24px',
                 borderRadius: 999,
-                background: atSubmit ? BLUE : '#93C5FD',
+                background: !readyToSubmit
+                  ? '#93C5FD'
+                  : submitPressed
+                    ? PURPLE_CTA_GRADIENT
+                    : SKY_CTA_GRADIENT,
                 color: '#fff',
-                fontSize: 13,
-                fontWeight: 600,
-                transform: atSubmit ? 'scale(0.96)' : 'scale(1)',
+                fontSize: heroMode ? 17 : 13,
+                fontWeight: 700,
+                transform: `scale(${submitPress})`,
+                boxShadow:
+                  submitGlow > 0.02
+                    ? `0 0 ${36 + submitGlow * 32}px rgba(124,58,237,${0.5 + submitGlow * 0.35}), 0 10px 28px rgba(91,33,182,0.4)`
+                    : submitPressed
+                      ? PURPLE_CTA_GLOW
+                      : readyToSubmit
+                        ? SKY_CTA_GLOW
+                        : '0 4px 12px rgba(147,197,253,0.35)',
               }}
             >
               Submit Assessment →
@@ -652,7 +785,19 @@ const CertificateView: React.FC<{ opacity: number; scale: number }> = ({ opacity
   </div>
 )
 
-export const Scene07b_LearningHub: React.FC = () => {
+export type LearningHubMotionStyle = 'default' | 'product3d'
+
+export type Scene07bLearningHubProps = {
+  /** V10 — SaaS-style tilt + blur reveal into quiz UI (course → assessment handoff). */
+  motionStyle?: LearningHubMotionStyle
+  /** V10 — submit button cursor click + zoom-out from bottom-right. */
+  enableSubmitClickBeat?: boolean
+}
+
+export const Scene07b_LearningHub: React.FC<Scene07bLearningHubProps> = ({
+  motionStyle = 'default',
+  enableSubmitClickBeat = false,
+}) => {
   const frame = useCurrentFrame()
   const { fps } = useVideoConfig()
   const master = sceneMaster(frame, SCENE07B_DURATION)
@@ -689,26 +834,46 @@ export const Scene07b_LearningHub: React.FC = () => {
     config: { damping: 90, stiffness: 220, mass: 0.8 },
   })
 
+  const useProduct3d = motionStyle === 'product3d'
+  const useSubmitBeat = enableSubmitClickBeat || useProduct3d
+  const quizRevealStart = QUIZ_START
+  const quizRevealMotion = useProduct3d
+    ? productUI3DRevealIn(frame, quizRevealStart, PRODUCT_UI_REVEAL_DURATION)
+    : null
+  const courseExitBlur = useProduct3d
+    ? productUI3DRevealOutBlur(frame, quizRevealStart, PRODUCT_UI_REVEAL_DURATION)
+    : 0
+
   const hubOp = phase === 'hub' ? 1 : interpolate(frame, [COURSE_ENTER, COURSE_ENTER + 14], [1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   })
   const courseOp = interpolate(
     frame,
-    [COURSE_ENTER, COURSE_ENTER + 14, QUIZ_START, QUIZ_START + 10],
+    useProduct3d
+      ? [COURSE_ENTER, COURSE_ENTER + 14, QUIZ_START, QUIZ_START + PRODUCT_UI_REVEAL_DURATION]
+      : [COURSE_ENTER, COURSE_ENTER + 14, QUIZ_START, QUIZ_START + 10],
     [0, 1, 1, 0],
     { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' },
   )
-  const quizOp = interpolate(
-    frame,
-    [QUIZ_START, QUIZ_START + 10, CERT_START, CERT_START + 10],
-    [0, 1, 1, 0],
-    { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' },
-  )
+  const quizOp = useProduct3d
+    ? quizRevealMotion!.opacity *
+      interpolate(
+        frame,
+        [QUIZ_START + PRODUCT_UI_REVEAL_DURATION, CERT_START, CERT_START + 10],
+        [1, 1, 0],
+        { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' },
+      )
+    : interpolate(
+        frame,
+        [QUIZ_START, QUIZ_START + 10, CERT_START, CERT_START + 10],
+        [0, 1, 1, 0],
+        { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' },
+      )
 
   const cursorVisible = frame >= HUB_FOCUS_MICRO && frame < COURSE_ENTER + 12
   const clicking = frame >= CLICK_AT && frame < CLICK_END
-  const featuredHover = interpolate(frame, [HUB_FOCUS_MICRO + 10, CLICK_AT - 4], [0, 1], {
+  const featuredHover = interpolate(frame, [HUB_FOCUS_MICRO + 6, CLICK_AT - 1], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
   })
@@ -744,8 +909,96 @@ export const Scene07b_LearningHub: React.FC = () => {
     config: theme.spring.zoom,
   })
 
+  const submitCursorStart = SUBMIT_CURSOR_TRAVEL_START
+  const submitCursorArrival = SUBMIT_CURSOR_ARRIVAL
+  const submitHeroActive =
+    useSubmitBeat && phase === 'quiz' && frame >= SUBMIT_HERO_START && frame < QUIZ_SUBMIT
+  const purpleBg = useSubmitBeat
+    ? quizZeliosPurpleOpacity(frame, SUBMIT_HERO_START, SUBMIT_CLICK_END, QUIZ_SUBMIT)
+    : 0
+  const chromeVisible = useSubmitBeat
+    ? quizChromeHideOpacity(frame, SUBMIT_HERO_START, SUBMIT_CLICK_END, QUIZ_SUBMIT)
+    : 1
+  const contentFade = useSubmitBeat
+    ? quizContentFadeOpacity(frame, SUBMIT_HERO_START, QUIZ_SUBMIT)
+    : 1
+  const headerPeek = useSubmitBeat
+    ? quizHeroHeaderPeekOpacity(frame, SUBMIT_ZOOM_END, SUBMIT_CLICK_END)
+    : 1
+  const heroScale = useSubmitBeat
+    ? quizHeroCardScale(frame, SUBMIT_HERO_START, SUBMIT_ZOOM_END, SUBMIT_CLICK_END)
+    : 1
+  const heroTilt = useSubmitBeat ? quizHeroCardTilt(frame, SUBMIT_HERO_START, SUBMIT_ZOOM_END) : { rotateX: 0, rotateY: 0 }
+  const heroPan = useSubmitBeat
+    ? quizHeroCardPan(frame, SUBMIT_HERO_START, SUBMIT_ZOOM_END, SUBMIT_CLICK_END)
+    : { x: 0, y: 0 }
+  const heroSlideY = useSubmitBeat ? quizHeroSlideUpY(frame, SUBMIT_CLICK_END, QUIZ_SUBMIT) : 0
+  const submitGlow = useSubmitBeat
+    ? quizSubmitGlowOpacity(frame, SUBMIT_CLICK_AT, SUBMIT_CLICK_END)
+    : 0
+  const submitPress = useSubmitBeat ? quizSubmitButtonPress(frame, SUBMIT_CLICK_AT) : 1
+  const submitCursorVisible =
+    useSubmitBeat &&
+    phase === 'quiz' &&
+    frame >= submitCursorStart &&
+    frame < SUBMIT_CLICK_AT + QUIZ_SUBMIT_CLICK_HOLD + 10
+  const submitClicking =
+    useSubmitBeat &&
+    frame >= SUBMIT_CLICK_AT &&
+    frame < SUBMIT_CLICK_AT + QUIZ_SUBMIT_CLICK_HOLD
+  const submitRipple = interpolate(frame, [SUBMIT_CLICK_AT, SUBMIT_CLICK_AT + 14], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  })
+  const cursorOnRealButton = frame >= submitCursorArrival && frame < SUBMIT_HERO_START
+  const submitCursorMove = interpolate(
+    frame,
+    [submitCursorStart, submitCursorArrival],
+    [0, 1],
+    {
+      extrapolateLeft: 'clamp',
+      extrapolateRight: 'clamp',
+      easing: Easing.out(Easing.cubic),
+    },
+  )
+  const cursorXOnButton =
+    submitHeroActive || frame >= SUBMIT_HERO_START
+      ? QUIZ_HERO_BUTTON_TARGET.x
+      : cursorOnRealButton
+        ? QUIZ_SUBMIT_BUTTON_CLICK.x
+        : interpolate(
+            submitCursorMove,
+            [0, 1],
+            [QUIZ_SUBMIT_CURSOR_START.x, QUIZ_SUBMIT_BUTTON_CLICK.x],
+            { extrapolateRight: 'clamp' },
+          )
+  const cursorYOnButton =
+    submitHeroActive || frame >= SUBMIT_HERO_START
+      ? QUIZ_HERO_BUTTON_TARGET.y
+      : cursorOnRealButton
+        ? QUIZ_SUBMIT_BUTTON_CLICK.y
+        : interpolate(
+            submitCursorMove,
+            [0, 1],
+            [QUIZ_SUBMIT_CURSOR_START.y, QUIZ_SUBMIT_BUTTON_CLICK.y],
+            { extrapolateRight: 'clamp' },
+          )
+
+  const quizViewProps = {
+    quizFrame,
+    submitted,
+    submitPress,
+    submitGlow,
+    submitReady: frame >= QUIZ_READY_AT,
+    contentFade,
+    headerPeek,
+  }
+
   return (
     <AbsoluteFill style={{ opacity: master, fontFamily }}>
+      <QuizSubmitZeliosBackdrop opacity={purpleBg} />
+      {chromeVisible > 0.02 ? (
+      <AbsoluteFill style={{ opacity: chromeVisible, zIndex: 300 }}>
       <LearningHubDashboardChrome
         fontFamily={fontFamily}
         pageTitle={phase === 'hub' ? 'Professional Learning Hub' : 'Micro-course'}
@@ -760,13 +1013,34 @@ export const Scene07b_LearningHub: React.FC = () => {
           </Box>
         ) : null}
         {courseOp > 0.01 ? (
-          <Box style={{ opacity: courseOp, position: 'absolute', inset: 0, height: '100%' }}>
+          <Box
+            style={{
+              opacity: courseOp,
+              position: 'absolute',
+              inset: 0,
+              height: '100%',
+              filter: courseExitBlur > 0.4 ? `blur(${courseExitBlur}px)` : undefined,
+            }}
+          >
             <CourseView stepIndex={stepIndex} stepProgress={stepProgress} enterT={courseEnterT} />
           </Box>
         ) : null}
-        {quizOp > 0.01 ? (
-          <Box style={{ opacity: quizOp, height: '100%' }}>
-            <QuizView quizFrame={quizFrame} submitted={submitted} />
+        {quizOp > 0.01 && !submitHeroActive ? (
+          <Box
+            style={
+              useProduct3d && quizRevealMotion
+                ? {
+                    opacity: quizOp,
+                    height: '100%',
+                    transform: productUI3DRevealTransform(quizRevealMotion),
+                    transformOrigin: 'center 42%',
+                    filter:
+                      quizRevealMotion.blur > 0.35 ? `blur(${quizRevealMotion.blur}px)` : undefined,
+                  }
+                : { opacity: quizOp, height: '100%' }
+            }
+          >
+            <QuizView {...quizViewProps} />
           </Box>
         ) : null}
         {phase === 'certificate' ? (
@@ -775,8 +1049,45 @@ export const Scene07b_LearningHub: React.FC = () => {
           </Box>
         ) : null}
       </LearningHubDashboardChrome>
+      </AbsoluteFill>
+      ) : null}
+      {quizOp > 0.01 && submitHeroActive ? (
+        <AbsoluteFill
+          style={{
+            zIndex: 380,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            perspective: 1800,
+            transform: `translateY(${heroSlideY}px)`,
+          }}
+        >
+          <QuizView
+            {...quizViewProps}
+            heroMode
+            heroScale={heroScale}
+            heroTilt={heroTilt}
+            heroPanX={heroPan.x}
+            heroPanY={heroPan.y}
+            headerPeek={headerPeek}
+          />
+        </AbsoluteFill>
+      ) : null}
       {cursorVisible ? (
         <PremiumCursor x={cursorX} y={cursorY} clicking={clicking} ripple={clickRipple} />
+      ) : null}
+      {submitCursorVisible ? (
+        <div style={{ position: 'absolute', inset: 0, zIndex: 500, pointerEvents: 'none' }}>
+          <PremiumCursor
+            x={cursorXOnButton}
+            y={cursorYOnButton}
+            clicking={submitClicking}
+            ripple={submitRipple}
+          />
+        </div>
+      ) : null}
+      {useProduct3d && quizRevealMotion && !submitHeroActive ? (
+        <ProductUI3DRevealOverlay opacity={quizRevealMotion.glowOpacity} />
       ) : null}
     </AbsoluteFill>
   )

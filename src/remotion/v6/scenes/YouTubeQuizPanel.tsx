@@ -8,19 +8,20 @@ type YouTubeQuizPanelProps = {
   quizOp: number
   quizY: number
   quizScrollY: number
+  scrollViewport: number
 }
 
 export const YouTubeQuizPanel: React.FC<YouTubeQuizPanelProps> = ({
   quizOp,
   quizY,
   quizScrollY,
+  scrollViewport,
 }) => (
   <div
     style={{
-      flex: 1,
-      minHeight: 0,
       display: 'flex',
       flexDirection: 'column',
+      height: '100%',
       opacity: quizOp,
       transform: `translateY(${quizY}px)`,
     }}
@@ -60,14 +61,22 @@ export const YouTubeQuizPanel: React.FC<YouTubeQuizPanelProps> = ({
       </h4>
     </div>
 
-    <div style={{ flex: 1, minHeight: 0, overflow: 'hidden', position: 'relative', background: '#FAFAFA' }}>
+    <div
+      style={{
+        flex: 1,
+        minHeight: scrollViewport,
+        overflow: 'hidden',
+        position: 'relative',
+        background: '#fff',
+      }}
+    >
       <div
         style={{
           position: 'absolute',
           left: 0,
           right: 0,
           top: 0,
-          padding: '16px 28px 28px',
+          padding: '16px 28px 12px',
           transform: `translateY(-${quizScrollY}px)`,
         }}
       >
@@ -86,7 +95,7 @@ export const YouTubeQuizPanel: React.FC<YouTubeQuizPanelProps> = ({
           <div
             key={section.heading}
             style={{
-              marginBottom: 14,
+              marginBottom: si === DEMO_QUIZ.sections.length - 1 ? 0 : 14,
               padding: 16,
               borderRadius: 16,
               border: '1px solid #E5E7EB',
@@ -207,8 +216,6 @@ export const YouTubeQuizPanel: React.FC<YouTubeQuizPanelProps> = ({
             ))}
           </div>
         ))}
-        {/* Spacer so last section can scroll fully into view */}
-        <div style={{ height: 48 }} />
       </div>
     </div>
   </div>

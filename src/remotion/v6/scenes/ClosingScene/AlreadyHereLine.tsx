@@ -2,7 +2,8 @@
  * “It’s already here.” — black type, Vision-matched scale.
  */
 import React from 'react'
-import { useCurrentFrame, interpolate, spring, useVideoConfig } from 'remotion'
+import { interpolate, spring } from 'remotion'import { useCurrentFrame, useVideoConfig } from '@/remotion/shared/timelineFrame'
+
 import { LINE2_DONE, LINE2_STAGGER, P2_FADE_OUT, P2_START } from './constants'
 import { CLOSING_TYPE } from './typography'
 

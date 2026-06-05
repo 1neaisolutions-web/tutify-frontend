@@ -1,15 +1,9 @@
 /**
- * Title + cumulative tagline — hero scale-up, smooth morph to pill, Vision word reveals.
+ * AI Teacher intro — fade in at center, fade out in place (no rise), pill + tagline below.
  */
 import React from 'react'
-import {
-  AbsoluteFill,
-  useCurrentFrame,
-  interpolate,
-  spring,
-  useVideoConfig,
-  Easing,
-} from 'remotion'
+import { AbsoluteFill, interpolate, Easing } from 'remotion'import { useCurrentFrame } from '@/remotion/shared/timelineFrame'
+
 import {
   INTRO_HEADLINE,
   INTRO_HEADLINE_EMPHASIS_WEIGHT,
@@ -18,24 +12,24 @@ import {
   TAGLINE_ROWS,
   TAGLINE_EMPHASIS,
   TAGLINE_WORD_STARTS,
-  TAGLINE_START,
+  HERO_FADE_START,
+  HERO_FADE_END,
+  PILL_IN_START,
+  PILL_IN_END,
+  TAGLINE_REVEAL_START,
+  TAGLINE_REVEAL_FRAMES,
   TITLE_START,
-  MORPH_START,
-  TITLE_MORPH_END,
+  TITLE_IN_FRAMES,
+  WORD_IN_FRAMES,
   INK,
   PURPLE,
   PILL_BG,
 } from './constants'
 
-const WORD_SPRING = { damping: 220, stiffness: 68, mass: 1.05 }
-const TITLE_SPRING = { damping: 230, stiffness: 62, mass: 1.05 }
-const RISE_SPRING = { damping: 32, stiffness: 110, mass: 0.95 }
-
-const smooth = Easing.inOut(Easing.cubic)
-
-const WordGap: React.FC = () => (
-  <span aria-hidden style={{ display: 'inline-block', width: INTRO_HEADLINE.wordGap }} />
-)
+const gentleEase = Easing.bezier(0.33, 0, 0.18, 1)
+const TITLE_SLOT_HEIGHT = 108
+/** Fits 3 tagline rows + 108px "seconds." (320px was clipping the last line) */
+const TAGLINE_BLOCK_MAX_HEIGHT = 440
 
 function wordStart(row: number, col: number): number {
   return TAGLINE_WORD_STARTS.find((e) => e.row === row && e.col === col)?.start ?? 0
@@ -60,12 +54,17 @@ const TaglineWord: React.FC<{
   row: number
   col: number
   frame: number
-  fps: number
-}> = ({ word, row, col, frame, fps }) => {
+  hasGapAfter: boolean
+}> = ({ word, row, col, frame, hasGapAfter }) => {
   const start = wordStart(row, col)
-  const raw = frame >= start ? spring({ frame: frame - start, fps, config: WORD_SPRING }) : 0
-  const opacity = frame < start ? 0 : interpolate(raw, [0, 1], [0, 1], { extrapolateRight: 'clamp' })
-  const y = interpolate(raw, [0, 1], [32, 0], { extrapolateRight: 'clamp' })
+  const p =
+    frame < start
+      ? 0
+      : interpolate(frame, [start, start + WORD_IN_FRAMES], [0, 1], {
+          extrapolateLeft: 'clamp',
+          extrapolateRight: 'clamp',
+          easing: gentleEase,
+        })
   const isSeconds = word === 'seconds.'
   const isEmphasis = TAGLINE_EMPHASIS.has(word)
   const color = isEmphasis || isSeconds ? PURPLE : INK
@@ -79,10 +78,10 @@ const TaglineWord: React.FC<{
         fontWeight: weight,
         color,
         fontSize,
-        opacity,
-        transform: `translateY(${y}px)`,
-        willChange: 'transform, opacity',
+        opacity: p,
+        transform: `translateY(${interpolate(p, [0, 1], [12, 0], { extrapolateRight: 'clamp' })}px)`,
         letterSpacing: isSeconds ? '-0.04em' : INTRO_HEADLINE.letterSpacing,
+        marginRight: hasGapAfter ? INTRO_HEADLINE.wordGap : undefined,
       }}
     >
       {word}
@@ -97,58 +96,50 @@ type AITeacherCopyProps = {
 
 export const AITeacherCopy: React.FC<AITeacherCopyProps> = ({ fontFamily, contentOpacity }) => {
   const frame = useCurrentFrame()
-  const { fps } = useVideoConfig()
 
-  const titleRaw =
-    frame >= TITLE_START ? spring({ frame: frame - TITLE_START, fps, config: TITLE_SPRING }) : 0
-  const titleOp = interpolate(titleRaw, [0, 1], [0, 1], { extrapolateRight: 'clamp' })
-  const titleEnterY = interpolate(titleRaw, [0, 1], [36, 0], { extrapolateRight: 'clamp' })
-  const heroScaleIn = interpolate(titleRaw, [0, 1], [0.86, 1], { extrapolateRight: 'clamp' })
-
-  const morphT = interpolate(frame, [MORPH_START, TITLE_MORPH_END], [0, 1], {
+  const titleInP = interpolate(frame, [TITLE_START, TITLE_START + TITLE_IN_FRAMES], [0, 1], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
-    easing: smooth,
+    easing: gentleEase,
   })
 
-  const riseRaw =
-    frame >= MORPH_START ? spring({ frame: frame - MORPH_START, fps, config: RISE_SPRING }) : 0
-  const riseY = interpolate(riseRaw, [0, 1], [0, -72], { extrapolateRight: 'clamp', easing: smooth })
+  const titleEnterY = interpolate(titleInP, [0, 1], [12, 0], { extrapolateRight: 'clamp' })
 
-  const heroOpacity = interpolate(morphT, [0, 0.42, 0.78], [1, 0.92, 0], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  })
-  const pillOpacity = interpolate(morphT, [0.18, 0.48, 0.82], [0, 0.95, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  })
-  const pillScale = interpolate(morphT, [0.18, 1], [0.94, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-    easing: smooth,
-  })
-  const heroShrink = interpolate(morphT, [0, 1], [1, 0.9], { extrapolateRight: 'clamp', easing: smooth })
-  const ruleOpacity =
-    titleOp *
-    interpolate(morphT, [0, 0.35], [interpolate(titleRaw, [0.4, 1], [0, 0.5], { extrapolateRight: 'clamp' }), 0], {
-      extrapolateRight: 'clamp',
-    })
-  const pillIconOp = interpolate(morphT, [0.45, 0.9], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-  })
-  const ruleW = interpolate(titleRaw, [0, 1], [0, 180], { extrapolateRight: 'clamp' })
+  const fadeOutP =
+    frame < HERO_FADE_START
+      ? 0
+      : interpolate(frame, [HERO_FADE_START, HERO_FADE_END], [0, 1], {
+          extrapolateLeft: 'clamp',
+          extrapolateRight: 'clamp',
+          easing: gentleEase,
+        })
 
-  const taglineVisible = frame >= TAGLINE_START - 4
-  const taglineReveal = interpolate(morphT, [0.32, 0.95], [0, 1], {
-    extrapolateLeft: 'clamp',
-    extrapolateRight: 'clamp',
-    easing: smooth,
-  })
-  const taglineY = interpolate(taglineReveal, [0, 1], [28, 0], { extrapolateRight: 'clamp', easing: smooth })
+  const heroOp = titleInP * (1 - fadeOutP)
+  const pillOp =
+    frame < PILL_IN_START
+      ? 0
+      : interpolate(frame, [PILL_IN_START, PILL_IN_END], [0, 1], {
+          extrapolateLeft: 'clamp',
+          extrapolateRight: 'clamp',
+          easing: gentleEase,
+        })
 
-  const stackY = titleEnterY + riseY
+  const ruleW = interpolate(titleInP, [0.55, 1], [0, 160], { extrapolateRight: 'clamp' })
+  const ruleOp = heroOp * interpolate(fadeOutP, [0, 0.5], [1, 0], { extrapolateRight: 'clamp' })
+  const pillScale = interpolate(pillOp, [0, 1], [0.96, 1], { extrapolateRight: 'clamp' })
+
+  const taglineIn =
+    frame < TAGLINE_REVEAL_START
+      ? 0
+      : interpolate(frame, [TAGLINE_REVEAL_START, TAGLINE_REVEAL_START + TAGLINE_REVEAL_FRAMES], [0, 1], {
+          extrapolateLeft: 'clamp',
+          extrapolateRight: 'clamp',
+          easing: gentleEase,
+        })
+
+  const showTitleSlot = frame >= TITLE_START
+  const showPillLayer = frame >= PILL_IN_START
+  const stackY = frame < TITLE_START + TITLE_IN_FRAMES ? titleEnterY : 0
 
   return (
     <AbsoluteFill
@@ -171,123 +162,137 @@ export const AITeacherCopy: React.FC<AITeacherCopyProps> = ({ fontFamily, conten
           textAlign: 'center',
           maxWidth: INTRO_HEADLINE.maxWidth,
           width: '100%',
-          transform: `translateY(${stackY}px)`,
-          willChange: 'transform',
+          transform: stackY !== 0 ? `translateY(${stackY}px)` : undefined,
         }}
       >
-        <div
-          style={{
-            position: 'relative',
-            width: '100%',
-            minHeight: 52,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: '0.35em',
-          }}
-        >
+        {showTitleSlot ? (
           <div
             style={{
-              position: 'absolute',
-              inset: 0,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              opacity: titleOp * heroOpacity,
-              transform: `scale(${heroScaleIn * heroShrink})`,
-              transformOrigin: 'center center',
-              pointerEvents: 'none',
+              position: 'relative',
+              width: '100%',
+              height: TITLE_SLOT_HEIGHT,
+              marginBottom: '0.35em',
+              flexShrink: 0,
             }}
           >
             <div
               style={{
-                fontSize: INTRO_HEADLINE.fontSize,
-                fontWeight: 800,
-                letterSpacing: '-0.02em',
-                lineHeight: 1.05,
-                color: PURPLE,
-              }}
-            >
-              AI Teacher Assistant
-            </div>
-            <div
-              style={{
-                marginTop: 16,
-                height: 3,
-                width: ruleW,
-                borderRadius: 3,
-                background: `linear-gradient(90deg, transparent, ${PURPLE}, transparent)`,
-                opacity: ruleOpacity,
-              }}
-            />
-          </div>
-
-          <div
-            style={{
-              position: 'absolute',
-              left: '50%',
-              top: '50%',
-              transform: `translate(-50%, -50%) scale(${pillScale})`,
-              opacity: titleOp * pillOpacity,
-              pointerEvents: 'none',
-              willChange: 'transform, opacity',
-            }}
-          >
-            <div
-              style={{
-                display: 'inline-flex',
+                position: 'absolute',
+                inset: 0,
+                display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
-                gap: 8,
-                padding: '8px 18px',
-                borderRadius: 999,
-                background: PILL_BG,
-                border: `1px solid rgba(91, 79, 207, 0.18)`,
+                justifyContent: 'center',
+                opacity: heroOp,
+                pointerEvents: 'none',
               }}
             >
-              <div style={{ opacity: pillIconOp, display: 'flex' }}>
-                <SparkleIcon />
-              </div>
-              <span
+              <div
                 style={{
-                  fontSize: 13,
-                  fontWeight: 700,
-                  letterSpacing: '0.14em',
-                  textTransform: 'uppercase',
+                  fontSize: INTRO_HEADLINE.fontSize,
+                  fontWeight: 800,
+                  letterSpacing: '-0.02em',
+                  lineHeight: 1.05,
                   color: PURPLE,
                   whiteSpace: 'nowrap',
                 }}
               >
                 AI Teacher Assistant
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {taglineVisible ? (
-          <div
-            style={{
-              fontSize: INTRO_HEADLINE.fontSize,
-              fontWeight: INTRO_HEADLINE.fontWeight,
-              letterSpacing: INTRO_HEADLINE.letterSpacing,
-              lineHeight: INTRO_HEADLINE.lineHeight,
-              opacity: taglineReveal,
-              transform: `translateY(${taglineY}px)`,
-              willChange: 'transform, opacity',
-            }}
-          >
-            {TAGLINE_ROWS.map((row, ri) => (
-              <div key={ri} style={{ marginTop: ri === 0 ? 0 : '0.28em', lineHeight: 1.18 }}>
-                {row.map((word, ci) => (
-                  <React.Fragment key={`${ri}-${word}`}>
-                    <TaglineWord word={word} row={ri} col={ci} frame={frame} fps={fps} />
-                    {ci < row.length - 1 ? <WordGap /> : null}
-                  </React.Fragment>
-                ))}
               </div>
-            ))}
+              <div
+                style={{
+                  marginTop: 16,
+                  height: 3,
+                  width: ruleW,
+                  borderRadius: 3,
+                  background: `linear-gradient(90deg, transparent, ${PURPLE}, transparent)`,
+                  opacity: ruleOp,
+                }}
+              />
+            </div>
+
+            {showPillLayer ? (
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  opacity: pillOp,
+                  transform: `scale(${pillScale})`,
+                  pointerEvents: 'none',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    padding: '8px 18px',
+                    borderRadius: 999,
+                    background: PILL_BG,
+                    border: `1px solid rgba(91, 79, 207, 0.18)`,
+                  }}
+                >
+                  <SparkleIcon />
+                  <span
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 700,
+                      letterSpacing: '0.14em',
+                      textTransform: 'uppercase',
+                      color: PURPLE,
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    AI Teacher Assistant
+                  </span>
+                </div>
+              </div>
+            ) : null}
           </div>
         ) : null}
+
+        <div
+          style={{
+            width: '100%',
+            opacity: taglineIn,
+            maxHeight:
+              frame < TAGLINE_REVEAL_START
+                ? 0
+                : interpolate(taglineIn, [0, 1], [0, TAGLINE_BLOCK_MAX_HEIGHT], {
+                    extrapolateRight: 'clamp',
+                  }),
+            overflow: taglineIn >= 1 ? 'visible' : 'hidden',
+            transform: `translateY(${interpolate(taglineIn, [0, 1], [8, 0], { extrapolateRight: 'clamp' })}px)`,
+          }}
+        >
+          {frame >= TAGLINE_REVEAL_START
+            ? TAGLINE_ROWS.map((row, ri) => (
+                <div
+                  key={ri}
+                  style={{
+                    marginTop: ri === 0 ? 0 : '0.28em',
+                    fontSize: INTRO_HEADLINE.fontSize,
+                    lineHeight: 1.18,
+                    minHeight: ri === TAGLINE_ROWS.length - 1 ? 128 : undefined,
+                  }}
+                >
+                  {row.map((word, ci) => (
+                    <TaglineWord
+                      key={`${ri}-${ci}-${word}`}
+                      word={word}
+                      row={ri}
+                      col={ci}
+                      frame={frame}
+                      hasGapAfter={ci < row.length - 1}
+                    />
+                  ))}
+                </div>
+              ))
+            : null}
+        </div>
       </div>
     </AbsoluteFill>
   )

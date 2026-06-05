@@ -2,7 +2,8 @@
  * Shared feature-intro tagline line — INTRO_HEADLINE scale + V6 motion.
  */
 import React from 'react'
-import { useCurrentFrame, interpolate, spring, useVideoConfig } from 'remotion'
+import { interpolate, spring } from 'remotion'import { useCurrentFrame, useVideoConfig } from '@/remotion/shared/timelineFrame'
+
 import { INTRO_HEADLINE, INTRO_HEADLINE_EMPHASIS_WEIGHT } from '../../compositions/shared/introHeadlineTypography'
 import { springs } from '../motion/presets'
 import { theme } from '../theme'

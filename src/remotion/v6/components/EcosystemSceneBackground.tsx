@@ -3,7 +3,8 @@
  * Opaque base covers the global mesh so this beat has its own look.
  */
 import React from 'react'
-import { AbsoluteFill, useCurrentFrame } from 'remotion'
+import { AbsoluteFill } from 'remotion'import { useCurrentFrame } from '@/remotion/shared/timelineFrame'
+
 
 export const EcosystemSceneBackground: React.FC = () => {
   const frame = useCurrentFrame()

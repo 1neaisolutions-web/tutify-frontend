@@ -4,7 +4,8 @@
  * All modes work on both dark and light backgrounds.
  */
 import React from 'react'
-import { useCurrentFrame, interpolate, spring, useVideoConfig } from 'remotion'
+import { interpolate, spring } from 'remotion'import { useCurrentFrame, useVideoConfig } from '@/remotion/shared/timelineFrame'
+
 import { theme } from '../theme'
 
 type AnimMode =

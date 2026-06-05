@@ -1,5 +1,6 @@
 import React from 'react'
-import { useCurrentFrame, interpolate } from 'remotion'
+import { interpolate } from 'remotion'import { useCurrentFrame } from '@/remotion/shared/timelineFrame'
+
 
 interface Particle {
   x: number

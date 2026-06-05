@@ -2,7 +2,8 @@
  * Closing backgrounds — Numera-style sky (ref 2–3), light vignette, black finale.
  */
 import React from 'react'
-import { AbsoluteFill, useCurrentFrame, interpolate } from 'remotion'
+import { AbsoluteFill, interpolate } from 'remotion'import { useCurrentFrame } from '@/remotion/shared/timelineFrame'
+
 
 /** Saturated sky blue — white headline must read clearly (not white-on-white) */
 export const ClosingSkyBackground: React.FC = () => {
