@@ -20,6 +20,7 @@ import {
   X,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template'
@@ -38,6 +39,7 @@ interface ChoiceOption {
 }
 
 const ProductDifferentiationModule = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -279,19 +281,13 @@ Choice boards are grids that offer students multiple ways to demonstrate learnin
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 4 of 6
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('productDifferentiationModule.module4Of6')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    30 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('productDifferentiationModule.k0Min')}</span>
                 </div>
-                <h1 className="text-3xl font-bold">Product Differentiation Excellence</h1>
-                <p className="mt-2 text-green-100">
-                  Create multiple pathways for students to demonstrate learning through varied products and assessments
-                </p>
+                <h1 className="text-3xl font-bold">{t('productDifferentiationModule.productDifferentiationExcellence')}</h1>
+                <p className="mt-2 text-green-100">{t('productDifferentiationModule.createMultiplePathwaysForStudentsToDemonstrateLearningT')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm">
@@ -318,7 +314,7 @@ Choice boards are grids that offer students multiple ways to demonstrate learnin
         {/* Lessons Sidebar */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('productDifferentiationModule.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isCompleted = completedLessons.includes(lesson.id)
@@ -362,7 +358,7 @@ Choice boards are grids that offer students multiple ways to demonstrate learnin
             </div>
             <div className="mt-6 pt-6 border-t border-gray-200">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-gray-600">Progress</span>
+                <span className="text-xs text-gray-600">{t('productDifferentiationModule.progress')}</span>
                 <span className="text-xs font-semibold text-gray-900">{Math.round(moduleProgress)}%</span>
               </div>
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -385,7 +381,7 @@ Choice boards are grids that offer students multiple ways to demonstrate learnin
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Video className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Video Lesson</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('productDifferentiationModule.videoLesson')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                   </div>
@@ -409,7 +405,7 @@ Choice boards are grids that offer students multiple ways to demonstrate learnin
                 </div>
 
                 <div className="bg-green-50 rounded-lg p-6 border border-green-200">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Key Points</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('productDifferentiationModule.keyPoints')}</h3>
                   <ul className="space-y-2">
                     {currentLessonData.content.keyPoints?.map((point: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -427,14 +423,10 @@ Choice boards are grids that offer students multiple ways to demonstrate learnin
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('productDifferentiationModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('productDifferentiationModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -447,7 +439,7 @@ Choice boards are grids that offer students multiple ways to demonstrate learnin
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <BookOpen className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Reading</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('productDifferentiationModule.reading')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                   </div>
@@ -469,7 +461,7 @@ Choice boards are grids that offer students multiple ways to demonstrate learnin
 
                 {currentLessonData.content.keyTakeaways && (
                   <div className="bg-green-50 rounded-lg p-6 border border-green-200">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-3">Key Takeaways</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('productDifferentiationModule.keyTakeaways')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyTakeaways.map((takeaway: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -488,14 +480,10 @@ Choice boards are grids that offer students multiple ways to demonstrate learnin
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('productDifferentiationModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('productDifferentiationModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -508,7 +496,7 @@ Choice boards are grids that offer students multiple ways to demonstrate learnin
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Zap className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Interactive Tool</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('productDifferentiationModule.interactiveTool')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                     <p className="mt-2 text-gray-600">{currentLessonData.content.description}</p>
@@ -519,7 +507,7 @@ Choice boards are grids that offer students multiple ways to demonstrate learnin
                 </div>
 
                 <div className="bg-green-50 rounded-lg p-6 border border-green-200 mb-6">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Design Steps</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('productDifferentiationModule.designSteps')}</h3>
                   <ol className="space-y-2">
                     {currentLessonData.content.steps?.map((step: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -534,22 +522,18 @@ Choice boards are grids that offer students multiple ways to demonstrate learnin
 
                 <div className="bg-white rounded-lg p-6 border border-gray-200 space-y-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Choice Board Title *
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">{t('productDifferentiationModule.choiceBoardTitle')}</label>
                     <input
                       type="text"
                       value={choiceBoardTitle}
                       onChange={(e) => setChoiceBoardTitle(e.target.value)}
-                      placeholder="e.g., Ecosystems Unit Choice Board"
+                      placeholder={t('productDifferentiationModule.eGEcosystemsUnitChoiceBoard')}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Learning Objective *
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">{t('productDifferentiationModule.learningObjective')}</label>
                     <textarea
                       value={learningObjective}
                       onChange={(e) => setLearningObjective(e.target.value)}
@@ -560,48 +544,48 @@ Choice boards are grids that offer students multiple ways to demonstrate learnin
                   </div>
 
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-900 mb-4">Add Product Options</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('productDifferentiationModule.addProductOptions')}</h3>
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-semibold text-gray-900 mb-2">Option Name *</label>
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">{t('productDifferentiationModule.optionName')}</label>
                         <input
                           type="text"
                           value={currentOption.option}
                           onChange={(e) => setCurrentOption({ ...currentOption, option: e.target.value })}
-                          placeholder="e.g., Create a Video Documentary"
+                          placeholder={t('productDifferentiationModule.eGCreateAVideoDocumentary')}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-gray-900 mb-2">Description *</label>
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">{t('productDifferentiationModule.description')}</label>
                         <textarea
                           value={currentOption.description}
                           onChange={(e) => setCurrentOption({ ...currentOption, description: e.target.value })}
-                          placeholder="Describe what students will create..."
+                          placeholder={t('productDifferentiationModule.describeWhatStudentsWillCreate')}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                           rows={3}
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm font-semibold text-gray-900 mb-2">Intelligence Type</label>
+                          <label className="block text-sm font-semibold text-gray-900 mb-2">{t('productDifferentiationModule.intelligenceType')}</label>
                           <select
                             value={currentOption.intelligence}
                             onChange={(e) => setCurrentOption({ ...currentOption, intelligence: e.target.value })}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                           >
-                            <option>Linguistic</option>
-                            <option>Logical-Mathematical</option>
-                            <option>Spatial</option>
-                            <option>Bodily-Kinesthetic</option>
-                            <option>Musical</option>
-                            <option>Interpersonal</option>
-                            <option>Intrapersonal</option>
-                            <option>Naturalist</option>
+                            <option>{t('productDifferentiationModule.linguistic')}</option>
+                            <option>{t('productDifferentiationModule.logicalMathematical')}</option>
+                            <option>{t('productDifferentiationModule.spatial')}</option>
+                            <option>{t('productDifferentiationModule.bodilyKinesthetic')}</option>
+                            <option>{t('productDifferentiationModule.musical')}</option>
+                            <option>{t('productDifferentiationModule.interpersonal')}</option>
+                            <option>{t('productDifferentiationModule.intrapersonal')}</option>
+                            <option>{t('productDifferentiationModule.naturalist')}</option>
                           </select>
                         </div>
                         <div>
-                          <label className="block text-sm font-semibold text-gray-900 mb-2">Points</label>
+                          <label className="block text-sm font-semibold text-gray-900 mb-2">{t('productDifferentiationModule.points')}</label>
                           <input
                             type="number"
                             value={currentOption.points}
@@ -615,9 +599,7 @@ Choice boards are grids that offer students multiple ways to demonstrate learnin
                         onClick={handleAddOption}
                         className="w-full px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
                       >
-                        <Plus className="h-5 w-5" />
-                        Add Option
-                      </button>
+                        <Plus className="h-5 w-5" />{t('productDifferentiationModule.addOption')}</button>
                     </div>
                   </div>
 
@@ -650,9 +632,7 @@ Choice boards are grids that offer students multiple ways to demonstrate learnin
                         }}
                         className="mt-4 w-full px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
                       >
-                        <Grid3x3 className="h-5 w-5" />
-                        Save Choice Board
-                      </button>
+                        <Grid3x3 className="h-5 w-5" />{t('productDifferentiationModule.saveChoiceBoard')}</button>
                     </div>
                   )}
                 </div>
@@ -664,14 +644,10 @@ Choice boards are grids that offer students multiple ways to demonstrate learnin
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('productDifferentiationModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('productDifferentiationModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -684,7 +660,7 @@ Choice boards are grids that offer students multiple ways to demonstrate learnin
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <FileText className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Template</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('productDifferentiationModule.template')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                     <p className="mt-2 text-gray-600">{currentLessonData.content.description}</p>
@@ -695,7 +671,7 @@ Choice boards are grids that offer students multiple ways to demonstrate learnin
                 </div>
 
                 <div className="bg-white rounded-lg p-6 border border-gray-200">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-4">Template Sections</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('productDifferentiationModule.templateSections')}</h3>
                   <div className="space-y-3">
                     {currentLessonData.content.sections?.map((section: string, idx: number) => (
                       <div key={idx} className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
@@ -711,18 +687,18 @@ Choice boards are grids that offer students multiple ways to demonstrate learnin
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <button className="p-4 bg-green-50 border-2 border-green-200 rounded-lg hover:bg-green-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-green-600" />
-                    <span className="text-sm font-semibold text-gray-900">Elementary Template</span>
-                    <span className="text-xs text-gray-600">Grades K-5</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('productDifferentiationModule.elementaryTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('productDifferentiationModule.gradesK5')}</span>
                   </button>
                   <button className="p-4 bg-green-50 border-2 border-green-200 rounded-lg hover:bg-green-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-green-600" />
-                    <span className="text-sm font-semibold text-gray-900">Middle School Template</span>
-                    <span className="text-xs text-gray-600">Grades 6-8</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('productDifferentiationModule.middleSchoolTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('productDifferentiationModule.grades68')}</span>
                   </button>
                   <button className="p-4 bg-green-50 border-2 border-green-200 rounded-lg hover:bg-green-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-green-600" />
-                    <span className="text-sm font-semibold text-gray-900">High School Template</span>
-                    <span className="text-xs text-gray-600">Grades 9-12</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('productDifferentiationModule.highSchoolTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('productDifferentiationModule.grades912')}</span>
                   </button>
                 </div>
 
@@ -733,14 +709,10 @@ Choice boards are grids that offer students multiple ways to demonstrate learnin
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('productDifferentiationModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('productDifferentiationModule.markAsComplete')}</>
                   )}
                 </button>
               </div>

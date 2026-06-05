@@ -1,6 +1,10 @@
+import { useTranslation } from 'react-i18next';
 import { AddIcon } from '../../../assets/icons';
 
 export const AddNewButton = ({ onClick, text, isSearchOpen }) => {
+  const { t } = useTranslation();
+  const label = text ?? t('common.addNew');
+
   return (
     <button
       sx={{
@@ -21,7 +25,7 @@ export const AddNewButton = ({ onClick, text, isSearchOpen }) => {
       `}
     >
       <AddIcon height={16} width={16} />
-      <span>{text}</span>
+      <span>{label}</span>
     </button>
   );
 };

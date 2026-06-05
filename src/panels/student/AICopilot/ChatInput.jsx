@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const ChatInput = ({ onSend, disabled, onStop }) => {
+  const { t } = useTranslation();
   const [value, setValue] = useState('');
 
   useEffect(() => {
@@ -21,7 +23,7 @@ const ChatInput = ({ onSend, disabled, onStop }) => {
           value={value}
           onChange={(e) => setValue(e.target.value)}
           className="flex-1 min-h-[44px] max-h-[160px] resize-y rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 px-3 py-2 text-sm text-gray-900 dark:text-gray-100"
-          placeholder="Type a message…"
+          placeholder={t('studentPanel.copilot.input.placeholder')}
         />
         {disabled ? (
           <button
@@ -29,7 +31,7 @@ const ChatInput = ({ onSend, disabled, onStop }) => {
             onClick={onStop}
             className="h-[44px] px-4 rounded-xl border border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900"
           >
-            Stop
+            {t('studentPanel.common.stop')}
           </button>
         ) : (
           <button
@@ -43,11 +45,11 @@ const ChatInput = ({ onSend, disabled, onStop }) => {
             }}
             className="h-[44px] px-4 rounded-xl bg-primary-600 text-white hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Send
+            {t('studentPanel.common.send')}
           </button>
         )}
       </div>
-      <p className="mt-2 text-xs text-gray-500">Tip: Press Ctrl/⌘ + Enter to send.</p>
+      <p className="mt-2 text-xs text-gray-500">{t('studentPanel.copilot.input.tip')}</p>
     </div>
   );
 };

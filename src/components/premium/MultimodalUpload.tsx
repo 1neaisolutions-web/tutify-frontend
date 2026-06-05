@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import { Upload, Image, FileText, X, Loader2, Sparkles } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { MultimodalFile } from '../../types/premium'
 import { processImage, processDocument, generatePreview, detectFileType } from '../../utils/multimodalProcessor'
 
@@ -9,6 +10,7 @@ interface MultimodalUploadProps {
 }
 
 const MultimodalUpload = ({ onFilesSelected, onClose }: MultimodalUploadProps) => {
+  const { t } = useTranslation()
   const [files, setFiles] = useState<MultimodalFile[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -34,7 +36,6 @@ const MultimodalUpload = ({ onFilesSelected, onClose }: MultimodalUploadProps) =
 
       newFiles.push(multimodalFile)
 
-      // Process file
       if (fileType === 'image') {
         multimodalFile.analysis = await processImage(file)
         multimodalFile.processed = true
@@ -69,15 +70,14 @@ const MultimodalUpload = ({ onFilesSelected, onClose }: MultimodalUploadProps) =
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col">
-        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-indigo-50">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600">
               <Sparkles className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Multimodal Upload</h2>
-              <p className="text-sm text-gray-600">Upload images or documents for AI analysis</p>
+              <h2 className="text-xl font-bold text-gray-900">{t('premium.multimodal.title')}</h2>
+              <p className="text-sm text-gray-600">{t('premium.multimodal.subtitle')}</p>
             </div>
           </div>
           <button
@@ -88,7 +88,6 @@ const MultimodalUpload = ({ onFilesSelected, onClose }: MultimodalUploadProps) =
           </button>
         </div>
 
-        {/* Drop Zone */}
         <div
           ref={dropZoneRef}
           onDrop={handleDrop}
@@ -99,10 +98,10 @@ const MultimodalUpload = ({ onFilesSelected, onClose }: MultimodalUploadProps) =
           <div className="text-center">
             <Upload className="h-12 w-12 mx-auto mb-4 text-gray-400" />
             <p className="text-lg font-semibold text-gray-700 mb-2">
-              Drag and drop files here, or click to browse
+              {t('premium.multimodal.dropzone.primary')}
             </p>
             <p className="text-sm text-gray-500 mb-4">
-              Supports images (JPG, PNG, GIF) and documents (PDF, DOC, DOCX)
+              {t('premium.multimodal.dropzone.formats')}
             </p>
             <input
               ref={fileInputRef}
@@ -115,7 +114,6 @@ const MultimodalUpload = ({ onFilesSelected, onClose }: MultimodalUploadProps) =
           </div>
         </div>
 
-        {/* Files List */}
         <div className="flex-1 overflow-y-auto px-4 pb-4">
           {files.length > 0 && (
             <div className="space-y-3">
@@ -155,7 +153,7 @@ const MultimodalUpload = ({ onFilesSelected, onClose }: MultimodalUploadProps) =
                           {!file.processed && (
                             <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
                               <Loader2 className="h-3 w-3 animate-spin" />
-                              Processing...
+                              {t('premium.multimodal.processing')}
                             </div>
                           )}
                         </div>
@@ -175,25 +173,24 @@ const MultimodalUpload = ({ onFilesSelected, onClose }: MultimodalUploadProps) =
           {files.length === 0 && !isProcessing && (
             <div className="text-center py-12 text-gray-500">
               <Upload className="h-12 w-12 mx-auto mb-3 text-gray-300" />
-              <p>No files selected</p>
+              <p>{t('premium.multimodal.empty')}</p>
             </div>
           )}
         </div>
 
-        {/* Footer */}
         <div className="flex items-center justify-between p-4 border-t border-gray-200 bg-gray-50">
           <button
             onClick={onClose}
             className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 transition"
           >
-            Cancel
+            {t('common.cancel')}
           </button>
           <button
             onClick={handleApply}
             disabled={files.length === 0 || isProcessing}
             className="px-6 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-lg hover:from-purple-600 hover:to-indigo-700 transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Add {files.length} File{files.length !== 1 ? 's' : ''}
+            {t('premium.multimodal.addFiles', { count: files.length })}
           </button>
         </div>
       </div>
@@ -202,4 +199,3 @@ const MultimodalUpload = ({ onFilesSelected, onClose }: MultimodalUploadProps) =
 }
 
 export default MultimodalUpload
-

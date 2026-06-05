@@ -1,4 +1,5 @@
 import { AlertCircle } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { DIFFICULTY_OPTIONS, QUESTION_COUNT } from '../../quiz/config/quizCreationConfig'
 import type { QuestionMixMode, QuizDifficultyId } from '../../demo/generationFromSources'
 
@@ -52,7 +53,6 @@ type Props = {
   onToggleMatch: (v: boolean) => void
   teacherNotes: string
   onTeacherNotesChange: (v: string) => void
-  validationErrors: string[]
 }
 
 export function WorksheetGenerationParametersSection({
@@ -80,8 +80,8 @@ export function WorksheetGenerationParametersSection({
   onToggleMatch,
   teacherNotes,
   onTeacherNotesChange,
-  validationErrors,
 }: Props) {
+  const { t } = useTranslation()
   const customTotal = countMcq + countFillBlank + countShort + countMatch
 
   return (
@@ -89,19 +89,19 @@ export function WorksheetGenerationParametersSection({
       <div className="border-b border-sky-100 bg-gradient-to-r from-sky-50/70 to-white px-6 py-5">
         <StepHeader
           step={2}
-          kicker="Question design"
-          title="Generation parameters"
-          subtitle="Volume, difficulty, and item types for this worksheet. These mirror the quiz generation card and map to a backend job."
+          kicker={t('worksheet.generation.kicker')}
+          title={t('worksheet.generation.title')}
+          subtitle={t('worksheet.generation.subtitle')}
         />
       </div>
       <div className="space-y-5 p-6">
         <div className="rounded-2xl border border-gray-100 bg-gray-50/80 p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <p className="text-sm font-semibold text-gray-900">Question volume</p>
-              <p className="mt-0.5 text-xs text-gray-600">Balanced mix across selected types, or set exact counts per format.</p>
+              <p className="text-sm font-semibold text-gray-900">{t('quiz.rag.questionVolume')}</p>
+              <p className="mt-0.5 text-xs text-gray-600">{t('teacherTools.questionVolumeBalancedHint')}</p>
             </div>
-            <div className="inline-flex rounded-xl border border-gray-200 bg-white p-1 shadow-sm" role="group" aria-label="Question mix mode">
+            <div className="inline-flex rounded-xl border border-gray-200 bg-white p-1 shadow-sm" role="group" aria-label={t('teacherTools.questionMixMode')}>
               <button
                 type="button"
                 onClick={() => onMixModeChange('balanced')}
@@ -109,7 +109,7 @@ export function WorksheetGenerationParametersSection({
                   mixMode === 'balanced' ? 'bg-indigo-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
-                Balanced mix
+                {t('teacherTools.balancedMix')}
               </button>
               <button
                 type="button"
@@ -118,7 +118,7 @@ export function WorksheetGenerationParametersSection({
                   mixMode === 'custom' ? 'bg-indigo-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
-                Per-type counts
+                {t('teacherTools.perTypeCounts')}
               </button>
             </div>
           </div>
@@ -126,7 +126,7 @@ export function WorksheetGenerationParametersSection({
           {mixMode === 'balanced' ? (
             <div className="mt-4 grid gap-4 md:grid-cols-2">
               <label className="block text-sm font-medium text-gray-800">
-                Total questions
+                {t('teacherTools.totalQuestions')}
                 <input
                   type="number"
                   min={QUESTION_COUNT.min}
@@ -145,7 +145,7 @@ export function WorksheetGenerationParametersSection({
             <div className="mt-4 space-y-3">
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 <label className="block text-sm font-medium text-gray-800">
-                  Multiple choice
+                  {t('teacherTools.multipleChoice')}
                   <input
                     type="number"
                     min={0}
@@ -156,7 +156,7 @@ export function WorksheetGenerationParametersSection({
                   />
                 </label>
                 <label className="block text-sm font-medium text-gray-800">
-                  Fill in the blank
+                  {t('worksheet.detail.blockFillBlank')}
                   <input
                     type="number"
                     min={0}
@@ -167,7 +167,7 @@ export function WorksheetGenerationParametersSection({
                   />
                 </label>
                 <label className="block text-sm font-medium text-gray-800">
-                  Short answer
+                  {t('teacherTools.shortAnswer')}
                   <input
                     type="number"
                     min={0}
@@ -178,7 +178,7 @@ export function WorksheetGenerationParametersSection({
                   />
                 </label>
                 <label className="block text-sm font-medium text-gray-800">
-                  Matching
+                  {t('worksheet.detail.blockMatch')}
                   <input
                     type="number"
                     min={0}
@@ -191,11 +191,14 @@ export function WorksheetGenerationParametersSection({
               </div>
               <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm">
                 <span className="text-gray-700">
-                  Total: <span className="font-semibold text-gray-900">{customTotal}</span>
-                  <span className="text-gray-500"> / {QUESTION_COUNT.max}</span>
+                  {t('teacherTools.totalLabel')}{' '}
+                  <span className="font-semibold text-gray-900">{customTotal}</span>
+                  <span className="text-gray-500"> {t('teacherTools.maxCountSuffix', { max: QUESTION_COUNT.max })}</span>
                 </span>
                 {customTotal < QUESTION_COUNT.min && (
-                  <span className="text-xs font-medium text-amber-700">Minimum {QUESTION_COUNT.min} items.</span>
+                  <span className="text-xs font-medium text-amber-700">
+                    {t('teacherTools.minimumItems', { min: QUESTION_COUNT.min })}
+                  </span>
                 )}
               </div>
             </div>
@@ -203,7 +206,7 @@ export function WorksheetGenerationParametersSection({
         </div>
 
         <fieldset>
-          <legend className="text-sm font-medium text-gray-800">Difficulty profile</legend>
+          <legend className="text-sm font-medium text-gray-800">{t('teacherTools.difficultyProfile')}</legend>
           <div className="mt-2 grid gap-2 sm:grid-cols-3">
             {DIFFICULTY_OPTIONS.map((d) => (
               <label
@@ -219,8 +222,8 @@ export function WorksheetGenerationParametersSection({
                   checked={difficulty === d.id}
                   onChange={() => onDifficultyChange(d.id)}
                 />
-                <span className="font-semibold text-gray-900">{d.label}</span>
-                <span className="mt-1 block text-xs text-gray-600">{d.hint}</span>
+                <span className="font-semibold text-gray-900">{t(`quiz.difficulty.${d.id}.label`)}</span>
+                <span className="mt-1 block text-xs text-gray-600">{t(`quiz.difficulty.${d.id}.hint`)}</span>
               </label>
             ))}
           </div>
@@ -229,16 +232,16 @@ export function WorksheetGenerationParametersSection({
         {mixMode === 'balanced' ? (
           <fieldset>
             <legend className="text-sm font-medium text-gray-800">
-              Item types <span className="text-red-500">*</span>
+              {t('teacherTools.itemTypes')} <span className="text-red-500">*</span>
             </legend>
-            <p className="mt-1 text-xs text-gray-500">Choose which blocks appear on the sheet. Totals rotate across enabled types.</p>
+            <p className="mt-1 text-xs text-gray-500">{t('teacherTools.itemTypesHint')}</p>
             <div className="mt-2 flex flex-wrap gap-3">
               {(
                 [
-                  ['mcq', 'Multiple choice', includeMcq, onToggleMcq],
-                  ['fill', 'Fill in the blank', includeFillBlank, onToggleFillBlank],
-                  ['short', 'Short answer', includeShort, onToggleShort],
-                  ['match', 'Matching', includeMatch, onToggleMatch],
+                  ['mcq', t('teacherTools.multipleChoice'), includeMcq, onToggleMcq],
+                  ['fill', t('worksheet.detail.blockFillBlank'), includeFillBlank, onToggleFillBlank],
+                  ['short', t('teacherTools.shortAnswer'), includeShort, onToggleShort],
+                  ['match', t('worksheet.detail.blockMatch'), includeMatch, onToggleMatch],
                 ] as const
               ).map(([key, label, on, set]) => (
                 <label
@@ -255,36 +258,23 @@ export function WorksheetGenerationParametersSection({
           </fieldset>
         ) : (
           <div className="rounded-xl border border-gray-100 bg-slate-50/60 px-4 py-3 text-sm text-gray-700">
-            <span className="font-medium text-gray-900">Item types</span> follow the numeric counts above (use zero to omit a format).
+            <span className="font-medium text-gray-900">{t('teacherTools.itemTypes')}</span> {t('teacherTools.itemTypesCustomHint')}
           </div>
         )}
 
         <label className="block text-sm font-medium text-gray-800">
-          Generator instructions (optional)
+          {t('quiz.rag.generatorInstructions')}
           <textarea
             rows={2}
             value={teacherNotes}
             onChange={(e) => onTeacherNotesChange(e.target.value)}
-            placeholder="e.g. Emphasise diagram interpretation; add one misconception trap."
+            placeholder={t('worksheet.generation.generatorPlaceholder')}
             className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-100"
           />
-          <span className="mt-1 block text-xs text-gray-500">Merged with retrieval scope when the job runs.</span>
+          <span className="mt-1 block text-xs text-gray-500">{t('quiz.rag.generatorHint')}</span>
         </label>
       </div>
 
-      {validationErrors.length > 0 && (
-        <div className="border-t border-amber-100 bg-amber-50/50 px-6 py-4">
-          <p className="flex items-center gap-2 text-sm font-semibold text-amber-950">
-            <AlertCircle className="h-4 w-4 shrink-0" aria-hidden />
-            Complete the following before generating
-          </p>
-          <ul className="mt-2 list-inside list-disc space-y-1.5 text-sm text-amber-950">
-            {validationErrors.map((e) => (
-              <li key={e}>{e}</li>
-            ))}
-          </ul>
-        </div>
-      )}
     </section>
   )
 }

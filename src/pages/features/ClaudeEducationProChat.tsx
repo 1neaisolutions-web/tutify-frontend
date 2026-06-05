@@ -95,6 +95,7 @@ import {
   generateSocraticQuestions,
 } from '../../utils/claudeUtils'
 
+import { useTranslation } from 'react-i18next'
 interface Conversation {
   id: string
   title: string
@@ -106,6 +107,7 @@ interface Conversation {
 }
 
 const ClaudeEducationProChat = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [messages, setMessages] = useState<Message[]>([])
   const [inputValue, setInputValue] = useState('')
@@ -471,7 +473,7 @@ const ClaudeEducationProChat = () => {
     const days = Math.floor(diff / (1000 * 60 * 60 * 24))
     
     if (days === 0) return 'Today'
-    if (days === 1) return 'Yesterday'
+    if (days === 1) return t('claudeEducationProChat.yesterday')
     if (days < 7) return `${days} days ago`
     if (days < 30) return `${Math.floor(days / 7)} weeks ago`
     if (days < 365) return `${Math.floor(days / 30)} months ago`
@@ -512,20 +514,14 @@ const ClaudeEducationProChat = () => {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold text-gray-900">Claude Education Pro</h1>
+                <h1 className="text-xl font-bold text-gray-900">{t('claudeEducationProChat.claudeEducationPro')}</h1>
                 <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-bold">
-                  <Shield className="h-3 w-3" />
-                  ETHICAL AI
-                </div>
+                  <Shield className="h-3 w-3" />{t('claudeEducationProChat.ethicalAi')}</div>
                 <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-green-500 to-green-600 text-white text-xs font-bold">
-                  <Lock className="h-3 w-3" />
-                  PRIVACY-FIRST
-                </div>
+                  <Lock className="h-3 w-3" />{t('claudeEducationProChat.privacyFirst')}</div>
               </div>
               <p className="text-xs text-gray-600 flex items-center gap-1">
-                <Sparkles className="h-3 w-3 text-blue-500" />
-                Constitutional AI • 200K Context • Guided Learning
-              </p>
+                <Sparkles className="h-3 w-3 text-blue-500" />{t('claudeEducationProChat.constitutionalAi200kContextGuidedLearning')}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -533,16 +529,12 @@ const ClaudeEducationProChat = () => {
               onClick={() => setShowEthicalAIDashboard(true)}
               className="flex items-center gap-2 rounded-lg border border-blue-300 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-700 transition hover:bg-blue-100"
             >
-              <Shield className="h-4 w-4" />
-              Ethical AI
-            </button>
+              <Shield className="h-4 w-4" />{t('claudeEducationProChat.ethicalAi2')}</button>
             <button
               onClick={createNewConversation}
               className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
             >
-              <Plus className="h-4 w-4" />
-              New Chat
-            </button>
+              <Plus className="h-4 w-4" />{t('claudeEducationProChat.newChat')}</button>
             <button
               onClick={() => setShowHistory(!showHistory)}
               className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition ${
@@ -570,7 +562,7 @@ const ClaudeEducationProChat = () => {
           <button
             onClick={() => setShowSidebar(true)}
             className="absolute left-4 top-4 z-10 p-2 bg-white rounded-lg shadow-md border border-gray-200 hover:bg-gray-50 transition"
-            title="Show sidebar"
+            title={t('claudeEducationProChat.showSidebar')}
           >
             <ChevronRight className="h-5 w-5 text-gray-600" />
           </button>
@@ -581,7 +573,7 @@ const ClaudeEducationProChat = () => {
           <div className="w-64 border-r border-gray-200 bg-white flex flex-col">
             <div className="p-4 border-b border-gray-200">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold text-gray-900">Claude Tools</h3>
+                <h3 className="font-semibold text-gray-900">{t('claudeEducationProChat.claudeTools')}</h3>
                 <button
                   onClick={() => setShowSidebar(false)}
                   className="p-1 text-gray-400 hover:text-gray-600 rounded"
@@ -594,56 +586,42 @@ const ClaudeEducationProChat = () => {
                   onClick={() => setShowStandardsBrowser(true)}
                   className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 hover:bg-blue-50 hover:border-blue-300 transition text-sm"
                 >
-                  <BookOpen className="h-4 w-4 text-blue-600" />
-                  Standards Browser
-                </button>
+                  <BookOpen className="h-4 w-4 text-blue-600" />{t('claudeEducationProChat.standardsBrowser')}</button>
                 <button
                   onClick={() => setShowLongDocumentAnalyzer(true)}
                   className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 hover:bg-purple-50 hover:border-purple-300 transition text-sm"
                 >
-                  <FileText className="h-4 w-4 text-purple-600" />
-                  Long Document Analysis
-                </button>
+                  <FileText className="h-4 w-4 text-purple-600" />{t('claudeEducationProChat.longDocumentAnalysis')}</button>
                 <button
                   onClick={() => setShowGuidedLearningMode(true)}
                   className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 hover:bg-green-50 hover:border-green-300 transition text-sm"
                 >
-                  <GraduationCap className="h-4 w-4 text-green-600" />
-                  Guided Learning Mode
-                </button>
+                  <GraduationCap className="h-4 w-4 text-green-600" />{t('claudeEducationProChat.guidedLearningMode')}</button>
                 <button
                   onClick={() => setShowPrivacyComplianceChecker(true)}
                   className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 hover:bg-green-50 hover:border-green-300 transition text-sm"
                 >
-                  <Lock className="h-4 w-4 text-green-600" />
-                  Privacy Compliance
-                </button>
+                  <Lock className="h-4 w-4 text-green-600" />{t('claudeEducationProChat.privacyCompliance')}</button>
                 <button
                   onClick={handleAnalyzeCurriculum}
                   className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 hover:bg-purple-50 hover:border-purple-300 transition text-sm"
                 >
-                  <Target className="h-4 w-4 text-purple-600" />
-                  Curriculum Alignment
-                </button>
+                  <Target className="h-4 w-4 text-purple-600" />{t('claudeEducationProChat.curriculumAlignment')}</button>
                 <button
                   onClick={handleReviewAssessment}
                   className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 hover:bg-green-50 hover:border-green-300 transition text-sm"
                 >
-                  <FileCheck className="h-4 w-4 text-green-600" />
-                  Ethical Assessment Review
-                </button>
+                  <FileCheck className="h-4 w-4 text-green-600" />{t('claudeEducationProChat.ethicalAssessmentReview')}</button>
                 <button
                   onClick={() => setShowDocumentComparisonTool(true)}
                   className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 hover:bg-blue-50 hover:border-blue-300 transition text-sm"
                 >
-                  <GitCompare className="h-4 w-4 text-blue-600" />
-                  Compare Documents
-                </button>
+                  <GitCompare className="h-4 w-4 text-blue-600" />{t('claudeEducationProChat.compareDocuments')}</button>
               </div>
             </div>
             {selectedStandards.length > 0 && (
               <div className="p-4 border-b border-gray-200">
-                <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2">Selected Standards</h4>
+                <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2">{t('claudeEducationProChat.selectedStandards')}</h4>
                 <div className="space-y-1">
                   {selectedStandards.slice(0, 3).map((std) => (
                     <div key={std.id} className="text-xs text-gray-600 truncate">
@@ -658,15 +636,15 @@ const ClaudeEducationProChat = () => {
             )}
             {/* Ethical Indicators */}
             <div className="p-4 border-b border-gray-200">
-              <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2">Ethical Status</h4>
+              <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2">{t('claudeEducationProChat.ethicalStatus')}</h4>
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-xs">
                   <Shield className="h-3 w-3 text-green-600" />
-                  <span className="text-gray-600">Constitutional AI Active</span>
+                  <span className="text-gray-600">{t('claudeEducationProChat.constitutionalAiActive')}</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs">
                   <Lock className="h-3 w-3 text-green-600" />
-                  <span className="text-gray-600">Privacy Protected</span>
+                  <span className="text-gray-600">{t('claudeEducationProChat.privacyProtected')}</span>
                 </div>
                 {privacyStatus && (
                   <div className="flex items-center gap-2 text-xs">
@@ -675,7 +653,7 @@ const ClaudeEducationProChat = () => {
                     ) : (
                       <AlertTriangle className="h-3 w-3 text-red-600" />
                     )}
-                    <span className="text-gray-600">FERPA Compliant</span>
+                    <span className="text-gray-600">{t('claudeEducationProChat.ferpaCompliant')}</span>
                   </div>
                 )}
               </div>
@@ -703,15 +681,11 @@ const ClaudeEducationProChat = () => {
                       </div>
                     </div>
                     <div className="mb-2 flex items-center justify-center gap-2">
-                      <h2 className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
-                        Claude Education Pro
-                      </h2>
+                      <h2 className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">{t('claudeEducationProChat.claudeEducationPro')}</h2>
                       <div className="px-3 py-1 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-bold flex items-center gap-1">
-                        <Shield className="h-3 w-3" />
-                        ETHICAL AI
-                      </div>
+                        <Shield className="h-3 w-3" />{t('claudeEducationProChat.ethicalAi')}</div>
                     </div>
-                    <p className="text-sm font-medium text-purple-600 mb-6">Powered by Anthropic Claude 3.5</p>
+                    <p className="text-sm font-medium text-purple-600 mb-6">{t('claudeEducationProChat.poweredByAnthropicClaude35')}</p>
                     <div className="max-w-2xl mx-auto mb-8">
                       <p className="text-base text-gray-700 leading-relaxed">
                         Experience ethical AI designed for education. Claude Education Pro combines Constitutional AI principles, 
@@ -725,26 +699,26 @@ const ClaudeEducationProChat = () => {
                       {[
                         {
                           icon: Shield,
-                          title: 'Constitutional AI',
-                          description: 'Built-in ethical framework ensures responsible AI responses',
+                          title: t('claudeEducationProChat.featureConstitutionalTitle'),
+                          description: t('claudeEducationProChat.featureConstitutionalDescription'),
                           color: 'from-green-500 to-green-600',
                         },
                         {
                           icon: FileText,
-                          title: 'Long Document Analysis',
-                          description: 'Analyze entire textbooks and curricula (200K context window)',
+                          title: t('claudeEducationProChat.featureLongDocsTitle'),
+                          description: t('claudeEducationProChat.featureLongDocsDescription'),
                           color: 'from-blue-500 to-blue-600',
                         },
                         {
                           icon: GraduationCap,
-                          title: 'Guided Learning Mode',
-                          description: 'Socratic method and step-by-step reasoning for students',
+                          title: t('claudeEducationProChat.featureGuidedTitle'),
+                          description: t('claudeEducationProChat.featureGuidedDescription'),
                           color: 'from-purple-500 to-purple-600',
                         },
                         {
                           icon: Lock,
-                          title: 'Privacy-First Compliance',
-                          description: 'Automatic FERPA/COPPA compliance checking',
+                          title: t('claudeEducationProChat.featurePrivacyTitle'),
+                          description: t('claudeEducationProChat.featurePrivacyDescription'),
                           color: 'from-indigo-500 to-indigo-600',
                         },
                       ].map((feature, idx) => {
@@ -770,9 +744,7 @@ const ClaudeEducationProChat = () => {
                     {/* Quick Start Templates */}
                     <div className="w-full max-w-3xl mx-auto">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                        <Lightbulb className="h-5 w-5 text-blue-500" />
-                        Quick Start Templates
-                      </h3>
+                        <Lightbulb className="h-5 w-5 text-blue-500" />{t('claudeEducationProChat.quickStartTemplates')}</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {[
                           'Create an ethically-aligned curriculum for 5th grade science',
@@ -849,14 +821,10 @@ const ClaudeEducationProChat = () => {
                               {message.role === 'assistant' && (
                                 <div className="mt-3 flex items-center gap-2 flex-wrap">
                                   <div className="flex items-center gap-1 text-xs text-gray-500">
-                                    <Shield className="h-3 w-3 text-green-600" />
-                                    Ethical AI
-                                  </div>
+                                    <Shield className="h-3 w-3 text-green-600" />{t('claudeEducationProChat.ethicalAi2')}</div>
                                   {privacyStatus?.ferpaCompliant && (
                                     <div className="flex items-center gap-1 text-xs text-gray-500">
-                                      <Lock className="h-3 w-3 text-green-600" />
-                                      Privacy Protected
-                                    </div>
+                                      <Lock className="h-3 w-3 text-green-600" />{t('claudeEducationProChat.privacyProtected')}</div>
                                   )}
                                 </div>
                               )}
@@ -870,21 +838,21 @@ const ClaudeEducationProChat = () => {
                                       <button
                                         onClick={() => handleCopyMessage(message.id)}
                                         className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600 transition"
-                                        title="Copy"
+                                        title={t('claudeEducationProChat.copy')}
                                       >
                                         <Copy className="h-4 w-4" />
                                       </button>
                                       <button
                                         onClick={() => setShowExportDialog(true)}
                                         className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600 transition"
-                                        title="Export"
+                                        title={t('claudeEducationProChat.export')}
                                       >
                                         <Download className="h-4 w-4" />
                                       </button>
                                       <button
                                         onClick={() => setMessageActionMenu(message.id)}
                                         className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600 transition"
-                                        title="More"
+                                        title={t('claudeEducationProChat.more')}
                                       >
                                         <MoreVertical className="h-4 w-4" />
                                       </button>
@@ -915,15 +883,13 @@ const ClaudeEducationProChat = () => {
                   <div className="rounded-2xl bg-white px-5 py-4 shadow-md border-2 border-gray-100">
                     <div className="flex items-center gap-3">
                       <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
-                      <span className="text-sm text-gray-600 font-medium">Claude is thinking ethically...</span>
+                      <span className="text-sm text-gray-600 font-medium">{t('claudeEducationProChat.claudeIsThinkingEthically')}</span>
                       {canStopGeneration && (
                         <button
                           onClick={handleStopGeneration}
                           className="ml-2 flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-2.5 py-1 text-xs font-medium text-red-600 hover:bg-red-100 transition"
                         >
-                          <StopCircle className="h-3.5 w-3.5" />
-                          Stop
-                        </button>
+                          <StopCircle className="h-3.5 w-3.5" />{t('claudeEducationProChat.stop')}</button>
                       )}
                     </div>
                   </div>
@@ -951,7 +917,7 @@ const ClaudeEducationProChat = () => {
                   onChange={(e) => setGradeLevel(e.target.value)}
                   className="px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="">Grade Level</option>
+                  <option value="">{t('claudeEducationProChat.gradeLevel')}</option>
                   {['K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'].map((g) => (
                     <option key={g} value={g}>
                       Grade {g}
@@ -963,7 +929,7 @@ const ClaudeEducationProChat = () => {
                   onChange={(e) => setSubject(e.target.value)}
                   className="px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="">Subject</option>
+                  <option value="">{t('claudeEducationProChat.subject')}</option>
                   {['English', 'Mathematics', 'Science', 'Social Studies', 'Arts', 'Physical Education'].map((s) => (
                     <option key={s} value={s}>
                       {s}
@@ -974,9 +940,7 @@ const ClaudeEducationProChat = () => {
                   onClick={() => setShowLongDocumentAnalyzer(true)}
                   className="flex items-center gap-1.5 rounded-lg border border-purple-300 bg-purple-50 px-3 py-1.5 text-sm font-medium text-purple-700 transition hover:bg-purple-100"
                 >
-                  <FileText className="h-4 w-4" />
-                  Long Docs
-                </button>
+                  <FileText className="h-4 w-4" />{t('claudeEducationProChat.longDocs')}</button>
                 <button
                   onClick={() => setShowGuidedLearningMode(true)}
                   className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-medium transition ${
@@ -985,16 +949,12 @@ const ClaudeEducationProChat = () => {
                       : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
                   }`}
                 >
-                  <GraduationCap className="h-4 w-4" />
-                  Guided Mode
-                </button>
+                  <GraduationCap className="h-4 w-4" />{t('claudeEducationProChat.guidedMode')}</button>
                 <button
                   onClick={() => setShowPrivacyComplianceChecker(true)}
                   className="flex items-center gap-1.5 rounded-lg border border-green-300 bg-green-50 px-3 py-1.5 text-sm font-medium text-green-700 transition hover:bg-green-100"
                 >
-                  <Lock className="h-4 w-4" />
-                  Privacy Check
-                </button>
+                  <Lock className="h-4 w-4" />{t('claudeEducationProChat.privacyCheck')}</button>
               </div>
 
               {/* Input Field */}
@@ -1005,7 +965,7 @@ const ClaudeEducationProChat = () => {
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="Ask Claude anything about teaching... (Ethical AI • Privacy-First • 200K Context)"
+                    placeholder={t('claudeEducationProChat.inputPlaceholder')}
                     rows={1}
                     className="w-full resize-none border-0 bg-transparent px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-0"
                     disabled={isLoading}
@@ -1015,7 +975,7 @@ const ClaudeEducationProChat = () => {
                   onClick={handleSendMessage}
                   disabled={!inputValue.trim() || isLoading}
                   className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-md transition-all hover:from-blue-600 hover:to-purple-700 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                  title="Send message"
+                  title={t('claudeEducationProChat.sendMessage')}
                 >
                   {isLoading ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
@@ -1028,9 +988,7 @@ const ClaudeEducationProChat = () => {
               {/* Premium Disclaimer */}
               <div className="mt-4 flex items-center justify-center gap-2 text-xs text-gray-500">
                 <Shield className="h-4 w-4 text-blue-400" />
-                <p>
-                  Premium Feature: Constitutional AI, Privacy-First Compliance, Long Document Analysis, and Ethical Assessment Tools.
-                </p>
+                <p>{t('claudeEducationProChat.premiumFeatureConstitutionalAiPrivacyFirstComplianceLon')}</p>
               </div>
             </div>
           </div>
@@ -1047,9 +1005,7 @@ const ClaudeEducationProChat = () => {
               <div className="border-b border-gray-200 p-4">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <History className="h-5 w-5" />
-                    Chat History
-                  </h2>
+                    <History className="h-5 w-5" />{t('claudeEducationProChat.chatHistory')}</h2>
                   <button
                     onClick={() => setShowHistory(false)}
                     className="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition lg:hidden"
@@ -1061,7 +1017,7 @@ const ClaudeEducationProChat = () => {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Search conversations..."
+                    placeholder={t('claudeEducationProChat.searchConversations')}
                     value={historySearchQuery}
                     onChange={(e) => setHistorySearchQuery(e.target.value)}
                     className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -1072,7 +1028,7 @@ const ClaudeEducationProChat = () => {
                 {filteredConversations.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
                     <History className="h-12 w-12 text-gray-300 mb-3" />
-                    <p className="text-sm text-gray-500">No conversations yet</p>
+                    <p className="text-sm text-gray-500">{t('claudeEducationProChat.noConversationsYet')}</p>
                   </div>
                 ) : (
                   <div className="space-y-1">

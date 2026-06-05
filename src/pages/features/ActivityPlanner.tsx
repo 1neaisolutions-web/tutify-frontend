@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Lightbulb, Sparkles, RefreshCw, Download } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 type ActivitySubject = 'Math' | 'Science' | 'English' | 'Arts' | 'Technology' | 'Business'
 type ActivityGoal =
   | 'application'
@@ -95,6 +96,7 @@ const sampleActivity: ActivityOutput = {
 }
 
 const ActivityPlanner = () => {
+  const { t } = useTranslation()
   const [inputs, setInputs] = useState<ActivityInputs>({
     grade: 9,
     subject: 'Science',
@@ -216,10 +218,8 @@ const ActivityPlanner = () => {
             <Lightbulb className="w-6 h-6 text-primary-600" />
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold text-gray-900">Activity Planner</h1>
-            <p className="text-sm text-gray-600 mt-0.5">
-              Design quick engagement activities aligned to your learning goals
-            </p>
+            <h1 className="text-xl font-bold text-gray-900">{t('activityPlanner.activityPlanner')}</h1>
+            <p className="text-sm text-gray-600 mt-0.5">{t('activityPlanner.designQuickEngagementActivitiesAlignedToYourLearningGoa')}</p>
           </div>
         </div>
       </div>
@@ -229,13 +229,12 @@ const ActivityPlanner = () => {
           <div className="card">
             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
               <Sparkles className="w-5 h-5 text-primary-600" />
-              <span>Activity Inputs</span>
+              <span>{t('activityPlanner.activityInputs')}</span>
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Grade <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('activityPlanner.grade2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -244,14 +243,13 @@ const ActivityPlanner = () => {
                   value={inputs.grade}
                   onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
                   className="input-field"
-                  placeholder="Enter grade (1-12)"
+                  placeholder={t('common.gradePlaceholder')}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Subject <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('activityPlanner.subject2')}<span className="text-red-500">*</span>
                 </label>
                 <select
                   value={inputs.subject}
@@ -261,19 +259,18 @@ const ActivityPlanner = () => {
                   className="input-field"
                   required
                 >
-                  <option value="">Select subject</option>
-                  <option value="Math">Math</option>
-                  <option value="Science">Science</option>
-                  <option value="English">English</option>
-                  <option value="Arts">Arts</option>
-                  <option value="Technology">Technology</option>
-                  <option value="Business">Business</option>
+                  <option value="">{t('activityPlanner.selectSubject')}</option>
+                  <option value="Math">{t('activityPlanner.math')}</option>
+                  <option value="Science">{t('activityPlanner.science')}</option>
+                  <option value="English">{t('activityPlanner.english')}</option>
+                  <option value="Arts">{t('activityPlanner.arts')}</option>
+                  <option value="Technology">{t('activityPlanner.technology')}</option>
+                  <option value="Business">{t('activityPlanner.business')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Topic <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('activityPlanner.topic2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -286,19 +283,19 @@ const ActivityPlanner = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('activityPlanner.duration2')}</label>
                 <input
                   type="text"
                   value={inputs.duration}
                   onChange={(e) => handleInputChange('duration', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., PT15M"
+                  placeholder={t('activityPlanner.eGPt15m')}
                 />
                 <p className="mt-1 text-xs text-gray-500">Use ISO 8601 duration (e.g., PT15M).</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Activity Goal</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('activityPlanner.activityGoal')}</label>
                 <select
                   value={inputs.activity_goal}
                   onChange={(e) =>
@@ -310,17 +307,17 @@ const ActivityPlanner = () => {
                   className="input-field"
                 >
                   <option value="">Select goal (optional)</option>
-                  <option value="application">Application</option>
-                  <option value="reflection">Reflection</option>
-                  <option value="discussion">Discussion</option>
-                  <option value="collaboration">Collaboration</option>
-                  <option value="creativity">Creativity</option>
-                  <option value="review">Review</option>
+                  <option value="application">{t('activityPlanner.application')}</option>
+                  <option value="reflection">{t('activityPlanner.reflection')}</option>
+                  <option value="discussion">{t('activityPlanner.discussion')}</option>
+                  <option value="collaboration">{t('activityPlanner.collaboration')}</option>
+                  <option value="creativity">{t('activityPlanner.creativity')}</option>
+                  <option value="review">{t('activityPlanner.review')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Learning Objective</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('activityPlanner.learningObjective2')}</label>
                 <textarea
                   value={inputs.learning_objective}
                   onChange={(e) => handleInputChange('learning_objective', e.target.value)}
@@ -331,9 +328,7 @@ const ActivityPlanner = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Materials Available
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('activityPlanner.materialsAvailable')}</label>
                 <div className="flex gap-2 mb-2">
                   <input
                     type="text"
@@ -352,9 +347,7 @@ const ActivityPlanner = () => {
                     type="button"
                     onClick={addMaterial}
                     className="btn-primary whitespace-nowrap"
-                  >
-                    Add
-                  </button>
+                  >{t('activityPlanner.add')}</button>
                 </div>
                 {inputs.materials_available.length > 0 && (
                   <div className="flex flex-wrap gap-2">
@@ -379,7 +372,7 @@ const ActivityPlanner = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Student Grouping</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('activityPlanner.studentGrouping')}</label>
                 <select
                   value={inputs.student_grouping}
                   onChange={(e) =>
@@ -391,26 +384,26 @@ const ActivityPlanner = () => {
                   className="input-field"
                 >
                   <option value="">Select grouping (optional)</option>
-                  <option value="pairs">Pairs</option>
-                  <option value="small_groups">Small Groups</option>
-                  <option value="whole_class">Whole Class</option>
-                  <option value="individual">Individual</option>
+                  <option value="pairs">{t('activityPlanner.pairs')}</option>
+                  <option value="small_groups">{t('activityPlanner.smallGroups')}</option>
+                  <option value="whole_class">{t('activityPlanner.wholeClass')}</option>
+                  <option value="individual">{t('activityPlanner.individual')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('activityPlanner.language2')}</label>
                 <input
                   type="text"
                   value={inputs.language}
                   onChange={(e) => handleInputChange('language', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., en-US"
+                  placeholder={t('activityPlanner.eGEnUs')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Tone Preference</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('activityPlanner.tonePreference')}</label>
                 <select
                   value={inputs.tone_preference}
                   onChange={(e) =>
@@ -422,10 +415,10 @@ const ActivityPlanner = () => {
                   className="input-field"
                 >
                   <option value="">Select tone (optional)</option>
-                  <option value="fun">Fun</option>
-                  <option value="academic">Academic</option>
-                  <option value="reflective">Reflective</option>
-                  <option value="competitive">Competitive</option>
+                  <option value="fun">{t('activityPlanner.fun')}</option>
+                  <option value="academic">{t('activityPlanner.academic')}</option>
+                  <option value="reflective">{t('activityPlanner.reflective')}</option>
+                  <option value="competitive">{t('activityPlanner.competitive')}</option>
                 </select>
               </div>
 
@@ -437,12 +430,12 @@ const ActivityPlanner = () => {
                 {isGenerating ? (
                   <>
                     <RefreshCw className="w-5 h-5 animate-spin" />
-                    <span>Generating...</span>
+                    <span>{t('activityPlanner.generating')}</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-5 h-5" />
-                    <span>Generate Activity</span>
+                    <span>{t('activityPlanner.generateActivity')}</span>
                   </>
                 )}
               </button>
@@ -454,18 +447,18 @@ const ActivityPlanner = () => {
           {output ? (
             <div className="card">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Generated Activity Plan</h2>
+                <h2 className="text-lg font-semibold text-gray-900">{t('activityPlanner.generatedActivityPlan')}</h2>
                 <div className="flex gap-2">
                   <button className="btn-secondary flex items-center space-x-2">
                     <Download className="w-4 h-4" />
-                    <span>Download</span>
+                    <span>{t('activityPlanner.download')}</span>
                   </button>
                   <button
                     onClick={() => setOutput(null)}
                     className="btn-secondary flex items-center space-x-2"
                   >
                     <RefreshCw className="w-4 h-4" />
-                    <span>Reset</span>
+                    <span>{t('activityPlanner.reset')}</span>
                   </button>
                 </div>
               </div>
@@ -475,45 +468,45 @@ const ActivityPlanner = () => {
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">{output.title}</h3>
                   <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                     <span>
-                      <strong>Grade:</strong> {output.grade}
+                      <strong>{t('activityPlanner.grade')}</strong> {output.grade}
                     </span>
                     <span>
-                      <strong>Subject:</strong> {output.subject}
+                      <strong>{t('activityPlanner.subject')}</strong> {output.subject}
                     </span>
                     <span>
-                      <strong>Topic:</strong> {output.topic}
+                      <strong>{t('activityPlanner.topic')}</strong> {output.topic}
                     </span>
                     {output.duration && (
                       <span>
-                        <strong>Duration:</strong> {output.duration}
+                        <strong>{t('activityPlanner.duration')}</strong> {output.duration}
                       </span>
                     )}
                     {output.activity_goal && (
                       <span>
-                        <strong>Goal:</strong> {output.activity_goal.replace(/_/g, ' ')}
+                        <strong>{t('activityPlanner.goal')}</strong> {output.activity_goal.replace(/_/g, ' ')}
                       </span>
                     )}
                     {output.tone_preference && (
                       <span>
-                        <strong>Tone:</strong> {output.tone_preference}
+                        <strong>{t('activityPlanner.tone')}</strong> {output.tone_preference}
                       </span>
                     )}
                     {output.language && (
                       <span>
-                        <strong>Language:</strong> {output.language}
+                        <strong>{t('activityPlanner.language')}</strong> {output.language}
                       </span>
                     )}
                   </div>
                   <p className="mt-3 text-gray-700 text-sm">{output.summary}</p>
                   {output.learning_objective && (
                     <p className="mt-2 text-sm text-gray-700">
-                      <strong>Learning Objective:</strong> {output.learning_objective}
+                      <strong>{t('activityPlanner.learningObjective')}</strong> {output.learning_objective}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Materials</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('activityPlanner.materials')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.materials.map((material, index) => (
                       <li key={index}>{material}</li>
@@ -522,7 +515,7 @@ const ActivityPlanner = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Steps</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('activityPlanner.steps')}</h4>
                   <div className="space-y-3">
                     {output.steps.map((step, index) => (
                       <div key={index} className="bg-gray-50 rounded-lg p-4">
@@ -539,7 +532,7 @@ const ActivityPlanner = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Student Roles</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('activityPlanner.studentRoles')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.student_roles.map((role, index) => (
                       <li key={index}>{role}</li>
@@ -548,7 +541,7 @@ const ActivityPlanner = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Discussion Prompts</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('activityPlanner.discussionPrompts')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.discussion_prompts.map((prompt, index) => (
                       <li key={index}>{prompt}</li>
@@ -557,12 +550,12 @@ const ActivityPlanner = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Quick Check</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('activityPlanner.quickCheck')}</h4>
                   <p className="text-sm text-gray-700">{output.quick_check}</p>
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Extensions</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('activityPlanner.extensions')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.extensions.map((extension, index) => (
                       <li key={index}>{extension}</li>
@@ -575,12 +568,8 @@ const ActivityPlanner = () => {
             <div className="card">
               <div className="text-center py-12">
                 <Lightbulb className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Your activity plan will appear here
-                </h3>
-                <p className="text-gray-600">
-                  Fill in the inputs and click "Generate Activity" to preview an engagement plan.
-                </p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('activityPlanner.yourActivityPlanWillAppearHere')}</h3>
+                <p className="text-gray-600">{t('activityPlanner.fillInTheInputsAndClickGenerateActivityToPreview')}</p>
               </div>
             </div>
           )}

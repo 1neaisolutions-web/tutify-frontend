@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Plus } from 'lucide-react'
 import {
@@ -22,7 +23,18 @@ import { CustomModal } from '../../../../components/shared/CustomModal'
 
 const tabs = ['All', 'Draft', 'Active', 'Due Soon', 'Overdue', 'Graded', 'Archived'] as const
 
+const ASSIGNMENT_TAB_KEYS: Record<(typeof tabs)[number], string> = {
+  All: 'teacherTools.tabAll',
+  Draft: 'teacherTools.tabDraft',
+  Active: 'teacherTools.tabActive',
+  'Due Soon': 'assignment.tabDueSoon',
+  Overdue: 'teacherTools.tabOverdue',
+  Graded: 'teacherTools.tabGraded',
+  Archived: 'teacherTools.tabArchived',
+}
+
 export default function AssignmentList() {
+  const { t } = useTranslation()
   const { toast } = useSnackbar()
   const navigate = useNavigate()
   const location = useLocation()
@@ -117,7 +129,7 @@ export default function AssignmentList() {
     try {
       const res = await api.updateAssignment(archiveId, { status: 'archived' })
       if (res.ok) {
-        toast.success('Assignment archived')
+        toast.success(t('assignment.toastArchived'))
         setArchiveId(null)
         bump()
       }
@@ -132,11 +144,11 @@ export default function AssignmentList() {
     try {
       const res = await api.deleteAssignment(deleteId)
       if (!res.ok) {
-        if (res.error === 'READ_ONLY') toast.error('Sample library items cannot be deleted.')
-        else toast.error('Could not delete assignment')
+        if (res.error === 'READ_ONLY') toast.error(t('teacherTools.toastReadOnlyDelete'))
+        else toast.error(t('assignment.toastDeleteFailed'))
         return
       }
-      toast.success('Assignment deleted')
+      toast.success(t('assignment.toastDeleted'))
       setDeleteId(null)
       bump()
     } finally {
@@ -147,26 +159,26 @@ export default function AssignmentList() {
   const runDuplicate = async (id: string) => {
     const r = await api.duplicateAssignment(id)
     if (r.ok && 'id' in r && r.id) {
-      toast.success('Assignment duplicated')
+      toast.success(t('assignment.toastDuplicated'))
       bump()
-    } else toast.error('Could not duplicate')
+    } else toast.error(t('teacherTools.toastDuplicateFailed'))
   }
 
   return (
     <div className="space-y-6">
       <TeacherToolsPageHeader
-        title="Assignments"
-        subtitle="Essays, projects, and files with rubrics, late policies, and grading workflows."
+        title={t('assignment.title')}
+        subtitle={t('assignment.listSubtitle')}
         breadcrumbs={[
-          { label: 'Teacher Tools', to: '/teacher-tools' },
-          { label: 'Assignment' },
+          { label: t('teacherTools.breadcrumbTeacherTools'), to: '/teacher-tools' },
+          { label: t('assignment.breadcrumb') },
         ]}
         actions={
           <Link
             to="/teacher-tools/assignment/create"
             className="inline-flex items-center gap-2 rounded-full bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-500"
           >
-            <Plus className="h-4 w-4" /> Create Assignment
+            <Plus className="h-4 w-4" /> {t('teacherTools.createAssignment')}
           </Link>
         }
       />
@@ -187,16 +199,16 @@ export default function AssignmentList() {
       )}
 
       <div className="flex flex-wrap gap-2">
-        {tabs.map((t) => (
+        {tabs.map((tabItem) => (
           <button
-            key={t}
+            key={tabItem}
             type="button"
-            onClick={() => setTab(t)}
+            onClick={() => setTab(tabItem)}
             className={`rounded-full px-3 py-1.5 text-xs font-semibold ${
-              tab === t ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              tab === tabItem ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            {t}
+            {t(ASSIGNMENT_TAB_KEYS[tabItem])}
           </button>
         ))}
       </div>
@@ -212,7 +224,7 @@ export default function AssignmentList() {
               for (const id of selected) {
                 await api.duplicateAssignment(id)
               }
-              toast.success('Duplicated selected')
+              toast.success(t('teacherTools.toastBulkDuplicated'))
               setSelected([])
               bump()
             } finally {
@@ -220,62 +232,62 @@ export default function AssignmentList() {
             }
           }}
         >
-          {bulkPending ? 'Working…' : 'Duplicate selected'}
+          {bulkPending ? t('teacherTools.working') : t('teacherTools.duplicateSelected')}
         </button>
       </TeacherToolsBulkActionBar>
 
       <CustomModal
         open={Boolean(deleteId)}
         close={() => !deletePending && setDeleteId(null)}
-        title="Delete assignment?"
-        primaryButtonText="Delete"
+        title={t('assignment.deleteTitle')}
+        primaryButtonText={t('teacherTools.delete')}
         isDelete
         loading={deletePending}
         handleSave={confirmDelete}
       >
-        <p className="py-3 text-sm text-gray-600">This removes the assignment from your session. This cannot be undone.</p>
+        <p className="py-3 text-sm text-gray-600">{t('assignment.deleteBody')}</p>
       </CustomModal>
 
       <CustomModal
         open={Boolean(archiveId)}
         close={() => !archivePending && setArchiveId(null)}
-        title="Archive assignment?"
-        primaryButtonText="Archive"
+        title={t('assignment.archiveTitle')}
+        primaryButtonText={t('teacherTools.archive')}
         loading={archivePending}
         handleSave={() => void confirmArchive()}
       >
-        <p className="py-3 text-sm text-gray-600">Archived assignments stay in your list under the Archived tab. You can duplicate or delete later.</p>
+        <p className="py-3 text-sm text-gray-600">{t('assignment.archiveBody')}</p>
       </CustomModal>
 
       {!listReady && !listError && <TableSkeletonRows />}
 
       {listError && (
         <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-800">
-          <p className="font-semibold">No assignments to show</p>
+          <p className="font-semibold">{t('assignment.listErrorTitle')}</p>
           <p className="mt-1 text-red-700">{listError}</p>
           <button
             type="button"
             onClick={() => bump()}
             className="mt-4 rounded-full bg-primary-600 px-4 py-2 text-xs font-semibold text-white"
           >
-            Try again
+            {t('teacherTools.tryAgain')}
           </button>
         </div>
       )}
 
       {listReady && filtered.length === 0 && (
         <div className="rounded-2xl border border-gray-200 bg-white p-10 text-center text-sm text-gray-600">
-          No assignments match your filters.{' '}
+          {t('assignment.emptyFilters')}{' '}
           <button
             type="button"
             className="font-semibold text-primary-600 hover:underline"
             onClick={() => setFilters({ q: '', subject: '', grade: '', classKey: '', status: '', dateFrom: '', dateTo: '' })}
           >
-            Clear filters
+            {t('teacherTools.clearFilters')}
           </button>
           {' · '}
           <Link to="/teacher-tools/assignment/create" className="font-semibold text-primary-600">
-            Create assignment
+            {t('assignment.createLink')}
           </Link>
         </div>
       )}
@@ -288,7 +300,7 @@ export default function AssignmentList() {
                 <th className="px-3 py-3 text-left">
                   <input
                     type="checkbox"
-                    aria-label="Select all"
+                    aria-label={t('teacherTools.ariaSelectAll')}
                     onChange={(e) => {
                       if (e.target.checked) setSelected(filtered.map((a) => a.id))
                       else setSelected([])
@@ -296,12 +308,12 @@ export default function AssignmentList() {
                     checked={selected.length === filtered.length && filtered.length > 0}
                   />
                 </th>
-                <th className="px-3 py-3 text-left font-semibold text-gray-700">Title</th>
-                <th className="px-3 py-3 text-left font-semibold text-gray-700">Type</th>
-                <th className="px-3 py-3 text-left font-semibold text-gray-700">Due</th>
-                <th className="px-3 py-3 text-left font-semibold text-gray-700">Submitted</th>
-                <th className="px-3 py-3 text-left font-semibold text-gray-700">Pending</th>
-                <th className="px-3 py-3 text-left font-semibold text-gray-700">Status</th>
+                <th className="px-3 py-3 text-left font-semibold text-gray-700">{t('teacherTools.title')}</th>
+                <th className="px-3 py-3 text-left font-semibold text-gray-700">{t('assignment.colType')}</th>
+                <th className="px-3 py-3 text-left font-semibold text-gray-700">{t('quiz.detail.due')}</th>
+                <th className="px-3 py-3 text-left font-semibold text-gray-700">{t('quiz.submissions.colSubmitted')}</th>
+                <th className="px-3 py-3 text-left font-semibold text-gray-700">{t('assignment.colPending')}</th>
+                <th className="px-3 py-3 text-left font-semibold text-gray-700">{t('teacherTools.status')}</th>
                 <th className="px-3 py-3" />
               </tr>
             </thead>
@@ -329,16 +341,16 @@ export default function AssignmentList() {
                   <td className="px-3 py-3 text-right">
                     <TeacherToolsActionMenu
                       actions={[
-                        { key: 'edit', label: 'Edit', onClick: () => void goEdit(a.id) },
-                        { key: 'dup', label: 'Duplicate', onClick: () => void runDuplicate(a.id) },
+                        { key: 'edit', label: t('teacherTools.edit'), onClick: () => void goEdit(a.id) },
+                        { key: 'dup', label: t('teacherTools.duplicate'), onClick: () => void runDuplicate(a.id) },
                         {
                           key: 'arch',
-                          label: 'Archive',
+                          label: t('teacherTools.archive'),
                           onClick: () => setArchiveId(a.id),
                         },
                         {
                           key: 'del',
-                          label: 'Delete',
+                          label: t('teacherTools.delete'),
                           onClick: () => setDeleteId(a.id),
                         },
                       ]}

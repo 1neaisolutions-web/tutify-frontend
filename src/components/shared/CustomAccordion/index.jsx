@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 export const CustomAccordion = ({ header, icon, children }) => {
+  const { t } = useTranslation();
   return (
     <Accordion
       className='!shadow-none border-b rounded-none border-style text-[16px]'
@@ -30,7 +32,7 @@ export const CustomAccordion = ({ header, icon, children }) => {
       </AccordionSummary>
 
       <AccordionDetails className='p-4 ml-1'>
-        {children || <p>No data found</p>}
+        {children || <p>{t('shared.accordion.noData')}</p>}
       </AccordionDetails>
     </Accordion>
   );

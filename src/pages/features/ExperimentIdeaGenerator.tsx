@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { FlaskConical, Sparkles, RefreshCw, Download } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 type LabAccess = 'none' | 'basic' | 'full'
 type Difficulty = 'easy' | 'moderate' | 'challenging'
 type OutputFormat = 'structured_json' | 'teacher_text'
@@ -88,6 +89,7 @@ const sampleExperiment: ExperimentIdeaOutput = {
 }
 
 const ExperimentIdeaGenerator = () => {
+  const { t } = useTranslation()
   const [inputs, setInputs] = useState<ExperimentInputs>({
     grade: 6,
     topic: 'photosynthesis',
@@ -200,10 +202,8 @@ const ExperimentIdeaGenerator = () => {
             <FlaskConical className="w-6 h-6 text-primary-600" />
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold text-gray-900">Experiment Idea Generator</h1>
-            <p className="text-sm text-gray-600 mt-0.5">
-              Generate hands-on science investigations aligned to your classroom resources
-            </p>
+            <h1 className="text-xl font-bold text-gray-900">{t('experimentIdeaGenerator.experimentIdeaGenerator')}</h1>
+            <p className="text-sm text-gray-600 mt-0.5">{t('experimentIdeaGenerator.generateHandsOnScienceInvestigationsAlignedToYourClassr')}</p>
           </div>
         </div>
       </div>
@@ -213,13 +213,12 @@ const ExperimentIdeaGenerator = () => {
           <div className="card">
             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
               <Sparkles className="w-5 h-5 text-primary-600" />
-              <span>Experiment Inputs</span>
+              <span>{t('experimentIdeaGenerator.experimentInputs')}</span>
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Grade <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('experimentIdeaGenerator.grade2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -228,14 +227,13 @@ const ExperimentIdeaGenerator = () => {
                   value={inputs.grade}
                   onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
                   className="input-field"
-                  placeholder="Enter grade (1-12)"
+                  placeholder={t('common.gradePlaceholder')}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Topic <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('experimentIdeaGenerator.topic2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -248,7 +246,7 @@ const ExperimentIdeaGenerator = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Subtopic</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('experimentIdeaGenerator.subtopic2')}</label>
                 <input
                   type="text"
                   value={inputs.subtopic}
@@ -259,9 +257,7 @@ const ExperimentIdeaGenerator = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Available Materials
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('experimentIdeaGenerator.availableMaterials')}</label>
                 <div className="flex gap-2 mb-2">
                   <input
                     type="text"
@@ -276,9 +272,7 @@ const ExperimentIdeaGenerator = () => {
                     className="input-field flex-1"
                     placeholder='e.g., "plants"'
                   />
-                  <button type="button" onClick={addMaterial} className="btn-primary whitespace-nowrap">
-                    Add
-                  </button>
+                  <button type="button" onClick={addMaterial} className="btn-primary whitespace-nowrap">{t('experimentIdeaGenerator.add')}</button>
                 </div>
                 {inputs.available_materials.length > 0 && (
                   <div className="flex flex-wrap gap-2">
@@ -303,7 +297,7 @@ const ExperimentIdeaGenerator = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Lab Access</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('experimentIdeaGenerator.labAccess2')}</label>
                 <select
                   value={inputs.lab_access}
                   onChange={(e) =>
@@ -312,14 +306,14 @@ const ExperimentIdeaGenerator = () => {
                   className="input-field"
                 >
                   <option value="">Select lab access (optional)</option>
-                  <option value="none">None</option>
-                  <option value="basic">Basic</option>
-                  <option value="full">Full</option>
+                  <option value="none">{t('experimentIdeaGenerator.none')}</option>
+                  <option value="basic">{t('experimentIdeaGenerator.basic')}</option>
+                  <option value="full">{t('experimentIdeaGenerator.full')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Difficulty</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('experimentIdeaGenerator.difficulty2')}</label>
                 <select
                   value={inputs.difficulty}
                   onChange={(e) =>
@@ -331,27 +325,25 @@ const ExperimentIdeaGenerator = () => {
                   className="input-field"
                 >
                   <option value="">Select difficulty (optional)</option>
-                  <option value="easy">Easy</option>
-                  <option value="moderate">Moderate</option>
-                  <option value="challenging">Challenging</option>
+                  <option value="easy">{t('experimentIdeaGenerator.easy')}</option>
+                  <option value="moderate">{t('experimentIdeaGenerator.moderate')}</option>
+                  <option value="challenging">{t('experimentIdeaGenerator.challenging')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('experimentIdeaGenerator.duration2')}</label>
                 <input
                   type="text"
                   value={inputs.duration}
                   onChange={(e) => handleInputChange('duration', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., PT30M"
+                  placeholder={t('experimentIdeaGenerator.eGPt30m')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Learning Objective
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('experimentIdeaGenerator.learningObjective2')}</label>
                 <input
                   type="text"
                   value={inputs.learning_objective}
@@ -369,24 +361,22 @@ const ExperimentIdeaGenerator = () => {
                   onChange={(e) => handleInputChange('safety_focus', e.target.checked)}
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />
-                <label htmlFor="safety-focus" className="ml-2 text-sm text-gray-700">
-                  Include safety notes
-                </label>
+                <label htmlFor="safety-focus" className="ml-2 text-sm text-gray-700">{t('experimentIdeaGenerator.includeSafetyNotes')}</label>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('experimentIdeaGenerator.language2')}</label>
                 <input
                   type="text"
                   value={inputs.language}
                   onChange={(e) => handleInputChange('language', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., en-US"
+                  placeholder={t('experimentIdeaGenerator.eGEnUs')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Output Format</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('experimentIdeaGenerator.outputFormat')}</label>
                 <select
                   value={inputs.output_format}
                   onChange={(e) =>
@@ -398,8 +388,8 @@ const ExperimentIdeaGenerator = () => {
                   className="input-field"
                 >
                   <option value="">Select output format (optional)</option>
-                  <option value="teacher_text">Teacher Text</option>
-                  <option value="structured_json">Structured JSON</option>
+                  <option value="teacher_text">{t('experimentIdeaGenerator.teacherText')}</option>
+                  <option value="structured_json">{t('experimentIdeaGenerator.structuredJson')}</option>
                 </select>
               </div>
 
@@ -411,12 +401,12 @@ const ExperimentIdeaGenerator = () => {
                 {isGenerating ? (
                   <>
                     <RefreshCw className="w-5 h-5 animate-spin" />
-                    <span>Generating...</span>
+                    <span>{t('experimentIdeaGenerator.generating')}</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-5 h-5" />
-                    <span>Generate Experiment Idea</span>
+                    <span>{t('experimentIdeaGenerator.generateExperimentIdea')}</span>
                   </>
                 )}
               </button>
@@ -428,18 +418,18 @@ const ExperimentIdeaGenerator = () => {
           {output ? (
             <div className="card">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Generated Idea</h2>
+                <h2 className="text-lg font-semibold text-gray-900">{t('experimentIdeaGenerator.generatedIdea')}</h2>
                 <div className="flex gap-2">
                   <button className="btn-secondary flex items-center space-x-2">
                     <Download className="w-4 h-4" />
-                    <span>Download</span>
+                    <span>{t('experimentIdeaGenerator.download')}</span>
                   </button>
                   <button
                     onClick={() => setOutput(null)}
                     className="btn-secondary flex items-center space-x-2"
                   >
                     <RefreshCw className="w-4 h-4" />
-                    <span>Reset</span>
+                    <span>{t('experimentIdeaGenerator.reset')}</span>
                   </button>
                 </div>
               </div>
@@ -449,47 +439,47 @@ const ExperimentIdeaGenerator = () => {
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">{output.title}</h3>
                   <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                     <span>
-                      <strong>Grade:</strong> {output.grade}
+                      <strong>{t('experimentIdeaGenerator.grade')}</strong> {output.grade}
                     </span>
                     <span>
-                      <strong>Topic:</strong> {output.topic}
+                      <strong>{t('experimentIdeaGenerator.topic')}</strong> {output.topic}
                     </span>
                     {output.subtopic && (
                       <span>
-                        <strong>Subtopic:</strong> {output.subtopic}
+                        <strong>{t('experimentIdeaGenerator.subtopic')}</strong> {output.subtopic}
                       </span>
                     )}
                     {output.duration && (
                       <span>
-                        <strong>Duration:</strong> {output.duration}
+                        <strong>{t('experimentIdeaGenerator.duration')}</strong> {output.duration}
                       </span>
                     )}
                     {output.difficulty && (
                       <span>
-                        <strong>Difficulty:</strong> {output.difficulty}
+                        <strong>{t('experimentIdeaGenerator.difficulty')}</strong> {output.difficulty}
                       </span>
                     )}
                     {output.lab_access && (
                       <span>
-                        <strong>Lab Access:</strong> {output.lab_access}
+                        <strong>{t('experimentIdeaGenerator.labAccess')}</strong> {output.lab_access}
                       </span>
                     )}
                     {output.language && (
                       <span>
-                        <strong>Language:</strong> {output.language}
+                        <strong>{t('experimentIdeaGenerator.language')}</strong> {output.language}
                       </span>
                     )}
                   </div>
                   <p className="mt-3 text-gray-700 text-sm">{output.overview}</p>
                   {output.learning_objective && (
                     <p className="mt-2 text-sm text-gray-700">
-                      <strong>Learning Objective:</strong> {output.learning_objective}
+                      <strong>{t('experimentIdeaGenerator.learningObjective')}</strong> {output.learning_objective}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Materials</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('experimentIdeaGenerator.materials')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.materials.map((material, index) => (
                       <li key={index}>{material}</li>
@@ -499,7 +489,7 @@ const ExperimentIdeaGenerator = () => {
 
                 {output.safety_notes && (
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Safety Notes</h4>
+                    <h4 className="font-semibold text-gray-900 mb-2">{t('experimentIdeaGenerator.safetyNotes')}</h4>
                     <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                       {output.safety_notes.map((note, index) => (
                         <li key={index}>{note}</li>
@@ -509,14 +499,14 @@ const ExperimentIdeaGenerator = () => {
                 )}
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Procedure</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('experimentIdeaGenerator.procedure')}</h4>
                   <div className="space-y-3">
                     {output.procedure.map((step, index) => (
                       <div key={index} className="bg-gray-50 rounded-lg p-4">
                         <p className="text-sm text-gray-700">{step.description}</p>
                         {step.tips && (
                           <p className="mt-1 text-xs text-gray-500">
-                            <strong>Tip:</strong> {step.tips}
+                            <strong>{t('experimentIdeaGenerator.tip')}</strong> {step.tips}
                           </p>
                         )}
                       </div>
@@ -525,7 +515,7 @@ const ExperimentIdeaGenerator = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Data Collection</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('experimentIdeaGenerator.dataCollection')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.data_collection.map((item, index) => (
                       <li key={index}>{item}</li>
@@ -534,7 +524,7 @@ const ExperimentIdeaGenerator = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Reflection Questions</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('experimentIdeaGenerator.reflectionQuestions')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.reflection_questions.map((question, index) => (
                       <li key={index}>{question}</li>
@@ -543,7 +533,7 @@ const ExperimentIdeaGenerator = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Extension Ideas</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('experimentIdeaGenerator.extensionIdeas')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.extension_ideas.map((idea, index) => (
                       <li key={index}>{idea}</li>
@@ -556,12 +546,8 @@ const ExperimentIdeaGenerator = () => {
             <div className="card">
               <div className="text-center py-12">
                 <FlaskConical className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Your experiment idea will appear here
-                </h3>
-                <p className="text-gray-600">
-                  Fill in the inputs and click "Generate Experiment Idea" to view the investigation plan.
-                </p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('experimentIdeaGenerator.yourExperimentIdeaWillAppearHere')}</h3>
+                <p className="text-gray-600">{t('experimentIdeaGenerator.fillInTheInputsAndClickGenerateExperimentIdeaTo')}</p>
               </div>
             </div>
           )}

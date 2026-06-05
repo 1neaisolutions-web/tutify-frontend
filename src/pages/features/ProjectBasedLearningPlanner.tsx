@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { FileText, Sparkles, RefreshCw, Download } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 type PblSubject =
   | 'Science'
   | 'Technology'
@@ -167,6 +168,7 @@ const samplePblPlan: PblOutput = {
 }
 
 const ProjectBasedLearningPlanner = () => {
+  const { t } = useTranslation()
   const [inputs, setInputs] = useState<PblInputs>({
     grade: 8,
     subject: 'Science',
@@ -347,10 +349,8 @@ const ProjectBasedLearningPlanner = () => {
             <FileText className="w-6 h-6 text-primary-600" />
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold text-gray-900">Project-Based Learning Planner</h1>
-            <p className="text-sm text-gray-600 mt-0.5">
-              Design authentic PBL experiences with structured phases and assessments
-            </p>
+            <h1 className="text-xl font-bold text-gray-900">{t('projectBasedLearningPlanner.projectBasedLearningPlanner')}</h1>
+            <p className="text-sm text-gray-600 mt-0.5">{t('projectBasedLearningPlanner.designAuthenticPblExperiencesWithStructuredPhasesAndAss')}</p>
           </div>
         </div>
       </div>
@@ -360,13 +360,12 @@ const ProjectBasedLearningPlanner = () => {
           <div className="card">
             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
               <Sparkles className="w-5 h-5 text-primary-600" />
-              <span>Project Inputs</span>
+              <span>{t('projectBasedLearningPlanner.projectInputs')}</span>
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Grade <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('projectBasedLearningPlanner.grade2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -375,14 +374,13 @@ const ProjectBasedLearningPlanner = () => {
                   value={inputs.grade}
                   onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
                   className="input-field"
-                  placeholder="Enter grade (1-12)"
+                  placeholder={t('common.gradePlaceholder')}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Subject <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('projectBasedLearningPlanner.subject2')}<span className="text-red-500">*</span>
                 </label>
                 <select
                   value={inputs.subject}
@@ -392,22 +390,20 @@ const ProjectBasedLearningPlanner = () => {
                   className="input-field"
                   required
                 >
-                  <option value="">Select subject</option>
-                  <option value="Science">Science</option>
-                  <option value="Technology">Technology</option>
-                  <option value="Engineering">Engineering</option>
-                  <option value="Mathematics">Mathematics</option>
-                  <option value="English">English</option>
-                  <option value="Social Studies">Social Studies</option>
-                  <option value="Arts">Arts</option>
-                  <option value="Physical Education">Physical Education</option>
+                  <option value="">{t('projectBasedLearningPlanner.selectSubject')}</option>
+                  <option value="Science">{t('projectBasedLearningPlanner.science')}</option>
+                  <option value="Technology">{t('projectBasedLearningPlanner.technology')}</option>
+                  <option value="Engineering">{t('projectBasedLearningPlanner.engineering')}</option>
+                  <option value="Mathematics">{t('projectBasedLearningPlanner.mathematics')}</option>
+                  <option value="English">{t('projectBasedLearningPlanner.english')}</option>
+                  <option value="Social Studies">{t('projectBasedLearningPlanner.socialStudies')}</option>
+                  <option value="Arts">{t('projectBasedLearningPlanner.arts')}</option>
+                  <option value="Physical Education">{t('projectBasedLearningPlanner.physicalEducation')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Cross-Curricular Links
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('projectBasedLearningPlanner.crossCurricularLinks')}</label>
                 <div className="flex gap-2 mb-2">
                   <input
                     type="text"
@@ -457,8 +453,7 @@ const ProjectBasedLearningPlanner = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Driving Question <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('projectBasedLearningPlanner.drivingQuestion2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -471,15 +466,14 @@ const ProjectBasedLearningPlanner = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Duration <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('projectBasedLearningPlanner.duration2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   value={inputs.duration}
                   onChange={(e) => handleInputChange('duration', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., P3W"
+                  placeholder={t('projectBasedLearningPlanner.eGP3w')}
                   required
                 />
                 <p className="mt-1 text-xs text-gray-500">Use ISO 8601 duration (e.g., P3W for 3 weeks).</p>
@@ -493,25 +487,23 @@ const ProjectBasedLearningPlanner = () => {
                   onChange={(e) => handleInputChange('real_world_context', e.target.checked)}
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />
-                <label htmlFor="real-world-context" className="ml-2 text-sm text-gray-700">
-                  Include real-world context
-                </label>
+                <label htmlFor="real-world-context" className="ml-2 text-sm text-gray-700">{t('projectBasedLearningPlanner.includeRealWorldContext')}</label>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Team Size</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('projectBasedLearningPlanner.teamSize')}</label>
                 <input
                   type="number"
                   min="1"
                   value={inputs.team_size}
                   onChange={(e) => handleInputChange('team_size', parseInt(e.target.value) || '')}
                   className="input-field"
-                  placeholder="e.g., 4"
+                  placeholder={t('projectBasedLearningPlanner.eG4')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Project Format</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('projectBasedLearningPlanner.projectFormat')}</label>
                 <select
                   value={inputs.project_format}
                   onChange={(e) =>
@@ -523,18 +515,16 @@ const ProjectBasedLearningPlanner = () => {
                   className="input-field"
                 >
                   <option value="">Select format (optional)</option>
-                  <option value="poster">Poster</option>
-                  <option value="presentation">Presentation</option>
-                  <option value="prototype">Prototype</option>
-                  <option value="digital_report">Digital Report</option>
-                  <option value="video">Video</option>
+                  <option value="poster">{t('projectBasedLearningPlanner.poster')}</option>
+                  <option value="presentation">{t('projectBasedLearningPlanner.presentation')}</option>
+                  <option value="prototype">{t('projectBasedLearningPlanner.prototype')}</option>
+                  <option value="digital_report">{t('projectBasedLearningPlanner.digitalReport')}</option>
+                  <option value="video">{t('projectBasedLearningPlanner.video')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Learning Objectives
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('projectBasedLearningPlanner.learningObjectives')}</label>
                 <div className="flex gap-2 mb-2">
                   <input
                     type="text"
@@ -548,7 +538,7 @@ const ProjectBasedLearningPlanner = () => {
                       }
                     }}
                     className="input-field flex-1"
-                    placeholder="Enter learning objective"
+                    placeholder={t('projectBasedLearningPlanner.enterLearningObjective')}
                   />
                   <button
                     type="button"
@@ -584,9 +574,7 @@ const ProjectBasedLearningPlanner = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Assessment Focus
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('projectBasedLearningPlanner.assessmentFocus')}</label>
                 <div className="flex gap-2 mb-2">
                   <input
                     type="text"
@@ -643,25 +631,23 @@ const ProjectBasedLearningPlanner = () => {
                   onChange={(e) => handleInputChange('differentiation_needed', e.target.checked)}
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />
-                <label htmlFor="differentiation" className="ml-2 text-sm text-gray-700">
-                  Include differentiation pathways
-                </label>
+                <label htmlFor="differentiation" className="ml-2 text-sm text-gray-700">{t('projectBasedLearningPlanner.includeDifferentiationPathways')}</label>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('projectBasedLearningPlanner.language')}</label>
                 <input
                   type="text"
                   value={inputs.language}
                   onChange={(e) => handleInputChange('language', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., en-GB"
+                  placeholder={t('projectBasedLearningPlanner.eGEnGb')}
                 />
                 <p className="mt-1 text-xs text-gray-500">BCP47 format (e.g., en-GB, fr-FR).</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Output Format</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('projectBasedLearningPlanner.outputFormat')}</label>
                 <select
                   value={inputs.output_format}
                   onChange={(e) =>
@@ -673,9 +659,9 @@ const ProjectBasedLearningPlanner = () => {
                   className="input-field"
                 >
                   <option value="">Select output format (optional)</option>
-                  <option value="teacher_friendly_text">Teacher Friendly Text</option>
-                  <option value="markdown">Markdown</option>
-                  <option value="structured_json">Structured JSON</option>
+                  <option value="teacher_friendly_text">{t('projectBasedLearningPlanner.teacherFriendlyText')}</option>
+                  <option value="markdown">{t('projectBasedLearningPlanner.markdown')}</option>
+                  <option value="structured_json">{t('projectBasedLearningPlanner.structuredJson')}</option>
                 </select>
               </div>
 
@@ -687,12 +673,12 @@ const ProjectBasedLearningPlanner = () => {
                 {isGenerating ? (
                   <>
                     <RefreshCw className="w-5 h-5 animate-spin" />
-                    <span>Generating...</span>
+                    <span>{t('projectBasedLearningPlanner.generating')}</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-5 h-5" />
-                    <span>Generate PBL Plan</span>
+                    <span>{t('projectBasedLearningPlanner.generatePblPlan')}</span>
                   </>
                 )}
               </button>
@@ -704,18 +690,18 @@ const ProjectBasedLearningPlanner = () => {
           {output ? (
             <div className="card">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Generated PBL Plan</h2>
+                <h2 className="text-lg font-semibold text-gray-900">{t('projectBasedLearningPlanner.generatedPblPlan')}</h2>
                 <div className="flex gap-2">
                   <button className="btn-secondary flex items-center space-x-2">
                     <Download className="w-4 h-4" />
-                    <span>Download</span>
+                    <span>{t('projectBasedLearningPlanner.download')}</span>
                   </button>
                   <button
                     onClick={() => setOutput(null)}
                     className="btn-secondary flex items-center space-x-2"
                   >
                     <RefreshCw className="w-4 h-4" />
-                    <span>Reset</span>
+                    <span>{t('projectBasedLearningPlanner.reset')}</span>
                   </button>
                 </div>
               </div>
@@ -725,33 +711,33 @@ const ProjectBasedLearningPlanner = () => {
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">{output.title}</h3>
                   <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                     <span>
-                      <strong>Grade:</strong> {output.grade}
+                      <strong>{t('projectBasedLearningPlanner.grade')}</strong> {output.grade}
                     </span>
                     <span>
-                      <strong>Subject:</strong> {output.subject}
+                      <strong>{t('projectBasedLearningPlanner.subject')}</strong> {output.subject}
                     </span>
                     <span>
-                      <strong>Duration:</strong> {output.duration}
+                      <strong>{t('projectBasedLearningPlanner.duration')}</strong> {output.duration}
                     </span>
                   </div>
                   <p className="mt-2 text-sm text-gray-700">
-                    <strong>Driving Question:</strong> {output.driving_question}
+                    <strong>{t('projectBasedLearningPlanner.drivingQuestion')}</strong> {output.driving_question}
                   </p>
                   <p className="mt-3 text-gray-700 text-sm">{output.summary}</p>
                   {output.project_format && (
                     <p className="mt-2 text-sm text-gray-600">
-                      <strong>Final Format:</strong> {output.project_format}
+                      <strong>{t('projectBasedLearningPlanner.finalFormat')}</strong> {output.project_format}
                     </p>
                   )}
                   {output.real_world_context && (
                     <p className="mt-2 text-sm text-gray-600">
-                      <strong>Real-World Connection:</strong> {output.real_world_context}
+                      <strong>{t('projectBasedLearningPlanner.realWorldConnection')}</strong> {output.real_world_context}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Project Phases</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('projectBasedLearningPlanner.projectPhases')}</h4>
                   <div className="space-y-4">
                     {output.phases.map((phase, index) => (
                       <div key={index} className="bg-gray-50 rounded-lg p-4">
@@ -763,9 +749,7 @@ const ProjectBasedLearningPlanner = () => {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
                           <div>
-                            <h6 className="text-sm font-semibold text-gray-800 mb-1">
-                              Teacher Actions
-                            </h6>
+                            <h6 className="text-sm font-semibold text-gray-800 mb-1">{t('projectBasedLearningPlanner.teacherActions')}</h6>
                             <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                               {phase.teacher_actions.map((action, actionIndex) => (
                                 <li key={actionIndex}>{action}</li>
@@ -773,9 +757,7 @@ const ProjectBasedLearningPlanner = () => {
                             </ul>
                           </div>
                           <div>
-                            <h6 className="text-sm font-semibold text-gray-800 mb-1">
-                              Student Tasks
-                            </h6>
+                            <h6 className="text-sm font-semibold text-gray-800 mb-1">{t('projectBasedLearningPlanner.studentTasks')}</h6>
                             <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                               {phase.student_tasks.map((task, taskIndex) => (
                                 <li key={taskIndex}>{task}</li>
@@ -789,10 +771,10 @@ const ProjectBasedLearningPlanner = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Resources</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('projectBasedLearningPlanner.resources')}</h4>
                   <div className="space-y-3 text-sm text-gray-700">
                     <div>
-                      <h5 className="font-medium text-gray-800 mb-1">Required</h5>
+                      <h5 className="font-medium text-gray-800 mb-1">{t('projectBasedLearningPlanner.required')}</h5>
                       <ul className="list-disc list-inside space-y-1">
                         {output.resources.required.map((item, index) => (
                           <li key={index}>{item}</li>
@@ -800,7 +782,7 @@ const ProjectBasedLearningPlanner = () => {
                       </ul>
                     </div>
                     <div>
-                      <h5 className="font-medium text-gray-800 mb-1">Suggested</h5>
+                      <h5 className="font-medium text-gray-800 mb-1">{t('projectBasedLearningPlanner.suggested')}</h5>
                       <ul className="list-disc list-inside space-y-1">
                         {output.resources.suggested.map((item, index) => (
                           <li key={index}>{item}</li>
@@ -811,10 +793,10 @@ const ProjectBasedLearningPlanner = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Assessment Plan</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('projectBasedLearningPlanner.assessmentPlan')}</h4>
                   <div className="space-y-3 text-sm text-gray-700">
                     <div>
-                      <h5 className="font-medium text-gray-800 mb-1">Checkpoints</h5>
+                      <h5 className="font-medium text-gray-800 mb-1">{t('projectBasedLearningPlanner.checkpoints')}</h5>
                       <ul className="list-disc list-inside space-y-1">
                         {output.assessment_plan.checkpoints.map((checkpoint, index) => (
                           <li key={index}>{checkpoint}</li>
@@ -822,11 +804,11 @@ const ProjectBasedLearningPlanner = () => {
                       </ul>
                     </div>
                     <p className="text-sm text-gray-700">
-                      <strong>Final Product:</strong> {output.assessment_plan.final_product}
+                      <strong>{t('projectBasedLearningPlanner.finalProduct')}</strong> {output.assessment_plan.final_product}
                     </p>
                     {output.assessment_plan.focus_areas && (
                       <p className="text-sm text-gray-700">
-                        <strong>Focus Areas:</strong> {output.assessment_plan.focus_areas.join(', ')}
+                        <strong>{t('projectBasedLearningPlanner.focusAreas')}</strong> {output.assessment_plan.focus_areas.join(', ')}
                       </p>
                     )}
                   </div>
@@ -834,10 +816,10 @@ const ProjectBasedLearningPlanner = () => {
 
                 {output.differentiation && (
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Differentiation</h4>
+                    <h4 className="font-semibold text-gray-900 mb-2">{t('projectBasedLearningPlanner.differentiation')}</h4>
                     <div className="space-y-3 text-sm text-gray-700">
                       <div>
-                        <h5 className="font-medium text-gray-800 mb-1">Support</h5>
+                        <h5 className="font-medium text-gray-800 mb-1">{t('projectBasedLearningPlanner.support')}</h5>
                         <ul className="list-disc list-inside space-y-1">
                           {output.differentiation.support.map((item, index) => (
                             <li key={index}>{item}</li>
@@ -845,7 +827,7 @@ const ProjectBasedLearningPlanner = () => {
                         </ul>
                       </div>
                       <div>
-                        <h5 className="font-medium text-gray-800 mb-1">Extension</h5>
+                        <h5 className="font-medium text-gray-800 mb-1">{t('projectBasedLearningPlanner.extension')}</h5>
                         <ul className="list-disc list-inside space-y-1">
                           {output.differentiation.extension.map((item, index) => (
                             <li key={index}>{item}</li>
@@ -857,7 +839,7 @@ const ProjectBasedLearningPlanner = () => {
                 )}
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Reflection Prompts</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('projectBasedLearningPlanner.reflectionPrompts')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.reflection_prompts.map((prompt, index) => (
                       <li key={index}>{prompt}</li>
@@ -870,12 +852,8 @@ const ProjectBasedLearningPlanner = () => {
             <div className="card">
               <div className="text-center py-12">
                 <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Your PBL plan will appear here
-                </h3>
-                <p className="text-gray-600">
-                  Complete the inputs and select "Generate PBL Plan" to preview the project overview.
-                </p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('projectBasedLearningPlanner.yourPblPlanWillAppearHere')}</h3>
+                <p className="text-gray-600">{t('projectBasedLearningPlanner.completeTheInputsAndSelectGeneratePblPlanToPreview')}</p>
               </div>
             </div>
           )}

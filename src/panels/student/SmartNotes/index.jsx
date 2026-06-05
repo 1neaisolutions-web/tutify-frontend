@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const STORAGE_KEY = 'tutify_student_notes_v1';
 
 const loadNotes = () => {
+  const { t } = useTranslation();
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     const parsed = raw ? JSON.parse(raw) : [];
@@ -21,8 +23,8 @@ const SmartNotes = () => {
     <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Notes</h1>
-          <p className="text-sm text-gray-600 dark:text-gray-300">Create notes and attach AI summaries later (demo).</p>
+          <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.notes.title')}</h1>
+          <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.notes.subtitle')}</p>
         </div>
         <button
           type="button"
@@ -35,9 +37,7 @@ const SmartNotes = () => {
 
       <div className="px-6 py-6 max-w-4xl">
         {notes.length === 0 ? (
-          <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-6 text-sm text-gray-700 dark:text-gray-200">
-            No notes yet. Create one to get started.
-          </div>
+          <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-6 text-sm text-gray-700 dark:text-gray-200">{t('studentPanel.notes.empty')}</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {notes

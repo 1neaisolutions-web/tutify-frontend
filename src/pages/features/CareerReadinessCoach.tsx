@@ -54,11 +54,13 @@ import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
 
+import { useTranslation } from 'react-i18next'
 const CAREER_COACH_SLUG = 'career-readiness-coach'
 
 type TabType = 'resume' | 'interview' | 'skills' | 'industry' | 'pathway' | 'linkedin' | 'assessment' | 'standards'
 
 const CareerReadinessCoach = () => {
+  const { t } = useTranslation()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const [activeTab, setActiveTab] = useState<TabType>('resume')
   const [gradeLevel, setGradeLevel] = useState('9-12')
@@ -328,14 +330,14 @@ const CareerReadinessCoach = () => {
   }
 
   const tabs = [
-    { id: 'resume' as TabType, label: 'Resume Builder', icon: FileText },
-    { id: 'interview' as TabType, label: 'Interview Prep', icon: MessageSquare },
-    { id: 'skills' as TabType, label: 'Professional Skills', icon: Target },
-    { id: 'industry' as TabType, label: 'Industry Insights', icon: TrendingUp },
-    { id: 'pathway' as TabType, label: 'Career Pathways', icon: Award },
-    { id: 'linkedin' as TabType, label: 'LinkedIn Guide', icon: Linkedin },
-    { id: 'assessment' as TabType, label: 'Skills Assessment', icon: BarChart3 },
-    { id: 'standards' as TabType, label: 'Standards Alignment', icon: CheckCircle },
+    { id: 'resume' as TabType, label: t('careerReadinessCoach.tabs.resume'), icon: FileText },
+    { id: 'interview' as TabType, label: t('careerReadinessCoach.tabs.interview'), icon: MessageSquare },
+    { id: 'skills' as TabType, label: t('careerReadinessCoach.tabs.skills'), icon: Target },
+    { id: 'industry' as TabType, label: t('careerReadinessCoach.tabs.industry'), icon: TrendingUp },
+    { id: 'pathway' as TabType, label: t('careerReadinessCoach.tabs.pathway'), icon: Award },
+    { id: 'linkedin' as TabType, label: t('careerReadinessCoach.tabs.linkedin'), icon: Linkedin },
+    { id: 'assessment' as TabType, label: t('careerReadinessCoach.tabs.assessment'), icon: BarChart3 },
+    { id: 'standards' as TabType, label: t('careerReadinessCoach.tabs.standards'), icon: CheckCircle },
   ]
   // Exclude last sub-chatbot from UI; data still from backend for rest
   const visibleTabs = tabs.slice(0, -1)
@@ -360,29 +362,23 @@ const CareerReadinessCoach = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-3xl font-bold">Career Readiness Coach</h1>
+                  <h1 className="text-3xl font-bold">{t('careerReadinessCoach.careerReadinessCoach')}</h1>
                   <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
                     <Star className="h-3 w-3" /> 4.9★
                   </span>
                   <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" /> Premium
-                  </span>
+                    <Lock className="inline h-3 w-3 mr-1" />{t('careerReadinessCoach.premium')}</span>
                   <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
-                    <Globe className="inline h-3 w-3 mr-1" /> International Standards
-                  </span>
+                    <Globe className="inline h-3 w-3 mr-1" />{t('careerReadinessCoach.internationalStandards')}</span>
                 </div>
-                <p className="mt-2 text-emerald-100">
-                  Comprehensive career readiness tools aligned with international standards (NACE, CIFR, ACT, OECD). 
-                  Help students build professional resumes, ace interviews, develop essential skills, and navigate 
-                  global career opportunities. Prepare students for success in the international job market.
-                </p>
+                <p className="mt-2 text-blue-100">{t('careerReadinessCoach.heroDescription')}</p>
               </div>
             </div>
             
             {/* Quick Settings */}
             <div className="flex flex-wrap gap-4 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Grade Level:</label>
+                <label className="text-sm font-medium">{t('careerReadinessCoach.gradeLevel')}</label>
                 <select
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
@@ -390,11 +386,11 @@ const CareerReadinessCoach = () => {
                 >
                   <option value="9-12">9-12</option>
                   <option value="11-12">11-12</option>
-                  <option value="College">College</option>
+                  <option value="College">{t('careerReadinessCoach.college')}</option>
                 </select>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Region:</label>
+                <label className="text-sm font-medium">{t('careerReadinessCoach.region')}</label>
                 <select
                   value={selectedRegion}
                   onChange={(e) => setSelectedRegion(e.target.value)}
@@ -406,7 +402,7 @@ const CareerReadinessCoach = () => {
                 </select>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Industry:</label>
+                <label className="text-sm font-medium">{t('careerReadinessCoach.industry')}</label>
                 <select
                   value={selectedIndustry}
                   onChange={(e) => setSelectedIndustry(e.target.value)}
@@ -418,16 +414,16 @@ const CareerReadinessCoach = () => {
                 </select>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Career Level:</label>
+                <label className="text-sm font-medium">{t('careerReadinessCoach.careerLevel')}</label>
                 <select
                   value={careerLevel}
                   onChange={(e) => setCareerLevel(e.target.value)}
                   className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
                 >
-                  <option>Entry</option>
-                  <option>Mid</option>
-                  <option>Senior</option>
-                  <option>Executive</option>
+                  <option>{t('careerReadinessCoach.entry')}</option>
+                  <option>{t('careerReadinessCoach.mid')}</option>
+                  <option>{t('careerReadinessCoach.senior')}</option>
+                  <option>{t('careerReadinessCoach.executive')}</option>
                 </select>
               </div>
             </div>
@@ -465,27 +461,20 @@ const CareerReadinessCoach = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <FileText className="h-6 w-6 text-blue-600" />
-                  International Resume/CV Builder
-                </h2>
-                <p className="text-gray-600 mb-4">
-                  Explore resume formats from different regions. Understand country-specific conventions, 
-                  ATS optimization, and best practices for global job applications.
-                </p>
+                  <FileText className="h-6 w-6 text-blue-600" />{t('careerReadinessCoach.internationalResumeCvBuilder')}</h2>
+                <p className="text-gray-600 mb-4">{t('careerReadinessCoach.exploreResumeFormatsFromDifferentRegionsUnderstandCount')}</p>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select Resume Format
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('careerReadinessCoach.selectResumeFormat')}</label>
                     <select
                       value={selectedResumeFormat}
                       onChange={(e) => setSelectedResumeFormat(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     >
-                      <option>US Resume</option>
-                      <option>UK CV</option>
+                      <option>{t('careerReadinessCoach.usResume')}</option>
+                      <option>{t('careerReadinessCoach.ukCv')}</option>
                       <option>EU CV (Europass)</option>
-                      <option>Asia-Pacific CV</option>
+                      <option>{t('careerReadinessCoach.asiaPacificCv')}</option>
                     </select>
                   </div>
                   <div className="flex items-end">
@@ -496,14 +485,10 @@ const CareerReadinessCoach = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Loading...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('careerReadinessCoach.loading')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Explore Format
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('careerReadinessCoach.exploreFormat')}</>
                       )}
                     </button>
                   </div>
@@ -523,9 +508,7 @@ const CareerReadinessCoach = () => {
                           {resumeFormat.length}
                         </span>
                         {resumeFormat.photo && (
-                          <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
-                            Photo Included
-                          </span>
+                          <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">{t('careerReadinessCoach.photoIncluded')}</span>
                         )}
                       </div>
                     </div>
@@ -536,12 +519,12 @@ const CareerReadinessCoach = () => {
 
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Description</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.description')}</h4>
                       <p className="text-gray-700">{resumeFormat.description}</p>
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Section Order</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.sectionOrder')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {resumeFormat.order.map((section, i) => (
                           <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -552,7 +535,7 @@ const CareerReadinessCoach = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Key Differences</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.keyDifferences')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {resumeFormat.keyDifferences.map((diff, i) => (
                           <li key={i}>{diff}</li>
@@ -561,7 +544,7 @@ const CareerReadinessCoach = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Personal Information Included</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.personalInformationIncluded')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {resumeFormat.personalInfo.map((info, i) => (
                           <span key={i} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
@@ -572,7 +555,7 @@ const CareerReadinessCoach = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Best For</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.bestFor')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {resumeFormat.bestFor.map((use, i) => (
                           <span key={i} className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
@@ -583,7 +566,7 @@ const CareerReadinessCoach = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Example Structure</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.exampleStructure')}</h4>
                       <div className="space-y-3">
                         {resumeFormat.exampleStructure.map((example, i) => (
                           <div key={i} className="bg-gray-50 p-4 rounded-lg">
@@ -600,15 +583,13 @@ const CareerReadinessCoach = () => {
 
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                       <h4 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
-                        <CheckCircle2 className="h-5 w-5" />
-                        ATS Optimization Tips
-                      </h4>
+                        <CheckCircle2 className="h-5 w-5" />{t('careerReadinessCoach.atsOptimizationTips')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-blue-800">
-                        <li>Use standard section headings</li>
-                        <li>Include relevant keywords from job descriptions</li>
-                        <li>Use simple, clean formatting</li>
-                        <li>Avoid graphics and complex layouts</li>
-                        <li>Save as PDF for best compatibility</li>
+                        <li>{t('careerReadinessCoach.useStandardSectionHeadings')}</li>
+                        <li>{t('careerReadinessCoach.includeRelevantKeywordsFromJobDescriptions')}</li>
+                        <li>{t('careerReadinessCoach.useSimpleCleanFormatting')}</li>
+                        <li>{t('careerReadinessCoach.avoidGraphicsAndComplexLayouts')}</li>
+                        <li>{t('careerReadinessCoach.saveAsPdfForBestCompatibility')}</li>
                       </ul>
                     </div>
                   </div>
@@ -622,18 +603,11 @@ const CareerReadinessCoach = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <MessageSquare className="h-6 w-6 text-purple-600" />
-                  Global Interview Preparation
-                </h2>
-                <p className="text-gray-600 mb-4">
-                  Prepare for interviews across different cultures and interview styles. Practice with 
-                  industry-specific questions and learn cultural nuances.
-                </p>
+                  <MessageSquare className="h-6 w-6 text-purple-600" />{t('careerReadinessCoach.globalInterviewPreparation')}</h2>
+                <p className="text-gray-600 mb-4">{t('careerReadinessCoach.prepareForInterviewsAcrossDifferentCulturesAndInterview')}</p>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Question Category
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('careerReadinessCoach.questionCategory')}</label>
                     <select
                       value={interviewCategory}
                       onChange={(e) => setInterviewCategory(e.target.value)}
@@ -652,14 +626,10 @@ const CareerReadinessCoach = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Loading...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('careerReadinessCoach.loading')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Get Questions
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('careerReadinessCoach.getQuestions')}</>
                       )}
                     </button>
                   </div>
@@ -713,7 +683,7 @@ const CareerReadinessCoach = () => {
 
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Cultural Context</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.culturalContext')}</h4>
                       <p className="text-gray-700">{selectedQuestion.culturalContext}</p>
                     </div>
 
@@ -731,7 +701,7 @@ const CareerReadinessCoach = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Common Mistakes</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.commonMistakes')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {selectedQuestion.commonMistakes.map((mistake, i) => (
                             <li key={i}>{mistake}</li>
@@ -739,7 +709,7 @@ const CareerReadinessCoach = () => {
                         </ul>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Tips</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.tips')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {selectedQuestion.tips.map((tip, i) => (
                             <li key={i}>{tip}</li>
@@ -758,9 +728,7 @@ const CareerReadinessCoach = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Target className="h-6 w-6 text-green-600" />
-                  NACE Career Readiness Competencies
-                </h2>
+                  <Target className="h-6 w-6 text-green-600" />{t('careerReadinessCoach.naceCareerReadinessCompetencies')}</h2>
                 <p className="text-gray-600 mb-4">
                   Explore the 8 core competencies identified by NACE (National Association of Colleges and Employers). 
                   These competencies bridge education and workforce readiness.
@@ -772,14 +740,10 @@ const CareerReadinessCoach = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('careerReadinessCoach.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load Competencies
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('careerReadinessCoach.loadCompetencies')}</>
                   )}
                 </button>
               </div>
@@ -805,7 +769,7 @@ const CareerReadinessCoach = () => {
                       {selectedCompetency === competency.id && (
                         <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-3">Proficiency Levels</h4>
+                            <h4 className="font-semibold text-gray-900 mb-3">{t('careerReadinessCoach.proficiencyLevels')}</h4>
                             <div className="space-y-3">
                               {competency.proficiencyLevels.map((level, i) => (
                                 <div key={i} className="bg-gray-50 p-3 rounded-lg">
@@ -830,7 +794,7 @@ const CareerReadinessCoach = () => {
 
                           <div className="grid md:grid-cols-2 gap-4">
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Development Activities</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.developmentActivities')}</h4>
                               <ul className="list-disc list-inside space-y-1 text-gray-700">
                                 {competency.developmentActivities.map((activity, i) => (
                                   <li key={i}>{activity}</li>
@@ -838,7 +802,7 @@ const CareerReadinessCoach = () => {
                               </ul>
                             </div>
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Evidence Examples</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.evidenceExamples')}</h4>
                               <ul className="list-disc list-inside space-y-1 text-gray-700">
                                 {competency.evidenceExamples.map((evidence, i) => (
                                   <li key={i}>{evidence}</li>
@@ -848,7 +812,7 @@ const CareerReadinessCoach = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Assessment Criteria</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.assessmentCriteria')}</h4>
                             <div className="flex flex-wrap gap-2">
                               {competency.assessmentCriteria.map((criteria, i) => (
                                 <span key={i} className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
@@ -871,14 +835,10 @@ const CareerReadinessCoach = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-6 border border-amber-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <TrendingUp className="h-6 w-6 text-amber-600" />
-                  Industry Insights & Market Intelligence
-                </h2>
+                  <TrendingUp className="h-6 w-6 text-amber-600" />{t('careerReadinessCoach.industryInsightsMarketIntelligence')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select Industry
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('careerReadinessCoach.selectIndustry')}</label>
                     <select
                       value={selectedIndustry}
                       onChange={(e) => setSelectedIndustry(e.target.value)}
@@ -897,14 +857,10 @@ const CareerReadinessCoach = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Loading...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('careerReadinessCoach.loading')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Get Insights
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('careerReadinessCoach.getInsights')}</>
                       )}
                     </button>
                   </div>
@@ -934,7 +890,7 @@ const CareerReadinessCoach = () => {
 
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Global Opportunities</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.globalOpportunities')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {industryInsight.globalOpportunities.map((opp, i) => (
                           <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -946,7 +902,7 @@ const CareerReadinessCoach = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Required Skills</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.requiredSkills')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {industryInsight.requiredSkills.map((skill, i) => (
                             <li key={i}>{skill}</li>
@@ -954,7 +910,7 @@ const CareerReadinessCoach = () => {
                         </ul>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Certifications</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.certifications')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {industryInsight.certifications.map((cert, i) => (
                             <li key={i}>{cert}</li>
@@ -964,28 +920,28 @@ const CareerReadinessCoach = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Salary Ranges</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.salaryRanges')}</h4>
                       <div className="grid md:grid-cols-3 gap-4">
                         <div className="bg-gray-50 p-3 rounded-lg">
-                          <div className="text-sm text-gray-600">Entry Level</div>
+                          <div className="text-sm text-gray-600">{t('careerReadinessCoach.entryLevel')}</div>
                           <div className="font-bold text-gray-900">{industryInsight.salaryRange.entry}</div>
                         </div>
                         <div className="bg-gray-50 p-3 rounded-lg">
-                          <div className="text-sm text-gray-600">Mid-Level</div>
+                          <div className="text-sm text-gray-600">{t('careerReadinessCoach.midLevel')}</div>
                           <div className="font-bold text-gray-900">{industryInsight.salaryRange.mid}</div>
                         </div>
                         <div className="bg-gray-50 p-3 rounded-lg">
-                          <div className="text-sm text-gray-600">Senior</div>
+                          <div className="text-sm text-gray-600">{t('careerReadinessCoach.senior')}</div>
                           <div className="font-bold text-gray-900">{industryInsight.salaryRange.senior}</div>
                         </div>
                       </div>
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Career Pathways</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.careerPathways')}</h4>
                       <div className="grid md:grid-cols-3 gap-4">
                         <div>
-                          <h5 className="font-medium text-gray-900 mb-2">Entry</h5>
+                          <h5 className="font-medium text-gray-900 mb-2">{t('careerReadinessCoach.entry')}</h5>
                           <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                             {industryInsight.careerPathways.entry.map((role, i) => (
                               <li key={i}>{role}</li>
@@ -993,7 +949,7 @@ const CareerReadinessCoach = () => {
                           </ul>
                         </div>
                         <div>
-                          <h5 className="font-medium text-gray-900 mb-2">Progression</h5>
+                          <h5 className="font-medium text-gray-900 mb-2">{t('careerReadinessCoach.progression')}</h5>
                           <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                             {industryInsight.careerPathways.progression.map((role, i) => (
                               <li key={i}>{role}</li>
@@ -1001,7 +957,7 @@ const CareerReadinessCoach = () => {
                           </ul>
                         </div>
                         <div>
-                          <h5 className="font-medium text-gray-900 mb-2">Senior</h5>
+                          <h5 className="font-medium text-gray-900 mb-2">{t('careerReadinessCoach.senior')}</h5>
                           <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                             {industryInsight.careerPathways.senior.map((role, i) => (
                               <li key={i}>{role}</li>
@@ -1012,7 +968,7 @@ const CareerReadinessCoach = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Geographic Hotspots</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.geographicHotspots')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {industryInsight.geographicHotspots.map((location, i) => (
                           <span key={i} className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium flex items-center gap-1">
@@ -1024,7 +980,7 @@ const CareerReadinessCoach = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Future Outlook</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.futureOutlook')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {industryInsight.futureOutlook.map((outlook, i) => (
                           <li key={i}>{outlook}</li>
@@ -1042,19 +998,15 @@ const CareerReadinessCoach = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 border border-indigo-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Award className="h-6 w-6 text-indigo-600" />
-                  Career Pathway Planning
-                </h2>
+                  <Award className="h-6 w-6 text-indigo-600" />{t('careerReadinessCoach.careerPathwayPlanning')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Target Career
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('careerReadinessCoach.targetCareer')}</label>
                     <input
                       type="text"
                       value={targetCareer}
                       onChange={(e) => setTargetCareer(e.target.value)}
-                      placeholder="e.g., Software Engineer"
+                      placeholder={t('careerReadinessCoach.eGSoftwareEngineer')}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
                     />
                   </div>
@@ -1066,14 +1018,10 @@ const CareerReadinessCoach = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Generating...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('careerReadinessCoach.generating')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Generate Pathway
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('careerReadinessCoach.generatePathway')}</>
                       )}
                     </button>
                   </div>
@@ -1086,10 +1034,10 @@ const CareerReadinessCoach = () => {
                   
                   <div className="space-y-6">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Entry Level Requirements</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">{t('careerReadinessCoach.entryLevelRequirements')}</h4>
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
-                          <h5 className="font-medium text-gray-900 mb-2">Education</h5>
+                          <h5 className="font-medium text-gray-900 mb-2">{t('careerReadinessCoach.education')}</h5>
                           <ul className="list-disc list-inside space-y-1 text-gray-700">
                             {careerPathway.entryLevel.education.map((edu, i) => (
                               <li key={i}>{edu}</li>
@@ -1097,7 +1045,7 @@ const CareerReadinessCoach = () => {
                           </ul>
                         </div>
                         <div>
-                          <h5 className="font-medium text-gray-900 mb-2">Skills</h5>
+                          <h5 className="font-medium text-gray-900 mb-2">{t('careerReadinessCoach.skills')}</h5>
                           <div className="flex flex-wrap gap-2">
                             {careerPathway.entryLevel.skills.map((skill, i) => (
                               <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -1110,7 +1058,7 @@ const CareerReadinessCoach = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Career Progression</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">{t('careerReadinessCoach.careerProgression')}</h4>
                       <div className="space-y-4">
                         {careerPathway.progression.map((level, idx) => (
                           <div key={idx} className="border-l-4 border-indigo-500 pl-4">
@@ -1122,7 +1070,7 @@ const CareerReadinessCoach = () => {
                             </div>
                             <div className="grid md:grid-cols-2 gap-4">
                               <div>
-                                <h6 className="font-medium text-gray-900 mb-1 text-sm">Skills</h6>
+                                <h6 className="font-medium text-gray-900 mb-1 text-sm">{t('careerReadinessCoach.skills')}</h6>
                                 <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                                   {level.skills.map((skill, i) => (
                                     <li key={i}>{skill}</li>
@@ -1130,7 +1078,7 @@ const CareerReadinessCoach = () => {
                                 </ul>
                               </div>
                               <div>
-                                <h6 className="font-medium text-gray-900 mb-1 text-sm">Responsibilities</h6>
+                                <h6 className="font-medium text-gray-900 mb-1 text-sm">{t('careerReadinessCoach.responsibilities')}</h6>
                                 <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                                   {level.responsibilities.map((resp, i) => (
                                     <li key={i}>{resp}</li>
@@ -1144,10 +1092,10 @@ const CareerReadinessCoach = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Senior Level</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.seniorLevel')}</h4>
                       <div className="bg-gray-50 p-4 rounded-lg">
                         <div className="mb-2">
-                          <h5 className="font-medium text-gray-900 mb-1">Roles</h5>
+                          <h5 className="font-medium text-gray-900 mb-1">{t('careerReadinessCoach.roles')}</h5>
                           <div className="flex flex-wrap gap-2">
                             {careerPathway.seniorLevel.roles.map((role, i) => (
                               <span key={i} className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
@@ -1157,7 +1105,7 @@ const CareerReadinessCoach = () => {
                           </div>
                         </div>
                         <div className="mb-2">
-                          <h5 className="font-medium text-gray-900 mb-1">Requirements</h5>
+                          <h5 className="font-medium text-gray-900 mb-1">{t('careerReadinessCoach.requirements')}</h5>
                           <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                             {careerPathway.seniorLevel.requirements.map((req, i) => (
                               <li key={i}>{req}</li>
@@ -1165,7 +1113,7 @@ const CareerReadinessCoach = () => {
                           </ul>
                         </div>
                         <div>
-                          <h5 className="font-medium text-gray-900 mb-1">Compensation</h5>
+                          <h5 className="font-medium text-gray-900 mb-1">{t('careerReadinessCoach.compensation')}</h5>
                           <p className="text-gray-700 font-semibold">{careerPathway.seniorLevel.compensation}</p>
                         </div>
                       </div>
@@ -1173,7 +1121,7 @@ const CareerReadinessCoach = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Alternative Paths</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.alternativePaths')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {careerPathway.alternativePaths.map((path, i) => (
                             <li key={i}>{path}</li>
@@ -1181,7 +1129,7 @@ const CareerReadinessCoach = () => {
                         </ul>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">International Opportunities</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.internationalOpportunities')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {careerPathway.internationalOpportunities.map((opp, i) => (
                             <li key={i}>{opp}</li>
@@ -1200,13 +1148,8 @@ const CareerReadinessCoach = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Linkedin className="h-6 w-6 text-blue-600" />
-                  LinkedIn & Professional Networking
-                </h2>
-                <p className="text-gray-600 mb-4">
-                  Optimize your LinkedIn profile for global opportunities. Build professional networks, 
-                  create compelling content, and leverage LinkedIn for career advancement.
-                </p>
+                  <Linkedin className="h-6 w-6 text-blue-600" />{t('careerReadinessCoach.linkedinProfessionalNetworking')}</h2>
+                <p className="text-gray-600 mb-4">{t('careerReadinessCoach.optimizeYourLinkedinProfileForGlobalOpportunitiesBuildP')}</p>
                 <button
                   onClick={handleGetLinkedInGuide}
                   disabled={isGenerating}
@@ -1214,14 +1157,10 @@ const CareerReadinessCoach = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('careerReadinessCoach.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load Guide
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('careerReadinessCoach.loadGuide')}</>
                   )}
                 </button>
               </div>
@@ -1245,7 +1184,7 @@ const CareerReadinessCoach = () => {
 
                       <div className="space-y-3">
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Best Practices</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.bestPractices')}</h4>
                           <ul className="list-disc list-inside space-y-1 text-gray-700">
                             {section.bestPractices.map((practice, i) => (
                               <li key={i}>{practice}</li>
@@ -1255,7 +1194,7 @@ const CareerReadinessCoach = () => {
 
                         {section.examples.length > 0 && (
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Examples</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.examples')}</h4>
                             <div className="space-y-2">
                               {section.examples.map((example, i) => (
                                 <div key={i} className="bg-gray-50 p-3 rounded-lg">
@@ -1271,7 +1210,7 @@ const CareerReadinessCoach = () => {
 
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                      <h3 className="text-xl font-bold text-gray-900 mb-3">Keyword Strategy</h3>
+                      <h3 className="text-xl font-bold text-gray-900 mb-3">{t('careerReadinessCoach.keywordStrategy')}</h3>
                       <div className="flex flex-wrap gap-2">
                         {linkedInGuide.keywordStrategy.map((keyword, i) => (
                           <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -1282,7 +1221,7 @@ const CareerReadinessCoach = () => {
                     </div>
 
                     <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                      <h3 className="text-xl font-bold text-gray-900 mb-3">Networking Tips</h3>
+                      <h3 className="text-xl font-bold text-gray-900 mb-3">{t('careerReadinessCoach.networkingTips')}</h3>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {linkedInGuide.networkingTips.map((tip, i) => (
                           <li key={i}>{tip}</li>
@@ -1292,7 +1231,7 @@ const CareerReadinessCoach = () => {
                   </div>
 
                   <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">Content Strategy</h3>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3">{t('careerReadinessCoach.contentStrategy')}</h3>
                     <ul className="list-disc list-inside space-y-1 text-gray-700">
                       {linkedInGuide.contentStrategy.map((strategy, i) => (
                         <li key={i}>{strategy}</li>
@@ -1302,9 +1241,7 @@ const CareerReadinessCoach = () => {
 
                   <div className="bg-red-50 border border-red-200 rounded-xl p-6">
                     <h3 className="text-xl font-bold text-red-900 mb-3 flex items-center gap-2">
-                      <AlertCircle className="h-5 w-5" />
-                      Common Mistakes to Avoid
-                    </h3>
+                      <AlertCircle className="h-5 w-5" />{t('careerReadinessCoach.commonMistakesToAvoid')}</h3>
                     <ul className="list-disc list-inside space-y-1 text-red-800">
                       {linkedInGuide.commonMistakes.map((mistake, i) => (
                         <li key={i}>{mistake}</li>
@@ -1321,60 +1258,52 @@ const CareerReadinessCoach = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-xl p-6 border border-teal-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <BarChart3 className="h-6 w-6 text-teal-600" />
-                  Skills Assessment & Gap Analysis
-                </h2>
+                  <BarChart3 className="h-6 w-6 text-teal-600" />{t('careerReadinessCoach.skillsAssessmentGapAnalysis')}</h2>
                 <div className="grid md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Competency
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('careerReadinessCoach.competency')}</label>
                     <select
                       value={assessmentCompetency}
                       onChange={(e) => setAssessmentCompetency(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500"
                     >
-                      <option>Critical Thinking/Problem Solving</option>
-                      <option>Oral/Written Communications</option>
-                      <option>Teamwork/Collaboration</option>
-                      <option>Digital Technology</option>
-                      <option>Leadership</option>
-                      <option>Professionalism/Work Ethic</option>
-                      <option>Career Management</option>
-                      <option>Global/Intercultural Fluency</option>
+                      <option>{t('careerReadinessCoach.criticalThinkingProblemSolving')}</option>
+                      <option>{t('careerReadinessCoach.oralWrittenCommunications')}</option>
+                      <option>{t('careerReadinessCoach.teamworkCollaboration')}</option>
+                      <option>{t('careerReadinessCoach.digitalTechnology')}</option>
+                      <option>{t('careerReadinessCoach.leadership')}</option>
+                      <option>{t('careerReadinessCoach.professionalismWorkEthic')}</option>
+                      <option>{t('careerReadinessCoach.careerManagement')}</option>
+                      <option>{t('careerReadinessCoach.globalInterculturalFluency')}</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Current Level
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('careerReadinessCoach.currentLevel')}</label>
                     <select
                       value={currentLevel}
                       onChange={(e) => setCurrentLevel(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500"
                     >
-                      <option value="A1">A1 - Basic</option>
-                      <option value="A2">A2 - Elementary</option>
-                      <option value="B1">B1 - Intermediate</option>
-                      <option value="B2">B2 - Proficient</option>
-                      <option value="C1">C1 - Advanced</option>
-                      <option value="C2">C2 - Outstanding</option>
+                      <option value="A1">{t('careerReadinessCoach.a1Basic')}</option>
+                      <option value="A2">{t('careerReadinessCoach.a2Elementary')}</option>
+                      <option value="B1">{t('careerReadinessCoach.b1Intermediate')}</option>
+                      <option value="B2">{t('careerReadinessCoach.b2Proficient')}</option>
+                      <option value="C1">{t('careerReadinessCoach.c1Advanced')}</option>
+                      <option value="C2">{t('careerReadinessCoach.c2Outstanding')}</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Target Level
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('careerReadinessCoach.targetLevel')}</label>
                     <select
                       value={targetLevel}
                       onChange={(e) => setTargetLevel(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500"
                     >
-                      <option value="A2">A2 - Elementary</option>
-                      <option value="B1">B1 - Intermediate</option>
-                      <option value="B2">B2 - Proficient</option>
-                      <option value="C1">C1 - Advanced</option>
-                      <option value="C2">C2 - Outstanding</option>
+                      <option value="A2">{t('careerReadinessCoach.a2Elementary')}</option>
+                      <option value="B1">{t('careerReadinessCoach.b1Intermediate')}</option>
+                      <option value="B2">{t('careerReadinessCoach.b2Proficient')}</option>
+                      <option value="C1">{t('careerReadinessCoach.c1Advanced')}</option>
+                      <option value="C2">{t('careerReadinessCoach.c2Outstanding')}</option>
                     </select>
                   </div>
                 </div>
@@ -1385,14 +1314,10 @@ const CareerReadinessCoach = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Generating...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('careerReadinessCoach.generating')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Generate Assessment
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('careerReadinessCoach.generateAssessment')}</>
                   )}
                 </button>
               </div>
@@ -1404,17 +1329,17 @@ const CareerReadinessCoach = () => {
                   <div className="space-y-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="bg-gray-50 p-4 rounded-lg">
-                        <div className="text-sm text-gray-600">Current Level</div>
+                        <div className="text-sm text-gray-600">{t('careerReadinessCoach.currentLevel')}</div>
                         <div className="text-2xl font-bold text-gray-900">{skillsAssessment.currentLevel}</div>
                       </div>
                       <div className="bg-blue-50 p-4 rounded-lg">
-                        <div className="text-sm text-blue-600">Target Level</div>
+                        <div className="text-sm text-blue-600">{t('careerReadinessCoach.targetLevel')}</div>
                         <div className="text-2xl font-bold text-blue-900">{skillsAssessment.targetLevel}</div>
                       </div>
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Gap Analysis</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.gapAnalysis')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {skillsAssessment.gapAnalysis.map((gap, i) => (
                           <li key={i}>{gap}</li>
@@ -1423,7 +1348,7 @@ const CareerReadinessCoach = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Development Plan</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">{t('careerReadinessCoach.developmentPlan')}</h4>
                       <div className="space-y-3">
                         {skillsAssessment.developmentPlan.map((plan, idx) => (
                           <div key={idx} className="border-l-4 border-teal-500 pl-4">
@@ -1434,7 +1359,7 @@ const CareerReadinessCoach = () => {
                               </span>
                             </div>
                             <div>
-                              <span className="text-sm font-medium text-gray-700">Resources:</span>
+                              <span className="text-sm font-medium text-gray-700">{t('careerReadinessCoach.resources')}</span>
                               <div className="flex flex-wrap gap-2 mt-1">
                                 {plan.resources.map((resource, i) => (
                                   <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -1449,7 +1374,7 @@ const CareerReadinessCoach = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Evidence Needed</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.evidenceNeeded')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {skillsAssessment.evidenceNeeded.map((evidence, i) => (
                           <li key={i}>{evidence}</li>
@@ -1467,25 +1392,15 @@ const CareerReadinessCoach = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-violet-50 to-purple-50 rounded-xl p-6 border border-violet-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <CheckCircle className="h-6 w-6 text-violet-600" />
-                  International Standards Alignment
-                </h2>
-                <p className="text-gray-600">
-                  This Career Readiness Coach aligns with major international standards and frameworks 
-                  for career readiness and workforce preparation.
-                </p>
+                  <CheckCircle className="h-6 w-6 text-violet-600" />{t('careerReadinessCoach.internationalStandardsAlignment')}</h2>
+                <p className="text-gray-600">{t('careerReadinessCoach.thisCareerReadinessCoachAlignsWithMajorInternationalSta')}</p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Award className="h-5 w-5 text-violet-600" />
-                    NACE Career Readiness Competencies
-                  </h3>
-                  <p className="text-gray-700 mb-3">
-                    Full alignment with all 8 core competencies identified by the National Association 
-                    of Colleges and Employers.
-                  </p>
+                    <Award className="h-5 w-5 text-violet-600" />{t('careerReadinessCoach.naceCareerReadinessCompetencies')}</h3>
+                  <p className="text-gray-700 mb-3">{t('careerReadinessCoach.fullAlignmentWithAll8CoreCompetenciesIdentifiedByThe')}</p>
                   <div className="space-y-2">
                     {[
                       'Critical Thinking/Problem Solving',
@@ -1507,9 +1422,7 @@ const CareerReadinessCoach = () => {
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Globe className="h-5 w-5 text-violet-600" />
-                    CIFR Framework
-                  </h3>
+                    <Globe className="h-5 w-5 text-violet-600" />{t('careerReadinessCoach.cifrFramework')}</h3>
                   <p className="text-gray-700 mb-3">
                     Proficiency level assessment aligned with Common International Framework of Reference 
                     for Future Readiness (A1-C2 scale).
@@ -1533,12 +1446,8 @@ const CareerReadinessCoach = () => {
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <GraduationCap className="h-5 w-5 text-violet-600" />
-                    ACT College & Career Readiness Standards
-                  </h3>
-                  <p className="text-gray-700 mb-3">
-                    Alignment with ACT standards describing essential skills for college and career readiness.
-                  </p>
+                    <GraduationCap className="h-5 w-5 text-violet-600" />{t('careerReadinessCoach.actCollegeCareerReadinessStandards')}</h3>
+                  <p className="text-gray-700 mb-3">{t('careerReadinessCoach.alignmentWithActStandardsDescribingEssentialSkillsForCo')}</p>
                   <div className="space-y-2">
                     {[
                       'English Language Arts',
@@ -1558,12 +1467,8 @@ const CareerReadinessCoach = () => {
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-violet-600" />
-                    OECD Career Readiness Guidelines
-                  </h3>
-                  <p className="text-gray-700 mb-3">
-                    Integration of OECD best practices for preparing young people for evolving labor markets.
-                  </p>
+                    <TrendingUp className="h-5 w-5 text-violet-600" />{t('careerReadinessCoach.oecdCareerReadinessGuidelines')}</h3>
+                  <p className="text-gray-700 mb-3">{t('careerReadinessCoach.integrationOfOecdBestPracticesForPreparingYoungPeopleFo')}</p>
                   <div className="space-y-2">
                     {[
                       'Career exploration activities',
@@ -1586,30 +1491,30 @@ const CareerReadinessCoach = () => {
                 <h3 className="text-xl font-bold text-gray-900 mb-3">21st Century Skills (P21 Framework)</h3>
                 <div className="grid md:grid-cols-3 gap-4">
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Learning & Innovation</h4>
+                    <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.learningInnovation')}</h4>
                     <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-                      <li>Critical Thinking</li>
-                      <li>Creativity</li>
-                      <li>Communication</li>
-                      <li>Collaboration</li>
+                      <li>{t('careerReadinessCoach.criticalThinking')}</li>
+                      <li>{t('careerReadinessCoach.creativity')}</li>
+                      <li>{t('careerReadinessCoach.communication')}</li>
+                      <li>{t('careerReadinessCoach.collaboration')}</li>
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Information & Media</h4>
+                    <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.informationMedia')}</h4>
                     <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-                      <li>Information Literacy</li>
-                      <li>Media Literacy</li>
-                      <li>ICT Literacy</li>
+                      <li>{t('careerReadinessCoach.informationLiteracy')}</li>
+                      <li>{t('careerReadinessCoach.mediaLiteracy')}</li>
+                      <li>{t('careerReadinessCoach.ictLiteracy')}</li>
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Life & Career</h4>
+                    <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.lifeCareer')}</h4>
                     <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-                      <li>Flexibility & Adaptability</li>
-                      <li>Initiative & Self-Direction</li>
-                      <li>Social & Cross-Cultural</li>
-                      <li>Productivity & Accountability</li>
-                      <li>Leadership & Responsibility</li>
+                      <li>{t('careerReadinessCoach.flexibilityAdaptability')}</li>
+                      <li>{t('careerReadinessCoach.initiativeSelfDirection')}</li>
+                      <li>{t('careerReadinessCoach.socialCrossCultural')}</li>
+                      <li>{t('careerReadinessCoach.productivityAccountability')}</li>
+                      <li>{t('careerReadinessCoach.leadershipResponsibility')}</li>
                     </ul>
                   </div>
                 </div>

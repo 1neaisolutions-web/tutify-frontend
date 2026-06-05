@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { sendCopilotMessage } from '../api/aiApi';
 
 const QuizResults = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const [explaining, setExplaining] = useState(false);
@@ -32,7 +34,7 @@ const QuizResults = () => {
         () => setExplaining(false)
       );
     } catch (e) {
-      setExplainText(`Failed to explain mistakes. ${e?.message || ''}`.trim());
+      setExplainText(t('studentPanel.quiz.results.review.failed', { message: e?.message || '' }).trim());
       setExplaining(false);
     }
   };
@@ -41,16 +43,14 @@ const QuizResults = () => {
     <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Quiz Results</h1>
-          <p className="text-sm text-gray-600 dark:text-gray-300">Demo scoring + AI review.</p>
+          <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.quiz.results.title')}</h1>
+          <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.quiz.results.subtitle')}</p>
         </div>
         <button
           type="button"
           onClick={() => navigate('/student/quizzes')}
           className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900"
-        >
-          Back
-        </button>
+        >{t('studentPanel.common.back')}</button>
       </div>
 
       <div className="px-6 py-6 max-w-3xl space-y-4">
@@ -60,17 +60,17 @@ const QuizResults = () => {
               <p className="text-sm text-gray-700 dark:text-gray-200">
                 Score: <span className="font-semibold">{result.score}</span> / {result.total} ({percent}%)
               </p>
-              {result.autoSubmitted ? <p className="text-xs text-gray-500">Auto-submitted when timer ended.</p> : null}
+              {result.autoSubmitted ? <p className="text-xs text-gray-500">{t('studentPanel.quiz.results.autoSubmitted')}</p> : null}
             </div>
           ) : (
-            <p className="text-sm text-gray-700 dark:text-gray-200">No results found.</p>
+            <p className="text-sm text-gray-700 dark:text-gray-200">{t('studentPanel.quiz.results.empty')}</p>
           )}
         </div>
 
         {result && percent < 70 ? (
           <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4">
             <div className="flex items-center justify-between gap-3">
-              <h2 className="font-semibold text-gray-900 dark:text-gray-100">Explain my mistakes</h2>
+              <h2 className="font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.quiz.results.review.title')}</h2>
               <button
                 type="button"
                 onClick={explainMistakes}

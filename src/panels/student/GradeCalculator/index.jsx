@@ -1,8 +1,10 @@
+import { useTranslation } from 'react-i18next';
 import { useMemo, useState } from 'react';
 
 const clamp = (n, min, max) => Math.min(max, Math.max(min, n));
 
 const GradeCalculator = () => {
+  const { t } = useTranslation();
   const [currentGrade, setCurrentGrade] = useState(72);
   const [targetGrade, setTargetGrade] = useState(80);
   const [currentWeight, setCurrentWeight] = useState(70);
@@ -33,14 +35,14 @@ const GradeCalculator = () => {
   return (
     <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Grade Calculator</h1>
-        <p className="text-sm text-gray-600 dark:text-gray-300">What score do you need on the final to hit your target?</p>
+        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.gradeCalculator.title')}</h1>
+        <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.gradeCalculator.subtitle')}</p>
       </div>
 
       <div className="px-6 py-6 max-w-3xl space-y-4">
         <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
           <label className="block">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Current grade (%)</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{t('studentPanel.gradeCalculator.fields.currentGrade')}</span>
             <input
               type="number"
               value={currentGrade}
@@ -49,7 +51,7 @@ const GradeCalculator = () => {
             />
           </label>
           <label className="block">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Target grade (%)</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{t('studentPanel.gradeCalculator.fields.targetGrade')}</span>
             <input
               type="number"
               value={targetGrade}
@@ -58,20 +60,20 @@ const GradeCalculator = () => {
             />
           </label>
           <label className="block">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Current weight (%)</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{t('studentPanel.gradeCalculator.fields.currentWeight')}</span>
             <input
               type="number"
               value={currentWeight}
               onChange={(e) => setCurrentWeight(e.target.value)}
               className="mt-1 w-full rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 px-3 py-2 text-sm text-gray-900 dark:text-gray-100"
             />
-            <p className="mt-1 text-xs text-gray-500">Final weight is 100 − currentWeight.</p>
+            <p className="mt-1 text-xs text-gray-500">{t('studentPanel.gradeCalculator.fields.weightHint')}</p>
           </label>
         </div>
 
         <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="font-semibold text-gray-900 dark:text-gray-100">Result</h2>
+            <h2 className="font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.gradeCalculator.result.title')}</h2>
             {status ? <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${badgeCls}`}>{status.label}</span> : null}
           </div>
           <p className="mt-3 text-sm text-gray-700 dark:text-gray-200">

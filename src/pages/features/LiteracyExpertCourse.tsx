@@ -47,6 +47,7 @@ import {
   BookMarked,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface CourseModule {
   id: string
   title: string
@@ -87,6 +88,7 @@ interface LiteracyResource {
 }
 
 const LiteracyExpertCourse = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [activeModule, setActiveModule] = useState<string | null>(null)
   // Load completed modules from localStorage
@@ -553,24 +555,16 @@ const LiteracyExpertCourse = () => {
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Specialist Track
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('literacyExpertCourse.specialistTrack')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    15 hours
-                  </span>
+                    <Clock className="h-3 w-3" />{t('literacyExpertCourse.k5Hours')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Layers className="h-3 w-3" />
-                    10 modules
-                  </span>
+                    <Layers className="h-3 w-3" />{t('literacyExpertCourse.k0Modules')}</span>
                 </div>
-                <h1 className="text-3xl font-bold">Literacy Expert</h1>
-                <p className="mt-2 text-blue-100">
-                  Phonics instruction, guided reading, writing workshop, and multilingual supports
-                </p>
+                <h1 className="text-3xl font-bold">{t('literacyExpertCourse.literacyExpert')}</h1>
+                <p className="mt-2 text-blue-100">{t('literacyExpertCourse.phonicsInstructionGuidedReadingWritingWorkshopAndMultil')}</p>
               </div>
             </div>
             {enrolled && (
@@ -604,7 +598,7 @@ const LiteracyExpertCourse = () => {
                 <button
                   onClick={() => setShowModuleMenu(!showModuleMenu)}
                   className="p-3 bg-white/20 hover:bg-white/30 rounded-full transition flex items-center justify-center relative"
-                  title="Access Module Content"
+                  title={t('literacyExpertCourse.accessModuleContent')}
                 >
                   <Trophy className="h-6 w-6 text-yellow-300" />
                   {showModuleMenu && (
@@ -617,9 +611,9 @@ const LiteracyExpertCourse = () => {
                     <div className="p-4 bg-gradient-to-r from-blue-600 to-teal-600 text-white">
                       <div className="flex items-center gap-2 mb-1">
                         <Trophy className="h-5 w-5 text-yellow-300" />
-                        <h3 className="font-bold text-sm">Course Completed!</h3>
+                        <h3 className="font-bold text-sm">{t('literacyExpertCourse.courseCompleted')}</h3>
                       </div>
-                      <p className="text-xs text-blue-100">Access module content</p>
+                      <p className="text-xs text-blue-100">{t('literacyExpertCourse.accessModuleContent2')}</p>
                     </div>
                     <div className="max-h-96 overflow-y-auto">
                       {courseModules.map((module, idx) => {
@@ -660,9 +654,7 @@ const LiteracyExpertCourse = () => {
                 onClick={handleEnroll}
                 className="px-6 py-3 bg-white text-blue-600 rounded-full font-semibold hover:bg-blue-50 transition flex items-center gap-2"
               >
-                <GraduationCap className="h-5 w-5" />
-                Enroll Now
-              </button>
+                <GraduationCap className="h-5 w-5" />{t('literacyExpertCourse.enrollNow')}</button>
             )}
           </div>
         </div>
@@ -702,7 +694,7 @@ const LiteracyExpertCourse = () => {
           {currentTab === 'overview' && (
             <div className="space-y-8">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Course Overview</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('literacyExpertCourse.courseOverview')}</h2>
                 <p className="text-gray-700 leading-relaxed mb-6">
                   This comprehensive specialist track equips you with the knowledge, skills, and tools needed to excel
                   in literacy instruction. Through ten carefully designed modules, you'll master phonics instruction,
@@ -712,30 +704,24 @@ const LiteracyExpertCourse = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                   <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
                     <GraduationCap className="h-8 w-8 text-blue-600 mb-3" />
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Standards Aligned</h3>
-                    <p className="text-sm text-gray-700">
-                      Aligned with Common Core ELA, state standards, and international literacy frameworks
-                    </p>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literacyExpertCourse.standardsAligned')}</h3>
+                    <p className="text-sm text-gray-700">{t('literacyExpertCourse.alignedWithCommonCoreElaStateStandardsAndInternationalL')}</p>
                   </div>
                   <div className="bg-teal-50 rounded-xl p-6 border border-teal-200">
                     <Sparkles className="h-8 w-8 text-teal-600 mb-3" />
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">AI-Powered Tools</h3>
-                    <p className="text-sm text-gray-700">
-                      Access AI-assisted lesson planning, text analysis, and assessment generation
-                    </p>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literacyExpertCourse.aiPoweredTools')}</h3>
+                    <p className="text-sm text-gray-700">{t('literacyExpertCourse.accessAiAssistedLessonPlanningTextAnalysisAndAssessment')}</p>
                   </div>
                   <div className="bg-green-50 rounded-xl p-6 border border-green-200">
                     <Trophy className="h-8 w-8 text-green-600 mb-3" />
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Certification</h3>
-                    <p className="text-sm text-gray-700">
-                      Earn a professional certificate recognized by educational institutions worldwide
-                    </p>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literacyExpertCourse.certification')}</h3>
+                    <p className="text-sm text-gray-700">{t('literacyExpertCourse.earnAProfessionalCertificateRecognizedByEducationalInst')}</p>
                   </div>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">What You'll Master</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">{t('literacyExpertCourse.whatYouLlMaster')}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {[
                     {
@@ -782,7 +768,7 @@ const LiteracyExpertCourse = () => {
               </div>
 
               <div className="bg-gradient-to-br from-blue-50 to-teal-50 rounded-xl p-6 border border-blue-200">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Learning Outcomes</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">{t('literacyExpertCourse.learningOutcomes')}</h3>
                 <ul className="space-y-2">
                   {[
                     'Design and implement systematic phonics instruction aligned to research',
@@ -810,25 +796,21 @@ const LiteracyExpertCourse = () => {
           {currentTab === 'modules' && (
             <div className="space-y-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Course Modules</h2>
+                <h2 className="text-2xl font-bold text-gray-900">{t('literacyExpertCourse.courseModules')}</h2>
                 {enrolled && (
-                  <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-semibold">
-                    Enrolled
-                  </span>
+                  <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-semibold">{t('literacyExpertCourse.enrolled')}</span>
                 )}
               </div>
 
               {!enrolled ? (
                 <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
                   <GraduationCap className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Enroll to Access Modules</h3>
-                  <p className="text-gray-600 mb-6">Click "Enroll Now" in the header to begin your Literacy Expert journey</p>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('literacyExpertCourse.enrollToAccessModules')}</h3>
+                  <p className="text-gray-600 mb-6">{t('literacyExpertCourse.clickEnrollNowInTheHeaderToBeginYourLiteracy')}</p>
                   <button
                     onClick={handleEnroll}
                     className="px-6 py-3 bg-blue-600 text-white rounded-full font-semibold hover:bg-blue-700 transition"
-                  >
-                    Enroll Now
-                  </button>
+                  >{t('literacyExpertCourse.enrollNow')}</button>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -875,7 +857,7 @@ const LiteracyExpertCourse = () => {
 
                         {module.learningOutcomes && module.learningOutcomes.length > 0 && (
                           <div className="ml-12 mb-4">
-                            <p className="text-sm font-semibold text-gray-900 mb-2">Learning Outcomes</p>
+                            <p className="text-sm font-semibold text-gray-900 mb-2">{t('literacyExpertCourse.learningOutcomes')}</p>
                             <ul className="space-y-1">
                               {module.learningOutcomes.map((outcome, outIdx) => (
                                 <li key={outIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -891,7 +873,7 @@ const LiteracyExpertCourse = () => {
                           <>
                             {module.content && Array.isArray(module.content) && module.content.length > 0 && (
                               <div className="ml-12 mb-4 bg-white rounded-lg p-5 border border-blue-200">
-                                <p className="text-sm font-semibold text-gray-900 mb-3">Module Content</p>
+                                <p className="text-sm font-semibold text-gray-900 mb-3">{t('literacyExpertCourse.moduleContent')}</p>
                                 <div className="space-y-3">
                                   {module.content.map((item, itemIdx) => {
                                     const ContentIcon =
@@ -929,7 +911,7 @@ const LiteracyExpertCourse = () => {
                                 </div>
                                 {module.assessment && (
                                   <div className="mt-4 pt-4 border-t border-gray-200">
-                                    <p className="text-sm font-semibold text-gray-900 mb-2">Assessment</p>
+                                    <p className="text-sm font-semibold text-gray-900 mb-2">{t('literacyExpertCourse.assessment')}</p>
                                     <div className="bg-teal-50 rounded-lg p-3 border border-teal-200">
                                       <p className="text-sm font-medium text-gray-900 mb-1">{module.assessment.type}</p>
                                       <p className="text-xs text-gray-700">{module.assessment.description}</p>
@@ -941,7 +923,7 @@ const LiteracyExpertCourse = () => {
                                 )}
                                 {module.realWorldApplication && (
                                   <div className="mt-4 pt-4 border-t border-gray-200">
-                                    <p className="text-sm font-semibold text-gray-900 mb-2">Real-World Application</p>
+                                    <p className="text-sm font-semibold text-gray-900 mb-2">{t('literacyExpertCourse.realWorldApplication')}</p>
                                     <p className="text-sm text-gray-700 bg-green-50 rounded-lg p-3 border border-green-200">
                                       {module.realWorldApplication}
                                     </p>
@@ -958,9 +940,7 @@ const LiteracyExpertCourse = () => {
                               disabled
                               className="px-4 py-2 rounded-lg bg-gray-200 text-gray-500 text-sm font-semibold cursor-not-allowed flex items-center gap-2"
                             >
-                              <Lock className="h-4 w-4" />
-                              Complete previous modules
-                            </button>
+                              <Lock className="h-4 w-4" />{t('literacyExpertCourse.completePreviousModules')}</button>
                           ) : isCompleted ? (
                             <>
                               <button
@@ -973,20 +953,14 @@ const LiteracyExpertCourse = () => {
                               >
                                 {isActive ? (
                                   <>
-                                    <Eye className="h-4 w-4" />
-                                    Hide Details
-                                  </>
+                                    <Eye className="h-4 w-4" />{t('literacyExpertCourse.hideDetails')}</>
                                 ) : (
                                   <>
-                                    <Eye className="h-4 w-4" />
-                                    Review Module
-                                  </>
+                                    <Eye className="h-4 w-4" />{t('literacyExpertCourse.reviewModule')}</>
                                 )}
                               </button>
                               <button className="px-4 py-2 rounded-lg border-2 border-green-600 text-green-600 text-sm font-semibold hover:bg-green-50 flex items-center gap-2">
-                                <Download className="h-4 w-4" />
-                                Download Certificate
-                              </button>
+                                <Download className="h-4 w-4" />{t('literacyExpertCourse.downloadCertificate')}</button>
                             </>
                           ) : (
                             <>
@@ -996,23 +970,17 @@ const LiteracyExpertCourse = () => {
                               >
                                 {isActive ? (
                                   <>
-                                    <Eye className="h-4 w-4" />
-                                    Hide Details
-                                  </>
+                                    <Eye className="h-4 w-4" />{t('literacyExpertCourse.hideDetails')}</>
                                 ) : (
                                   <>
-                                    <Play className="h-4 w-4" />
-                                    Start Module
-                                  </>
+                                    <Play className="h-4 w-4" />{t('literacyExpertCourse.startModule')}</>
                                 )}
                               </button>
                               <button
                                 onClick={() => handleModuleComplete(module.id)}
                                 className="px-4 py-2 rounded-lg border-2 border-green-600 text-green-600 text-sm font-semibold hover:bg-green-50 flex items-center gap-2"
                               >
-                                <CheckCircle2 className="h-4 w-4" />
-                                Mark Complete
-                              </button>
+                                <CheckCircle2 className="h-4 w-4" />{t('literacyExpertCourse.markComplete')}</button>
                             </>
                           )}
                         </div>
@@ -1027,7 +995,7 @@ const LiteracyExpertCourse = () => {
           {/* Standards Tab */}
           {currentTab === 'standards' && (
             <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-gray-900">Common Core ELA Standards</h2>
+              <h2 className="text-2xl font-bold text-gray-900">{t('literacyExpertCourse.commonCoreElaStandards')}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {elaStandards.map((standard, idx) => (
                   <div key={idx} className="bg-white rounded-xl p-6 border-2 border-blue-200">
@@ -1043,7 +1011,7 @@ const LiteracyExpertCourse = () => {
                     <p className="text-sm text-gray-700 mb-4">{standard.description}</p>
                     <div className="space-y-2">
                       <div>
-                        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">Domains</p>
+                        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('literacyExpertCourse.domains')}</p>
                         {standard.domains.map((domain, domainIdx) => (
                           <p key={domainIdx} className="text-xs text-gray-700 bg-blue-50 rounded p-2 mb-1">
                             {domain}
@@ -1056,19 +1024,19 @@ const LiteracyExpertCourse = () => {
               </div>
 
               <div className="bg-gradient-to-br from-teal-50 to-green-50 rounded-xl p-6 border border-teal-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Standards Coverage</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('literacyExpertCourse.standardsCoverage')}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="bg-white rounded-lg p-4 border border-teal-200">
-                    <h4 className="text-sm font-semibold text-gray-900 mb-2">Reading Standards</h4>
-                    <p className="text-xs text-gray-700">RL.1-10, RI.1-10, RF.K-5</p>
+                    <h4 className="text-sm font-semibold text-gray-900 mb-2">{t('literacyExpertCourse.readingStandards')}</h4>
+                    <p className="text-xs text-gray-700">{t('literacyExpertCourse.rl110Ri110RfK5')}</p>
                   </div>
                   <div className="bg-white rounded-lg p-4 border border-teal-200">
-                    <h4 className="text-sm font-semibold text-gray-900 mb-2">Writing Standards</h4>
-                    <p className="text-xs text-gray-700">W.1-10, Writing Process</p>
+                    <h4 className="text-sm font-semibold text-gray-900 mb-2">{t('literacyExpertCourse.writingStandards')}</h4>
+                    <p className="text-xs text-gray-700">{t('literacyExpertCourse.w110WritingProcess')}</p>
                   </div>
                   <div className="bg-white rounded-lg p-4 border border-teal-200">
-                    <h4 className="text-sm font-semibold text-gray-900 mb-2">Language Standards</h4>
-                    <p className="text-xs text-gray-700">L.1-6, Vocabulary Acquisition</p>
+                    <h4 className="text-sm font-semibold text-gray-900 mb-2">{t('literacyExpertCourse.languageStandards')}</h4>
+                    <p className="text-xs text-gray-700">{t('literacyExpertCourse.l16VocabularyAcquisition')}</p>
                   </div>
                 </div>
               </div>
@@ -1078,7 +1046,7 @@ const LiteracyExpertCourse = () => {
           {/* Resources Tab */}
           {currentTab === 'resources' && (
             <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-gray-900">Course Resources</h2>
+              <h2 className="text-2xl font-bold text-gray-900">{t('literacyExpertCourse.courseResources')}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {literacyResources.map((resource, idx) => {
                   const ResourceIcon = resource.type === 'Library' ? BookOpen : resource.type === 'Framework' ? Target : resource.type === 'Template' ? FileText : resource.type === 'Tool' ? Zap : resource.type === 'Guide' ? BookMarked : FileText
@@ -1094,9 +1062,7 @@ const LiteracyExpertCourse = () => {
                         <span className="text-xs text-gray-500">{resource.gradeLevel}</span>
                         <span className="text-xs text-gray-500">{resource.duration}</span>
                       </div>
-                      <button className="w-full px-3 py-2 rounded-lg bg-blue-50 text-blue-600 text-sm font-semibold hover:bg-blue-100 transition">
-                        Access Resource
-                      </button>
+                      <button className="w-full px-3 py-2 rounded-lg bg-blue-50 text-blue-600 text-sm font-semibold hover:bg-blue-100 transition">{t('literacyExpertCourse.accessResource')}</button>
                     </div>
                   )
                 })}
@@ -1111,18 +1077,12 @@ const LiteracyExpertCourse = () => {
         <div className="bg-gradient-to-r from-blue-600 to-teal-600 rounded-2xl p-8 text-white">
           <div className="text-center">
             <Trophy className="h-16 w-16 mx-auto mb-4" />
-            <h3 className="text-2xl font-bold mb-2">Congratulations!</h3>
-            <p className="text-blue-100 mb-6">
-              You've completed the Literacy Expert specialist track. Download your certificate below.
-            </p>
+            <h3 className="text-2xl font-bold mb-2">{t('literacyExpertCourse.congratulations')}</h3>
+            <p className="text-blue-100 mb-6">{t('literacyExpertCourse.youVeCompletedTheLiteracyExpertSpecialistTrackDownloadY')}</p>
             <div className="flex gap-3 justify-center">
               <button className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-blue-600 hover:bg-blue-50 transition flex items-center gap-2">
-                <Award className="h-4 w-4" />
-                Download Certificate
-              </button>
-              <button className="rounded-full border-2 border-white px-6 py-3 text-sm font-semibold text-white hover:bg-white/20 transition">
-                Share Achievement
-              </button>
+                <Award className="h-4 w-4" />{t('literacyExpertCourse.downloadCertificate')}</button>
+              <button className="rounded-full border-2 border-white px-6 py-3 text-sm font-semibold text-white hover:bg-white/20 transition">{t('literacyExpertCourse.shareAchievement')}</button>
             </div>
           </div>
         </div>

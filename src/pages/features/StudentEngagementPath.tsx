@@ -37,6 +37,7 @@ import {
 import axiosInstance from '../../redux/http'
 import { parseLearningPathFromRegistry } from '../../utils/learningHubGeneratedContent'
 
+import { useTranslation } from 'react-i18next'
 interface LearningModule {
   id: string
   title: string
@@ -83,6 +84,7 @@ interface AIGuidance {
 }
 
 const StudentEngagementPath = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const [activeModule, setActiveModule] = useState<string | null>(null)
@@ -561,25 +563,19 @@ const StudentEngagementPath = () => {
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    AI-Guided Learning Path
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('studentEngagementPath.aiGuidedLearningPath')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    3 hours estimated
-                  </span>
+                    <Clock className="h-3 w-3" />{t('studentEngagementPath.kHoursEstimated')}</span>
                 </div>
-                <h1 className="text-3xl font-bold">Student Engagement Techniques</h1>
-                <p className="mt-2 text-amber-100">
-                  Master gamification and inquiry-based learning hooks to transform your classroom
-                </p>
+                <h1 className="text-3xl font-bold">{t('studentEngagementPath.studentEngagementTechniques')}</h1>
+                <p className="mt-2 text-amber-100">{t('studentEngagementPath.masterGamificationAndInquiryBasedLearningHooksToTransfo')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4" />
-                <span>High Impact</span>
+                <span>{t('studentEngagementPath.highImpact')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Trophy className="w-4 h-4" />
@@ -608,19 +604,17 @@ const StudentEngagementPath = () => {
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
-              <h3 className="text-lg font-semibold text-gray-900">AI-Powered Learning Guidance</h3>
-              <span className="px-2 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">
-                Personalized
-              </span>
+              <h3 className="text-lg font-semibold text-gray-900">{t('studentEngagementPath.aiPoweredLearningGuidance')}</h3>
+              <span className="px-2 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">{t('studentEngagementPath.personalized')}</span>
             </div>
             <p className="text-sm font-medium text-gray-900 mb-2">{aiGuidance.recommendation}</p>
             <p className="text-sm text-gray-700 mb-4">{aiGuidance.reason}</p>
             <div className="bg-white rounded-lg p-4 border border-blue-200 mb-4">
-              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Personalized Tip</p>
+              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('studentEngagementPath.personalizedTip')}</p>
               <p className="text-sm text-gray-700">{aiGuidance.personalizedTip}</p>
             </div>
             <div>
-              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Your Next Steps</p>
+              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('studentEngagementPath.yourNextSteps')}</p>
               <ul className="space-y-1">
                 {aiGuidance.nextSteps.map((step, idx) => (
                   <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -640,7 +634,7 @@ const StudentEngagementPath = () => {
           {/* Skill Impact Preview */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-gray-900">Expected Impact on Your Teaching</h2>
+              <h2 className="text-xl font-bold text-gray-900">{t('studentEngagementPath.expectedImpactOnYourTeaching')}</h2>
               <TrendingUp className="h-5 w-5 text-green-600" />
             </div>
             <div className="space-y-4">
@@ -669,7 +663,7 @@ const StudentEngagementPath = () => {
           {/* Learning Modules */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Learning Modules</h2>
+              <h2 className="text-xl font-bold text-gray-900">{t('studentEngagementPath.learningModules')}</h2>
               <div className="flex items-center gap-2">
                 <Filter className="h-4 w-4 text-gray-400" />
                 <select
@@ -677,10 +671,10 @@ const StudentEngagementPath = () => {
                   onChange={(e) => setCurrentLevel(e.target.value as any)}
                   className="text-xs border border-gray-300 rounded-lg px-3 py-1 text-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-100"
                 >
-                  <option value="Beginner">All Levels</option>
-                  <option value="Beginner">Beginner</option>
-                  <option value="Intermediate">Intermediate</option>
-                  <option value="Advanced">Advanced</option>
+                  <option value="Beginner">{t('studentEngagementPath.allLevels')}</option>
+                  <option value="Beginner">{t('studentEngagementPath.beginner')}</option>
+                  <option value="Intermediate">{t('studentEngagementPath.intermediate')}</option>
+                  <option value="Advanced">{t('studentEngagementPath.advanced')}</option>
                 </select>
               </div>
             </div>
@@ -740,7 +734,7 @@ const StudentEngagementPath = () => {
                       </div>
 
                       <div className="ml-10 mb-4">
-                        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Skills You'll Gain</p>
+                        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('studentEngagementPath.skillsYouLlGain')}</p>
                         <div className="flex flex-wrap gap-2">
                           {module.skills.map((skill, skillIdx) => (
                             <span
@@ -755,7 +749,7 @@ const StudentEngagementPath = () => {
 
                       {module.learningOutcomes && module.learningOutcomes.length > 0 && (
                         <div className="ml-10 mb-4">
-                          <p className="text-sm font-semibold text-gray-900 mb-2">Learning Outcomes</p>
+                          <p className="text-sm font-semibold text-gray-900 mb-2">{t('studentEngagementPath.learningOutcomes')}</p>
                           <ul className="space-y-1">
                             {module.learningOutcomes.map((outcome, outIdx) => (
                               <li key={outIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -771,7 +765,7 @@ const StudentEngagementPath = () => {
                         <>
                           {module.content && Array.isArray(module.content) && module.content.length > 0 && (
                             <div className="ml-10 mb-4 bg-white rounded-lg p-5 border border-amber-200">
-                              <p className="text-sm font-semibold text-gray-900 mb-3">Module Content</p>
+                              <p className="text-sm font-semibold text-gray-900 mb-3">{t('studentEngagementPath.moduleContent')}</p>
                               <div className="space-y-3">
                                 {module.content.map((item, itemIdx) => {
                                   const ContentIcon =
@@ -811,7 +805,7 @@ const StudentEngagementPath = () => {
                           )}
                           {module.assessment && (
                             <div className="ml-10 mb-4 pt-4 border-t border-gray-200">
-                              <p className="text-sm font-semibold text-gray-900 mb-2">Assessment</p>
+                              <p className="text-sm font-semibold text-gray-900 mb-2">{t('studentEngagementPath.assessment')}</p>
                               <div className="bg-purple-50 rounded-lg p-3 border border-purple-200">
                                 <p className="text-sm font-medium text-gray-900 mb-1">{module.assessment.type}</p>
                                 <p className="text-xs text-gray-700">{module.assessment.description}</p>
@@ -823,7 +817,7 @@ const StudentEngagementPath = () => {
                           )}
                           {module.realWorldApplication && (
                             <div className="ml-10 mb-4 pt-4 border-t border-gray-200">
-                              <p className="text-sm font-semibold text-gray-900 mb-2">Real-World Application</p>
+                              <p className="text-sm font-semibold text-gray-900 mb-2">{t('studentEngagementPath.realWorldApplication')}</p>
                               <p className="text-sm text-gray-700 bg-blue-50 rounded-lg p-3 border border-blue-200">
                                 {module.realWorldApplication}
                               </p>
@@ -848,9 +842,7 @@ const StudentEngagementPath = () => {
                             onClick={() => setActiveModule(isActive ? null : module.id)}
                             className="px-4 py-2 rounded-lg bg-green-600 text-white text-sm font-semibold hover:bg-green-700 flex items-center gap-2"
                           >
-                            <Eye className="h-4 w-4" />
-                            Review Module
-                          </button>
+                            <Eye className="h-4 w-4" />{t('studentEngagementPath.reviewModule')}</button>
                           ) : (
                             <>
                               <button
@@ -877,23 +869,17 @@ const StudentEngagementPath = () => {
                               >
                                 {isActive ? (
                                   <>
-                                    <Eye className="h-4 w-4" />
-                                    Hide Details
-                                  </>
+                                    <Eye className="h-4 w-4" />{t('studentEngagementPath.hideDetails')}</>
                                 ) : (
                                   <>
-                                    <Play className="h-4 w-4" />
-                                    Start Module
-                                  </>
+                                    <Play className="h-4 w-4" />{t('studentEngagementPath.startModule')}</>
                                 )}
                               </button>
                             <button
                               onClick={() => handleModuleComplete(module.id)}
                               className="px-4 py-2 rounded-lg border-2 border-green-600 text-green-600 text-sm font-semibold hover:bg-green-50 flex items-center gap-2"
                             >
-                              <CheckCircle2 className="h-4 w-4" />
-                              Mark Complete
-                            </button>
+                              <CheckCircle2 className="h-4 w-4" />{t('studentEngagementPath.markComplete')}</button>
                           </>
                         )}
                       </div>
@@ -908,11 +894,11 @@ const StudentEngagementPath = () => {
         <div className="lg:col-span-1 space-y-6">
           {/* Progress Card */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Progress</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('studentEngagementPath.yourProgress')}</h3>
             <div className="space-y-4">
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-700">Overall Completion</span>
+                  <span className="text-sm font-medium text-gray-700">{t('studentEngagementPath.overallCompletion')}</span>
                   <span className="text-sm font-bold text-amber-600">{Math.round(totalProgress)}%</span>
                 </div>
                 <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
@@ -925,13 +911,13 @@ const StudentEngagementPath = () => {
               <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
                 <div className="text-center">
                   <p className="text-2xl font-bold text-gray-900">{completedCount}</p>
-                  <p className="text-xs text-gray-600">Completed</p>
+                  <p className="text-xs text-gray-600">{t('studentEngagementPath.completed')}</p>
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-gray-900">
                     {unlockedModules.length - completedCount}
                   </p>
-                  <p className="text-xs text-gray-600">Remaining</p>
+                  <p className="text-xs text-gray-600">{t('studentEngagementPath.remaining')}</p>
                 </div>
               </div>
             </div>
@@ -940,9 +926,7 @@ const StudentEngagementPath = () => {
           {/* Achievement Badges */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <Trophy className="h-5 w-5 text-amber-600" />
-              Achievements
-            </h3>
+              <Trophy className="h-5 w-5 text-amber-600" />{t('studentEngagementPath.achievements')}</h3>
             <div className="space-y-3">
               {[
                 { name: 'First Steps', earned: completedCount >= 1, description: 'Complete your first module' },
@@ -977,19 +961,19 @@ const StudentEngagementPath = () => {
 
           {/* Quick Actions */}
           <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl border border-amber-200 p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('studentEngagementPath.quickActions')}</h3>
             <div className="space-y-2">
               <button className="w-full text-left px-4 py-3 rounded-lg bg-white border border-amber-200 hover:bg-amber-50 transition flex items-center gap-2">
                 <Download className="h-4 w-4 text-amber-600" />
-                <span className="text-sm font-medium text-gray-900">Download Certificate</span>
+                <span className="text-sm font-medium text-gray-900">{t('studentEngagementPath.downloadCertificate')}</span>
               </button>
               <button className="w-full text-left px-4 py-3 rounded-lg bg-white border border-amber-200 hover:bg-amber-50 transition flex items-center gap-2">
                 <Share2 className="h-4 w-4 text-amber-600" />
-                <span className="text-sm font-medium text-gray-900">Share Progress</span>
+                <span className="text-sm font-medium text-gray-900">{t('studentEngagementPath.shareProgress')}</span>
               </button>
               <button className="w-full text-left px-4 py-3 rounded-lg bg-white border border-amber-200 hover:bg-amber-50 transition flex items-center gap-2">
                 <Settings className="h-4 w-4 text-amber-600" />
-                <span className="text-sm font-medium text-gray-900">Customize Path</span>
+                <span className="text-sm font-medium text-gray-900">{t('studentEngagementPath.customizePath')}</span>
               </button>
             </div>
           </div>
@@ -999,10 +983,8 @@ const StudentEngagementPath = () => {
       {/* Call to Action */}
       <div className="bg-gradient-to-r from-amber-600 to-orange-600 rounded-2xl p-8 text-white">
         <div className="text-center">
-          <h3 className="text-2xl font-bold mb-2">Ready to Transform Your Classroom?</h3>
-          <p className="text-amber-100 mb-6">
-            Start your first module and begin applying engagement techniques immediately
-          </p>
+          <h3 className="text-2xl font-bold mb-2">{t('studentEngagementPath.readyToTransformYourClassroom')}</h3>
+          <p className="text-amber-100 mb-6">{t('studentEngagementPath.startYourFirstModuleAndBeginApplyingEngagementTechnique')}</p>
           <div className="flex gap-3 justify-center">
             <button
               onClick={() => {
@@ -1014,9 +996,7 @@ const StudentEngagementPath = () => {
               }}
               className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-amber-600 hover:bg-amber-50 transition flex items-center gap-2"
             >
-              <Rocket className="h-4 w-4" />
-              Start Learning Path
-            </button>
+              <Rocket className="h-4 w-4" />{t('studentEngagementPath.startLearningPath')}</button>
             <button
               onClick={() => navigate('/learning-hub')}
               className="rounded-full border-2 border-white px-6 py-3 text-sm font-semibold text-white hover:bg-white/20 transition"

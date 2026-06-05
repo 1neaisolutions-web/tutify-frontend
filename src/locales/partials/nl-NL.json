@@ -1,0 +1,318 @@
+{
+  "common": {
+    "loading": "Laden…",
+    "cancel": "Annuleren",
+    "search": "Zoekopdracht",
+    "addNew": "Nieuw toevoegen",
+    "save": "Opslaan",
+    "upload": "Uploaden",
+    "delete": "Verwijderen",
+    "export": "Export",
+    "all": "All",
+    "back": "Terug",
+    "comingSoon": "Binnenkort",
+    "comingSoonHint": "Dit is nog niet mogelijk.",
+    "noDataFound": "Geen gegevens gevonden",
+    "noDataFoundHint": "Pas je filters aan of zoek.",
+    "retry": "Probeer opnieuw",
+    "showLess": "Toon minder",
+    "showMore": "Meer weergeven"
+  },
+  "app": {
+    "name": "Lerarenassistent",
+    "studentName": "Student-assistent"
+  },
+  "languageDropdown": {
+    "loading": "Talen worden geladen...",
+    "placeholder": "Selecteer een taal",
+    "searchPlaceholder": "Talen zoeken...",
+    "listLabel": "Talen",
+    "noMatch": "Geen talen komen overeen met \"{{query}}\"",
+    "count": "{{count}} talen",
+    "count_one": "{{count}} language",
+    "count_other": "{{count}} talen",
+    "countAvailable": " beschikbaar",
+    "countMatch": "overeenkomend met \"{{query}}\""
+  },
+  "layout": {
+    "activateCredits": "Tegoed activeren",
+    "credits": "Dankwoord",
+    "messages": "Meldingen",
+    "notifications": "Meldingen",
+    "newCount": "{{count}} nieuw",
+    "noMessages": "Geen berichten",
+    "noMessagesHint": "Wanneer je berichten ontvangt, worden deze hier weergegeven.",
+    "noNotifications": "No notifications",
+    "noNotificationsHint": "Wanneer je updates hebt, worden deze hier weergegeven.",
+    "viewAllMessages": "Alle berichten weergeven",
+    "viewAllNotifications": "Alle meldingen weergeven",
+    "signOut": "Uitloggen",
+    "signingOut": "Uitloggen",
+    "allCaughtUp": "Je bent helemaal bij!",
+    "noNewNotifications": "Geen nieuwe notificaties",
+    "noNotificationsYet": "Nog geen meldingen.",
+    "notificationsEmptyHint": "Wanneer je updates hebt, worden deze hier weergegeven."
+  },
+  "settings": {
+    "tabs": {
+      "general": "Algemeen",
+      "notifications": "Meldingen",
+      "plan": "Abonnement & tegoeden",
+      "integrations": "Integraties",
+      "developer": "Maker",
+      "export": "Export"
+    },
+    "general": {
+      "title": "Algemene voorkeuren",
+      "language": {
+        "label": "Taal",
+        "change": "Wijzigen",
+        "uiFallback": "De interface wordt in het Engels weergegeven. Je voorkeur ({{language}}) wordt opgeslagen voor je profiel en datums."
+      },
+      "timezone": {
+        "label": "Tijdzone",
+        "adjust": "Afstellen",
+        "currentTime": "Huidige tijd",
+        "noMatch": "Er komen geen tijdzones overeen met uw zoekopdracht"
+      },
+      "theme": {
+        "label": "Interfacethema",
+        "light": "Licht",
+        "dark": "Donker",
+        "system": "Systeem",
+        "followsDevice": "(volgt apparaat)"
+      },
+      "syncSaving": "Opslaan…",
+      "syncSaved": "Opgeslagen",
+      "syncError": "Opslaan is mislukt"
+    },
+    "notifications": {
+      "title": "Meldingen",
+      "productUpdates": "Product updates",
+      "lessonReminders": "Lesherinneringen",
+      "weeklyInsights": "Wekelijkse inzichten",
+      "channels": {
+        "emailAndApp": "E-mail en app",
+        "emailOnly": "Alleen e-mailadres",
+        "appOnly": "Alleen app"
+      },
+      "currentChannel": "Huidig kanaal: {{channel}}",
+      "edit": "Bewerken",
+      "manageDefaults": "Standaardinstellingen voor meldingen beheren"
+    },
+    "integrations": {
+      "title": "Integraties",
+      "addNew": "Nieuwe integratie toevoegen",
+      "status": {
+        "connected": "Verbonden",
+        "available": "Beschikbaar",
+        "comingSoon": "Binnenkort"
+      },
+      "googleClassroom": {
+        "name": "Google Classroom",
+        "description": "Toewijzingen en roosters automatisch synchroniseren."
+      },
+      "microsoftTeams": {
+        "name": "Microsoft Teams",
+        "description": "Schakel Teams-vergaderingen en opdrachtsynchronisatie in."
+      },
+      "canvasLms": {
+        "name": "Canvas LMS",
+        "description": "Directe cijferboekintegratie voor Canvas-gebruikers."
+      }
+    },
+    "developer": {
+      "title": "Toegang voor ontwikkelaars",
+      "connectedApps": "verbonden apps",
+      "connectedAppsDesc": "3 apps hebben toegang tot je onderwijswerkplek.",
+      "manageTokens": "API-tokens beheren"
+    },
+    "export": {
+      "title": "Exporteren en back-up",
+      "downloadData": "Werkruimtegegevens downloaden",
+      "downloadDataDesc": "Sjablonen, beoordelingen en chatgeschiedenis",
+      "scheduleBackups": "Wekelijkse back-ups plannen"
+    },
+    "plan": {
+      "yourCredits": "Jouw krediet",
+      "memberSince": "Lid sinds {{date}}",
+      "activateCode": "+ Code activeren",
+      "creditsRemaining": "/ {{total}} tegoed",
+      "remainingPct": "{{pct}}% resterend",
+      "expires": "Verloopt op {{date}}",
+      "autoRenewing": "Automatisch verlengen",
+      "noActiveCredits": "Geen actieve tegoeden. Activeer een code om aan de slag te gaan.",
+      "activateCreditsLink": "Tegoed activeren →",
+      "usageBreakdown": "Uitsplitsing van gebruik",
+      "last30Days": "Laatste 30 dagen",
+      "activity": "Activiteit",
+      "activityFallback": "Activiteit",
+      "left": "{{count}} over"
+    }
+  },
+  "nav": {
+    "dashboard": "Gösterge Paneli",
+    "teacherTools": "Tools voor docenten",
+    "teacherToolsOverview": "Overzicht",
+    "teacherToolsAnalytics": "Analytics",
+    "quiz": "Quiz",
+    "assignment": "Opdracht",
+    "worksheet": "Werkblad",
+    "exams": "Examens",
+    "templates": "Templates bibliotheek",
+    "chatbots": "Gespecialiseerde chatbots",
+    "youtubeQuiz": "YouTube-quizgenerator",
+    "pixgen": "PixGen (AI Media Studio)",
+    "learningHub": "Professionele leerhub",
+    "personalization": "Persoonlijke instellingen",
+    "administration": "Beheer",
+    "reporting": "Rapportage",
+    "assessment": "Beoordeling",
+    "contentManagement": "Content Management",
+    "history": "Historie",
+    "analytics": "Analytics",
+    "useCases": "Use cases bekijken",
+    "profile": "Profiel",
+    "settings": "Instellingen",
+    "accessCodes": "Toegangscodes",
+    "contentPacks": "Inhoudspakketten",
+    "documents": "Documenten",
+    "learningHubContent": "Inhoud van de Learning Hub",
+    "organization": "Organisatie",
+    "parent": "Ouder",
+    "school": "School",
+    "uploadDocument": "Upload het document"
+  },
+  "workspace": {
+    "fallbackName": "Werkruimte",
+    "scopeType": {
+      "institution": "Instelling",
+      "organization": "Organisatie",
+      "personal": "Persoonlijk"
+    },
+    "switcher": {
+      "title": "Wissel Werkruimte",
+      "active": "Actief"
+    }
+  },
+  "login": {
+    "subtitle": "Log in op je account",
+    "emailLabel": "E-mailadres",
+    "emailPlaceholder": "naam@domein.nl",
+    "passwordLabel": "Wachtwoord",
+    "rememberMe": "Onthoud mij",
+    "forgotPassword": "Wachtwoord vergeten?",
+    "signIn": "Aanmelden",
+    "signingIn": "Aanmelden…",
+    "noAccount": "Hebt u nog geen account?",
+    "signUpLink": "Registreren",
+    "error": "Aanmelden mislukt. Controleer uw inloggegevens."
+  },
+  "teacherTools": {
+    "breadcrumbTeacherTools": "Tools voor docenten",
+    "breadcrumbTemplates": "Sjablonen",
+    "edit": "Bewerken",
+    "duplicate": "Dupliceren",
+    "archive": "Archief",
+    "delete": "Verwijderen",
+    "toolAssign": "Toewijzen",
+    "toolSheet": "Blad",
+    "toolExam": "Toets",
+    "range7d": "Laatste 7 dagen",
+    "range30d": "Laatste 30 dagen",
+    "rangeAll": "Altijd",
+    "previewData": "Voorbeeld:",
+    "previewDataHint": "— Echte resultaten verschijnen hier nadat studenten hebben ingediend.",
+    "statContentCreated": "Inhoud gemaakt",
+    "overview": {
+      "kpiTotalActive": "Totaal actieve items",
+      "kpiScheduledWeek": "Deze week gepland",
+      "kpiPendingDrafts": "In afwachting van concepten",
+      "kpiPublished": "Alle gepubliceerde items",
+      "kpiAvgQuizScore": "Toetsresultaat",
+      "kpiQuizzesTaken": "Toetsen gedaan"
+    }
+  },
+  "quiz": {
+    "breadcrumb": "Quiz"
+  },
+  "assignment": {
+    "breadcrumb": "Opdracht"
+  },
+  "worksheet": {
+    "breadcrumb": "Werkblad"
+  },
+  "exam": {
+    "breadcrumb": "Examens",
+    "detail": {
+      "tabs": {
+        "analytics": "Analytics",
+        "results": "Resultaten",
+        "candidates": "Freelancers"
+      }
+    },
+    "statMarks": "merken"
+  },
+  "status": {
+    "draft": "Voorlopige versie",
+    "published": "Gepubliceerd",
+    "active": "Actief",
+    "closed": "Gesloten",
+    "graded": "Beoordeeld",
+    "submitted": "Ingediend",
+    "pending": "In afwachting",
+    "archived": "Is gearchiveerd",
+    "completed": "Voltooid",
+    "upcoming": "Binnenkort",
+    "ongoing": "Bezig",
+    "cancelled": "Geannuleerd",
+    "late": "Laat",
+    "onTime": "Op tijd"
+  },
+  "dashboard": {
+    "recentActivity": "Recente activiteit",
+    "viewAll": "Alles zien",
+    "teacherToolsOverview": "Overzicht Teacher Tools",
+    "greetingMorning": "Goedemorgen, {{name}}",
+    "greetingAfternoon": "Goedemiddag, {{name}}",
+    "greetingEvening": "Goedenavond, {{name}}",
+    "defaultName": "docent",
+    "workspaceReady": "Je werkruimte is klaar.",
+    "activeContent": "{{count}} actieve items in je werkruimte",
+    "createFirstQuiz": "Maak je eerste quiz om te beginnen.",
+    "createFirstQuizCta": "Quiz maken",
+    "totalContent": "Totale inhoud",
+    "thisWeek": "Deze week",
+    "draftBacklog": "Concepten in wacht",
+    "published": "Gepubliceerd",
+    "dayStreak": "Dagenreeks",
+    "upcomingDeadlines": "Aankomende deadlines",
+    "noDeadlines": "Geen aankomende deadlines",
+    "noActivity": "Geen recente activiteit",
+    "draftsToFinish": "Concepten af te maken",
+    "all": "Alles",
+    "noDrafts": "Geen concepten",
+    "coreWorkflows": "Kernworkflows",
+    "dueToday": "Vandaag verschuldigd",
+    "dueInDays": "Over {{count}} dagen",
+    "dueSoon": "Binnenkort: {{title}}",
+    "continueDraft": "Concept voortzetten: {{title}}",
+    "tools": {
+      "quiz": "Quiz",
+      "assignment": "Opdracht",
+      "worksheet": "Werkblad",
+      "exam": "Toets"
+    }
+  },
+  "tenantSelection": {
+    "title": "Werkruimte selecteren",
+    "subtitle": "Kies een werkruimte om door te gaan",
+    "workspace": "Werkruimte",
+    "signingIn": "Aanmelden…",
+    "scope": {
+      "institution": "Instelling",
+      "organization": "Organisatie",
+      "personalWorkspace": "Persoonlijke werkruimte"
+    }
+  }
+}

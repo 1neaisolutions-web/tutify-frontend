@@ -37,6 +37,7 @@ import {
   TrendingDown,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template'
@@ -63,6 +64,7 @@ interface LeaderboardConfig {
 }
 
 const PointsBadgesLeaderboards = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -316,7 +318,7 @@ Badges serve as visual representations of achievement, providing students with t
   const moduleProgress = lessons.length > 0 ? (completedLessons.length / lessons.length) * 100 : 0
 
   if (!currentLessonData) {
-    return <div>Loading...</div>
+    return <div>{t('pointsBadgesLeaderboards.loading')}</div>
   }
 
   return (
@@ -334,14 +336,10 @@ Badges serve as visual representations of achievement, providing students with t
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 2
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('pointsBadgesLeaderboards.module2')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    60 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('pointsBadgesLeaderboards.k0Min')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
                     <Star className="h-3 w-3" />
@@ -351,16 +349,14 @@ Badges serve as visual representations of achievement, providing students with t
                     }, 0)} / {lessons.reduce((sum, l) => sum + l.points, 0)} points
                   </span>
                 </div>
-                <h1 className="text-3xl font-bold">Points, Badges & Leaderboards</h1>
-                <p className="mt-2 text-blue-100">
-                  Master the most popular gamification elements and learn when and how to use them effectively
-                </p>
+                <h1 className="text-3xl font-bold">{t('pointsBadgesLeaderboards.pointsBadgesLeaderboards')}</h1>
+                <p className="mt-2 text-blue-100">{t('pointsBadgesLeaderboards.masterTheMostPopularGamificationElementsAndLearnWhenAnd')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm mb-4">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4" />
-                <span>High Impact</span>
+                <span>{t('pointsBadgesLeaderboards.highImpact')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Trophy className="w-4 h-4" />
@@ -393,7 +389,7 @@ Badges serve as visual representations of achievement, providing students with t
         {/* Sidebar - Lesson Navigation */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('pointsBadgesLeaderboards.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isActive = idx === currentLesson
@@ -468,9 +464,7 @@ Badges serve as visual representations of achievement, providing students with t
                 </div>
                 {completedLessons.includes(currentLessonData.id) && (
                   <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-semibold flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4" />
-                    Completed
-                  </span>
+                    <CheckCircle2 className="h-4 w-4" />{t('pointsBadgesLeaderboards.completed')}</span>
                 )}
               </div>
             </div>
@@ -504,7 +498,7 @@ Badges serve as visual representations of achievement, providing students with t
 
                 {currentLessonData.content?.keyPoints && currentLessonData.content.keyPoints.length > 0 && (
                   <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Points</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('pointsBadgesLeaderboards.keyPoints')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyPoints.map((point: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -529,7 +523,7 @@ Badges serve as visual representations of achievement, providing students with t
 
                 {currentLessonData.content?.keyTakeaways && currentLessonData.content.keyTakeaways.length > 0 && (
                   <div className="bg-purple-50 rounded-xl p-6 border border-purple-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Takeaways</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('pointsBadgesLeaderboards.keyTakeaways')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyTakeaways.map((takeaway: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -556,45 +550,43 @@ Badges serve as visual representations of achievement, providing students with t
                       onClick={() => setShowBadgeDesigner(true)}
                       className="w-full px-6 py-4 bg-amber-600 text-white rounded-xl font-semibold hover:bg-amber-700 transition flex items-center justify-center gap-2"
                     >
-                      <Zap className="h-5 w-5" />
-                      Launch Badge Designer
-                    </button>
+                      <Zap className="h-5 w-5" />{t('pointsBadgesLeaderboards.launchBadgeDesigner')}</button>
                   ) : (
                     <div className="bg-white rounded-xl p-6 border-2 border-amber-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Badge Designer</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('pointsBadgesLeaderboards.badgeDesigner')}</h3>
                       <div className="space-y-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Badge Name</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('pointsBadgesLeaderboards.badgeName')}</label>
                           <input
                             type="text"
                             value={badgeDesign.name}
                             onChange={(e) => setBadgeDesign({ ...badgeDesign, name: e.target.value })}
-                            placeholder="e.g., Master Researcher"
+                            placeholder={t('pointsBadgesLeaderboards.eGMasterResearcher')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('pointsBadgesLeaderboards.description')}</label>
                           <textarea
                             value={badgeDesign.description}
                             onChange={(e) => setBadgeDesign({ ...badgeDesign, description: e.target.value })}
-                            placeholder="What does this badge represent?"
+                            placeholder={t('pointsBadgesLeaderboards.whatDoesThisBadgeRepresent')}
                             rows={3}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Earning Criteria</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('pointsBadgesLeaderboards.earningCriteria')}</label>
                           <textarea
                             value={badgeDesign.criteria}
                             onChange={(e) => setBadgeDesign({ ...badgeDesign, criteria: e.target.value })}
-                            placeholder="What must students do to earn this badge?"
+                            placeholder={t('pointsBadgesLeaderboards.whatMustStudentsDoToEarnThisBadge')}
                             rows={3}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Badge Tier</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('pointsBadgesLeaderboards.badgeTier')}</label>
                           <div className="grid grid-cols-4 gap-2">
                             {(['bronze', 'silver', 'gold', 'platinum'] as const).map((tier) => (
                               <button
@@ -621,9 +613,7 @@ Badges serve as visual representations of achievement, providing students with t
                           <button
                             onClick={handleBadgeSubmit}
                             className="flex-1 px-6 py-3 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition"
-                          >
-                            Save Badge
-                          </button>
+                          >{t('pointsBadgesLeaderboards.saveBadge')}</button>
                           <button
                             onClick={() => setShowBadgeDesigner(false)}
                             className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition"
@@ -638,7 +628,7 @@ Badges serve as visual representations of achievement, providing students with t
 
                 {/* Badge Examples */}
                 <div className="bg-white rounded-xl p-6 border-2 border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Badge Examples</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('pointsBadgesLeaderboards.badgeExamples')}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {badgeExamples.map((badge, idx) => (
                       <div key={idx} className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-4 border border-gray-200">
@@ -669,7 +659,7 @@ Badges serve as visual representations of achievement, providing students with t
             {currentLessonData.type === 'video' && currentLessonData.id === 'leaderboards' && (
               <div className="mt-6 space-y-6">
                 <div className="bg-indigo-50 rounded-xl p-6 border border-indigo-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Leaderboard Types</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('pointsBadgesLeaderboards.leaderboardTypes')}</h3>
                   <div className="space-y-4">
                     {leaderboardTypes.map((type, idx) => (
                       <div key={idx} className="bg-white rounded-lg p-5 border border-indigo-200">
@@ -677,7 +667,7 @@ Badges serve as visual representations of achievement, providing students with t
                         <p className="text-sm text-gray-700 mb-3">{type.description}</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <p className="text-xs font-semibold text-green-700 mb-1">Pros:</p>
+                            <p className="text-xs font-semibold text-green-700 mb-1">{t('pointsBadgesLeaderboards.pros')}</p>
                             <ul className="space-y-1">
                               {type.pros.map((pro, pIdx) => (
                                 <li key={pIdx} className="text-xs text-gray-700 flex items-start gap-1">
@@ -688,7 +678,7 @@ Badges serve as visual representations of achievement, providing students with t
                             </ul>
                           </div>
                           <div>
-                            <p className="text-xs font-semibold text-red-700 mb-1">Cons:</p>
+                            <p className="text-xs font-semibold text-red-700 mb-1">{t('pointsBadgesLeaderboards.cons')}</p>
                             <ul className="space-y-1">
                               {type.cons.map((con, cIdx) => (
                                 <li key={cIdx} className="text-xs text-gray-700 flex items-start gap-1">
@@ -710,40 +700,38 @@ Badges serve as visual representations of achievement, providing students with t
                     onClick={() => setShowLeaderboardConfig(true)}
                     className="w-full px-6 py-4 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition flex items-center justify-center gap-2"
                   >
-                    <Zap className="h-5 w-5" />
-                    Configure Your Leaderboard
-                  </button>
+                    <Zap className="h-5 w-5" />{t('pointsBadgesLeaderboards.configureYourLeaderboard')}</button>
                 ) : (
                   <div className="bg-white rounded-xl p-6 border-2 border-indigo-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Leaderboard Configuration</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('pointsBadgesLeaderboards.leaderboardConfiguration')}</h3>
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Leaderboard Type</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('pointsBadgesLeaderboards.leaderboardType')}</label>
                         <select
                           value={leaderboardConfig.type}
                           onChange={(e) => setLeaderboardConfig({ ...leaderboardConfig, type: e.target.value as any })}
                           className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                         >
-                          <option value="individual">Individual</option>
-                          <option value="team">Team</option>
-                          <option value="personal-best">Personal Best</option>
+                          <option value="individual">{t('pointsBadgesLeaderboards.individual')}</option>
+                          <option value="team">{t('pointsBadgesLeaderboards.team')}</option>
+                          <option value="personal-best">{t('pointsBadgesLeaderboards.personalBest')}</option>
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Update Frequency</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('pointsBadgesLeaderboards.updateFrequency')}</label>
                         <select
                           value={leaderboardConfig.updateFrequency}
                           onChange={(e) => setLeaderboardConfig({ ...leaderboardConfig, updateFrequency: e.target.value })}
                           className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                         >
-                          <option value="real-time">Real-time</option>
-                          <option value="daily">Daily</option>
-                          <option value="weekly">Weekly</option>
-                          <option value="per-assessment">Per Assessment</option>
+                          <option value="real-time">{t('pointsBadgesLeaderboards.realTime')}</option>
+                          <option value="daily">{t('pointsBadgesLeaderboards.daily')}</option>
+                          <option value="weekly">{t('pointsBadgesLeaderboards.weekly')}</option>
+                          <option value="per-assessment">{t('pointsBadgesLeaderboards.perAssessment')}</option>
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Display Options</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">{t('pointsBadgesLeaderboards.displayOptions')}</label>
                         <div className="space-y-2">
                           {['Show top 10', 'Show all students', 'Show only my rank', 'Show team rankings'].map((option) => (
                             <label key={option} className="flex items-center gap-2">
@@ -774,9 +762,7 @@ Badges serve as visual representations of achievement, providing students with t
                         <button
                           onClick={handleLeaderboardSubmit}
                           className="flex-1 px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition"
-                        >
-                          Save Configuration
-                        </button>
+                        >{t('pointsBadgesLeaderboards.saveConfiguration')}</button>
                         <button
                           onClick={() => setShowLeaderboardConfig(false)}
                           className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition"
@@ -794,7 +780,7 @@ Badges serve as visual representations of achievement, providing students with t
             {currentLessonData.type === 'video' && currentLessonData.id === 'points-system' && (
               <div className="mt-6 space-y-6">
                 <div className="bg-green-50 rounded-xl p-6 border border-green-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Point System Examples</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('pointsBadgesLeaderboards.pointSystemExamples')}</h3>
                   <div className="space-y-4">
                     {pointSystemExamples.map((example, idx) => (
                       <div key={idx} className="bg-white rounded-lg p-5 border border-green-200">
@@ -821,7 +807,7 @@ Badges serve as visual representations of achievement, providing students with t
                     <h3 className="text-lg font-semibold text-gray-900 mb-3">{currentLessonData.content?.description}</h3>
                     {currentLessonData.content?.sections && currentLessonData.content.sections.length > 0 && (
                       <>
-                        <p className="text-sm text-gray-700 mb-4">This template includes the following sections:</p>
+                        <p className="text-sm text-gray-700 mb-4">{t('pointsBadgesLeaderboards.thisTemplateIncludesTheFollowingSections')}</p>
                         <ul className="space-y-2">
                           {currentLessonData.content.sections.map((section: string, idx: number) => (
                             <li key={idx} className="flex items-center gap-2 text-sm text-gray-700">
@@ -837,12 +823,12 @@ Badges serve as visual representations of achievement, providing students with t
 
                 {currentLessonData.content?.sections && currentLessonData.content.sections.length > 0 && (
                   <div className="bg-white rounded-xl p-6 border-2 border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Template Preview</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('pointsBadgesLeaderboards.templatePreview')}</h3>
                     <div className="space-y-4">
                       {currentLessonData.content.sections.map((section: string, idx: number) => (
                         <div key={idx} className="border-2 border-dashed border-gray-300 rounded-lg p-4">
                           <h4 className="text-sm font-semibold text-gray-900 mb-2">{section}</h4>
-                          <p className="text-xs text-gray-500 italic">Your content will appear here...</p>
+                          <p className="text-xs text-gray-500 italic">{t('pointsBadgesLeaderboards.yourContentWillAppearHere')}</p>
                         </div>
                       ))}
                     </div>
@@ -850,9 +836,7 @@ Badges serve as visual representations of achievement, providing students with t
                 )}
 
                 <button className="w-full px-6 py-4 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2">
-                  <Download className="h-5 w-5" />
-                  Download Template
-                </button>
+                  <Download className="h-5 w-5" />{t('pointsBadgesLeaderboards.downloadTemplate')}</button>
               </div>
             )}
 
@@ -863,9 +847,7 @@ Badges serve as visual representations of achievement, providing students with t
                 disabled={currentLesson === 0}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
-                <ArrowLeft className="h-4 w-4" />
-                Previous
-              </button>
+                <ArrowLeft className="h-4 w-4" />{t('pointsBadgesLeaderboards.previous')}</button>
 
               <button
                 onClick={() => {
@@ -878,18 +860,12 @@ Badges serve as visual representations of achievement, providing students with t
               >
                 {completedLessons.includes(currentLessonData.id) ? (
                   <>
-                    <CheckCircle2 className="h-4 w-4" />
-                    Marked Complete
-                  </>
+                    <CheckCircle2 className="h-4 w-4" />{t('pointsBadgesLeaderboards.markedComplete')}</>
                 ) : currentLesson === lessons.length - 1 ? (
                   <>
-                    <Trophy className="h-4 w-4" />
-                    Complete Module
-                  </>
+                    <Trophy className="h-4 w-4" />{t('pointsBadgesLeaderboards.completeModule')}</>
                 ) : (
-                  <>
-                    Complete & Next
-                    <ArrowRight className="h-4 w-4" />
+                  <>{t('pointsBadgesLeaderboards.completeNext')}<ArrowRight className="h-4 w-4" />
                   </>
                 )}
               </button>
@@ -902,7 +878,7 @@ Badges serve as visual representations of achievement, providing students with t
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-600 mb-4">
                 <Trophy className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Module Complete!</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('pointsBadgesLeaderboards.moduleComplete')}</h3>
               <p className="text-gray-700 mb-6">
                 You've earned {lessons.reduce((sum, l) => sum + l.points, 0)} points. Great work!
               </p>
@@ -913,9 +889,7 @@ Badges serve as visual representations of achievement, providing students with t
                 >
                   Continue to Next Module
                 </button>
-                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                  Download Certificate
-                </button>
+                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">{t('pointsBadgesLeaderboards.downloadCertificate')}</button>
               </div>
             </div>
           )}

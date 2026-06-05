@@ -23,6 +23,7 @@ export interface TemplateResponse {
   promptDefinition?: Record<string, unknown> | null
   exemplarInput?: Record<string, unknown> | null
   exemplarOutput?: Record<string, unknown> | null
+  renderSections?: Array<{ key: string; label: string; type?: string }> | null
   canonicalOutcome: string | null
   standards: TemplateStandardRef[]
   is_hot?: boolean

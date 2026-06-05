@@ -55,11 +55,13 @@ import {
   mapCodingStandardsAlignmentResult,
 } from '../../utils/codingTutorAdapters'
 
+import { useTranslation } from 'react-i18next'
 const CHATBOT_SLUG = 'coding-programming-tutor'
 
 type TabType = 'competition' | 'algorithm' | 'debugging' | 'pbl' | 'thinking' | 'roadmap' | 'standards'
 
 const CodingProgrammingTutor = () => {
+  const { t } = useTranslation()
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const [activeTab, setActiveTab] = useState<TabType>('competition')
@@ -152,7 +154,7 @@ const CodingProgrammingTutor = () => {
           setStandardsAlignment(mapCodingStandardsAlignmentResult(raw, standardsFramework, gradeLevel))
         }
       } catch {
-        toast.error('Could not restore saved output from History.')
+        toast.error(t('codingProgrammingTutor.couldNotRestoreSavedOutputFromHistory'))
       }
     },
   })
@@ -180,13 +182,13 @@ const CodingProgrammingTutor = () => {
       if (response == null) return
       setCompetitionProblem(mapCompetitionAnalyzerToProblem(response.result, selectedCompetition, text))
       pinFromResponse(response.conversation_id)
-      toast.success('Problem analyzed')
+      toast.success(t('codingProgrammingTutor.problemAnalyzed'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to analyze problem'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('codingProgrammingTutor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -211,13 +213,13 @@ const CodingProgrammingTutor = () => {
       if (response == null) return
       setAlgorithmExplanation(mapAlgorithmTutorResult(response.result, programmingLanguage))
       pinFromResponse(response.conversation_id)
-      toast.success('Algorithm explanation loaded')
+      toast.success(t('codingProgrammingTutor.algorithmExplanationLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load algorithm'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('codingProgrammingTutor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -242,13 +244,13 @@ const CodingProgrammingTutor = () => {
       if (response == null) return
       setDebuggingStrategy(mapDebuggingAssistantResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Debugging guidance loaded')
+      toast.success(t('codingProgrammingTutor.debuggingGuidanceLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load debugging strategy'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('codingProgrammingTutor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -274,13 +276,13 @@ const CodingProgrammingTutor = () => {
       if (response == null) return
       setProjectMilestones(mapProjectPlannerToMilestones(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Project plan generated')
+      toast.success(t('codingProgrammingTutor.projectPlanGenerated'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to generate project plan'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('codingProgrammingTutor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -304,13 +306,13 @@ const CodingProgrammingTutor = () => {
       if (response == null) return
       setComputationalThinking(mapComputationalThinkingResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Computational thinking activities loaded')
+      toast.success(t('codingProgrammingTutor.computationalThinkingActivitiesLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load computational thinking content'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('codingProgrammingTutor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -336,13 +338,13 @@ const CodingProgrammingTutor = () => {
       if (response == null) return
       setRoadmap(mapCompetitionRoadmapResult(response.result, selectedCompetition, targetLevel))
       pinFromResponse(response.conversation_id)
-      toast.success('Roadmap generated')
+      toast.success(t('codingProgrammingTutor.roadmapGenerated'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to generate roadmap'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('codingProgrammingTutor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -370,13 +372,13 @@ const CodingProgrammingTutor = () => {
       if (response == null) return
       setStandardsAlignment(mapCodingStandardsAlignmentResult(response.result, standardsFramework, gradeLevel))
       pinFromResponse(response.conversation_id)
-      toast.success('Standards alignment analyzed')
+      toast.success(t('codingProgrammingTutor.standardsAlignmentAnalyzed'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to analyze standards alignment'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('codingProgrammingTutor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -384,13 +386,13 @@ const CodingProgrammingTutor = () => {
   }
 
   const tabs = [
-    { id: 'competition' as TabType, label: 'Competition Analyzer', icon: Trophy },
-    { id: 'algorithm' as TabType, label: 'Algorithm Tutor', icon: Code },
-    { id: 'debugging' as TabType, label: 'Debugging Assistant', icon: Bug },
-    { id: 'pbl' as TabType, label: 'Project Planner', icon: Lightbulb },
-    { id: 'thinking' as TabType, label: 'Computational Thinking', icon: Brain },
-    { id: 'roadmap' as TabType, label: 'Competition Roadmap', icon: Target },
-    { id: 'standards' as TabType, label: 'Standards Alignment', icon: FileCheck },
+    { id: 'competition' as TabType, label: t('codingProgrammingTutor.tabs.competition'), icon: Trophy },
+    { id: 'algorithm' as TabType, label: t('codingProgrammingTutor.tabs.algorithm'), icon: Code },
+    { id: 'debugging' as TabType, label: t('codingProgrammingTutor.tabs.debugging'), icon: Bug },
+    { id: 'pbl' as TabType, label: t('codingProgrammingTutor.tabs.pbl'), icon: Lightbulb },
+    { id: 'thinking' as TabType, label: t('codingProgrammingTutor.tabs.thinking'), icon: Brain },
+    { id: 'roadmap' as TabType, label: t('codingProgrammingTutor.tabs.roadmap'), icon: Target },
+    { id: 'standards' as TabType, label: t('codingProgrammingTutor.tabs.standards'), icon: FileCheck },
   ]
 
   return (
@@ -405,7 +407,7 @@ const CodingProgrammingTutor = () => {
       )}
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-3xl p-8 text-white shadow-xl">
+      <div className="relative z-10 overflow-visible bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-3xl p-8 text-white shadow-xl">
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-4">
@@ -414,60 +416,61 @@ const CodingProgrammingTutor = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-3xl font-bold">Coding & Programming Tutor</h1>
+                  <h1 className="text-3xl font-bold">{t('codingProgrammingTutor.codingProgrammingTutor')}</h1>
                   <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
                     <Star className="h-3 w-3" /> 4.9★
                   </span>
                   <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" /> Premium
-                  </span>
+                    <Lock className="inline h-3 w-3 mr-1" />{t('codingProgrammingTutor.premium')}</span>
                   <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
-                    <Globe className="inline h-3 w-3 mr-1" /> Global Competitions
-                  </span>
+                    <Globe className="inline h-3 w-3 mr-1" />{t('codingProgrammingTutor.globalCompetitions')}</span>
                 </div>
-                <p className="mt-2 text-indigo-100">
-                  Advanced tools for teaching coding and preparing students for international competitions. 
-                  Features competition problem analysis, algorithm explanations, debugging strategies, 
-                  project-based learning, and standards alignment.
-                </p>
+                <p className="mt-2 text-indigo-100">{t('codingProgrammingTutor.advancedToolsForTeachingCodingAndPreparingStudentsForIn')}</p>
               </div>
             </div>
             
             {/* Quick Settings */}
-            <div className="flex flex-wrap gap-4 mt-6">
+            <div className="relative z-20 flex flex-wrap gap-4 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Grade Level:</label>
+                <label htmlFor="coding-tutor-grade" className="text-sm font-medium shrink-0">{t('codingProgrammingTutor.gradeLevel')}</label>
                 <select
+                  id="coding-tutor-grade"
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select"
                 >
-                  <option value="K-5">K-5</option>
+                  <option value="K-5">{t('codingProgrammingTutor.k5')}</option>
                   <option value="6-8">6-8</option>
                   <option value="9-12">9-12</option>
                 </select>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Language:</label>
+                <label htmlFor="coding-tutor-language" className="text-sm font-medium shrink-0">{t('codingProgrammingTutor.language')}</label>
                 <select
+                  id="coding-tutor-language"
                   value={programmingLanguage}
                   onChange={(e) => setProgrammingLanguage(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select min-w-[8.5rem]"
                 >
                   {languages.map(lang => (
-                    <option key={lang.id} value={lang.id}>{lang.name}</option>
+                    <option key={lang.id} value={lang.id}>
+                      {lang.name}
+                    </option>
                   ))}
                 </select>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Competition:</label>
+                <label htmlFor="coding-tutor-competition" className="text-sm font-medium shrink-0">{t('codingProgrammingTutor.competition')}</label>
                 <select
+                  id="coding-tutor-competition"
                   value={selectedCompetition}
                   onChange={(e) => setSelectedCompetition(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select min-w-[9.5rem]"
                 >
                   {competitions.map(comp => (
-                    <option key={comp.id} value={comp.id}>{comp.name}</option>
+                    <option key={comp.id} value={comp.id}>
+                      {comp.name}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -506,22 +509,15 @@ const CodingProgrammingTutor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-6 border border-purple-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Trophy className="h-6 w-6 text-purple-600" />
-                  Competition Problem Analyzer
-                </h2>
-                <p className="text-gray-600 mb-4">
-                  Analyze competition problems from major platforms. Get solution approaches, 
-                  algorithm recommendations, and practice suggestions.
-                </p>
+                  <Trophy className="h-6 w-6 text-purple-600" />{t('codingProgrammingTutor.competitionProblemAnalyzer')}</h2>
+                <p className="text-gray-600 mb-4">{t('codingProgrammingTutor.analyzeCompetitionProblemsFromMajorPlatformsGetSolution')}</p>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Problem Description
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('codingProgrammingTutor.problemDescription')}</label>
                     <textarea
                       value={problemText}
                       onChange={(e) => setProblemText(e.target.value)}
-                      placeholder="Paste the competition problem description here..."
+                      placeholder={t('codingProgrammingTutor.pasteTheCompetitionProblemDescriptionHere')}
                       className="w-full h-32 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     />
                   </div>
@@ -532,14 +528,10 @@ const CodingProgrammingTutor = () => {
                   >
                     {isGenerating ? (
                       <>
-                        <RefreshCw className="h-5 w-5 animate-spin" />
-                        Analyzing...
-                      </>
+                        <RefreshCw className="h-5 w-5 animate-spin" />{t('codingProgrammingTutor.analyzing')}</>
                     ) : (
                       <>
-                        <Sparkles className="h-5 w-5" />
-                        Analyze Problem
-                      </>
+                        <Sparkles className="h-5 w-5" />{t('codingProgrammingTutor.analyzeProblem')}</>
                     )}
                   </button>
                 </div>
@@ -570,13 +562,13 @@ const CodingProgrammingTutor = () => {
 
                     <div className="space-y-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Description</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.description')}</h4>
                         <p className="text-gray-700">{competitionProblem.description}</p>
                       </div>
 
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Constraints</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.constraints')}</h4>
                           <ul className="list-disc list-inside space-y-1 text-gray-700">
                             {competitionProblem.constraints.map((c, i) => (
                               <li key={i}>{c}</li>
@@ -584,7 +576,7 @@ const CodingProgrammingTutor = () => {
                           </ul>
                         </div>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Sample Input</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.sampleInput')}</h4>
                           <pre className="bg-gray-50 p-3 rounded border text-sm">
                             {competitionProblem.sampleInput.join('\n')}
                           </pre>
@@ -592,7 +584,7 @@ const CodingProgrammingTutor = () => {
                       </div>
 
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Solution Approach</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.solutionApproach')}</h4>
                         <ol className="list-decimal list-inside space-y-2 text-gray-700">
                           {competitionProblem.solutionApproach.map((step, i) => (
                             <li key={i}>{step}</li>
@@ -602,7 +594,7 @@ const CodingProgrammingTutor = () => {
 
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Algorithms</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.algorithms')}</h4>
                           <div className="flex flex-wrap gap-2">
                             {competitionProblem.algorithms.map((alg, i) => (
                               <span key={i} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
@@ -612,7 +604,7 @@ const CodingProgrammingTutor = () => {
                           </div>
                         </div>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Data Structures</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.dataStructures')}</h4>
                           <div className="flex flex-wrap gap-2">
                             {competitionProblem.dataStructures.map((ds, i) => (
                               <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -625,11 +617,11 @@ const CodingProgrammingTutor = () => {
 
                       <div className="flex items-center gap-6 pt-4 border-t border-gray-200">
                         <div>
-                          <span className="text-sm text-gray-500">Time Complexity</span>
+                          <span className="text-sm text-gray-500">{t('codingProgrammingTutor.timeComplexity')}</span>
                           <p className="font-semibold text-gray-900">{competitionProblem.timeComplexity}</p>
                         </div>
                         <div>
-                          <span className="text-sm text-gray-500">Space Complexity</span>
+                          <span className="text-sm text-gray-500">{t('codingProgrammingTutor.spaceComplexity')}</span>
                           <p className="font-semibold text-gray-900">{competitionProblem.spaceComplexity}</p>
                         </div>
                       </div>
@@ -645,25 +637,21 @@ const CodingProgrammingTutor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Code className="h-6 w-6 text-blue-600" />
-                  Algorithm & Data Structure Tutor
-                </h2>
+                  <Code className="h-6 w-6 text-blue-600" />{t('codingProgrammingTutor.algorithmDataStructureTutor')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select Algorithm
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('codingProgrammingTutor.selectAlgorithm')}</label>
                     <select
                       value={selectedAlgorithm}
                       onChange={(e) => setSelectedAlgorithm(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     >
-                      <option>Binary Search</option>
-                      <option>Quick Sort</option>
-                      <option>Merge Sort</option>
-                      <option>BFS/DFS</option>
-                      <option>Dijkstra's Algorithm</option>
-                      <option>Dynamic Programming</option>
+                      <option>{t('codingProgrammingTutor.binarySearch')}</option>
+                      <option>{t('codingProgrammingTutor.quickSort')}</option>
+                      <option>{t('codingProgrammingTutor.mergeSort')}</option>
+                      <option>{t('codingProgrammingTutor.bfsDfs')}</option>
+                      <option>{t('codingProgrammingTutor.dijkstraSAlgorithm')}</option>
+                      <option>{t('codingProgrammingTutor.dynamicProgramming')}</option>
                     </select>
                   </div>
                   <div className="flex items-end">
@@ -674,14 +662,10 @@ const CodingProgrammingTutor = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Loading...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('codingProgrammingTutor.loading')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Get Explanation
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('codingProgrammingTutor.getExplanation')}</>
                       )}
                     </button>
                   </div>
@@ -698,11 +682,11 @@ const CodingProgrammingTutor = () => {
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="text-right">
-                          <span className="text-xs text-gray-500">Time</span>
+                          <span className="text-xs text-gray-500">{t('codingProgrammingTutor.time')}</span>
                           <p className="font-semibold text-gray-900">{algorithmExplanation.timeComplexity}</p>
                         </div>
                         <div className="text-right">
-                          <span className="text-xs text-gray-500">Space</span>
+                          <span className="text-xs text-gray-500">{t('codingProgrammingTutor.space')}</span>
                           <p className="font-semibold text-gray-900">{algorithmExplanation.spaceComplexity}</p>
                         </div>
                       </div>
@@ -712,7 +696,7 @@ const CodingProgrammingTutor = () => {
 
                     <div className="space-y-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Use Cases</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.useCases')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {algorithmExplanation.useCases.map((use, i) => (
                             <li key={i}>{use}</li>
@@ -731,14 +715,12 @@ const CodingProgrammingTutor = () => {
                           </pre>
                         </div>
                         <button className="mt-2 flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700">
-                          <Copy className="h-4 w-4" />
-                          Copy Code
-                        </button>
+                          <Copy className="h-4 w-4" />{t('codingProgrammingTutor.copyCode')}</button>
                       </div>
 
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Common Mistakes</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.commonMistakes')}</h4>
                           <ul className="list-disc list-inside space-y-1 text-gray-700">
                             {algorithmExplanation.commonMistakes.map((mistake, i) => (
                               <li key={i}>{mistake}</li>
@@ -746,7 +728,7 @@ const CodingProgrammingTutor = () => {
                           </ul>
                         </div>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Optimization Tips</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.optimizationTips')}</h4>
                           <ul className="list-disc list-inside space-y-1 text-gray-700">
                             {algorithmExplanation.optimizationTips.map((tip, i) => (
                               <li key={i}>{tip}</li>
@@ -766,24 +748,20 @@ const CodingProgrammingTutor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-xl p-6 border border-red-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Bug className="h-6 w-6 text-red-600" />
-                  Debugging Assistant
-                </h2>
+                  <Bug className="h-6 w-6 text-red-600" />{t('codingProgrammingTutor.debuggingAssistant')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Error Type
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('codingProgrammingTutor.errorType')}</label>
                     <select
                       value={errorType}
                       onChange={(e) => setErrorType(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
                     >
-                      <option>Index Out of Bounds</option>
-                      <option>Null Pointer Exception</option>
-                      <option>Time Limit Exceeded</option>
-                      <option>Wrong Answer</option>
-                      <option>Runtime Error</option>
+                      <option>{t('codingProgrammingTutor.indexOutOfBounds')}</option>
+                      <option>{t('codingProgrammingTutor.nullPointerException')}</option>
+                      <option>{t('codingProgrammingTutor.timeLimitExceeded')}</option>
+                      <option>{t('codingProgrammingTutor.wrongAnswer')}</option>
+                      <option>{t('codingProgrammingTutor.runtimeError')}</option>
                     </select>
                   </div>
                   <div className="flex items-end">
@@ -794,14 +772,10 @@ const CodingProgrammingTutor = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Loading...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('codingProgrammingTutor.loading')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Get Strategy
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('codingProgrammingTutor.getStrategy')}</>
                       )}
                     </button>
                   </div>
@@ -813,7 +787,7 @@ const CodingProgrammingTutor = () => {
                   <textarea
                     value={codeInput}
                     onChange={(e) => setCodeInput(e.target.value)}
-                    placeholder="Paste your code here for analysis..."
+                    placeholder={t('codingProgrammingTutor.pasteYourCodeHereForAnalysis')}
                     className="w-full h-32 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 font-mono text-sm"
                   />
                 </div>
@@ -825,7 +799,7 @@ const CodingProgrammingTutor = () => {
                   
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Symptoms</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.symptoms')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {debuggingStrategy.symptoms.map((symptom, i) => (
                           <span key={i} className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
@@ -836,7 +810,7 @@ const CodingProgrammingTutor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Common Causes</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.commonCauses')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {debuggingStrategy.commonCauses.map((cause, i) => (
                           <li key={i}>{cause}</li>
@@ -845,7 +819,7 @@ const CodingProgrammingTutor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Step-by-Step Approach</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.stepByStepApproach')}</h4>
                       <ol className="list-decimal list-inside space-y-2 text-gray-700">
                         {debuggingStrategy.stepByStepApproach.map((step, i) => (
                           <li key={i}>{step}</li>
@@ -855,7 +829,7 @@ const CodingProgrammingTutor = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Recommended Tools</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.recommendedTools')}</h4>
                         <div className="flex flex-wrap gap-2">
                           {debuggingStrategy.tools.map((tool, i) => (
                             <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -865,7 +839,7 @@ const CodingProgrammingTutor = () => {
                         </div>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Prevention Tips</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.preventionTips')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {debuggingStrategy.preventionTips.map((tip, i) => (
                             <li key={i}>{tip}</li>
@@ -875,7 +849,7 @@ const CodingProgrammingTutor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Example Fix</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.exampleFix')}</h4>
                       <div className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto">
                         <pre className="text-sm">
                           <code>{debuggingStrategy.exampleFix}</code>
@@ -893,39 +867,33 @@ const CodingProgrammingTutor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Lightbulb className="h-6 w-6 text-green-600" />
-                  Project-Based Learning Planner
-                </h2>
+                  <Lightbulb className="h-6 w-6 text-green-600" />{t('codingProgrammingTutor.projectBasedLearningPlanner')}</h2>
                 <div className="grid md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Project Type
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('codingProgrammingTutor.projectType')}</label>
                     <select
                       value={projectType}
                       onChange={(e) => setProjectType(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
                     >
-                      <option>Web Application</option>
-                      <option>Game Development</option>
-                      <option>Mobile App</option>
-                      <option>Data Science Project</option>
-                      <option>AI/ML Project</option>
+                      <option>{t('codingProgrammingTutor.webApplication')}</option>
+                      <option>{t('codingProgrammingTutor.gameDevelopment')}</option>
+                      <option>{t('codingProgrammingTutor.mobileApp')}</option>
+                      <option>{t('codingProgrammingTutor.dataScienceProject')}</option>
+                      <option>{t('codingProgrammingTutor.aiMlProject')}</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Duration
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('codingProgrammingTutor.duration')}</label>
                     <select
                       value={projectDuration}
                       onChange={(e) => setProjectDuration(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
                     >
-                      <option>4 weeks</option>
-                      <option>6 weeks</option>
-                      <option>8 weeks</option>
-                      <option>12 weeks</option>
+                      <option>{t('codingProgrammingTutor.kWeeks')}</option>
+                      <option>{t('codingProgrammingTutor.kWeeks2')}</option>
+                      <option>{t('codingProgrammingTutor.kWeeks3')}</option>
+                      <option>{t('codingProgrammingTutor.k2Weeks')}</option>
                     </select>
                   </div>
                   <div className="flex items-end">
@@ -936,14 +904,10 @@ const CodingProgrammingTutor = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Generating...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('codingProgrammingTutor.generating')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Generate Plan
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('codingProgrammingTutor.generatePlan')}</>
                       )}
                     </button>
                   </div>
@@ -974,7 +938,7 @@ const CodingProgrammingTutor = () => {
 
                       <div className="grid md:grid-cols-2 gap-4 mt-4">
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Deliverables</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.deliverables')}</h4>
                           <ul className="list-disc list-inside space-y-1 text-gray-700">
                             {milestone.deliverables.map((del, i) => (
                               <li key={i}>{del}</li>
@@ -982,7 +946,7 @@ const CodingProgrammingTutor = () => {
                           </ul>
                         </div>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Skills Developed</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.skillsDeveloped')}</h4>
                           <div className="flex flex-wrap gap-2">
                             {milestone.skills.map((skill, i) => (
                               <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -994,7 +958,7 @@ const CodingProgrammingTutor = () => {
                       </div>
 
                       <div className="mt-4 pt-4 border-t border-gray-200">
-                        <h4 className="font-semibold text-gray-900 mb-2">Resources</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.resources')}</h4>
                         <div className="flex flex-wrap gap-2">
                           {milestone.resources.map((resource, i) => (
                             <a
@@ -1020,13 +984,8 @@ const CodingProgrammingTutor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Brain className="h-6 w-6 text-purple-600" />
-                  Computational Thinking Framework
-                </h2>
-                <p className="text-gray-600 mb-4">
-                  Explore the four pillars of computational thinking: Decomposition, Pattern Recognition, 
-                  Abstraction, and Algorithm Design.
-                </p>
+                  <Brain className="h-6 w-6 text-purple-600" />{t('codingProgrammingTutor.computationalThinkingFramework')}</h2>
+                <p className="text-gray-600 mb-4">{t('codingProgrammingTutor.exploreTheFourPillarsOfComputationalThinkingDecompositi')}</p>
                 <button
                   onClick={handleGetComputationalThinking}
                   disabled={isGenerating}
@@ -1034,14 +993,10 @@ const CodingProgrammingTutor = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('codingProgrammingTutor.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load Framework
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('codingProgrammingTutor.loadFramework')}</>
                   )}
                 </button>
               </div>
@@ -1050,17 +1005,15 @@ const CodingProgrammingTutor = () => {
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                     <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                      <Layers className="h-5 w-5 text-purple-600" />
-                      Decomposition
-                    </h3>
+                      <Layers className="h-5 w-5 text-purple-600" />{t('codingProgrammingTutor.decomposition')}</h3>
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Steps</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.steps')}</h4>
                       <ol className="list-decimal list-inside space-y-1 text-gray-700">
                         {computationalThinking.decomposition.steps.map((step, i) => (
                           <li key={i}>{step}</li>
                         ))}
                       </ol>
-                      <h4 className="font-semibold text-gray-900 mb-2 mt-4">Examples</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2 mt-4">{t('codingProgrammingTutor.examples')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {computationalThinking.decomposition.examples.map((ex, i) => (
                           <li key={i}>{ex}</li>
@@ -1071,17 +1024,15 @@ const CodingProgrammingTutor = () => {
 
                   <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                     <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                      <Zap className="h-5 w-5 text-yellow-600" />
-                      Pattern Recognition
-                    </h3>
+                      <Zap className="h-5 w-5 text-yellow-600" />{t('codingProgrammingTutor.patternRecognition')}</h3>
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Patterns</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.patterns')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {computationalThinking.patternRecognition.patterns.map((pattern, i) => (
                           <li key={i}>{pattern}</li>
                         ))}
                       </ul>
-                      <h4 className="font-semibold text-gray-900 mb-2 mt-4">Exercises</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2 mt-4">{t('codingProgrammingTutor.exercises')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {computationalThinking.patternRecognition.exercises.map((ex, i) => (
                           <li key={i}>{ex}</li>
@@ -1092,17 +1043,15 @@ const CodingProgrammingTutor = () => {
 
                   <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                     <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                      <Layers className="h-5 w-5 text-blue-600" />
-                      Abstraction
-                    </h3>
+                      <Layers className="h-5 w-5 text-blue-600" />{t('codingProgrammingTutor.abstraction')}</h3>
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Concepts</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.concepts')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {computationalThinking.abstraction.concepts.map((concept, i) => (
                           <li key={i}>{concept}</li>
                         ))}
                       </ul>
-                      <h4 className="font-semibold text-gray-900 mb-2 mt-4">Applications</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2 mt-4">{t('codingProgrammingTutor.applications')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {computationalThinking.abstraction.applications.map((app, i) => (
                           <li key={i}>{app}</li>
@@ -1113,17 +1062,15 @@ const CodingProgrammingTutor = () => {
 
                   <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                     <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                      <Code className="h-5 w-5 text-green-600" />
-                      Algorithm Design
-                    </h3>
+                      <Code className="h-5 w-5 text-green-600" />{t('codingProgrammingTutor.algorithmDesign')}</h3>
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Principles</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.principles')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {computationalThinking.algorithmDesign.principles.map((principle, i) => (
                           <li key={i}>{principle}</li>
                         ))}
                       </ul>
-                      <h4 className="font-semibold text-gray-900 mb-2 mt-4">Strategies</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2 mt-4">{t('codingProgrammingTutor.strategies')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {computationalThinking.algorithmDesign.strategies.map((strategy, i) => (
                           <li key={i}>{strategy}</li>
@@ -1141,36 +1088,30 @@ const CodingProgrammingTutor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-6 border border-amber-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Target className="h-6 w-6 text-amber-600" />
-                  Competition Preparation Roadmap
-                </h2>
+                  <Target className="h-6 w-6 text-amber-600" />{t('codingProgrammingTutor.competitionPreparationRoadmap')}</h2>
                 <div className="grid md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Current Level
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('codingProgrammingTutor.currentLevel')}</label>
                     <select
                       value={currentLevel}
                       onChange={(e) => setCurrentLevel(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500"
                     >
-                      <option value="beginner">Beginner</option>
-                      <option value="intermediate">Intermediate</option>
-                      <option value="advanced">Advanced</option>
+                      <option value="beginner">{t('codingProgrammingTutor.beginner')}</option>
+                      <option value="intermediate">{t('codingProgrammingTutor.intermediate')}</option>
+                      <option value="advanced">{t('codingProgrammingTutor.advanced')}</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Target Level
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('codingProgrammingTutor.targetLevel')}</label>
                     <select
                       value={targetLevel}
                       onChange={(e) => setTargetLevel(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500"
                     >
-                      <option value="intermediate">Intermediate</option>
-                      <option value="advanced">Advanced</option>
-                      <option value="expert">Expert</option>
+                      <option value="intermediate">{t('codingProgrammingTutor.intermediate')}</option>
+                      <option value="advanced">{t('codingProgrammingTutor.advanced')}</option>
+                      <option value="expert">{t('codingProgrammingTutor.expert')}</option>
                     </select>
                   </div>
                   <div className="flex items-end">
@@ -1181,14 +1122,10 @@ const CodingProgrammingTutor = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Generating...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('codingProgrammingTutor.generating')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Generate Roadmap
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('codingProgrammingTutor.generateRoadmap')}</>
                       )}
                     </button>
                   </div>
@@ -1204,7 +1141,7 @@ const CodingProgrammingTutor = () => {
                         <p className="text-gray-600">Target Level: {roadmap.level}</p>
                       </div>
                       <div className="text-right">
-                        <span className="text-sm text-gray-500">Alignment Score</span>
+                        <span className="text-sm text-gray-500">{t('codingProgrammingTutor.alignmentScore')}</span>
                         <p className="text-2xl font-bold text-green-600">{roadmap.learningPath.length * 20}%</p>
                       </div>
                     </div>
@@ -1224,7 +1161,7 @@ const CodingProgrammingTutor = () => {
                           
                           <div className="grid md:grid-cols-2 gap-4 mt-4">
                             <div>
-                              <h5 className="font-semibold text-gray-900 mb-2">Topics</h5>
+                              <h5 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.topics')}</h5>
                               <div className="flex flex-wrap gap-2">
                                 {phase.topics.map((topic, i) => (
                                   <span key={i} className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
@@ -1234,7 +1171,7 @@ const CodingProgrammingTutor = () => {
                               </div>
                             </div>
                             <div>
-                              <h5 className="font-semibold text-gray-900 mb-2">Practice Problems</h5>
+                              <h5 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.practiceProblems')}</h5>
                               <ul className="list-disc list-inside text-sm text-gray-700">
                                 {phase.practiceProblems.map((prob, i) => (
                                   <li key={i}>{prob}</li>
@@ -1244,7 +1181,7 @@ const CodingProgrammingTutor = () => {
                           </div>
 
                           <div className="mt-4">
-                            <h5 className="font-semibold text-gray-900 mb-2">Resources</h5>
+                            <h5 className="font-semibold text-gray-900 mb-2">{t('codingProgrammingTutor.resources')}</h5>
                             <div className="flex flex-wrap gap-2">
                               {phase.resources.map((resource, i) => (
                                 <a
@@ -1272,14 +1209,10 @@ const CodingProgrammingTutor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 border border-indigo-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <FileCheck className="h-6 w-6 text-indigo-600" />
-                  International Standards Alignment
-                </h2>
+                  <FileCheck className="h-6 w-6 text-indigo-600" />{t('codingProgrammingTutor.internationalStandardsAlignment')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Standards Framework
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('codingProgrammingTutor.standardsFramework')}</label>
                     <select
                       value={standardsFramework}
                       onChange={(e) => setStandardsFramework(e.target.value)}
@@ -1287,8 +1220,8 @@ const CodingProgrammingTutor = () => {
                     >
                       <option value="CSTA">CSTA (Computer Science Teachers Association)</option>
                       <option value="ISTE">ISTE (International Society for Technology in Education)</option>
-                      <option value="UK">UK Computing Curriculum</option>
-                      <option value="Australia">Australian Digital Technologies</option>
+                      <option value="UK">{t('codingProgrammingTutor.ukComputingCurriculum')}</option>
+                      <option value="Australia">{t('codingProgrammingTutor.australianDigitalTechnologies')}</option>
                     </select>
                   </div>
                   <div className="flex items-end">
@@ -1299,26 +1232,20 @@ const CodingProgrammingTutor = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Analyzing...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('codingProgrammingTutor.analyzing')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Check Alignment
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('codingProgrammingTutor.checkAlignment')}</>
                       )}
                     </button>
                   </div>
                 </div>
                 <div className="mt-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Content/Curriculum to Analyze
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('codingProgrammingTutor.contentCurriculumToAnalyze')}</label>
                   <textarea
                     value={contentInput}
                     onChange={(e) => setContentInput(e.target.value)}
-                    placeholder="Describe your curriculum, lesson plan, or learning objectives..."
+                    placeholder={t('codingProgrammingTutor.describeYourCurriculumLessonPlanOrLearningObjectives')}
                     className="w-full h-32 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
@@ -1332,7 +1259,7 @@ const CodingProgrammingTutor = () => {
                       <p className="text-gray-600">Grade Level: {standardsAlignment.gradeLevel}</p>
                     </div>
                     <div className="text-right">
-                      <span className="text-sm text-gray-500">Alignment Score</span>
+                      <span className="text-sm text-gray-500">{t('codingProgrammingTutor.alignmentScore')}</span>
                       <p className="text-3xl font-bold text-green-600">{standardsAlignment.alignmentScore}%</p>
                     </div>
                   </div>
@@ -1345,7 +1272,7 @@ const CodingProgrammingTutor = () => {
                         
                         <div className="grid md:grid-cols-2 gap-4">
                           <div>
-                            <h5 className="font-semibold text-gray-900 mb-2 text-sm">Evidence</h5>
+                            <h5 className="font-semibold text-gray-900 mb-2 text-sm">{t('codingProgrammingTutor.evidence')}</h5>
                             <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                               {comp.evidence.map((ev, i) => (
                                 <li key={i}>{ev}</li>
@@ -1353,7 +1280,7 @@ const CodingProgrammingTutor = () => {
                             </ul>
                           </div>
                           <div>
-                            <h5 className="font-semibold text-gray-900 mb-2 text-sm">Assessment</h5>
+                            <h5 className="font-semibold text-gray-900 mb-2 text-sm">{t('codingProgrammingTutor.assessment')}</h5>
                             <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                               {comp.assessment.map((ass, i) => (
                                 <li key={i}>{ass}</li>

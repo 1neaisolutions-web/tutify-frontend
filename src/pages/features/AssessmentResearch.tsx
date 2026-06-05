@@ -24,6 +24,7 @@ import {
   ArrowRight,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface FeedbackType {
   type: string
   description: string
@@ -43,6 +44,7 @@ interface FormativeAssessmentStrategy {
 const ASSESSMENT_SLUG = 'assessment-research'
 
 function AssessmentResearchInner() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [activeSection, setActiveSection] = useState<'overview' | 'research' | 'feedback' | 'strategies' | 'implementation'>('overview')
 
@@ -211,35 +213,29 @@ function AssessmentResearchInner() {
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Research Insight
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('assessmentResearch.researchInsight')}</span>
                   <span className="text-white/80">•</span>
-                  <span className="text-white/80 text-sm">Assessment</span>
+                  <span className="text-white/80 text-sm">{t('assessmentResearch.assessment')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    7 min read
-                  </span>
+                    <Clock className="h-3 w-3" />{t('assessmentResearch.kMinRead')}</span>
                 </div>
-                <h1 className="text-3xl font-bold">Formative Assessment: What Research Says</h1>
-                <p className="mt-2 text-green-100">
-                  Key findings from Black & Wiliam and how to implement feedback loops effectively
-                </p>
+                <h1 className="text-3xl font-bold">{t('assessmentResearch.formativeAssessmentWhatResearchSays')}</h1>
+                <p className="mt-2 text-green-100">{t('assessmentResearch.keyFindingsFromBlackWiliamAndHowToImplementFeedback')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm">
               <div className="flex items-center gap-2">
                 <Star className="w-4 h-4" />
-                <span>Evidence-Based</span>
+                <span>{t('assessmentResearch.evidenceBased')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Lightbulb className="w-4 w-4" />
-                <span>Practical Strategies</span>
+                <span>{t('assessmentResearch.practicalStrategies')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Target className="w-4 w-4" />
-                <span>High Impact</span>
+                <span>{t('assessmentResearch.highImpact')}</span>
               </div>
             </div>
           </div>
@@ -261,7 +257,7 @@ function AssessmentResearchInner() {
         {/* Sidebar Navigation */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Sections</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('assessmentResearch.sections')}</h3>
             <div className="space-y-1">
               {[
                 { id: 'overview', label: 'Overview', icon: Eye },
@@ -297,45 +293,41 @@ function AssessmentResearchInner() {
             {activeSection === 'overview' && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">What is Formative Assessment?</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('assessmentResearch.whatIsFormativeAssessment')}</h2>
                   <p className="text-gray-700 leading-relaxed mb-4">
                     Formative assessment is the process of gathering evidence about student learning during instruction 
                     to inform teaching and learning. Unlike summative assessment (which evaluates learning at the end), 
                     formative assessment happens continuously throughout the learning process.
                   </p>
                   <div className="bg-green-50 rounded-xl p-6 border border-green-200 mb-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Characteristics</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('assessmentResearch.keyCharacteristics')}</h3>
                     <ul className="space-y-2">
                       <li className="flex items-start gap-2 text-gray-700">
                         <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                        <span><strong>Ongoing:</strong> Happens continuously during instruction</span>
+                        <span><strong>{t('assessmentResearch.ongoing')}</strong>{t('assessmentResearch.happensContinuouslyDuringInstruction')}</span>
                       </li>
                       <li className="flex items-start gap-2 text-gray-700">
                         <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                        <span><strong>Low-stakes:</strong> Not used for grades, but for learning</span>
+                        <span><strong>{t('assessmentResearch.lowStakes')}</strong>{t('assessmentResearch.notUsedForGradesButForLearning')}</span>
                       </li>
                       <li className="flex items-start gap-2 text-gray-700">
                         <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                        <span><strong>Actionable:</strong> Provides information to adjust teaching and learning</span>
+                        <span><strong>{t('assessmentResearch.actionable')}</strong>{t('assessmentResearch.providesInformationToAdjustTeachingAndLearning')}</span>
                       </li>
                       <li className="flex items-start gap-2 text-gray-700">
                         <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                        <span><strong>Student-centered:</strong> Involves students in the assessment process</span>
+                        <span><strong>{t('assessmentResearch.studentCentered')}</strong>{t('assessmentResearch.involvesStudentsInTheAssessmentProcess')}</span>
                       </li>
                     </ul>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div className="bg-blue-50 rounded-xl p-5 border border-blue-200">
-                      <h4 className="text-base font-semibold text-gray-900 mb-2">Assessment FOR Learning</h4>
-                      <p className="text-sm text-gray-700">
-                        Formative assessment helps teachers understand what students know and adjust instruction accordingly.
-                      </p>
+                      <h4 className="text-base font-semibold text-gray-900 mb-2">{t('assessmentResearch.assessmentForLearning')}</h4>
+                      <p className="text-sm text-gray-700">{t('assessmentResearch.formativeAssessmentHelpsTeachersUnderstandWhatStudentsK')}</p>
                     </div>
                     <div className="bg-purple-50 rounded-xl p-5 border border-purple-200">
-                      <h4 className="text-base font-semibold text-gray-900 mb-2">Assessment OF Learning</h4>
-                      <p className="text-sm text-gray-700">
-                        Summative assessment evaluates what students have learned at the end of a unit or course.
-                      </p>
+                      <h4 className="text-base font-semibold text-gray-900 mb-2">{t('assessmentResearch.assessmentOfLearning')}</h4>
+                      <p className="text-sm text-gray-700">{t('assessmentResearch.summativeAssessmentEvaluatesWhatStudentsHaveLearnedAtTh')}</p>
                     </div>
                   </div>
                 </div>
@@ -346,11 +338,8 @@ function AssessmentResearchInner() {
             {activeSection === 'research' && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Black & Wiliam's Research</h2>
-                  <p className="text-gray-700 mb-6">
-                    Paul Black and Dylan Wiliam's 1998 review of research on formative assessment found compelling evidence 
-                    for its effectiveness. Their work has shaped how we understand assessment for learning.
-                  </p>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('assessmentResearch.blackWiliamSResearch')}</h2>
+                  <p className="text-gray-700 mb-6">{t('assessmentResearch.paulBlackAndDylanWiliamS1998ReviewOfResearch')}</p>
                   <div className="space-y-4 mb-6">
                     {researchFindings.map((finding, idx) => (
                       <div key={idx} className="bg-green-50 rounded-xl p-6 border border-green-200">
@@ -361,41 +350,41 @@ function AssessmentResearchInner() {
                         <p className="text-sm text-gray-600 italic mb-3">{finding.source}</p>
                         <p className="text-gray-700 mb-3">{finding.evidence}</p>
                         <div className="bg-white rounded-lg p-3 border border-green-200">
-                          <p className="text-xs font-semibold text-green-700 mb-1">Practical Tip:</p>
+                          <p className="text-xs font-semibold text-green-700 mb-1">{t('assessmentResearch.practicalTip')}</p>
                           <p className="text-sm text-gray-700">{finding.practicalTip}</p>
                         </div>
                       </div>
                     ))}
                   </div>
                   <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">The Feedback Loop</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('assessmentResearch.theFeedbackLoop')}</h3>
                     <div className="space-y-3">
                       <div className="flex items-start gap-3">
                         <span className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-bold">1</span>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-1">Gather Evidence</h4>
-                          <p className="text-sm text-gray-700">Collect information about student understanding through observations, questions, or tasks</p>
+                          <h4 className="font-semibold text-gray-900 mb-1">{t('assessmentResearch.gatherEvidence')}</h4>
+                          <p className="text-sm text-gray-700">{t('assessmentResearch.collectInformationAboutStudentUnderstandingThroughObser')}</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
                         <span className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-bold">2</span>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-1">Interpret Evidence</h4>
-                          <p className="text-sm text-gray-700">Analyze what the evidence tells you about student learning and misconceptions</p>
+                          <h4 className="font-semibold text-gray-900 mb-1">{t('assessmentResearch.interpretEvidence')}</h4>
+                          <p className="text-sm text-gray-700">{t('assessmentResearch.analyzeWhatTheEvidenceTellsYouAboutStudentLearningAnd')}</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
                         <span className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-bold">3</span>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-1">Take Action</h4>
-                          <p className="text-sm text-gray-700">Adjust instruction, provide feedback, or modify learning activities based on evidence</p>
+                          <h4 className="font-semibold text-gray-900 mb-1">{t('assessmentResearch.takeAction')}</h4>
+                          <p className="text-sm text-gray-700">{t('assessmentResearch.adjustInstructionProvideFeedbackOrModifyLearningActivit')}</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
                         <span className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-bold">4</span>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-1">Repeat</h4>
-                          <p className="text-sm text-gray-700">Continue the cycle throughout instruction to ensure continuous improvement</p>
+                          <h4 className="font-semibold text-gray-900 mb-1">{t('assessmentResearch.repeat')}</h4>
+                          <p className="text-sm text-gray-700">{t('assessmentResearch.continueTheCycleThroughoutInstructionToEnsureContinuous')}</p>
                         </div>
                       </div>
                     </div>
@@ -408,11 +397,8 @@ function AssessmentResearchInner() {
             {activeSection === 'feedback' && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Types of Feedback</h2>
-                  <p className="text-gray-700 mb-6">
-                    Not all feedback is created equal. Research shows that effective feedback focuses on the task, 
-                    process, or self-regulation rather than the person.
-                  </p>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('assessmentResearch.typesOfFeedback')}</h2>
+                  <p className="text-gray-700 mb-6">{t('assessmentResearch.notAllFeedbackIsCreatedEqualResearchShowsThatEffective')}</p>
                   <div className="space-y-4">
                     {feedbackTypes.map((feedback, idx) => (
                       <div key={idx} className="bg-green-50 rounded-xl p-6 border-2 border-green-200">
@@ -430,7 +416,7 @@ function AssessmentResearchInner() {
                             </div>
                             <p className="text-gray-700 mb-4">{feedback.description}</p>
                             <div className="bg-white rounded-lg p-4 border border-green-100 mb-4">
-                              <p className="text-sm font-semibold text-gray-900 mb-2">Examples:</p>
+                              <p className="text-sm font-semibold text-gray-900 mb-2">{t('assessmentResearch.examples')}</p>
                               <ul className="space-y-1">
                                 {feedback.examples.map((example, exIdx) => (
                                   <li key={exIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -452,27 +438,27 @@ function AssessmentResearchInner() {
                     ))}
                   </div>
                   <div className="bg-purple-50 rounded-xl p-6 border border-purple-200 mt-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Feedback Best Practices</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('assessmentResearch.feedbackBestPractices')}</h3>
                     <ul className="space-y-2">
                       <li className="flex items-start gap-2 text-gray-700">
                         <CheckCircle2 className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                        <span><strong>Be specific:</strong> Tell students exactly what they did well and what needs improvement</span>
+                        <span><strong>{t('assessmentResearch.beSpecific')}</strong>{t('assessmentResearch.tellStudentsExactlyWhatTheyDidWellAndWhatNeeds')}</span>
                       </li>
                       <li className="flex items-start gap-2 text-gray-700">
                         <CheckCircle2 className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                        <span><strong>Focus on the task:</strong> Avoid personal comments; focus on the work</span>
+                        <span><strong>{t('assessmentResearch.focusOnTheTask')}</strong> Avoid personal comments; focus on the work</span>
                       </li>
                       <li className="flex items-start gap-2 text-gray-700">
                         <CheckCircle2 className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                        <span><strong>Be timely:</strong> Provide feedback while learning is still happening</span>
+                        <span><strong>{t('assessmentResearch.beTimely')}</strong>{t('assessmentResearch.provideFeedbackWhileLearningIsStillHappening')}</span>
                       </li>
                       <li className="flex items-start gap-2 text-gray-700">
                         <CheckCircle2 className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                        <span><strong>Make it actionable:</strong> Tell students what to do next</span>
+                        <span><strong>{t('assessmentResearch.makeItActionable')}</strong>{t('assessmentResearch.tellStudentsWhatToDoNext')}</span>
                       </li>
                       <li className="flex items-start gap-2 text-gray-700">
                         <CheckCircle2 className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                        <span><strong>Involve students:</strong> Encourage self-assessment and peer feedback</span>
+                        <span><strong>{t('assessmentResearch.involveStudents')}</strong>{t('assessmentResearch.encourageSelfAssessmentAndPeerFeedback')}</span>
                       </li>
                     </ul>
                   </div>
@@ -484,11 +470,8 @@ function AssessmentResearchInner() {
             {activeSection === 'strategies' && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Formative Assessment Strategies</h2>
-                  <p className="text-gray-700 mb-6">
-                    These practical strategies can be implemented immediately in your classroom to gather evidence 
-                    of student learning and provide effective feedback.
-                  </p>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('assessmentResearch.formativeAssessmentStrategies')}</h2>
+                  <p className="text-gray-700 mb-6">{t('assessmentResearch.thesePracticalStrategiesCanBeImplementedImmediatelyInYo')}</p>
                   <div className="space-y-4">
                     {formativeStrategies.map((strategy, idx) => (
                       <div key={idx} className="bg-green-50 rounded-xl p-6 border-2 border-green-200">
@@ -496,7 +479,7 @@ function AssessmentResearchInner() {
                         <p className="text-gray-700 mb-4">{strategy.description}</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                           <div className="bg-white rounded-lg p-4 border border-green-100">
-                            <h4 className="text-sm font-semibold text-gray-900 mb-2">Implementation Steps:</h4>
+                            <h4 className="text-sm font-semibold text-gray-900 mb-2">{t('assessmentResearch.implementationSteps')}</h4>
                             <ol className="space-y-2">
                               {strategy.implementation.map((step, stepIdx) => (
                                 <li key={stepIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -509,7 +492,7 @@ function AssessmentResearchInner() {
                             </ol>
                           </div>
                           <div className="bg-white rounded-lg p-4 border border-green-100">
-                            <h4 className="text-sm font-semibold text-gray-900 mb-2">Benefits:</h4>
+                            <h4 className="text-sm font-semibold text-gray-900 mb-2">{t('assessmentResearch.benefits')}</h4>
                             <ul className="space-y-2">
                               {strategy.benefits.map((benefit, benIdx) => (
                                 <li key={benIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -521,7 +504,7 @@ function AssessmentResearchInner() {
                           </div>
                         </div>
                         <div className="bg-white rounded-lg p-4 border border-green-100">
-                          <h4 className="text-sm font-semibold text-gray-900 mb-2">Example Prompts:</h4>
+                          <h4 className="text-sm font-semibold text-gray-900 mb-2">{t('assessmentResearch.examplePrompts')}</h4>
                           <div className="flex flex-wrap gap-2">
                             {strategy.examples.map((example, exIdx) => (
                               <span key={exIdx} className="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-medium">
@@ -541,92 +524,79 @@ function AssessmentResearchInner() {
             {activeSection === 'implementation' && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Implementation Guide</h2>
-                  <p className="text-gray-700 mb-6">
-                    Successfully implementing formative assessment requires planning, consistency, and a focus on using 
-                    evidence to improve learning.
-                  </p>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('assessmentResearch.implementationGuide')}</h2>
+                  <p className="text-gray-700 mb-6">{t('assessmentResearch.successfullyImplementingFormativeAssessmentRequiresPlan')}</p>
                   
                   <div className="bg-green-50 rounded-xl p-6 border border-green-200 mb-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Getting Started</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('assessmentResearch.gettingStarted')}</h3>
                     <div className="space-y-4">
                       <div className="bg-white rounded-lg p-4 border border-green-100">
-                        <h4 className="font-semibold text-gray-900 mb-2">1. Start Small</h4>
-                        <p className="text-sm text-gray-700">
-                          Choose one or two formative assessment strategies to implement consistently. Master these before adding more.
-                        </p>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('assessmentResearch.kStartSmall')}</h4>
+                        <p className="text-sm text-gray-700">{t('assessmentResearch.chooseOneOrTwoFormativeAssessmentStrategiesToImplementC')}</p>
                       </div>
                       <div className="bg-white rounded-lg p-4 border border-green-100">
-                        <h4 className="font-semibold text-gray-900 mb-2">2. Plan Your Questions</h4>
-                        <p className="text-sm text-gray-700">
-                          Prepare questions or prompts aligned to your learning objectives. Good formative assessment questions reveal understanding, not just recall.
-                        </p>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('assessmentResearch.kPlanYourQuestions')}</h4>
+                        <p className="text-sm text-gray-700">{t('assessmentResearch.prepareQuestionsOrPromptsAlignedToYourLearningObjective')}</p>
                       </div>
                       <div className="bg-white rounded-lg p-4 border border-green-100">
-                        <h4 className="font-semibold text-gray-900 mb-2">3. Create a Routine</h4>
-                        <p className="text-sm text-gray-700">
-                          Build formative assessment into your regular lesson structure. Consistency helps students understand expectations.
-                        </p>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('assessmentResearch.kCreateARoutine')}</h4>
+                        <p className="text-sm text-gray-700">{t('assessmentResearch.buildFormativeAssessmentIntoYourRegularLessonStructureC')}</p>
                       </div>
                       <div className="bg-white rounded-lg p-4 border border-green-100">
-                        <h4 className="font-semibold text-gray-900 mb-2">4. Use the Data</h4>
-                        <p className="text-sm text-gray-700">
-                          Actually use the information you gather to adjust instruction. If you collect data but don't act on it, it's not formative assessment.
-                        </p>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('assessmentResearch.kUseTheData')}</h4>
+                        <p className="text-sm text-gray-700">{t('assessmentResearch.actuallyUseTheInformationYouGatherToAdjustInstructionIf')}</p>
                       </div>
                       <div className="bg-white rounded-lg p-4 border border-green-100">
-                        <h4 className="font-semibold text-gray-900 mb-2">5. Involve Students</h4>
-                        <p className="text-sm text-gray-700">
-                          Teach students to self-assess and peer-assess. When students understand their own learning, they become more effective learners.
-                        </p>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('assessmentResearch.kInvolveStudents')}</h4>
+                        <p className="text-sm text-gray-700">{t('assessmentResearch.teachStudentsToSelfAssessAndPeerAssessWhenStudents')}</p>
                       </div>
                     </div>
                   </div>
 
                   <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Common Pitfalls to Avoid</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('assessmentResearch.commonPitfallsToAvoid')}</h3>
                     <ul className="space-y-3">
                       <li className="flex items-start gap-2 text-gray-700">
                         <span className="text-red-600 font-bold">✗</span>
-                        <span><strong>Grading everything:</strong> Formative assessment shouldn't be graded. Keep it low-stakes.</span>
+                        <span><strong>{t('assessmentResearch.gradingEverything')}</strong>{t('assessmentResearch.formativeAssessmentShouldnTBeGradedKeepItLowStakes')}</span>
                       </li>
                       <li className="flex items-start gap-2 text-gray-700">
                         <span className="text-red-600 font-bold">✗</span>
-                        <span><strong>Collecting but not using:</strong> If you gather data but don't act on it, it's not formative assessment.</span>
+                        <span><strong>{t('assessmentResearch.collectingButNotUsing')}</strong>{t('assessmentResearch.ifYouGatherDataButDonTActOnIt')}</span>
                       </li>
                       <li className="flex items-start gap-2 text-gray-700">
                         <span className="text-red-600 font-bold">✗</span>
-                        <span><strong>Vague feedback:</strong> "Good job" doesn't help students improve. Be specific.</span>
+                        <span><strong>{t('assessmentResearch.vagueFeedback')}</strong>{t('assessmentResearch.goodJobDoesnTHelpStudentsImproveBeSpecific')}</span>
                       </li>
                       <li className="flex items-start gap-2 text-gray-700">
                         <span className="text-red-600 font-bold">✗</span>
-                        <span><strong>Only using at the end:</strong> Formative assessment should happen throughout learning, not just at the end.</span>
+                        <span><strong>{t('assessmentResearch.onlyUsingAtTheEnd')}</strong>{t('assessmentResearch.formativeAssessmentShouldHappenThroughoutLearningNotJus')}</span>
                       </li>
                     </ul>
                   </div>
 
                   <div className="bg-purple-50 rounded-xl p-6 border border-purple-200 mt-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Action Steps</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('assessmentResearch.quickActionSteps')}</h3>
                     <ol className="space-y-3">
                       <li className="flex items-start gap-3 text-gray-700">
                         <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center text-sm font-bold">1</span>
-                        <span>Choose one formative assessment strategy to try this week</span>
+                        <span>{t('assessmentResearch.chooseOneFormativeAssessmentStrategyToTryThisWeek')}</span>
                       </li>
                       <li className="flex items-start gap-3 text-gray-700">
                         <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center text-sm font-bold">2</span>
-                        <span>Plan 2-3 questions aligned to your learning objectives</span>
+                        <span>{t('assessmentResearch.plan23QuestionsAlignedToYourLearningObjectives')}</span>
                       </li>
                       <li className="flex items-start gap-3 text-gray-700">
                         <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center text-sm font-bold">3</span>
-                        <span>Implement the strategy and collect evidence</span>
+                        <span>{t('assessmentResearch.implementTheStrategyAndCollectEvidence')}</span>
                       </li>
                       <li className="flex items-start gap-3 text-gray-700">
                         <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center text-sm font-bold">4</span>
-                        <span>Use the evidence to adjust your next lesson</span>
+                        <span>{t('assessmentResearch.useTheEvidenceToAdjustYourNextLesson')}</span>
                       </li>
                       <li className="flex items-start gap-3 text-gray-700">
                         <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center text-sm font-bold">5</span>
-                        <span>Reflect on what worked and what to improve</span>
+                        <span>{t('assessmentResearch.reflectOnWhatWorkedAndWhatToImprove')}</span>
                       </li>
                     </ol>
                   </div>

@@ -55,12 +55,22 @@ export function ExamSectionShell({
   variant,
   children,
   header,
+  compact = false,
 }: {
   variant: ExamSectionVariant
   header: ReactNode
   children: ReactNode
+  compact?: boolean
 }) {
   const v = VARIANT_STYLES[variant]
+  if (compact) {
+    return (
+      <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+        {header}
+        {children}
+      </section>
+    )
+  }
   return (
     <section className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
       <div className={`px-6 py-5 ${v.bar}`}>{header}</div>

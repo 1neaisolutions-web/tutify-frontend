@@ -23,6 +23,7 @@ import {
   Code,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface Lesson {
   id: number
   title: string
@@ -327,6 +328,7 @@ const courseData = {
 }
 
 const DigitalLiteracyCourse = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [currentContentIndex, setCurrentContentIndex] = useState(0)
@@ -396,8 +398,8 @@ const DigitalLiteracyCourse = () => {
               <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-indigo-400 to-blue-500 mb-4">
                 <Award className="w-12 h-12 text-white" />
               </div>
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Congratulations!</h1>
-              <p className="text-lg text-gray-600">You've completed the course</p>
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">{t('digitalLiteracyCourse.congratulations')}</h1>
+              <p className="text-lg text-gray-600">{t('digitalLiteracyCourse.youVeCompletedTheCourse')}</p>
             </div>
 
             <div className="border-2 border-indigo-200 rounded-2xl p-8 mb-6 bg-gradient-to-br from-indigo-50 to-blue-50">
@@ -413,8 +415,8 @@ const DigitalLiteracyCourse = () => {
                 </span>
               </div>
               <div className="mt-6 pt-6 border-t border-indigo-200">
-                <p className="text-sm text-gray-600 mb-2">Certificate of Completion</p>
-                <p className="text-lg font-semibold text-gray-900">This certifies that you have successfully completed</p>
+                <p className="text-sm text-gray-600 mb-2">{t('digitalLiteracyCourse.certificateOfCompletion')}</p>
+                <p className="text-lg font-semibold text-gray-900">{t('digitalLiteracyCourse.thisCertifiesThatYouHaveSuccessfullyCompleted')}</p>
                 <p className="text-xl font-bold text-indigo-600 mt-2">{courseData.title}</p>
                 <p className="text-sm text-gray-500 mt-4">Issued on {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
               </div>
@@ -425,15 +427,11 @@ const DigitalLiteracyCourse = () => {
                 onClick={() => window.print()}
                 className="flex-1 rounded-full bg-indigo-600 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-700 flex items-center justify-center gap-2"
               >
-                <FileText className="w-4 h-4" />
-                Download Certificate
-              </button>
+                <FileText className="w-4 h-4" />{t('digitalLiteracyCourse.downloadCertificate')}</button>
               <button
                 onClick={handleCompleteCourse}
                 className="flex-1 rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2"
-              >
-                Back to Learning Hub
-              </button>
+              >{t('digitalLiteracyCourse.backToLearningHub')}</button>
             </div>
           </div>
         </div>
@@ -453,8 +451,8 @@ const DigitalLiteracyCourse = () => {
         <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Course Assessment</h2>
-              <p className="text-sm text-gray-600 mt-1">Test your understanding of AI tools for lesson planning</p>
+              <h2 className="text-2xl font-bold text-gray-900">{t('digitalLiteracyCourse.courseAssessment')}</h2>
+              <p className="text-sm text-gray-600 mt-1">{t('digitalLiteracyCourse.testYourUnderstandingOfAiToolsForLessonPlanning')}</p>
             </div>
             <button
               onClick={() => navigate('/learning-hub')}
@@ -573,9 +571,7 @@ const DigitalLiteracyCourse = () => {
                     onClick={() => setShowCertificate(true)}
                     className="rounded-full bg-indigo-600 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-700 flex items-center justify-center gap-2 mx-auto"
                   >
-                    <Award className="w-4 h-4" />
-                    View Certificate
-                  </button>
+                    <Award className="w-4 h-4" />{t('digitalLiteracyCourse.viewCertificate')}</button>
                 ) : (
                   <div className="flex gap-3 justify-center">
                     <button
@@ -587,18 +583,14 @@ const DigitalLiteracyCourse = () => {
                         setQuizSubmitted(false)
                       }}
                       className="rounded-full bg-indigo-600 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-700"
-                    >
-                      Review Course
-                    </button>
+                    >{t('digitalLiteracyCourse.reviewCourse')}</button>
                     <button
                       onClick={() => {
                         setQuizAnswers({})
                         setQuizSubmitted(false)
                       }}
                       className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50"
-                    >
-                      Retake Quiz
-                    </button>
+                    >{t('digitalLiteracyCourse.retakeQuiz')}</button>
                   </div>
                 )}
               </div>
@@ -611,9 +603,7 @@ const DigitalLiteracyCourse = () => {
                 onClick={handleQuizSubmit}
                 disabled={Object.keys(quizAnswers).length < courseData.quiz.questions.length}
                 className="rounded-full bg-indigo-600 px-8 py-3 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-              >
-                Submit Assessment
-                <ArrowRight className="w-4 h-4" />
+              >{t('digitalLiteracyCourse.submitAssessment')}<ArrowRight className="w-4 h-4" />
               </button>
             </div>
           )}
@@ -669,7 +659,7 @@ const DigitalLiteracyCourse = () => {
         {/* Sidebar - Lesson Navigation */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Course Content</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('digitalLiteracyCourse.courseContent')}</h3>
             <div className="space-y-2">
               {courseData.lessons.map((lesson, idx) => {
                 const isActive = idx === currentLesson
@@ -754,7 +744,7 @@ const DigitalLiteracyCourse = () => {
                       <h3 className="text-lg font-bold text-gray-900 mb-2">{currentContent.data.title}</h3>
                       <p className="text-gray-700 mb-4">{currentContent.data.prompt}</p>
                       <div className="bg-white rounded-lg p-4 border border-indigo-200">
-                        <p className="text-sm font-semibold text-gray-700 mb-2">Tips:</p>
+                        <p className="text-sm font-semibold text-gray-700 mb-2">{t('digitalLiteracyCourse.tips')}</p>
                         <ul className="space-y-1">
                           {currentContent.data.tips.map((tip: string, idx: number) => (
                             <li key={idx} className="text-sm text-gray-600 flex items-start gap-2">
@@ -777,9 +767,7 @@ const DigitalLiteracyCourse = () => {
                 disabled={currentLesson === 0 && currentContentIndex === 0}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
-                <ArrowLeft className="w-4 h-4" />
-                Previous
-              </button>
+                <ArrowLeft className="w-4 h-4" />{t('digitalLiteracyCourse.previous')}</button>
 
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <span>Content {currentContentIndex + 1} of {currentLessonData.content.length}</span>
@@ -802,9 +790,7 @@ const DigitalLiteracyCourse = () => {
           {/* Learning Objectives Sidebar */}
           <div className="mt-6 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl border border-indigo-200 p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <Target className="w-5 h-5 text-indigo-600" />
-              Learning Objectives
-            </h3>
+              <Target className="w-5 h-5 text-indigo-600" />{t('digitalLiteracyCourse.learningObjectives')}</h3>
             <ul className="space-y-2">
               {courseData.learningObjectives.map((objective, idx) => (
                 <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 const quizzes = [
@@ -6,13 +7,14 @@ const quizzes = [
 ];
 
 const QuizCenter = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
     <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Quizzes</h1>
-        <p className="text-sm text-gray-600 dark:text-gray-300">Take a quiz with timer and AI hint (demo).</p>
+        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.quiz.title')}</h1>
+        <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.quiz.subtitle')}</p>
       </div>
 
       <div className="px-6 py-6 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -27,7 +29,7 @@ const QuizCenter = () => {
             <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
               {q.questions} questions • {q.durationMin} min
             </p>
-            <p className="mt-3 text-sm font-medium text-primary-700 dark:text-primary-300">Start →</p>
+            <p className="mt-3 text-sm font-medium text-primary-700 dark:text-primary-300">{t('studentPanel.quiz.start')}</p>
           </button>
         ))}
       </div>

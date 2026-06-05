@@ -1,3 +1,4 @@
+import i18n from '../../i18n'
 import type { DocumentUploadRequest } from '../../api/contentIngestion'
 
 export type ChapterMapList = NonNullable<DocumentUploadRequest['chapter_map']>
@@ -20,35 +21,35 @@ export function parseChapterMapFromJson(raw: string): ParseChapterMapResult {
   try {
     parsed = JSON.parse(t)
   } catch {
-    return { ok: false, message: 'Invalid JSON. Check brackets, commas, and quotes.' }
+    return { ok: false, message: i18n.t('content.toc.errors.invalidJson') }
   }
 
   if (!Array.isArray(parsed)) {
-    return { ok: false, message: 'TOC must be a JSON array of chapter objects.' }
+    return { ok: false, message: i18n.t('content.toc.errors.notArray') }
   }
 
   const chapters: ChapterMapList = []
   for (let i = 0; i < parsed.length; i += 1) {
     const row = parsed[i]
     if (!row || typeof row !== 'object') {
-      return { ok: false, message: `Entry ${i + 1} must be an object.` }
+      return { ok: false, message: i18n.t('content.toc.errors.entryNotObject', { n: i + 1 }) }
     }
     const o = row as Record<string, unknown>
     const id = String(o.id ?? `ch-${i + 1}`)
     const title = String(o.title ?? '').trim()
     if (!title) {
-      return { ok: false, message: `Entry ${i + 1} needs a non-empty "title".` }
+      return { ok: false, message: i18n.t('content.toc.errors.missingTitle', { n: i + 1 }) }
     }
     const sp = Number(o.start_page_pdf)
     const ep = Number(o.end_page_pdf)
     if (!Number.isFinite(sp) || !Number.isFinite(ep)) {
-      return { ok: false, message: `Entry ${i + 1} needs numeric "start_page_pdf" and "end_page_pdf".` }
+      return { ok: false, message: i18n.t('content.toc.errors.invalidPages', { n: i + 1 }) }
     }
     if (sp < 1 || ep < 1) {
-      return { ok: false, message: `Entry ${i + 1}: page numbers must be ≥ 1.` }
+      return { ok: false, message: i18n.t('content.toc.errors.pageMin', { n: i + 1 }) }
     }
     if (ep < sp) {
-      return { ok: false, message: `Entry ${i + 1}: end_page_pdf must be ≥ start_page_pdf.` }
+      return { ok: false, message: i18n.t('content.toc.errors.pageOrder', { n: i + 1 }) }
     }
     const level = Number(o.level)
     const keywords = Array.isArray(o.keywords)
@@ -66,7 +67,7 @@ export function parseChapterMapFromJson(raw: string): ParseChapterMapResult {
   }
 
   if (chapters.length === 0) {
-    return { ok: false, message: 'TOC array is empty.' }
+    return { ok: false, message: i18n.t('content.toc.errors.emptyArray') }
   }
 
   return { ok: true, chapters }

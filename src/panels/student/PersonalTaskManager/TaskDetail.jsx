@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const STORAGE_KEY = 'tutify_student_tasks_v1';
 
 const TaskDetail = () => {
+  const { t } = useTranslation();
   const { taskId } = useParams();
   const navigate = useNavigate();
 
@@ -92,7 +94,7 @@ const TaskDetail = () => {
             </div>
           </>
         ) : (
-          <p className="text-sm text-gray-700 dark:text-gray-200">Task not found.</p>
+          <p className="text-sm text-gray-700 dark:text-gray-200">{t('studentPanel.tasks.notFound')}</p>
         )}
       </div>
     </div>

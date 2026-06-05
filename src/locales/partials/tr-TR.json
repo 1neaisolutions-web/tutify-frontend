@@ -1,0 +1,318 @@
+{
+  "common": {
+    "loading": "Yükleniyor…",
+    "cancel": "İptal",
+    "search": "Ara",
+    "addNew": "Yeni ekle",
+    "save": "Kaydet",
+    "upload": "Yükle",
+    "delete": "Sil",
+    "export": "Dışa aktar",
+    "all": "Tümü",
+    "back": "Geri",
+    "comingSoon": "Çok yakında",
+    "comingSoonHint": "Bu özellik henüz mevcut değil.",
+    "noDataFound": "Veri bulunamadı",
+    "noDataFoundHint": "Filtrelerinizi veya aramanızı ayarlamayı deneyin.",
+    "retry": "Tekrar deneyin",
+    "showLess": "Daha az göster",
+    "showMore": "Daha fazla göster"
+  },
+  "app": {
+    "name": "Öğretmen Asistanı",
+    "studentName": "Öğrenci Asistan"
+  },
+  "languageDropdown": {
+    "loading": "Diller Yükleniyor",
+    "placeholder": "Bir dil seç",
+    "searchPlaceholder": "Dil Ara",
+    "listLabel": "Diller",
+    "noMatch": "\"{{query}}\" ile eşleşen dil yok",
+    "count": "{{count}} diller",
+    "count_one": "{{count}} dil",
+    "count_other": "{{count}} diller",
+    "countAvailable": "mevcut",
+    "countMatch": "eşleşen \"{{query}}\""
+  },
+  "layout": {
+    "activateCredits": "Kredileri etkinleştir",
+    "credits": "Kredi",
+    "messages": "Mesajlar",
+    "notifications": "Bildirimler",
+    "newCount": "{{count}} yeni",
+    "noMessages": "Mesaj yok",
+    "noMessagesHint": "Mesaj aldığınızda burada görüneceklerdir.",
+    "noNotifications": "Hiçbir bildiri bulunmuyor",
+    "noNotificationsHint": "Güncellemeleriniz olduğunda burada görüneceklerdir.",
+    "viewAllMessages": "Tüm iletileri göster",
+    "viewAllNotifications": "Tüm bildirimleri görüntüle",
+    "signOut": "Çıkış yap",
+    "signingOut": "Oturum kapatılıyor...",
+    "allCaughtUp": "Hepiniz kendinizi kaptırmışsınız",
+    "noNewNotifications": "Yeni bildirim yok",
+    "noNotificationsYet": "Henüz bildirim yok",
+    "notificationsEmptyHint": "Güncellemeleriniz olduğunda burada görüneceklerdir."
+  },
+  "settings": {
+    "tabs": {
+      "general": "Genel",
+      "notifications": "Bildirimler",
+      "plan": "Plan ve krediler",
+      "integrations": "Entegrasyonlar",
+      "developer": "Geliştirici",
+      "export": "İhr."
+    },
+    "general": {
+      "title": "Genel tercihler",
+      "language": {
+        "label": "Dil",
+        "change": "Değişim",
+        "uiFallback": "Arayüz İngilizce olarak gösterilir. Tercihiniz ({{language}}) profiliniz ve tarihleriniz için kaydedildi."
+      },
+      "timezone": {
+        "label": "Saat dilimi",
+        "adjust": "Ayarla",
+        "currentTime": "Geçerli zaman",
+        "noMatch": "Aramanızla eşleşen saat dilimi yok"
+      },
+      "theme": {
+        "label": "Arayüz teması",
+        "light": "Hafif",
+        "dark": "Koyu",
+        "system": "Sistem",
+        "followsDevice": "(cihazı takip eder)"
+      },
+      "syncSaving": "Kaydediliyor…",
+      "syncSaved": "Kaydedildi",
+      "syncError": "Kaydedilemedi"
+    },
+    "notifications": {
+      "title": "Bildirimler",
+      "productUpdates": "Ürün güncelleştirmeleri",
+      "lessonReminders": "Ders hatırlatıcıları",
+      "weeklyInsights": "Haftalık analizler",
+      "channels": {
+        "emailAndApp": "E - posta ve uygulama",
+        "emailOnly": "Yalnızca e-posta",
+        "appOnly": "Yalnızca uygulama"
+      },
+      "currentChannel": "Mevcut kanal: {{channel}}",
+      "edit": "Düzenle",
+      "manageDefaults": "Bildirim varsayılanlarını yönet"
+    },
+    "integrations": {
+      "title": "Entegrasyonlar",
+      "addNew": "Yeni Entegrasyon",
+      "status": {
+        "connected": "Bağlandı",
+        "available": "Kullanılabilir",
+        "comingSoon": "Çok yakında"
+      },
+      "googleClassroom": {
+        "name": "Google  Classroom",
+        "description": "Atamaları ve listeleri otomatik olarak senkronize edin."
+      },
+      "microsoftTeams": {
+        "name": "Microsoft Teams",
+        "description": "Ekip toplantılarını ve atama senkronizasyonunu etkinleştirin."
+      },
+      "canvasLms": {
+        "name": "Canvas LMS",
+        "description": "Canvas kullanıcıları için doğrudan not defteri entegrasyonu."
+      }
+    },
+    "developer": {
+      "title": "API ve geliştirici erişimi",
+      "connectedApps": "Bağlı uygulamalar",
+      "connectedAppsDesc": "3 uygulama öğretim çalışma alanınıza erişebilir.",
+      "manageTokens": "API belirteçlerini yönet"
+    },
+    "export": {
+      "title": "Export & backup",
+      "downloadData": "Download workspace data",
+      "downloadDataDesc": "Templates, assessments, and chat history",
+      "scheduleBackups": "Schedule weekly backups"
+    },
+    "plan": {
+      "yourCredits": "Your credits",
+      "memberSince": "Member since {{date}}",
+      "activateCode": "+ Activate code",
+      "creditsRemaining": "/ {{total}} credits",
+      "remainingPct": "{{pct}}% remaining",
+      "expires": "Expires {{date}}",
+      "autoRenewing": "Auto-renewing",
+      "noActiveCredits": "No active credits. Activate a code to get started.",
+      "activateCreditsLink": "Activate credits →",
+      "usageBreakdown": "Usage breakdown",
+      "last30Days": "Last 30 days",
+      "activity": "Activity",
+      "activityFallback": "Activity",
+      "left": "{{count}} left"
+    }
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "teacherTools": "Teacher Tools",
+    "teacherToolsOverview": "Overview",
+    "teacherToolsAnalytics": "Analytics",
+    "quiz": "Quiz",
+    "assignment": "Assignment",
+    "worksheet": "Worksheet",
+    "exams": "Exams",
+    "templates": "Templates Library",
+    "chatbots": "Specialized Chatbots",
+    "youtubeQuiz": "YouTube Quiz Generator",
+    "pixgen": "PixGen (AI Media Studio)",
+    "learningHub": "Professional Learning Hub",
+    "personalization": "Personalization",
+    "administration": "Administration",
+    "reporting": "Reporting",
+    "assessment": "Assessment",
+    "contentManagement": "Content Management",
+    "history": "History",
+    "analytics": "Analytics",
+    "useCases": "Explore Use Cases",
+    "profile": "Profile",
+    "settings": "Settings",
+    "accessCodes": "Access Codes",
+    "contentPacks": "Content Packs",
+    "documents": "Documents",
+    "learningHubContent": "Learning Hub Content",
+    "organization": "Organization",
+    "parent": "Parent",
+    "school": "School",
+    "uploadDocument": "Upload Document"
+  },
+  "workspace": {
+    "fallbackName": "Workspace",
+    "scopeType": {
+      "institution": "Institution",
+      "organization": "Organization",
+      "personal": "Personal"
+    },
+    "switcher": {
+      "title": "Switch Workspace",
+      "active": "Active"
+    }
+  },
+  "login": {
+    "subtitle": "Sign in to your account",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "signIn": "Sign in",
+    "signingIn": "Signing in…",
+    "noAccount": "Don't have an account?",
+    "signUpLink": "Sign up",
+    "error": "Failed to sign in. Please check your credentials."
+  },
+  "teacherTools": {
+    "breadcrumbTeacherTools": "Teacher Tools",
+    "breadcrumbTemplates": "Templates",
+    "edit": "Edit",
+    "duplicate": "Duplicate",
+    "archive": "Archive",
+    "delete": "Delete",
+    "toolAssign": "Assign",
+    "toolSheet": "Sheet",
+    "toolExam": "Exam",
+    "range7d": "Last 7 days",
+    "range30d": "Last 30 days",
+    "rangeAll": "All time",
+    "previewData": "Preview data",
+    "previewDataHint": "— Real results will appear here after students submit.",
+    "statContentCreated": "Content created",
+    "overview": {
+      "kpiTotalActive": "Total active items",
+      "kpiScheduledWeek": "Scheduled this week",
+      "kpiPendingDrafts": "Pending drafts",
+      "kpiPublished": "Published items",
+      "kpiAvgQuizScore": "Avg quiz score",
+      "kpiQuizzesTaken": "Quizzes taken"
+    }
+  },
+  "quiz": {
+    "breadcrumb": "Quiz"
+  },
+  "assignment": {
+    "breadcrumb": "Assignment"
+  },
+  "worksheet": {
+    "breadcrumb": "Worksheet"
+  },
+  "exam": {
+    "breadcrumb": "Exams",
+    "detail": {
+      "tabs": {
+        "analytics": "Analytics",
+        "results": "Results",
+        "candidates": "Candidates"
+      }
+    },
+    "statMarks": "marks"
+  },
+  "status": {
+    "draft": "Draft",
+    "published": "Published",
+    "active": "Active",
+    "closed": "Closed",
+    "graded": "Graded",
+    "submitted": "Submitted",
+    "pending": "Pending",
+    "archived": "Archived",
+    "completed": "Completed",
+    "upcoming": "Upcoming",
+    "ongoing": "Ongoing",
+    "cancelled": "Cancelled",
+    "late": "Late",
+    "onTime": "On time"
+  },
+  "dashboard": {
+    "recentActivity": "Son etkinlik",
+    "viewAll": "Tümünü gör",
+    "teacherToolsOverview": "Öğretmen araçları özeti",
+    "greetingMorning": "Günaydın, {{name}}",
+    "greetingAfternoon": "İyi günler, {{name}}",
+    "greetingEvening": "İyi akşamlar, {{name}}",
+    "defaultName": "öğretmen",
+    "workspaceReady": "Çalışma alanınız hazır.",
+    "activeContent": "Çalışma alanında {{count}} aktif öğe",
+    "createFirstQuiz": "Başlamak için ilk quizi oluşturun.",
+    "createFirstQuizCta": "Quiz oluştur",
+    "totalContent": "Toplam içerik",
+    "thisWeek": "Bu hafta",
+    "draftBacklog": "Bekleyen taslaklar",
+    "published": "Yayınlandı",
+    "dayStreak": "Gün serisi",
+    "upcomingDeadlines": "Yaklaşan son tarihler",
+    "noDeadlines": "Yaklaşan son tarih yok",
+    "noActivity": "Son etkinlik yok",
+    "draftsToFinish": "Bitirilecek taslaklar",
+    "all": "Tümü",
+    "noDrafts": "Taslak yok",
+    "coreWorkflows": "Temel iş akışları",
+    "dueToday": "Bugün son gün",
+    "dueInDays": "{{count}} gün içinde",
+    "dueSoon": "Yakında: {{title}}",
+    "continueDraft": "Taslağa devam: {{title}}",
+    "tools": {
+      "quiz": "Quiz",
+      "assignment": "Ödev",
+      "worksheet": "Çalışma sayfası",
+      "exam": "Sınav"
+    }
+  },
+  "tenantSelection": {
+    "title": "Select workspace",
+    "subtitle": "Choose a workspace to continue",
+    "workspace": "Workspace",
+    "signingIn": "Signing in…",
+    "scope": {
+      "institution": "Institution",
+      "organization": "Organization",
+      "personalWorkspace": "Personal Workspace"
+    }
+  }
+}

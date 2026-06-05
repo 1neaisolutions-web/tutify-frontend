@@ -1,6 +1,10 @@
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import {
+  formatLessonFlowArrayAsMarkdownTable,
+  normalizeLessonPhaseBulletContent,
+} from '../../lib/formatLessonFlow'
 
 export type SectionType = 'text' | 'markdown' | 'bullet_list' | 'numbered_list' | 'table'
 
@@ -65,11 +69,16 @@ export function isTableComplete(raw: string): boolean {
  * Only normalizes when content clearly looks structured; leaves prose unchanged.
  */
 export function normalizeStreamingContent(text: string): string {
-  if (!text || (!isLikelyJsonObject(text) && !isLikelyArray(text))) return text
+  if (!text) return text
+  const bulletNormalized = normalizeLessonPhaseBulletContent(text)
+  if (bulletNormalized !== text) return bulletNormalized
+  if (!isLikelyJsonObject(text) && !isLikelyArray(text)) return text
   const s = text.trim()
   try {
     const parsed = JSON.parse(s)
     if (Array.isArray(parsed)) {
+      const table = formatLessonFlowArrayAsMarkdownTable(parsed)
+      if (table) return table
       return parsed.map((item) => `- ${typeof item === 'string' ? item : JSON.stringify(item)}`).join('\n')
     }
     if (parsed && typeof parsed === 'object') {

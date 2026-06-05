@@ -1,6 +1,10 @@
 import type { QuestionMixMode, QuizDifficultyId } from '../../demo/generationFromSources'
+import type { QuizBuildSubStepId } from './quizWizardSteps'
 
 export const QUIZ_CREATION_STEPS = ['Configure & generate', 'Review & publish'] as const
+
+export const TIME_LIMIT_MIN = 5
+export const TIME_LIMIT_MAX = 180
 
 export const DIFFICULTY_OPTIONS: { id: QuizDifficultyId; label: string; hint: string }[] = [
   { id: 'foundation', label: 'Foundation', hint: 'Recall & straightforward application — shorter prompts, lower weighting.' },
@@ -79,8 +83,7 @@ export function validateQuizBuild(input: {
   return { ok: errors.length === 0, errors }
 }
 
-/** Validates catalog-first RAG quiz configuration (demo UI). */
-export function validateRagQuizBuild(input: {
+export type QuizRagBuildInput = {
   title: string
   generateWithoutSources: boolean
   selectedBookIds: string[]
@@ -92,17 +95,65 @@ export function validateRagQuizBuild(input: {
   includeShort: boolean
   questionCount: number
   countsByType: { mcq: number; tf: number; short: number }
-}): BuildValidation {
-  const base = validateQuizBuild(input)
-  const errors = [...base.errors]
-  if (!input.generateWithoutSources && input.selectedBookIds.length === 0) {
-    errors.push('Select at least one approved catalog title — retrieval runs against these materials first.')
+  timeLimitMinutes?: number
+}
+
+/** Per sub-step validation for configure wizard */
+export function validateQuizBuildSubStep(
+  stepId: QuizBuildSubStepId,
+  input: QuizRagBuildInput,
+): BuildValidation {
+  const errors: string[] = []
+
+  switch (stepId) {
+    case 'basics':
+      if (!input.title.trim()) errors.push('Add a quiz title.')
+      break
+    case 'sources':
+      if (!input.generateWithoutSources && input.selectedBookIds.length === 0) {
+        errors.push('Select at least one approved catalog title — retrieval runs against these materials first.')
+      }
+      break
+    case 'scope':
+      if (!input.generateWithoutSources && input.selectedTopics.length === 0) {
+        errors.push('Choose one or more scope topics derived from your selected materials.')
+      }
+      if (input.generateWithoutSources && !input.scopeRefinement.trim()) {
+        errors.push('Add a topic focus in scope refinement when generating without sources.')
+      }
+      break
+    case 'design': {
+      const designOnly = validateQuizBuild({
+        title: input.title.trim() ? 'ok' : '',
+        mixMode: input.mixMode,
+        includeMcq: input.includeMcq,
+        includeTf: input.includeTf,
+        includeShort: input.includeShort,
+        questionCount: input.questionCount,
+        countsByType: input.countsByType,
+      })
+      errors.push(...designOnly.errors.filter((e) => !e.includes('quiz title')))
+      const t = input.timeLimitMinutes ?? 30
+      if (t < TIME_LIMIT_MIN || t > TIME_LIMIT_MAX) {
+        errors.push(`Set time limit between ${TIME_LIMIT_MIN} and ${TIME_LIMIT_MAX} minutes.`)
+      }
+      break
+    }
+    case 'delivery':
+      break
+    default:
+      break
   }
-  if (!input.generateWithoutSources && input.selectedTopics.length === 0) {
-    errors.push('Choose one or more scope topics derived from your selected materials.')
-  }
-  if (input.generateWithoutSources && !input.scopeRefinement.trim()) {
-    errors.push('Add a topic focus in scope refinement when generating without sources.')
+
+  return { ok: errors.length === 0, errors }
+}
+
+/** Validates catalog-first RAG quiz configuration (demo UI). */
+export function validateRagQuizBuild(input: QuizRagBuildInput): BuildValidation {
+  const errors: string[] = []
+  for (const step of ['basics', 'sources', 'scope', 'design', 'delivery'] as QuizBuildSubStepId[]) {
+    const v = validateQuizBuildSubStep(step, input)
+    errors.push(...v.errors)
   }
   return { ok: errors.length === 0, errors }
 }

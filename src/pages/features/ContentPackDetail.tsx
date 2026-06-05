@@ -7,7 +7,9 @@ import { ArrowLeft, Upload, FileText, BookOpen, Trash2, AlertCircle, Loader2 } f
 import { getContentPack, fetchDocuments, deleteDocument, ContentPack, Document } from '../../api/contentIngestion'
 import { useSnackbar } from '../../hooks/useSnackbar'
 
+import { useTranslation } from 'react-i18next'
 export const ContentPackDetail = () => {
+  const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [pack, setPack] = useState<ContentPack | null>(null)
@@ -45,7 +47,7 @@ export const ContentPackDetail = () => {
       setPack(data)
       hasLoadedRef.current = id // Mark as loaded for this ID
     } catch (error: any) {
-      toastRef.current.error(error.message || 'Failed to load content pack')
+      toastRef.current.error(error.message || t('contentPackDetailPage.errors.loadFailed'))
       console.error('Error loading content pack:', error)
     } finally {
       setLoading(false)
@@ -117,7 +119,7 @@ export const ContentPackDetail = () => {
     try {
       setIsDeleting(true)
       await deleteDocument(documentToDelete.id)
-      toast.success('Document deleted successfully')
+      toast.success(t('contentPackDetailPage.documentDeletedSuccessfully'))
       
       // Close modal immediately
       setShowDeleteModal(false)
@@ -127,7 +129,7 @@ export const ContentPackDetail = () => {
       await loadDocuments()
       await loadPack()
     } catch (error: any) {
-      toast.error(error.message || 'Failed to delete document')
+      toast.error(error.message || t('contentPackDetailPage.errors.deleteDocumentFailed'))
       console.error('Error deleting document:', error)
     } finally {
       setIsDeleting(false)
@@ -156,13 +158,11 @@ export const ContentPackDetail = () => {
       <div className="min-h-screen bg-gray-50 p-6">
         <div className="max-w-7xl mx-auto">
           <div className="bg-white rounded-lg shadow p-12 text-center">
-            <p className="text-gray-600">Content pack not found</p>
+            <p className="text-gray-600">{t('contentPackDetailPage.contentPackNotFound')}</p>
             <button
               onClick={() => navigate('/admin/content-packs')}
               className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-            >
-              Back to Content Packs
-            </button>
+            >{t('contentPackDetailPage.backToContentPacks')}</button>
           </div>
         </div>
       </div>
@@ -177,7 +177,7 @@ export const ContentPackDetail = () => {
           className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-6"
         >
           <ArrowLeft className="w-5 h-5" />
-          <span>Back to Content Packs</span>
+          <span>{t('contentPackDetailPage.backToContentPacks')}</span>
         </button>
         
         <div className="bg-white rounded-lg shadow p-6 mb-6">
@@ -200,7 +200,7 @@ export const ContentPackDetail = () => {
               className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
             >
               <Upload className="w-5 h-5" />
-              <span>Upload Document</span>
+              <span>{t('contentPackDetailPage.uploadDocument')}</span>
             </button>
           </div>
           
@@ -231,7 +231,7 @@ export const ContentPackDetail = () => {
           {documents.length === 0 ? (
             <div className="text-center py-12">
               <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-600 mb-4">No documents in this pack yet</p>
+              <p className="text-gray-600 mb-4">{t('contentPackDetailPage.noDocumentsInThisPackYet')}</p>
               <button
                 onClick={() => {
                   const path = `/admin/documents/upload?pack_id=${pack.id}`
@@ -239,9 +239,7 @@ export const ContentPackDetail = () => {
                   navigate(path)
                 }}
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-              >
-                Upload First Document
-              </button>
+              >{t('contentPackDetailPage.uploadFirstDocument')}</button>
             </div>
           ) : (
             <div className="space-y-4">
@@ -293,7 +291,7 @@ export const ContentPackDetail = () => {
                               )}
                               {doc.remediation_hint && (
                                 <p className="text-xs text-red-700 mt-2">
-                                  <strong>Hint:</strong> {doc.remediation_hint}
+                                  <strong>{t('contentPackDetailPage.hint')}</strong> {doc.remediation_hint}
                                 </p>
                               )}
                             </div>
@@ -307,7 +305,7 @@ export const ContentPackDetail = () => {
                         handleDeleteClick(doc.id, doc.filename)
                       }}
                       className="ml-4 p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors flex-shrink-0"
-                      title="Delete document"
+                      title={t('contentPackDetailPage.deleteDocument')}
                     >
                       <Trash2 className="w-5 h-5" />
                     </button>
@@ -328,18 +326,15 @@ export const ContentPackDetail = () => {
                 <AlertCircle className="w-6 h-6 text-red-600" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Delete Document</h3>
-                <p className="text-sm text-gray-500">This action cannot be undone</p>
+                <h3 className="text-lg font-semibold text-gray-900">{t('contentPackDetailPage.deleteDocument2')}</h3>
+                <p className="text-sm text-gray-500">{t('contentPackDetailPage.thisActionCannotBeUndone')}</p>
               </div>
             </div>
             
             <div className="mb-6">
-              <p className="text-gray-700">
-                Are you sure you want to delete <strong>"{documentToDelete.filename}"</strong>?
+              <p className="text-gray-700">{t('contentPackDetailPage.areYouSureYouWantToDelete')}<strong>"{documentToDelete.filename}"</strong>?
               </p>
-              <p className="text-sm text-gray-500 mt-2">
-                This will permanently remove the document and all its associated data from the system.
-              </p>
+              <p className="text-sm text-gray-500 mt-2">{t('contentPackDetailPage.thisWillPermanentlyRemoveTheDocumentAndAllItsAssociated')}</p>
             </div>
             
             <div className="flex justify-end space-x-3">
@@ -347,9 +342,7 @@ export const ContentPackDetail = () => {
                 onClick={handleCancelDelete}
                 disabled={isDeleting}
                 className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Cancel
-              </button>
+              >{t('contentPackDetailPage.cancel')}</button>
               <button
                 onClick={handleConfirmDelete}
                 disabled={isDeleting}
@@ -358,10 +351,10 @@ export const ContentPackDetail = () => {
                 {isDeleting ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Deleting...</span>
+                    <span>{t('contentPackDetailPage.deleting')}</span>
                   </>
                 ) : (
-                  <span>Delete</span>
+                  <span>{t('contentPackDetailPage.delete')}</span>
                 )}
               </button>
             </div>

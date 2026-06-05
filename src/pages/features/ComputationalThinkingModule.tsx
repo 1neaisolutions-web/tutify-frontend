@@ -29,6 +29,7 @@ import {
   Sparkles,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template' | 'project'
@@ -56,6 +57,7 @@ interface CodingTool {
 }
 
 const ComputationalThinkingModule = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -321,14 +323,10 @@ Coding teaches students to think logically, solve problems systematically, and e
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 3
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('computationalThinkingModule.module3')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    120 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('computationalThinkingModule.k20Min')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
                     <Star className="h-3 w-3" />
@@ -338,16 +336,14 @@ Coding teaches students to think logically, solve problems systematically, and e
                     }, 0)} / {lessons.reduce((sum, l) => sum + l.points, 0)} points
                   </span>
                 </div>
-                <h1 className="text-3xl font-bold">Computational Thinking & Coding Integration</h1>
-                <p className="mt-2 text-blue-100">
-                  Integrate computational thinking concepts and coding activities into your STEM curriculum
-                </p>
+                <h1 className="text-3xl font-bold">{t('computationalThinkingModule.computationalThinkingCodingIntegration')}</h1>
+                <p className="mt-2 text-blue-100">{t('computationalThinkingModule.integrateComputationalThinkingConceptsAndCodingActiviti')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm mb-4">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4" />
-                <span>High Impact</span>
+                <span>{t('computationalThinkingModule.highImpact')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Trophy className="w-4 h-4" />
@@ -372,7 +368,7 @@ Coding teaches students to think logically, solve problems systematically, and e
         {/* Sidebar */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('computationalThinkingModule.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isActive = idx === currentLesson
@@ -432,9 +428,7 @@ Coding teaches students to think logically, solve problems systematically, and e
                 </div>
                 {completedLessons.includes(currentLessonData.id) && (
                   <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-semibold flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4" />
-                    Completed
-                  </span>
+                    <CheckCircle2 className="h-4 w-4" />{t('computationalThinkingModule.completed')}</span>
                 )}
               </div>
             </div>
@@ -454,7 +448,7 @@ Coding teaches students to think logically, solve problems systematically, and e
                 </div>
                 {currentLessonData.content.keyPoints && (
                   <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Points</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('computationalThinkingModule.keyPoints')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyPoints.map((point: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -469,7 +463,7 @@ Coding teaches students to think logically, solve problems systematically, and e
                 {/* Computational Thinking Pillars */}
                 {currentLessonData.id === 'ct-fundamentals' && (
                   <div className="bg-white rounded-xl p-6 border-2 border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">The Four Pillars of Computational Thinking</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('computationalThinkingModule.theFourPillarsOfComputationalThinking')}</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {computationalThinkingPillars.map((pillar, idx) => (
                         <div key={idx} className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg p-5 border border-blue-200">
@@ -482,7 +476,7 @@ Coding teaches students to think logically, solve problems systematically, and e
                           <p className="text-sm text-gray-700 mb-3">{pillar.description}</p>
                           <div className="space-y-2">
                             <div>
-                              <p className="text-xs font-semibold text-gray-600 mb-1">Examples:</p>
+                              <p className="text-xs font-semibold text-gray-600 mb-1">{t('computationalThinkingModule.examples')}</p>
                               {pillar.examples.map((example, exIdx) => (
                                 <p key={exIdx} className="text-xs text-gray-700 bg-white rounded p-2 border border-blue-100 mb-1">
                                   {example}
@@ -490,7 +484,7 @@ Coding teaches students to think logically, solve problems systematically, and e
                               ))}
                             </div>
                             <div>
-                              <p className="text-xs font-semibold text-gray-600 mb-1">Activities:</p>
+                              <p className="text-xs font-semibold text-gray-600 mb-1">{t('computationalThinkingModule.activities')}</p>
                               {pillar.activities.map((activity, aIdx) => (
                                 <p key={aIdx} className="text-xs text-gray-700 bg-white rounded p-2 border border-blue-100 mb-1">
                                   {activity}
@@ -514,7 +508,7 @@ Coding teaches students to think logically, solve problems systematically, and e
                 </div>
                 {currentLessonData.content.keyTakeaways && (
                   <div className="bg-purple-50 rounded-xl p-6 border border-purple-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Takeaways</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('computationalThinkingModule.keyTakeaways')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyTakeaways.map((takeaway: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -529,7 +523,7 @@ Coding teaches students to think logically, solve problems systematically, and e
                 {/* Coding Tools */}
                 {currentLessonData.id === 'coding-classroom' && (
                   <div className="bg-white rounded-xl p-6 border-2 border-gray-200 mt-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Coding Tools & Platforms</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('computationalThinkingModule.codingToolsPlatforms')}</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {codingTools.map((tool, idx) => (
                         <div key={idx} className="bg-blue-50 rounded-lg p-5 border border-blue-200">
@@ -565,12 +559,10 @@ Coding teaches students to think logically, solve problems systematically, and e
                       onClick={() => setShowWorkshop(true)}
                       className="w-full px-6 py-4 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2"
                     >
-                      <Zap className="h-5 w-5" />
-                      Launch Scratch Workshop
-                    </button>
+                      <Zap className="h-5 w-5" />{t('computationalThinkingModule.launchScratchWorkshop')}</button>
                   ) : (
                     <div className="bg-white rounded-xl p-6 border-2 border-blue-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Block-Based Programming Workshop</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('computationalThinkingModule.blockBasedProgrammingWorkshop')}</h3>
                       <div className="space-y-4">
                         <ol className="space-y-3">
                           {currentLessonData.content.steps.map((step: string, idx: number) => (
@@ -583,13 +575,9 @@ Coding teaches students to think logically, solve problems systematically, and e
                           ))}
                         </ol>
                         <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                          <p className="text-sm font-semibold text-gray-900 mb-2">Try It Out:</p>
-                          <p className="text-sm text-gray-700 mb-3">
-                            Visit scratch.mit.edu to create your first project. Start with a simple animation or game.
-                          </p>
-                          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700">
-                            Open Scratch
-                          </button>
+                          <p className="text-sm font-semibold text-gray-900 mb-2">{t('computationalThinkingModule.tryItOut')}</p>
+                          <p className="text-sm text-gray-700 mb-3">{t('computationalThinkingModule.visitScratchMitEduToCreateYourFirstProjectStart')}</p>
+                          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700">{t('computationalThinkingModule.openScratch')}</button>
                         </div>
                       </div>
                     </div>
@@ -609,26 +597,24 @@ Coding teaches students to think logically, solve problems systematically, and e
                       onClick={() => setShowLessonDesigner(true)}
                       className="w-full px-6 py-4 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
                     >
-                      <Rocket className="h-5 w-5" />
-                      Launch Lesson Designer
-                    </button>
+                      <Rocket className="h-5 w-5" />{t('computationalThinkingModule.launchLessonDesigner')}</button>
                   ) : (
                     <div className="bg-white rounded-xl p-6 border-2 border-green-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Computational Thinking Lesson Designer</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('computationalThinkingModule.computationalThinkingLessonDesigner')}</h3>
                       <div className="space-y-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Lesson Title</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('computationalThinkingModule.lessonTitle')}</label>
                           <input
                             type="text"
-                            placeholder="e.g., Introduction to Algorithms"
+                            placeholder={t('computationalThinkingModule.eGIntroductionToAlgorithms')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('computationalThinkingModule.gradeLevel')}</label>
                             <select className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100">
-                              <option>Select grade</option>
+                              <option>{t('computationalThinkingModule.selectGrade')}</option>
                               {['K', '1', '2', '3', '4', '5', 'MS', 'HS'].map((grade) => (
                                 <option key={grade} value={grade}>
                                   {grade === 'MS' ? 'Middle School' : grade === 'HS' ? 'High School' : `Grade ${grade}`}
@@ -637,28 +623,26 @@ Coding teaches students to think logically, solve problems systematically, and e
                             </select>
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Computational Thinking Pillar</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('computationalThinkingModule.computationalThinkingPillar')}</label>
                             <select className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100">
-                              <option>Select pillar</option>
-                              <option>Decomposition</option>
-                              <option>Pattern Recognition</option>
-                              <option>Abstraction</option>
-                              <option>Algorithm Design</option>
+                              <option>{t('computationalThinkingModule.selectPillar')}</option>
+                              <option>{t('computationalThinkingModule.decomposition')}</option>
+                              <option>{t('computationalThinkingModule.patternRecognition')}</option>
+                              <option>{t('computationalThinkingModule.abstraction')}</option>
+                              <option>{t('computationalThinkingModule.algorithmDesign')}</option>
                             </select>
                           </div>
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Activity Description</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('computationalThinkingModule.activityDescription')}</label>
                           <textarea
                             rows={4}
-                            placeholder="Describe your computational thinking activity..."
+                            placeholder={t('computationalThinkingModule.describeYourComputationalThinkingActivity')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
                         <div className="flex gap-3">
-                          <button className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition">
-                            Save Lesson Plan
-                          </button>
+                          <button className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition">{t('computationalThinkingModule.saveLessonPlan')}</button>
                           <button
                             onClick={() => setShowLessonDesigner(false)}
                             className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition"
@@ -672,7 +656,7 @@ Coding teaches students to think logically, solve problems systematically, and e
                 </div>
 
                 <div className="bg-white rounded-xl p-6 border-2 border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Project Requirements</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('computationalThinkingModule.projectRequirements')}</h3>
                   <ol className="space-y-3">
                     {currentLessonData.content.requirements.map((req: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
@@ -694,9 +678,7 @@ Coding teaches students to think logically, solve problems systematically, and e
                 disabled={currentLesson === 0}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
-                <ArrowLeft className="h-4 w-4" />
-                Previous
-              </button>
+                <ArrowLeft className="h-4 w-4" />{t('computationalThinkingModule.previous')}</button>
 
               <button
                 onClick={() => {
@@ -709,18 +691,12 @@ Coding teaches students to think logically, solve problems systematically, and e
               >
                 {completedLessons.includes(currentLessonData.id) ? (
                   <>
-                    <CheckCircle2 className="h-4 w-4" />
-                    Marked Complete
-                  </>
+                    <CheckCircle2 className="h-4 w-4" />{t('computationalThinkingModule.markedComplete')}</>
                 ) : currentLesson === lessons.length - 1 ? (
                   <>
-                    <Trophy className="h-4 w-4" />
-                    Complete Module
-                  </>
+                    <Trophy className="h-4 w-4" />{t('computationalThinkingModule.completeModule')}</>
                 ) : (
-                  <>
-                    Complete & Next
-                    <ArrowRight className="h-4 w-4" />
+                  <>{t('computationalThinkingModule.completeNext')}<ArrowRight className="h-4 w-4" />
                   </>
                 )}
               </button>
@@ -733,7 +709,7 @@ Coding teaches students to think logically, solve problems systematically, and e
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-600 mb-4">
                 <Trophy className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Module Complete!</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('computationalThinkingModule.moduleComplete')}</h3>
               <p className="text-gray-700 mb-6">
                 You've earned {lessons.reduce((sum, l) => sum + l.points, 0)} points. Great work!
               </p>
@@ -744,9 +720,7 @@ Coding teaches students to think logically, solve problems systematically, and e
                 >
                   Continue to Next Module
                 </button>
-                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                  Download Certificate
-                </button>
+                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">{t('computationalThinkingModule.downloadCertificate')}</button>
               </div>
             </div>
           )}

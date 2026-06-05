@@ -1,12 +1,33 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { signup } from '../../redux/features/auth/signupSlice';
 import { AppDispatch } from '../../redux/store';
+import { LanguageSearchDropdown } from '../../components/shared/LanguageSearchDropdown';
+import { useAuthLanguage } from '../../hooks/useAuthLanguage';
+
+const INSTITUTION_TYPE_KEYS = [
+  'k12School',
+  'college',
+  'university',
+  'trainingCenter',
+  'other',
+] as const;
+
+const INSTITUTION_TYPE_VALUES: Record<(typeof INSTITUTION_TYPE_KEYS)[number], string> = {
+  k12School: 'k12_school',
+  college: 'college',
+  university: 'university',
+  trainingCenter: 'training_center',
+  other: 'other',
+};
 
 const InstitutionAdminSignup: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+  const { selectedLanguage, handleLanguageChange } = useAuthLanguage();
   const { loading, error, success } = useSelector((state: any) => state.signup);
 
   const [step, setStep] = useState(1);
@@ -35,19 +56,19 @@ const InstitutionAdminSignup: React.FC = () => {
 
   const validateStep1 = () => {
     const newErrors: Record<string, string> = {};
-    if (!formData.email) newErrors.email = 'Email is required';
-    if (!formData.password) newErrors.password = 'Password is required';
-    if (formData.password.length < 10) newErrors.password = 'Password must be at least 10 characters';
-    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
-    if (!formData.first_name) newErrors.first_name = 'First name is required';
-    if (!formData.last_name) newErrors.last_name = 'Last name is required';
+    if (!formData.email) newErrors.email = t('signup.validation.emailRequired');
+    if (!formData.password) newErrors.password = t('signup.validation.passwordRequired');
+    if (formData.password.length < 10) newErrors.password = t('signup.validation.passwordMinLength');
+    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = t('signup.validation.passwordsMismatch');
+    if (!formData.first_name) newErrors.first_name = t('signup.validation.firstNameRequired');
+    if (!formData.last_name) newErrors.last_name = t('signup.validation.lastNameRequired');
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const validateStep2 = () => {
     const newErrors: Record<string, string> = {};
-    if (!formData.institution_name) newErrors.institution_name = 'Institution name is required';
+    if (!formData.institution_name) newErrors.institution_name = t('signup.validation.institutionNameRequired');
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -68,6 +89,7 @@ const InstitutionAdminSignup: React.FC = () => {
       first_name: formData.first_name,
       last_name: formData.last_name,
       phone: formData.phone || undefined,
+      language: selectedLanguage,
       institution: {
         name: formData.institution_name,
         slug: formData.institution_slug || formData.institution_name.toLowerCase().replace(/\s+/g, '-'),
@@ -76,12 +98,8 @@ const InstitutionAdminSignup: React.FC = () => {
     };
 
     try {
-      const result = await dispatch(signup(signupData)).unwrap();
-      // Store tokens if they exist, but don't navigate yet - show success modal first
-      if (result.tokens) {
-        localStorage.setItem('access_token', result.tokens.access_token);
-        localStorage.setItem('refresh_token', result.tokens.refresh_token);
-      }
+      await dispatch(signup(signupData)).unwrap();
+      navigate('/login');
     } catch (err) {
       console.error('Signup error:', err);
     }
@@ -91,16 +109,15 @@ const InstitutionAdminSignup: React.FC = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="max-w-md w-full bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold text-green-600 mb-4">Signup Successful!</h2>
-          <p className="text-gray-600 mb-4">Your institution has been created successfully.</p>
+          <h2 className="text-2xl font-bold text-green-600 mb-4">{t('signup.institution.successTitle')}</h2>
+          <p className="text-gray-600 mb-4">{t('signup.institution.successBody')}</p>
           <button
             onClick={() => {
-              // Navigate to login page
               navigate('/login');
             }}
             className="w-full bg-primary-600 text-white py-2 px-4 rounded-md hover:bg-primary-700 transition-colors"
           >
-            Go to Login
+            {t('signup.institution.goToLogin')}
           </button>
         </div>
       </div>
@@ -114,13 +131,22 @@ const InstitutionAdminSignup: React.FC = () => {
         <div className="bg-gradient-to-r from-amber-400 to-orange-500 text-white px-6 py-4 rounded-t-lg -mt-8 -mx-8 mb-6">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-bold">🚀 Coming Soon</h3>
-              <p className="text-sm opacity-90">Institution signup is currently under development. You can preview the form below.</p>
+              <h3 className="text-lg font-bold">🚀 {t('signup.institution.comingSoonTitle')}</h3>
+              <p className="text-sm opacity-90">{t('signup.institution.comingSoonBody')}</p>
             </div>
           </div>
         </div>
 
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Institution Signup</h2>
+        <div className="mb-6">
+          <LanguageSearchDropdown
+            value={selectedLanguage}
+            onChange={handleLanguageChange}
+            label={t('signup.fields.language')}
+            placeholder={t('signup.languageSearch')}
+          />
+        </div>
+
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('signup.institution.title')}</h2>
 
         <div className="mb-4">
           <div className="flex items-center">
@@ -142,9 +168,9 @@ const InstitutionAdminSignup: React.FC = () => {
 
         {step === 1 && (
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold mb-4">Account Information</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('signup.institution.stepAccount')}</h3>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('signup.fields.email')} *</label>
               <input
                 type="email"
                 name="email"
@@ -158,7 +184,7 @@ const InstitutionAdminSignup: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('signup.fields.password')} *</label>
               <input
                 type="password"
                 name="password"
@@ -172,7 +198,7 @@ const InstitutionAdminSignup: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('signup.fields.confirmPassword')} *</label>
               <input
                 type="password"
                 name="confirmPassword"
@@ -187,7 +213,7 @@ const InstitutionAdminSignup: React.FC = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('signup.fields.firstName')} *</label>
                 <input
                   type="text"
                   name="first_name"
@@ -201,7 +227,7 @@ const InstitutionAdminSignup: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('signup.fields.lastName')} *</label>
                 <input
                   type="text"
                   name="last_name"
@@ -216,7 +242,7 @@ const InstitutionAdminSignup: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Phone (Optional)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('signup.fields.phoneOptional')}</label>
               <input
                 type="tel"
                 name="phone"
@@ -230,9 +256,9 @@ const InstitutionAdminSignup: React.FC = () => {
 
         {step === 2 && (
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold mb-4">Institution Details</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('signup.institution.stepInstitution')}</h3>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Institution Name *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('signup.institution.institutionName')} *</label>
               <input
                 type="text"
                 name="institution_name"
@@ -248,29 +274,29 @@ const InstitutionAdminSignup: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Institution Type *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('signup.institution.institutionType')} *</label>
               <select
                 name="institution_type"
                 value={formData.institution_type}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
               >
-                <option value="k12_school">K-12 School</option>
-                <option value="college">College</option>
-                <option value="university">University</option>
-                <option value="training_center">Training Center</option>
-                <option value="other">Other</option>
+                {INSTITUTION_TYPE_KEYS.map((key) => (
+                  <option key={key} value={INSTITUTION_TYPE_VALUES[key]}>
+                    {t(`signup.institutionTypes.${key}`)}
+                  </option>
+                ))}
               </select>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Institution Slug (Optional)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('signup.institution.institutionSlug')}</label>
               <input
                 type="text"
                 name="institution_slug"
                 value={formData.institution_slug}
                 onChange={handleChange}
-                placeholder="Auto-generated if left empty"
+                placeholder={t('signup.institution.slugPlaceholder')}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
               />
             </div>
@@ -290,7 +316,7 @@ const InstitutionAdminSignup: React.FC = () => {
               onClick={() => setStep(step - 1)}
               className="flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300"
             >
-              Back
+              {t('signup.institution.back')}
             </button>
           )}
           <button
@@ -303,7 +329,7 @@ const InstitutionAdminSignup: React.FC = () => {
                 : 'bg-primary-600 text-white hover:bg-primary-700'
             }`}
           >
-            {step === 2 ? 'Coming Soon' : 'Next'}
+            {step === 2 ? t('signup.institution.comingSoon') : t('signup.institution.next')}
           </button>
         </div>
 
@@ -311,7 +337,7 @@ const InstitutionAdminSignup: React.FC = () => {
           onClick={() => navigate('/signup')}
           className="mt-4 text-primary-600 hover:text-primary-700"
         >
-          ← Back to Signup Options
+          {t('signup.institution.backToSignup')}
         </button>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 const ModeSelectorChip = ({ label, active, onClick }) => {
   return (
     <button

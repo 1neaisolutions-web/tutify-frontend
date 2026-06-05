@@ -4,6 +4,11 @@ import { useSelector } from 'react-redux'
 import { StreamEvent, StreamedSection } from '../api/types'
 import { API_URL } from '../config/api'
 import { parseInsufficientCreditsFrom402Body } from '../utils/creditErrors'
+import { normalizePlanMarkdown, normalizePlan504Section } from '../lib/normalizePlanMarkdown'
+import {
+  formatLessonFlowArrayAsMarkdownTable,
+  normalizeLessonPhaseBulletContent,
+} from '../lib/formatLessonFlow'
 
 /** Populated when POST execute-stream returns 402 before SSE opens */
 export interface TemplateInsufficientCredits {
@@ -23,6 +28,8 @@ export interface TemplateStreamOptions {
   /** Used when the stream cannot start or returns an error: show exemplar output */
   exemplarOutput?: Record<string, unknown> | null
   outputSchema?: Record<string, unknown> | null
+  renderSections?: Array<{ key: string; label: string; type?: string }> | null
+  templateSlug?: string | null
   /** Invoked when the stream ends with `done` and the run was not a provider failure (credits charged server-side). */
   onSuccessfulCompletion?: () => void
 }
@@ -41,8 +48,42 @@ interface UseTemplateStreamReturn {
   /** Set when the stream cannot start due to insufficient credits (HTTP 402). */
   insufficientCredits: TemplateInsufficientCredits | null
   startStream: (slug: string, data: Record<string, any>, options?: TemplateStreamOptions) => void
+  /** Preview template exemplar output with the same section layout as a completed stream */
+  showExemplarPreview: (
+    exemplarOutput: Record<string, unknown>,
+    outputSchema?: Record<string, unknown> | null,
+    renderSections?: Array<{ key: string; label: string; type?: string }> | null,
+    templateSlug?: string | null,
+  ) => void
   stopStream: () => void
   reset: () => void
+}
+
+function sectionLabelFromSchema(
+  key: string,
+  title?: string,
+  renderSections?: Array<{ key: string; label: string }> | null,
+): string {
+  const fromRender = renderSections?.find((s) => s.key === key)?.label?.trim()
+  if (fromRender) return fromRender
+  const trimmed = title?.trim()
+  if (trimmed && trimmed.toLowerCase() !== 'exemplar') return trimmed
+  return key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+}
+
+function normalizeSectionContent(
+  content: string,
+  templateSlug?: string | null,
+  sectionKey?: string,
+): string {
+  let text = content
+  if (sectionKey === 'lesson_flow') {
+    text = normalizeLessonPhaseBulletContent(text)
+  }
+  if (templateSlug === '504-plan-generator' && sectionKey) {
+    return normalizePlan504Section(sectionKey, text)
+  }
+  return normalizePlanMarkdown(text, templateSlug)
 }
 
 function exemplarValueToPlainText(value: unknown): string {
@@ -50,6 +91,8 @@ function exemplarValueToPlainText(value: unknown): string {
   if (typeof value === 'string') return value
   if (typeof value === 'number' || typeof value === 'boolean') return String(value)
   if (Array.isArray(value)) {
+    const table = formatLessonFlowArrayAsMarkdownTable(value)
+    if (table) return table
     const allStrings = value.every((x) => typeof x === 'string')
     if (allStrings) return (value as string[]).map((s) => `- ${s}`).join('\n')
     return value.map((item) => (typeof item === 'string' ? `- ${item}` : `- ${JSON.stringify(item)}`)).join('\n\n')
@@ -128,6 +171,75 @@ export const useTemplateStream = (): UseTemplateStreamReturn => {
     setInsufficientCredits(null)
   }, [stopStream])
 
+  const applyExemplarSections = useCallback(
+    (
+      ex: Record<string, unknown>,
+      outputSchema?: Record<string, unknown> | null,
+      renderSections?: Array<{ key: string; label: string; type?: string }> | null,
+      templateSlug?: string | null,
+    ): boolean => {
+      if (!ex || typeof ex !== 'object' || Object.keys(ex).length === 0) {
+        return false
+      }
+      const properties = ((outputSchema as { properties?: Record<string, { title?: string }> })
+        ?.properties || {}) as Record<string, { title?: string }>
+      const keys = Object.keys(ex)
+      const schema: StreamSectionSchema[] = keys.map((key) => ({
+        key,
+        label: sectionLabelFromSchema(key, properties[key]?.title, renderSections),
+        type: renderSections?.find((s) => s.key === key)?.type || 'markdown',
+      }))
+      sectionsSchemaRef.current = schema
+      flushSync(() => setSectionsSchema(schema))
+      const nextSections: StreamedSection[] = keys.map((key) => ({
+        key,
+        label: sectionLabelFromSchema(key, properties[key]?.title, renderSections),
+        content: normalizeSectionContent(
+          exemplarValueToPlainText((ex as Record<string, unknown>)[key]),
+          templateSlug,
+          key,
+        ),
+        type: renderSections?.find((s) => s.key === key)?.type || 'markdown',
+      }))
+      sectionsRef.current = nextSections
+      sectionMapRef.current = {}
+      keys.forEach((k, i) => {
+        sectionMapRef.current[k] = i
+      })
+      completedSectionKeysRef.current = new Set(keys)
+      flushSync(() => {
+        setSections(nextSections)
+        setCompletedSectionKeys([...keys])
+      })
+      const fullText = nextSections
+        .map((s) => (s.label ? `## ${s.label}\n\n${s.content || ''}` : s.content || ''))
+        .join('\n\n')
+      formattedContentRef.current = fullText
+      flushSync(() => {
+        setFormattedContent(fullText)
+        setContent(fullText)
+      })
+      return true
+    },
+    [],
+  )
+
+  const showExemplarPreview = useCallback(
+    (
+      exemplarOutput: Record<string, unknown>,
+      outputSchema?: Record<string, unknown> | null,
+      renderSections?: Array<{ key: string; label: string; type?: string }> | null,
+      templateSlug?: string | null,
+    ) => {
+      reset()
+      if (!applyExemplarSections(exemplarOutput, outputSchema, renderSections, templateSlug)) return
+      setError(null)
+      setProviderFailedNotice(null)
+      setIsStreaming(false)
+    },
+    [reset, applyExemplarSections],
+  )
+
   const applyExemplarFallback = useCallback((failureMessage: string): boolean => {
     const opts = streamOptionsRef.current
     const ex = opts?.exemplarOutput
@@ -136,44 +248,18 @@ export const useTemplateStream = (): UseTemplateStreamReturn => {
       setIsStreaming(false)
       return false
     }
-    const properties = ((opts?.outputSchema as { properties?: Record<string, { title?: string }> })?.properties ||
-      {}) as Record<string, { title?: string }>
-    const keys = Object.keys(ex)
-    const schema: StreamSectionSchema[] = keys.map((key) => ({
-      key,
-      label:
-        properties[key]?.title ||
-        key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
-      type: 'markdown',
-    }))
-    sectionsSchemaRef.current = schema
-    flushSync(() => setSectionsSchema(schema))
-    const nextSections: StreamedSection[] = keys.map((key) => ({
-      key,
-      label:
-        properties[key]?.title ||
-        key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
-      content: exemplarValueToPlainText((ex as Record<string, unknown>)[key]),
-      type: 'markdown',
-    }))
-    sectionsRef.current = nextSections
-    sectionMapRef.current = {}
-    keys.forEach((k, i) => {
-      sectionMapRef.current[k] = i
-    })
-    completedSectionKeysRef.current = new Set(keys)
-    flushSync(() => {
-      setSections(nextSections)
-      setCompletedSectionKeys([...keys])
-    })
-    const fullText = nextSections
-      .map((s) => (s.label ? `## ${s.label}\n\n${s.content || ''}` : s.content || ''))
-      .join('\n\n')
-    formattedContentRef.current = fullText
-    flushSync(() => {
-      setFormattedContent(fullText)
-      setContent(fullText)
-    })
+    if (
+      !applyExemplarSections(
+        ex as Record<string, unknown>,
+        opts?.outputSchema,
+        opts?.renderSections,
+        opts?.templateSlug,
+      )
+    ) {
+      setError(failureMessage)
+      setIsStreaming(false)
+      return false
+    }
     setError(null)
     setProviderFailedNotice(
       failureMessage.trim() ||
@@ -181,7 +267,7 @@ export const useTemplateStream = (): UseTemplateStreamReturn => {
     )
     setIsStreaming(false)
     return true
-  }, [])
+  }, [applyExemplarSections])
 
   const startStream = useCallback((slug: string, data: Record<string, any>, options?: TemplateStreamOptions) => {
     // Store input data for standards extraction BEFORE reset
@@ -332,12 +418,21 @@ export const useTemplateStream = (): UseTemplateStreamReturn => {
                       if ('section' in event && 'label' in event) {
                         const schema = sectionsSchemaRef.current.find((s) => s.key === event.section)
                         const type = schema?.type || 'markdown'
+                        const eventLabel = typeof event.label === 'string' ? event.label : ''
+                        const label =
+                          schema?.label &&
+                          schema.label.trim() &&
+                          schema.label.toLowerCase() !== 'exemplar'
+                            ? schema.label
+                            : eventLabel.toLowerCase() === 'exemplar' && schema?.label
+                              ? schema.label
+                              : eventLabel || schema?.label || event.section
                         const arr = sectionsRef.current
                         const existingIdx = arr.findIndex((s) => s.key === event.section)
                         const next =
                           existingIdx >= 0
-                            ? arr.map((s, i) => (i === existingIdx ? { ...s, label: event.label } : s))
-                            : [...arr, { key: event.section, label: event.label, content: '', type }]
+                            ? arr.map((s, i) => (i === existingIdx ? { ...s, label } : s))
+                            : [...arr, { key: event.section, label, content: '', type }]
                         sectionsRef.current = next
                         sectionMapRef.current[event.section] = existingIdx >= 0 ? existingIdx : next.length - 1
                         flushSync(() => setSections(next))
@@ -382,6 +477,22 @@ export const useTemplateStream = (): UseTemplateStreamReturn => {
 
                     case 'section_end': {
                       const key = event.section
+                      const slug = streamOptionsRef.current?.templateSlug
+                      if (slug === '504-plan-generator' && key) {
+                        const arr = sectionsRef.current
+                        const idx = sectionMapRef.current[key] ?? arr.findIndex((s) => s.key === key)
+                        if (idx >= 0 && idx < arr.length) {
+                          const sec = arr[idx]
+                          const normalized = normalizeSectionContent(sec.content || '', slug, key)
+                          const next = [
+                            ...arr.slice(0, idx),
+                            { ...sec, content: normalized },
+                            ...arr.slice(idx + 1),
+                          ]
+                          sectionsRef.current = next
+                          flushSync(() => setSections(next))
+                        }
+                      }
                       if (key && !completedSectionKeysRef.current.has(key)) {
                         completedSectionKeysRef.current.add(key)
                         flushSync(() => setCompletedSectionKeys(Array.from(completedSectionKeysRef.current)))
@@ -427,12 +538,28 @@ export const useTemplateStream = (): UseTemplateStreamReturn => {
                       sectionsRef.current.forEach((sec) => completedSectionKeysRef.current.add(sec.key))
                       flushSync(() => setCompletedSectionKeys(Array.from(completedSectionKeysRef.current)))
                       const outputData = doneEv.output_data ?? event.output_data
+                      const slug = streamOptionsRef.current?.templateSlug
                       if (outputData && typeof outputData === 'object' && sectionsRef.current.length > 0) {
                         const next = sectionsRef.current.map((sec) => {
                           const val = outputData[sec.key]
-                          const text = typeof val === 'string' ? val.replace(/\[\[SECTION:[^\]]*\]\]/g, '') : sec.content
+                          const raw =
+                            typeof val === 'string'
+                              ? val.replace(/\[\[SECTION:[^\]]*\]\]/g, '')
+                              : sec.content
+                          const text = normalizeSectionContent(
+                            raw || sec.content || '',
+                            slug,
+                            sec.key,
+                          )
                           return { ...sec, content: text || sec.content }
                         })
+                        sectionsRef.current = next
+                        flushSync(() => setSections(next))
+                      } else if (sectionsRef.current.length > 0 && slug) {
+                        const next = sectionsRef.current.map((sec) => ({
+                          ...sec,
+                          content: normalizeSectionContent(sec.content || '', slug, sec.key),
+                        }))
                         sectionsRef.current = next
                         flushSync(() => setSections(next))
                       }
@@ -537,6 +664,7 @@ export const useTemplateStream = (): UseTemplateStreamReturn => {
     providerFailedNotice,
     insufficientCredits,
     startStream,
+    showExemplarPreview,
     stopStream,
     reset,
   }

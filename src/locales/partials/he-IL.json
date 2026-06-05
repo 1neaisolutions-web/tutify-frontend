@@ -1,0 +1,318 @@
+{
+  "common": {
+    "loading": "Loading…",
+    "cancel": "בטל",
+    "search": "חיפוש",
+    "addNew": "הוספת חדש",
+    "save": "שמירה",
+    "upload": "העלאה",
+    "delete": "מחיקה",
+    "export": "ייצוא נתונים",
+    "all": "הכל",
+    "back": "חזור",
+    "comingSoon": "בקרוב",
+    "comingSoonHint": "התכונה הזו עדיין לא זמינה.",
+    "noDataFound": "לא נמצא נתונים",
+    "noDataFoundHint": "אפשר לנסות לשנות את המסננים או את החיפוש.",
+    "retry": "נסה/י שוב",
+    "showLess": "הצג פחות",
+    "showMore": "הצג עוד"
+  },
+  "app": {
+    "name": "עוזר מורה",
+    "studentName": "עוזר סטודנט"
+  },
+  "languageDropdown": {
+    "loading": "טוען שפות…",
+    "placeholder": "בחרו שפה",
+    "searchPlaceholder": "חפש שפות…",
+    "listLabel": "שפות ",
+    "noMatch": "אין שפות תואמות \"{{query}}\"",
+    "count": "{{count}} שפות",
+    "count_one": "{{count}} שפה",
+    "count_other": "{{count}} שפות",
+    "countAvailable": "זמין",
+    "countMatch": "תואם \"{{query}}\""
+  },
+  "layout": {
+    "activateCredits": "הפעלת נקודות הזיכוי",
+    "credits": "קרדיטים",
+    "messages": "הודעות",
+    "notifications": "התראות",
+    "newCount": "{{count}} חדש",
+    "noMessages": "אין הודעות",
+    "noMessagesHint": "כשתקבלו הודעות, הן יופיעו כאן.",
+    "noNotifications": "אין התראות",
+    "noNotificationsHint": "כשיהיו לכם עדכונים, הם יופיעו כאן.",
+    "viewAllMessages": "כל ההודעות",
+    "viewAllNotifications": "כל ההודעות",
+    "signOut": "יציאה",
+    "signingOut": "מתנתק...",
+    "allCaughtUp": "הכל הושלם!",
+    "noNewNotifications": "אין התראות חדשות",
+    "noNotificationsYet": "עדיין אין התראות",
+    "notificationsEmptyHint": "כשיהיו לכם עדכונים, הם יופיעו כאן."
+  },
+  "settings": {
+    "tabs": {
+      "general": "כללי",
+      "notifications": "התראות",
+      "plan": "תוכנית וקרדיטים",
+      "integrations": "אינטגרציות",
+      "developer": "פיתוח",
+      "export": "ייצוא נתונים"
+    },
+    "general": {
+      "title": "העדפות כלליות",
+      "language": {
+        "label": "שפה",
+        "change": "החלפה",
+        "uiFallback": "הממשק מוצג באנגלית. ההעדפה שלך ({{language}}) נשמרה עבור הפרופיל והתאריכים שלך."
+      },
+      "timezone": {
+        "label": "אזור זמן",
+        "adjust": "להתאים",
+        "currentTime": "זמן נוכחי",
+        "noMatch": "אין אזורי זמן התואמים לחיפוש שלכם"
+      },
+      "theme": {
+        "label": "ערכת נושא לממשק",
+        "light": "בהיר",
+        "dark": "כהה",
+        "system": "מערכת",
+        "followsDevice": "(מכשיר עוקב)"
+      },
+      "syncSaving": "מבצע שמירה...",
+      "syncSaved": "נשמר",
+      "syncError": "שמירה נכשלה"
+    },
+    "notifications": {
+      "title": "התראות",
+      "productUpdates": "עדכוני מוצר",
+      "lessonReminders": "תזכורות לשיעורים",
+      "weeklyInsights": "תובנות שבועיות",
+      "channels": {
+        "emailAndApp": "דוא\"ל ואפליקציה",
+        "emailOnly": "אימייל בלבד",
+        "appOnly": "אפליקציה בלבד"
+      },
+      "currentChannel": "הערוץ הנוכחי: {{channel}}",
+      "edit": "ערוך",
+      "manageDefaults": "נהל ברירות מחדל של התראות"
+    },
+    "integrations": {
+      "title": "אינטגרציות",
+      "addNew": "הוספת אינטגרציה חדשה",
+      "status": {
+        "connected": "מחובר",
+        "available": "זמין",
+        "comingSoon": "בקרוב"
+      },
+      "googleClassroom": {
+        "name": "Google Classroom",
+        "description": "סנכרן משימות ורשימות באופן אוטומטי."
+      },
+      "microsoftTeams": {
+        "name": "Microsoft Teams",
+        "description": "אפשר פגישות צוות וסנכרון הקצאות."
+      },
+      "canvasLms": {
+        "name": "Canvas LMS",
+        "description": "אינטגרציה ישירה של ספרי ציונים למשתמשי Canvas."
+      }
+    },
+    "developer": {
+      "title": "גישת API ומפתחים",
+      "connectedApps": "אפליקציות מחוברות",
+      "connectedAppsDesc": "ל -3 אפליקציות יש גישה לסביבת העבודה שלך בהוראה.",
+      "manageTokens": "ניהול אסימוני API"
+    },
+    "export": {
+      "title": "ייצוא וגיבוי",
+      "downloadData": "הורדת נתונים מסביבת העבודה",
+      "downloadDataDesc": "תבניות, הערכות והיסטוריית צ'אטים",
+      "scheduleBackups": "תזמון גיבויים שבועיים"
+    },
+    "plan": {
+      "yourCredits": "נקודות הזיכוי שלכם",
+      "memberSince": "באתר מאז {{date}}",
+      "activateCode": "+ הפעלת קוד",
+      "creditsRemaining": "/ {{total}} קרדיטים",
+      "remainingPct": "{{pct}}% נותר",
+      "expires": "בתוקף עד {{date}}",
+      "autoRenewing": "חידוש אוטומטי",
+      "noActiveCredits": "אין נקודות זיכוי פעילות. יש להפעיל קוד כדי להתחיל.",
+      "activateCreditsLink": "הפעלת נקודות הזיכוי →",
+      "usageBreakdown": "פירוט השימוש",
+      "last30Days": "30 הימים האחרונים",
+      "activity": "פעילות ",
+      "activityFallback": "פעילות ",
+      "left": "{{count}} שמאל"
+    }
+  },
+  "nav": {
+    "dashboard": "לוח בקרה",
+    "teacherTools": "כלים למורים",
+    "teacherToolsOverview": "סקירה כללית",
+    "teacherToolsAnalytics": "אנליטיקס",
+    "quiz": "בוחן ",
+    "assignment": "המחאה",
+    "worksheet": "גיליון עבודה",
+    "exams": "מבחן",
+    "templates": "ספריית תבניות",
+    "chatbots": "צ'אט בוטים מיוחדים",
+    "youtubeQuiz": "מחולל חידונים ב - YouTube",
+    "pixgen": "PixGen (AI Media Studio)",
+    "learningHub": "מרכז למידה מקצועי",
+    "personalization": "התאמה אישית",
+    "administration": "מינהל",
+    "reporting": "דיווח",
+    "assessment": "הערכה",
+    "contentManagement": "ניהול תוכן",
+    "history": "היסטוריה",
+    "analytics": "אנליטיקס",
+    "useCases": "עיון במקרי שימוש",
+    "profile": "פרופיל",
+    "settings": "הגדרות",
+    "accessCodes": "קודי גישה",
+    "contentPacks": "חבילות תוכן",
+    "documents": "מסמכים",
+    "learningHubContent": "תוכן מרכז הלמידה",
+    "organization": "ארגון",
+    "parent": "הורה",
+    "school": "בית ספר",
+    "uploadDocument": "העלאת קובץ"
+  },
+  "workspace": {
+    "fallbackName": "סביבת עבודה",
+    "scopeType": {
+      "institution": "מוסד",
+      "organization": "ארגון",
+      "personal": "אישי"
+    },
+    "switcher": {
+      "title": "החלפת פינת עבודה",
+      "active": "פעילות"
+    }
+  },
+  "login": {
+    "subtitle": "התחבר",
+    "emailLabel": "כתובת אימייל",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "סיסמה",
+    "rememberMe": "לזכור אותי",
+    "forgotPassword": "שכחת את הסיסמא?",
+    "signIn": "היכנס",
+    "signingIn": "כניסה…",
+    "noAccount": "אין לך חשבון?",
+    "signUpLink": "הירשם",
+    "error": "ההתחברות נכשלה. יש לבדוק את פרטי הכניסה."
+  },
+  "teacherTools": {
+    "breadcrumbTeacherTools": "כלים למורים",
+    "breadcrumbTemplates": "תבניות",
+    "edit": "ערוך",
+    "duplicate": "שכפול",
+    "archive": "להעביר לארכיון",
+    "delete": "מחיקה",
+    "toolAssign": "הקצאה",
+    "toolSheet": "גיליון",
+    "toolExam": "מבחן",
+    "range7d": "השבוע האחרון",
+    "range30d": "30 הימים האחרונים",
+    "rangeAll": "כל הזמנים",
+    "previewData": "תצוגה מקדימה של נתונים",
+    "previewDataHint": "— התוצאות האמיתיות יופיעו כאן לאחר שהסטודנטים ישלחו.",
+    "statContentCreated": "התוכן נוצר",
+    "overview": {
+      "kpiTotalActive": "סה\"כ פריטים פעילים",
+      "kpiScheduledWeek": "המועד נקבע לשבוע זה",
+      "kpiPendingDrafts": "טיוטות בהמתנה",
+      "kpiPublished": "פריטים שפורסמו",
+      "kpiAvgQuizScore": "ציון בוחן",
+      "kpiQuizzesTaken": "המבחנים בוצעו"
+    }
+  },
+  "quiz": {
+    "breadcrumb": "בוחן "
+  },
+  "assignment": {
+    "breadcrumb": "המחאה"
+  },
+  "worksheet": {
+    "breadcrumb": "גיליון עבודה"
+  },
+  "exam": {
+    "breadcrumb": "מבחן",
+    "detail": {
+      "tabs": {
+        "analytics": "אנליטיקס",
+        "results": "תוצאות",
+        "candidates": "מועמדים"
+      }
+    },
+    "statMarks": "××¡×"
+  },
+  "status": {
+    "draft": "טיוטה",
+    "published": "פורסם",
+    "active": "פעילות",
+    "closed": "סגור",
+    "graded": "קיבל ציון",
+    "submitted": "נשלח",
+    "pending": "בהמתנה",
+    "archived": "ארכיון",
+    "completed": "הושלם",
+    "upcoming": "בקרוב",
+    "ongoing": "מתמשך",
+    "cancelled": "מבוטל",
+    "late": "מאוחר# #יותר",
+    "onTime": "במועדם,"
+  },
+  "dashboard": {
+    "recentActivity": "פעולות אחרונות",
+    "viewAll": "צפה בהכל",
+    "teacherToolsOverview": "סקירה כללית על כלי מורים",
+    "greetingMorning": "בוקר טוב, {{name}}",
+    "greetingAfternoon": "צהריים טובים, {{name}}",
+    "greetingEvening": "ערב טוב, {{name}}",
+    "defaultName": "מורה",
+    "workspaceReady": "סביבת העבודה שלך מוכנה.",
+    "activeContent": "{{count}} פריטים פעילים בסביבת העבודה",
+    "createFirstQuiz": "צור את החידון הראשון שלך כדי להתחיל.",
+    "createFirstQuizCta": "צור חידון",
+    "totalContent": "סה״כ תוכן",
+    "thisWeek": "השבוע",
+    "draftBacklog": "טיוטות ממתינות",
+    "published": "פורסם",
+    "dayStreak": "רצף ימים",
+    "upcomingDeadlines": "מועדים קרובים",
+    "noDeadlines": "אין מועדים קרובים",
+    "noActivity": "אין פעילות אחרונה",
+    "draftsToFinish": "טיוטות לסיום",
+    "all": "הכל",
+    "noDrafts": "אין טיוטות",
+    "coreWorkflows": "תהליכי עבודה עיקריים",
+    "dueToday": "מגיע היום",
+    "dueInDays": "מגיע בעוד {{count}} ימים",
+    "dueSoon": "מגיע בקרוב: {{title}}",
+    "continueDraft": "המשך טיוטה: {{title}}",
+    "tools": {
+      "quiz": "בוחן ",
+      "assignment": "המחאה",
+      "worksheet": "גיליון עבודה",
+      "exam": "מבחן"
+    }
+  },
+  "tenantSelection": {
+    "title": "בחירת פינת עבודה",
+    "subtitle": "יש לבחור פינת עבודה כדי להמשיך",
+    "workspace": "סביבת עבודה",
+    "signingIn": "כניסה…",
+    "scope": {
+      "institution": "מוסד",
+      "organization": "ארגון",
+      "personalWorkspace": "חלל עבודה אישי"
+    }
+  }
+}

@@ -127,6 +127,17 @@
     @apply text-sm;
   }
 
+  /* Native selects on gradient chatbot headers: light popup, readable options */
+  .chatbot-header-select {
+    @apply min-w-[7rem] max-h-9 cursor-pointer rounded-lg border border-white/50 bg-white px-3 py-1.5 text-sm font-medium text-gray-900 shadow-sm;
+    @apply focus:outline-none focus:ring-2 focus:ring-white/80;
+    color-scheme: light;
+  }
+
+  .chatbot-header-select option {
+    @apply bg-white text-gray-900;
+  }
+
   /* Document Styling - Match project font */
   .prose-document {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -198,6 +209,41 @@
     font-family: 'Courier New', 'Monaco', monospace;
     font-size: 13px;
     line-height: 1.6;
+  }
+
+  /* Inquiry / lesson planner — lesson_flow markdown tables */
+  .ai-lesson-phases-table {
+    table-layout: fixed;
+  }
+
+  .ai-lesson-phases-table th:nth-child(1),
+  .ai-lesson-phases-table td:nth-child(1) {
+    width: 6.5rem;
+    min-width: 6.5rem;
+  }
+
+  .ai-lesson-phases-table th:nth-child(2),
+  .ai-lesson-phases-table td:nth-child(2) {
+    width: 5.25rem;
+    min-width: 5.25rem;
+    max-width: 5.25rem;
+    padding-left: 0.75rem !important;
+    padding-right: 1.5rem !important;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .ai-lesson-phases-table th:nth-child(3),
+  .ai-lesson-phases-table td:nth-child(3) {
+    padding-left: 1.25rem !important;
+  }
+
+  /* 4-column inquiry layout: wider teacher + student columns */
+  .ai-lesson-phases-table:has(thead th:nth-child(4)) th:nth-child(3),
+  .ai-lesson-phases-table:has(thead th:nth-child(4)) td:nth-child(3),
+  .ai-lesson-phases-table:has(thead th:nth-child(4)) th:nth-child(4),
+  .ai-lesson-phases-table:has(thead th:nth-child(4)) td:nth-child(4) {
+    width: 38%;
   }
 }
 

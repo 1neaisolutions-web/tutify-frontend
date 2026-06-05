@@ -39,12 +39,16 @@ import { useSelector, useDispatch } from 'react-redux'
 import { fetchTemplates, toggleTemplateFavorite } from '../../redux/features/templates/templatesSlice'
 import { useSnackbar } from '../../hooks/useSnackbar'
 
+import { useTranslation } from 'react-i18next'
+import { resolveApiMessage } from '../../i18n/resolveApiMessage'
+import { catalogLabel } from '../../i18n/catalogLabel'
 const DEFAULT_FILTERS: TemplateListParams = {
   sort: 'title',
 }
 
 
 const TemplatesLibrary = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { toast } = useSnackbar()
@@ -268,7 +272,7 @@ const TemplatesLibrary = () => {
     
     // Check if user is authenticated - show error immediately if not
     if (!isAuthenticated) {
-      toast.error('Please log in to add favorites')
+      toast.error(t('templatesLibrary.pleaseLogInToAddFavorites'))
       return
     }
     
@@ -278,30 +282,30 @@ const TemplatesLibrary = () => {
       .then((result: any) => {
         // Show success feedback
         toast.success(
-          result.is_favorite 
-            ? 'Template added to favorites' 
-            : 'Template removed from favorites'
+          result.is_favorite
+            ? t('templatesLibrary.favoriteAdded')
+            : t('templatesLibrary.favoriteRemoved'),
         )
       })
       .catch((error: any) => {
         console.error('[TemplatesLibrary] Error toggling favorite:', error)
         
         // Show user-friendly error message
-        let errorMessage = 'Failed to update favorite. Please try again.'
-        
+        let errorMessage = t('templatesLibrary.favoriteUpdateFailed')
+
         if (error?.code === 'AUTH_REQUIRED' || error?.message?.includes('log in')) {
-          errorMessage = 'Please log in to add favorites'
+          errorMessage = t('templatesLibrary.pleaseLogInToAddFavorites')
         } else if (error?.status === 401) {
-          errorMessage = 'Your session has expired. Please log in again.'
+          errorMessage = t('templatesLibrary.sessionExpired')
         } else if (error?.status === 404) {
-          errorMessage = 'Template not found.'
+          errorMessage = t('templatesLibrary.templateNotFound')
         } else if (error?.message) {
           if (error.message.includes('Network error') || error.message.includes('Failed to fetch')) {
-            errorMessage = 'Connection error. Please check your internet connection and try again.'
+            errorMessage = t('templatesLibrary.connectionError')
           } else if (error.message.includes('timeout')) {
-            errorMessage = 'Request timed out. Please try again.'
+            errorMessage = t('templatesLibrary.requestTimeout')
           } else {
-            errorMessage = error.message
+            errorMessage = resolveApiMessage(t, error.message)
           }
         }
         
@@ -346,9 +350,7 @@ const TemplatesLibrary = () => {
         <div className="absolute right-4 top-4 flex items-center gap-2">
           {isHot && (
             <span className="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2 py-0.5 text-xs font-semibold text-orange-700">
-              <Flame className="h-3 w-3" />
-              Hot
-            </span>
+              <Flame className="h-3 w-3" />{t('templatesLibrary.hot')}</span>
           )}
           {/* Only show favorite button if user is authenticated */}
           {isAuthenticated && (
@@ -359,7 +361,7 @@ const TemplatesLibrary = () => {
                   ? 'text-yellow-500 fill-yellow-500' 
                   : 'text-gray-400 hover:text-yellow-500'
               }`}
-              aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+              aria-label={isFavorite ? t('templatesLibrary.removeFromFavorites') : t('templatesLibrary.addToFavorites')}
             >
               <Star className={`h-4 w-4 ${isFavorite ? 'fill-current' : ''}`} />
             </button>
@@ -373,14 +375,22 @@ const TemplatesLibrary = () => {
 
         {/* Title and Description */}
         <div className="space-y-2">
-          <h3 className="text-lg font-semibold text-gray-900 pr-16">{template.title}</h3>
+          <h3 className="text-lg font-semibold text-gray-900 pr-16">
+            {catalogLabel(t, 'templatesLibrary', template.slug, 'title', template.title ?? '')}
+          </h3>
           <p className="text-sm text-gray-600 leading-relaxed" style={{
             display: '-webkit-box',
             WebkitLineClamp: 3,
             WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
           }}>
-            {template.description || 'This template is ready for standards alignment and lesson planning.'}
+            {catalogLabel(
+              t,
+              'templatesLibrary',
+              template.slug,
+              'description',
+              template.description || t('templatesLibrary.defaultDescription'),
+            )}
           </p>
         </div>
       </article>
@@ -396,10 +406,8 @@ const TemplatesLibrary = () => {
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-semibold text-gray-900">Templates</h1>
-            <p className="mt-1 text-sm text-gray-600">
-              Browse and search all available templates
-            </p>
+            <h1 className="text-3xl font-semibold text-gray-900">{t('templatesLibrary.templates')}</h1>
+            <p className="mt-1 text-sm text-gray-600">{t('templatesLibrary.browseAndSearchAllAvailableTemplates')}</p>
           </div>
           {/* Manual test button */}
           {/* <button
@@ -446,9 +454,7 @@ const TemplatesLibrary = () => {
               }
             }}
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
-          >
-            🔍 Test Connection
-          </button> */}
+          >{t('templatesLibrary.testConnection')}</button> */}
         </div>
 
         {/* Search Bar */}
@@ -470,7 +476,7 @@ const TemplatesLibrary = () => {
                 applyFilters()
               }
             }}
-            placeholder="Search all templates..."
+            placeholder={t('templatesLibrary.searchAllTemplates')}
             className="w-full rounded-lg border border-gray-300 bg-white py-3 pl-12 pr-10 text-sm text-gray-900 placeholder:text-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-colors"
           />
           {formState.q && (
@@ -485,7 +491,7 @@ const TemplatesLibrary = () => {
                 })
               }}
               className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
-              aria-label="Clear search"
+              aria-label={t('templatesLibrary.clearSearch')}
             >
               <X className="h-4 w-4" />
             </button>
@@ -506,11 +512,9 @@ const TemplatesLibrary = () => {
             }`}
           >
             <Flame className={`h-4 w-4 ${hotFilter === true ? 'text-orange-600' : 'text-gray-400'}`} />
-            Hot Templates
+            {t('templatesLibrary.hotTemplates')}
             {hotFilter === true && (
-              <span className="ml-1 rounded-full bg-orange-200 px-1.5 py-0.5 text-xs font-semibold text-orange-800">
-                Active
-              </span>
+              <span className="ml-1 rounded-full bg-orange-200 px-1.5 py-0.5 text-xs font-semibold text-orange-800">{t('templatesLibrary.active')}</span>
             )}
           </button>
 
@@ -528,11 +532,9 @@ const TemplatesLibrary = () => {
               }`}
             >
               <Star className={`h-4 w-4 ${favoriteFilter === true ? 'text-yellow-600 fill-yellow-600' : 'text-gray-400'}`} />
-              Favorites
+              {t('templatesLibrary.favorites')}
               {favoriteFilter === true && (
-                <span className="ml-1 rounded-full bg-yellow-200 px-1.5 py-0.5 text-xs font-semibold text-yellow-800">
-                  Active
-                </span>
+                <span className="ml-1 rounded-full bg-yellow-200 px-1.5 py-0.5 text-xs font-semibold text-yellow-800">{t('templatesLibrary.active')}</span>
               )}
             </button>
           )}
@@ -546,7 +548,7 @@ const TemplatesLibrary = () => {
               }}
               className="ml-auto text-sm text-gray-600 hover:text-gray-900 font-medium transition-colors"
             >
-              Clear Filters
+              {t('templatesLibrary.clearFilters')}
             </button>
           )}
         </div>
@@ -562,9 +564,7 @@ const TemplatesLibrary = () => {
             }}
             className="inline-flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900"
           >
-            <SlidersHorizontal className="h-4 w-4" />
-            Filter by
-          </button>
+            <SlidersHorizontal className="h-4 w-4" />{t('templatesLibrary.filterBy')}</button>
           {hasActiveFilters && (
             <button
               type="button"
@@ -600,13 +600,13 @@ const TemplatesLibrary = () => {
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               <div className="space-y-1">
-                <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">Framework</label>
+                <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">{t('templatesLibrary.framework')}</label>
                 <select
                   value={formState.framework}
                   onChange={(event) => setFormState((prev) => ({ ...prev, framework: event.target.value }))}
                   className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                 >
-                  <option value="">Any framework</option>
+                  <option value="">{t('templatesLibrary.anyFramework')}</option>
                   {frameworksState.data && Array.isArray(frameworksState.data) && frameworksState.data.map((framework) => (
                     <option key={framework.code} value={framework.code}>
                       {framework.code} · {framework.name}
@@ -615,11 +615,11 @@ const TemplatesLibrary = () => {
                 </select>
               </div>
               <div className="space-y-1">
-                <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">Standard code</label>
+                <label className="text-xs font-semibold uppercase tracking-wide text-gray-500">{t('templatesLibrary.standardCode')}</label>
                 <input
                   value={formState.standardCode}
                   onChange={(event) => setFormState((prev) => ({ ...prev, standardCode: event.target.value }))}
-                  placeholder="CCSS.MATH.CONTENT.6.EE.A.2"
+                  placeholder={t('templatesLibrary.ccssMathContent6EeA2')}
                   className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                 />
               </div>
@@ -627,9 +627,7 @@ const TemplatesLibrary = () => {
                 <button
                   type="submit"
                   className="inline-flex flex-1 items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500"
-                >
-                  Apply filters
-                </button>
+                >{t('templatesLibrary.applyFilters')}</button>
               </div>
             </div>
           </form>
@@ -640,23 +638,22 @@ const TemplatesLibrary = () => {
       <div className="space-y-4">
         <section className="space-y-4">
           <div className="flex items-center justify-between gap-2">
-            <p className="text-sm font-semibold text-gray-900">{total > 0 ? `${total} templates` : 'Templates'}</p>
+            <p className="text-sm font-semibold text-gray-900">
+              {total > 0 ? t('templatesLibrary.templatesCount', { count: total }) : t('templatesLibrary.templatesLabel')}
+            </p>
             <button
               type="button"
               onClick={() => dispatch(fetchTemplates(filters) as any)}
               disabled={loading}
               className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-              title="Refresh template list from backend"
+              title={t('templatesLibrary.refreshTemplateListFromBackend')}
             >
-              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-              Refresh
-            </button>
+              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />{t('templatesLibrary.refresh')}</button>
           </div>
 
           {loading && (
             <div className="flex items-center justify-center rounded-2xl border border-dashed border-gray-300 py-10 text-sm text-gray-500">
-              <Loader2 className="mr-2 h-5 w-5 animate-spin text-indigo-500" /> Loading templates…
-            </div>
+              <Loader2 className="mr-2 h-5 w-5 animate-spin text-indigo-500" />{t('templatesLibrary.loadingTemplates')}</div>
           )}
 
           {error && !loading && (
@@ -664,15 +661,15 @@ const TemplatesLibrary = () => {
               <div className="flex items-start gap-3">
                 <AlertTriangle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
                 <div className="flex-1">
-                  <p className="text-sm font-semibold text-red-800 mb-1">Error Loading Templates</p>
+                  <p className="text-sm font-semibold text-red-800 mb-1">{t('templatesLibrary.errorLoadingTemplates')}</p>
                   <p className="text-sm text-red-700 mb-3">{error}</p>
                   <div className="text-xs text-red-600 bg-red-100/50 rounded-lg p-3">
-                    <p className="font-semibold mb-2">Troubleshooting Steps:</p>
+                    <p className="font-semibold mb-2">{t('templatesLibrary.troubleshootingSteps')}</p>
                     <ul className="list-disc list-inside space-y-1 ml-2">
-                      <li>Ensure the backend server is running at <code className="bg-red-200 px-1.5 py-0.5 rounded font-mono">{API_BASE_URL}</code></li>
-                      <li>Check browser console (F12) for detailed error messages</li>
-                      <li>Verify CORS settings if using a different origin</li>
-                      <li>Check Network tab to see the failed request details</li>
+                      <li>{t('templatesLibrary.ensureTheBackendServerIsRunningAt')}<code className="bg-red-200 px-1.5 py-0.5 rounded font-mono">{API_BASE_URL}</code></li>
+                      <li>{t('templatesLibrary.checkBrowserConsole')}</li>
+                      <li>{t('templatesLibrary.verifyCorsSettingsIfUsingADifferentOrigin')}</li>
+                      <li>{t('templatesLibrary.checkNetworkTabToSeeTheFailedRequestDetails')}</li>
                     </ul>
                   </div>
                 </div>
@@ -681,9 +678,7 @@ const TemplatesLibrary = () => {
           )}
 
           {!loading && !templates.length && !error && (
-            <div className="rounded-2xl border border-gray-200 bg-white px-6 py-10 text-center text-sm text-gray-600">
-              No templates match those filters yet. Seed data includes math expressions so try subject "math".
-            </div>
+            <div className="rounded-2xl border border-gray-200 bg-white px-6 py-10 text-center text-sm text-gray-600">{t('templatesLibrary.noTemplatesMatchThoseFiltersYetSeedDataIncludesMath')}</div>
           )}
 
           {templates.length > 0 && (

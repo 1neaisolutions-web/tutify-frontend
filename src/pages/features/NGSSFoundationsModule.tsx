@@ -39,6 +39,7 @@ import {
   Sparkles,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template' | 'project'
@@ -67,6 +68,7 @@ interface PerformanceExpectation {
 }
 
 const NGSSFoundationsModule = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -355,14 +357,10 @@ CCCs are concepts that apply across all domains of science:
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 1
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('nGSSFoundationsModule.module1')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    90 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('nGSSFoundationsModule.k0Min')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
                     <Star className="h-3 w-3" />
@@ -372,16 +370,14 @@ CCCs are concepts that apply across all domains of science:
                     }, 0)} / {lessons.reduce((sum, l) => sum + l.points, 0)} points
                   </span>
                 </div>
-                <h1 className="text-3xl font-bold">NGSS Foundations & Three-Dimensional Learning</h1>
-                <p className="mt-2 text-indigo-100">
-                  Master the Next Generation Science Standards framework and understand how DCIs, SEPs, and CCCs work together
-                </p>
+                <h1 className="text-3xl font-bold">{t('nGSSFoundationsModule.ngssFoundationsThreeDimensionalLearning')}</h1>
+                <p className="mt-2 text-indigo-100">{t('nGSSFoundationsModule.masterTheNextGenerationScienceStandardsFrameworkAndUnde')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm mb-4">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4" />
-                <span>High Impact</span>
+                <span>{t('nGSSFoundationsModule.highImpact')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Trophy className="w-4 h-4" />
@@ -414,7 +410,7 @@ CCCs are concepts that apply across all domains of science:
         {/* Sidebar - Lesson Navigation */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('nGSSFoundationsModule.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isActive = idx === currentLesson
@@ -489,9 +485,7 @@ CCCs are concepts that apply across all domains of science:
                 </div>
                 {completedLessons.includes(currentLessonData.id) && (
                   <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-semibold flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4" />
-                    Completed
-                  </span>
+                    <CheckCircle2 className="h-4 w-4" />{t('nGSSFoundationsModule.completed')}</span>
                 )}
               </div>
             </div>
@@ -525,7 +519,7 @@ CCCs are concepts that apply across all domains of science:
 
                 {currentLessonData.content.keyPoints && (
                   <div className="bg-indigo-50 rounded-xl p-6 border border-indigo-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Points</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('nGSSFoundationsModule.keyPoints')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyPoints.map((point: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -548,7 +542,7 @@ CCCs are concepts that apply across all domains of science:
 
                 {currentLessonData.content.keyTakeaways && (
                   <div className="bg-purple-50 rounded-xl p-6 border border-purple-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Takeaways</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('nGSSFoundationsModule.keyTakeaways')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyTakeaways.map((takeaway: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -597,22 +591,20 @@ CCCs are concepts that apply across all domains of science:
                       onClick={() => setShowMappingTool(true)}
                       className="w-full px-6 py-4 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition flex items-center justify-center gap-2"
                     >
-                      <Zap className="h-5 w-5" />
-                      Launch NGSS Mapping Tool
-                    </button>
+                      <Zap className="h-5 w-5" />{t('nGSSFoundationsModule.launchNgssMappingTool')}</button>
                   ) : (
                     <div className="bg-white rounded-xl p-6 border-2 border-indigo-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">NGSS Dimension Mapping Tool</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('nGSSFoundationsModule.ngssDimensionMappingTool')}</h3>
                       <div className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('nGSSFoundationsModule.gradeLevel')}</label>
                             <select
                               value={mappingData.gradeLevel}
                               onChange={(e) => setMappingData({ ...mappingData, gradeLevel: e.target.value })}
                               className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                             >
-                              <option value="">Select grade</option>
+                              <option value="">{t('nGSSFoundationsModule.selectGrade')}</option>
                               {['K', '1', '2', '3', '4', '5', 'MS', 'HS'].map((grade) => (
                                 <option key={grade} value={grade}>
                                   {grade === 'MS' ? 'Middle School' : grade === 'HS' ? 'High School' : `Grade ${grade}`}
@@ -621,12 +613,12 @@ CCCs are concepts that apply across all domains of science:
                             </select>
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Topic or Concept</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('nGSSFoundationsModule.topicOrConcept')}</label>
                             <input
                               type="text"
                               value={mappingData.topic}
                               onChange={(e) => setMappingData({ ...mappingData, topic: e.target.value })}
-                              placeholder="e.g., Photosynthesis, Forces, Ecosystems"
+                              placeholder={t('nGSSFoundationsModule.eGPhotosynthesisForcesEcosystems')}
                               className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                             />
                           </div>
@@ -638,11 +630,11 @@ CCCs are concepts that apply across all domains of science:
                             onChange={(e) => setMappingData({ ...mappingData, selectedDCI: e.target.value })}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                           >
-                            <option value="">Select DCI</option>
-                            <option value="PS1">PS1: Matter and its interactions</option>
-                            <option value="LS1">LS1: From molecules to organisms</option>
-                            <option value="ESS1">ESS1: Earth's place in the universe</option>
-                            <option value="ETS1">ETS1: Engineering design</option>
+                            <option value="">{t('nGSSFoundationsModule.selectDci')}</option>
+                            <option value="PS1">{t('nGSSFoundationsModule.ps1MatterAndItsInteractions')}</option>
+                            <option value="LS1">{t('nGSSFoundationsModule.ls1FromMoleculesToOrganisms')}</option>
+                            <option value="ESS1">{t('nGSSFoundationsModule.ess1EarthSPlaceInTheUniverse')}</option>
+                            <option value="ETS1">{t('nGSSFoundationsModule.ets1EngineeringDesign')}</option>
                           </select>
                         </div>
                         <div>
@@ -652,15 +644,15 @@ CCCs are concepts that apply across all domains of science:
                             onChange={(e) => setMappingData({ ...mappingData, selectedSEP: e.target.value })}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                           >
-                            <option value="">Select SEP</option>
-                            <option value="SEP1">Asking Questions and Defining Problems</option>
-                            <option value="SEP2">Developing and Using Models</option>
-                            <option value="SEP3">Planning and Carrying Out Investigations</option>
-                            <option value="SEP4">Analyzing and Interpreting Data</option>
-                            <option value="SEP5">Using Mathematics and Computational Thinking</option>
-                            <option value="SEP6">Constructing Explanations</option>
-                            <option value="SEP7">Engaging in Argument from Evidence</option>
-                            <option value="SEP8">Obtaining, Evaluating, and Communicating Information</option>
+                            <option value="">{t('nGSSFoundationsModule.selectSep')}</option>
+                            <option value="SEP1">{t('nGSSFoundationsModule.askingQuestionsAndDefiningProblems')}</option>
+                            <option value="SEP2">{t('nGSSFoundationsModule.developingAndUsingModels')}</option>
+                            <option value="SEP3">{t('nGSSFoundationsModule.planningAndCarryingOutInvestigations')}</option>
+                            <option value="SEP4">{t('nGSSFoundationsModule.analyzingAndInterpretingData')}</option>
+                            <option value="SEP5">{t('nGSSFoundationsModule.usingMathematicsAndComputationalThinking')}</option>
+                            <option value="SEP6">{t('nGSSFoundationsModule.constructingExplanations')}</option>
+                            <option value="SEP7">{t('nGSSFoundationsModule.engagingInArgumentFromEvidence')}</option>
+                            <option value="SEP8">{t('nGSSFoundationsModule.obtainingEvaluatingAndCommunicatingInformation')}</option>
                           </select>
                         </div>
                         <div>
@@ -670,14 +662,14 @@ CCCs are concepts that apply across all domains of science:
                             onChange={(e) => setMappingData({ ...mappingData, selectedCCC: e.target.value })}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                           >
-                            <option value="">Select CCC</option>
-                            <option value="Patterns">Patterns</option>
-                            <option value="Cause and Effect">Cause and Effect</option>
-                            <option value="Scale, Proportion, and Quantity">Scale, Proportion, and Quantity</option>
-                            <option value="Systems and System Models">Systems and System Models</option>
-                            <option value="Energy and Matter">Energy and Matter</option>
-                            <option value="Structure and Function">Structure and Function</option>
-                            <option value="Stability and Change">Stability and Change</option>
+                            <option value="">{t('nGSSFoundationsModule.selectCcc')}</option>
+                            <option value="Patterns">{t('nGSSFoundationsModule.patterns')}</option>
+                            <option value="Cause and Effect">{t('nGSSFoundationsModule.causeAndEffect')}</option>
+                            <option value="Scale, Proportion, and Quantity">{t('nGSSFoundationsModule.scaleProportionAndQuantity')}</option>
+                            <option value="Systems and System Models">{t('nGSSFoundationsModule.systemsAndSystemModels')}</option>
+                            <option value="Energy and Matter">{t('nGSSFoundationsModule.energyAndMatter')}</option>
+                            <option value="Structure and Function">{t('nGSSFoundationsModule.structureAndFunction')}</option>
+                            <option value="Stability and Change">{t('nGSSFoundationsModule.stabilityAndChange')}</option>
                           </select>
                         </div>
                         <div className="flex gap-3">
@@ -685,9 +677,7 @@ CCCs are concepts that apply across all domains of science:
                             onClick={handleMappingSubmit}
                             disabled={!mappingData.gradeLevel || !mappingData.topic || !mappingData.selectedDCI || !mappingData.selectedSEP || !mappingData.selectedCCC}
                             className="flex-1 px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
-                          >
-                            Generate Mapping
-                          </button>
+                          >{t('nGSSFoundationsModule.generateMapping')}</button>
                           <button
                             onClick={() => setShowMappingTool(false)}
                             className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition"
@@ -702,33 +692,31 @@ CCCs are concepts that apply across all domains of science:
 
                 {/* Performance Expectations Examples */}
                 <div className="bg-white rounded-xl p-6 border-2 border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Example Performance Expectations</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('nGSSFoundationsModule.examplePerformanceExpectations')}</h3>
                   <div className="space-y-4">
                     {performanceExpectations.map((pe, idx) => (
                       <div key={idx} className="bg-indigo-50 rounded-lg p-5 border border-indigo-200">
                         <div className="flex items-center justify-between mb-3">
                           <h4 className="text-base font-bold text-gray-900">{pe.code}</h4>
-                          <span className="px-2 py-1 rounded bg-indigo-100 text-indigo-700 text-xs font-semibold">
-                            Middle School
-                          </span>
+                          <span className="px-2 py-1 rounded bg-indigo-100 text-indigo-700 text-xs font-semibold">{t('nGSSFoundationsModule.middleSchool')}</span>
                         </div>
                         <p className="text-sm font-medium text-gray-900 mb-3">{pe.title}</p>
                         <p className="text-sm text-gray-700 mb-4">{pe.description}</p>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 mb-1">DCI</p>
+                            <p className="text-xs font-semibold text-gray-600 mb-1">{t('nGSSFoundationsModule.dci')}</p>
                             {pe.dci.map((d, dIdx) => (
                               <p key={dIdx} className="text-xs text-gray-700 bg-white rounded p-2 border border-indigo-100">{d}</p>
                             ))}
                           </div>
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 mb-1">SEP</p>
+                            <p className="text-xs font-semibold text-gray-600 mb-1">{t('nGSSFoundationsModule.sep')}</p>
                             {pe.sep.map((s, sIdx) => (
                               <p key={sIdx} className="text-xs text-gray-700 bg-white rounded p-2 border border-indigo-100">{s}</p>
                             ))}
                           </div>
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 mb-1">CCC</p>
+                            <p className="text-xs font-semibold text-gray-600 mb-1">{t('nGSSFoundationsModule.ccc')}</p>
                             {pe.ccc.map((c, cIdx) => (
                               <p key={cIdx} className="text-xs text-gray-700 bg-white rounded p-2 border border-indigo-100">{c}</p>
                             ))}
@@ -752,32 +740,30 @@ CCCs are concepts that apply across all domains of science:
                       onClick={() => setShowLessonDesigner(true)}
                       className="w-full px-6 py-4 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
                     >
-                      <Rocket className="h-5 w-5" />
-                      Launch Lesson Designer
-                    </button>
+                      <Rocket className="h-5 w-5" />{t('nGSSFoundationsModule.launchLessonDesigner')}</button>
                   ) : (
                     <div className="bg-white rounded-xl p-6 border-2 border-green-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">NGSS-Aligned Lesson Designer</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('nGSSFoundationsModule.ngssAlignedLessonDesigner')}</h3>
                       <div className="space-y-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Lesson Title</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('nGSSFoundationsModule.lessonTitle')}</label>
                           <input
                             type="text"
                             value={lessonDesign.title}
                             onChange={(e) => setLessonDesign({ ...lessonDesign, title: e.target.value })}
-                            placeholder="e.g., Exploring Photosynthesis"
+                            placeholder={t('nGSSFoundationsModule.eGExploringPhotosynthesis')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('nGSSFoundationsModule.gradeLevel')}</label>
                             <select
                               value={lessonDesign.gradeLevel}
                               onChange={(e) => setLessonDesign({ ...lessonDesign, gradeLevel: e.target.value })}
                               className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                             >
-                              <option value="">Select grade</option>
+                              <option value="">{t('nGSSFoundationsModule.selectGrade')}</option>
                               {['K', '1', '2', '3', '4', '5', 'MS', 'HS'].map((grade) => (
                                 <option key={grade} value={grade}>
                                   {grade === 'MS' ? 'Middle School' : grade === 'HS' ? 'High School' : `Grade ${grade}`}
@@ -786,65 +772,65 @@ CCCs are concepts that apply across all domains of science:
                             </select>
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Performance Expectation</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('nGSSFoundationsModule.performanceExpectation')}</label>
                             <input
                               type="text"
                               value={lessonDesign.performanceExpectation}
                               onChange={(e) => setLessonDesign({ ...lessonDesign, performanceExpectation: e.target.value })}
-                              placeholder="e.g., MS-LS1-5"
+                              placeholder={t('nGSSFoundationsModule.eGMsLs15')}
                               className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                             />
                           </div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">DCI</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('nGSSFoundationsModule.dci')}</label>
                             <textarea
                               value={lessonDesign.dci}
                               onChange={(e) => setLessonDesign({ ...lessonDesign, dci: e.target.value })}
                               rows={2}
-                              placeholder="Disciplinary Core Idea"
+                              placeholder={t('nGSSFoundationsModule.disciplinaryCoreIdea')}
                               className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">SEP</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('nGSSFoundationsModule.sep')}</label>
                             <textarea
                               value={lessonDesign.sep}
                               onChange={(e) => setLessonDesign({ ...lessonDesign, sep: e.target.value })}
                               rows={2}
-                              placeholder="Science & Engineering Practice"
+                              placeholder={t('nGSSFoundationsModule.scienceEngineeringPractice')}
                               className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">CCC</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('nGSSFoundationsModule.ccc')}</label>
                             <textarea
                               value={lessonDesign.ccc}
                               onChange={(e) => setLessonDesign({ ...lessonDesign, ccc: e.target.value })}
                               rows={2}
-                              placeholder="Crosscutting Concept"
+                              placeholder={t('nGSSFoundationsModule.crosscuttingConcept')}
                               className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                             />
                           </div>
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Phenomenon or Hook</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('nGSSFoundationsModule.phenomenonOrHook')}</label>
                           <textarea
                             value={lessonDesign.phenomenon}
                             onChange={(e) => setLessonDesign({ ...lessonDesign, phenomenon: e.target.value })}
                             rows={3}
-                            placeholder="Describe the phenomenon or hook that will engage students..."
+                            placeholder={t('nGSSFoundationsModule.describeThePhenomenonOrHookThatWillEngageStudents')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Three-Dimensional Activities</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('nGSSFoundationsModule.threeDimensionalActivities')}</label>
                           <textarea
                             value={lessonDesign.activities}
                             onChange={(e) => setLessonDesign({ ...lessonDesign, activities: e.target.value })}
                             rows={4}
-                            placeholder="Describe activities that integrate DCI, SEP, and CCC..."
+                            placeholder={t('nGSSFoundationsModule.describeActivitiesThatIntegrateDciSepAndCcc')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
@@ -852,9 +838,7 @@ CCCs are concepts that apply across all domains of science:
                           <button
                             onClick={handleLessonSubmit}
                             className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition"
-                          >
-                            Save Lesson Plan
-                          </button>
+                          >{t('nGSSFoundationsModule.saveLessonPlan')}</button>
                           <button
                             onClick={() => setShowLessonDesigner(false)}
                             className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition"
@@ -868,7 +852,7 @@ CCCs are concepts that apply across all domains of science:
                 </div>
 
                 <div className="bg-white rounded-xl p-6 border-2 border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Project Requirements</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('nGSSFoundationsModule.projectRequirements')}</h3>
                   <ol className="space-y-3">
                     {currentLessonData.content.requirements.map((req: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
@@ -890,9 +874,7 @@ CCCs are concepts that apply across all domains of science:
                 disabled={currentLesson === 0}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
-                <ArrowLeft className="h-4 w-4" />
-                Previous
-              </button>
+                <ArrowLeft className="h-4 w-4" />{t('nGSSFoundationsModule.previous')}</button>
 
               <button
                 onClick={() => {
@@ -905,18 +887,12 @@ CCCs are concepts that apply across all domains of science:
               >
                 {completedLessons.includes(currentLessonData.id) ? (
                   <>
-                    <CheckCircle2 className="h-4 w-4" />
-                    Marked Complete
-                  </>
+                    <CheckCircle2 className="h-4 w-4" />{t('nGSSFoundationsModule.markedComplete')}</>
                 ) : currentLesson === lessons.length - 1 ? (
                   <>
-                    <Trophy className="h-4 w-4" />
-                    Complete Module
-                  </>
+                    <Trophy className="h-4 w-4" />{t('nGSSFoundationsModule.completeModule')}</>
                 ) : (
-                  <>
-                    Complete & Next
-                    <ArrowRight className="h-4 w-4" />
+                  <>{t('nGSSFoundationsModule.completeNext')}<ArrowRight className="h-4 w-4" />
                   </>
                 )}
               </button>
@@ -929,7 +905,7 @@ CCCs are concepts that apply across all domains of science:
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-600 mb-4">
                 <Trophy className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Module Complete!</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('nGSSFoundationsModule.moduleComplete')}</h3>
               <p className="text-gray-700 mb-6">
                 You've earned {lessons.reduce((sum, l) => sum + l.points, 0)} points. Congratulations on mastering NGSS Foundations!
               </p>
@@ -940,9 +916,7 @@ CCCs are concepts that apply across all domains of science:
                 >
                   Continue to Next Module
                 </button>
-                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                  Download Certificate
-                </button>
+                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">{t('nGSSFoundationsModule.downloadCertificate')}</button>
               </div>
             </div>
           )}

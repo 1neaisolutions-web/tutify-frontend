@@ -1,14 +1,13 @@
 /**
  * Simple Document Upload Component with Streaming Progress
- * Single form for pack metadata + file upload with real-time progress
  */
 import React, { useState } from 'react'
 import { Upload, FileText, X, CheckCircle, AlertCircle, Loader2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { uploadDocumentStream, UploadProgressEvent } from '../../api/contentIngestion'
 import { TocJsonOptionalSection } from './TocJsonOptionalSection'
 import { parseChapterMapFromJson } from './tocChapterMapParse'
 import { useSnackbar } from '../../hooks/useSnackbar'
-import { useNavigate } from 'react-router-dom'
 
 interface SimpleDocumentUploadProps {
   existingPackId?: string
@@ -21,59 +20,55 @@ export const SimpleDocumentUpload = ({
   onSuccess,
   onCancel,
 }: SimpleDocumentUploadProps) => {
+  const { t } = useTranslation()
   const [file, setFile] = useState<File | null>(null)
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
-  
-  // Pack fields (only shown if no existingPackId)
   const [packName, setPackName] = useState('')
   const [packDescription, setPackDescription] = useState('')
   const [packSubject, setPackSubject] = useState('')
   const [packGrade, setPackGrade] = useState('')
   const [packCurriculum, setPackCurriculum] = useState('')
-  
   const [tocJsonText, setTocJsonText] = useState('')
   const [forceOcr, setForceOcr] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [progress, setProgress] = useState<UploadProgressEvent | null>(null)
   const [error, setError] = useState<string | null>(null)
   const { toast } = useSnackbar()
-  const navigate = useNavigate()
-  
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0])
       setError(null)
     }
   }
-  
+
   const handleProgress = (event: UploadProgressEvent) => {
     setProgress(event)
-    
+
     if (event.type === 'error') {
       setError(event.message)
       setUploading(false)
       toast.error(event.message)
     } else if (event.type === 'success') {
       setUploading(false)
-      toast.success('Document uploaded successfully! Processing started...')
+      toast.success(t('content.upload.success'))
       if (onSuccess && event.document_id && event.pack_id) {
         onSuccess(event.document_id, event.pack_id)
       }
     }
   }
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
-    // Validation
+
     if (!existingPackId && !packName) {
-      setError('Pack name is required')
+      setError(t('content.upload.validation.packNameRequired'))
       return
     }
-    
+
     if (!file) {
-      setError('Please select a file')
+      setError(t('content.upload.validation.selectFile'))
       return
     }
 
@@ -86,10 +81,10 @@ export const SimpleDocumentUpload = ({
 
     setUploading(true)
     setError(null)
-    setProgress({ type: 'progress', step: 'starting', message: 'Starting upload...', percentage: 0 })
-    
+    setProgress({ type: 'progress', step: 'starting', message: t('content.upload.progress.starting'), percentage: 0 })
+
     try {
-      const result = await uploadDocumentStream(
+      await uploadDocumentStream(
         {
           pack_id: existingPackId,
           pack_name: existingPackId ? undefined : packName,
@@ -105,100 +100,97 @@ export const SimpleDocumentUpload = ({
         },
         handleProgress
       )
-      
-      // Success handled in handleProgress
     } catch (err: any) {
-      setError(err.message || 'Upload failed')
+      const msg = err.message || t('content.upload.validation.failed')
+      setError(msg)
       setUploading(false)
-      toast.error(err.message || 'Upload failed')
+      toast.error(msg)
     }
   }
-  
-  const getStepIcon = (step?: string) => {
+
+  const getStepIcon = () => {
     if (progress?.type === 'error') return <AlertCircle className="w-5 h-5 text-red-600" />
     if (progress?.type === 'success') return <CheckCircle className="w-5 h-5 text-green-600" />
     if (uploading) return <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
     return null
   }
-  
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Pack Metadata (only if creating new pack) */}
       {!existingPackId && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-          <h3 className="text-sm font-semibold text-blue-900 mb-4">Content Pack Information</h3>
+          <h3 className="text-sm font-semibold text-blue-900 mb-4">{t('content.upload.pack.sectionTitle')}</h3>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Pack Name *
+                {t('content.upload.pack.name')} *
               </label>
               <input
                 type="text"
                 value={packName}
                 onChange={(e) => setPackName(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                placeholder="e.g., Grade 10 Mathematics"
+                placeholder={t('content.upload.pack.placeholders.name')}
                 required
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Description
+                {t('content.upload.pack.description')}
               </label>
               <textarea
                 value={packDescription}
                 onChange={(e) => setPackDescription(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 rows={2}
-                placeholder="Brief description of the content pack"
+                placeholder={t('content.upload.pack.placeholders.description')}
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Subject
+                  {t('content.upload.pack.subject')}
                 </label>
                 <input
                   type="text"
                   value={packSubject}
                   onChange={(e) => setPackSubject(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="e.g., Mathematics"
+                  placeholder={t('content.upload.pack.placeholders.subject')}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Grade
+                  {t('content.upload.pack.grade')}
                 </label>
                 <input
                   type="text"
                   value={packGrade}
                   onChange={(e) => setPackGrade(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="e.g., Grade 10"
+                  placeholder={t('content.upload.pack.placeholders.grade')}
                 />
               </div>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Curriculum
+                {t('content.upload.pack.curriculum')}
               </label>
               <input
                 type="text"
                 value={packCurriculum}
                 onChange={(e) => setPackCurriculum(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                placeholder="e.g., Cambridge, IB, CCSS"
+                placeholder={t('content.upload.pack.placeholders.curriculum')}
               />
             </div>
           </div>
         </div>
       )}
-      
-      {/* File Upload */}
+
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Document File *
+          {t('content.upload.file.label')} *
         </label>
         <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-blue-400 transition-colors">
           <div className="space-y-1 text-center w-full">
@@ -220,7 +212,7 @@ export const SimpleDocumentUpload = ({
                 <Upload className="mx-auto h-12 w-12 text-gray-400" />
                 <div className="flex text-sm text-gray-600 justify-center">
                   <label className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500">
-                    <span>Upload a file</span>
+                    <span>{t('content.upload.file.upload')}</span>
                     <input
                       type="file"
                       className="sr-only"
@@ -229,46 +221,45 @@ export const SimpleDocumentUpload = ({
                       disabled={uploading}
                     />
                   </label>
-                  <p className="pl-1">or drag and drop</p>
+                  <p className="pl-1">{t('content.upload.file.dragDrop')}</p>
                 </div>
-                <p className="text-xs text-gray-500">PDF, DOCX, or images up to 50MB</p>
+                <p className="text-xs text-gray-500">{t('content.upload.file.formats')}</p>
               </>
             )}
           </div>
         </div>
       </div>
-      
-      {/* Document Metadata */}
+
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Document Title (optional)
+          {t('content.upload.meta.title')}
         </label>
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-          placeholder="Document title"
+          placeholder={t('content.upload.meta.titlePlaceholder')}
           disabled={uploading}
         />
       </div>
-      
+
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Author (optional)
+          {t('content.upload.meta.author')}
         </label>
         <input
           type="text"
           value={author}
           onChange={(e) => setAuthor(e.target.value)}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-          placeholder="Author name"
+          placeholder={t('content.upload.meta.authorPlaceholder')}
           disabled={uploading}
         />
       </div>
 
       <TocJsonOptionalSection value={tocJsonText} onChange={setTocJsonText} disabled={uploading} />
-      
+
       <div className="flex items-center">
         <input
           type="checkbox"
@@ -279,15 +270,14 @@ export const SimpleDocumentUpload = ({
           disabled={uploading}
         />
         <label htmlFor="force_ocr" className="ml-2 block text-sm text-gray-700">
-          Force OCR (even for digital PDFs)
+          {t('content.upload.forceOcr')}
         </label>
       </div>
-      
-      {/* Progress Indicator */}
+
       {uploading && progress && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <div className="flex items-center space-x-3 mb-2">
-            {getStepIcon(progress.step)}
+            {getStepIcon()}
             <div className="flex-1">
               <p className="text-sm font-medium text-gray-900">{progress.message}</p>
               {progress.percentage !== undefined && (
@@ -305,22 +295,19 @@ export const SimpleDocumentUpload = ({
           </div>
         </div>
       )}
-      
-      {/* Error Display */}
+
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-md p-3">
           <p className="text-sm text-red-600">{error}</p>
         </div>
       )}
-      
-      {/* Success Message */}
+
       {progress?.type === 'success' && (
         <div className="bg-green-50 border border-green-200 rounded-md p-3">
           <p className="text-sm text-green-600">{progress.message}</p>
         </div>
       )}
-      
-      {/* Action Buttons */}
+
       <div className="flex justify-end space-x-3">
         {onCancel && (
           <button
@@ -329,7 +316,7 @@ export const SimpleDocumentUpload = ({
             className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
             disabled={uploading}
           >
-            Cancel
+            {t('common.cancel')}
           </button>
         )}
         <button
@@ -340,12 +327,12 @@ export const SimpleDocumentUpload = ({
           {uploading ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              <span>Uploading...</span>
+              <span>{t('content.upload.actions.uploading')}</span>
             </>
           ) : (
             <>
               <Upload className="w-4 h-4" />
-              <span>Upload Document</span>
+              <span>{t('content.upload.actions.uploadDocument')}</span>
             </>
           )}
         </button>

@@ -1,0 +1,318 @@
+{
+  "common": {
+    "loading": "Wczytywanie...",
+    "cancel": "Anuluj",
+    "search": "Search",
+    "addNew": "Dodaj nowe",
+    "save": "Zapisz",
+    "upload": "Prześlij",
+    "delete": "Delete",
+    "export": "Eksportuj",
+    "all": "Wszystko",
+    "back": "Oparcie",
+    "comingSoon": "Wkrótce",
+    "comingSoonHint": "Funkcja ta jest niedostępna.",
+    "noDataFound": "Brak danych",
+    "noDataFoundHint": "Spróbuj dostosować filtry lub wyszukaj.",
+    "retry": "Spróbuj ponownie",
+    "showLess": "Pokaż mniej",
+    "showMore": "Pokaż więcej"
+  },
+  "app": {
+    "name": "Pomoc/asystent nauczyciela",
+    "studentName": "Asystent studenta"
+  },
+  "languageDropdown": {
+    "loading": "Ładowanie języków…",
+    "placeholder": "Wybierz język",
+    "searchPlaceholder": "Wyszukaj języki…",
+    "listLabel": "Języki",
+    "noMatch": "Brak języków pasujących do \"{{query}}\"",
+    "count": "Języki: {{count}}",
+    "count_one": "Język: {{count}}",
+    "count_other": "Języki: {{count}}",
+    "countAvailable": "Dostępny",
+    "countMatch": "pasujące do \"{{query}}\""
+  },
+  "layout": {
+    "activateCredits": "Aktywuj kredyty",
+    "credits": "Twórcy",
+    "messages": "Messages",
+    "notifications": "Zawiadomienia",
+    "newCount": "{{count}} Nowość",
+    "noMessages": "Brak wiadomości",
+    "noMessagesHint": "Gdy otrzymasz wiadomość, pojawi się ona tutaj.",
+    "noNotifications": "Brak powiadomień",
+    "noNotificationsHint": "Gdy będziesz mieć aktualizacje, pojawią się one tutaj.",
+    "viewAllMessages": "Zobacz wszystkie wiadomości",
+    "viewAllNotifications": "Wszystkie powiadomienia",
+    "signOut": "Wyloguj się",
+    "signingOut": "Wylogowywanie",
+    "allCaughtUp": "Jesteś na bieżąco",
+    "noNewNotifications": "No new notifications",
+    "noNotificationsYet": "Brak powiadomień",
+    "notificationsEmptyHint": "Gdy będziesz mieć aktualizacje, pojawią się one tutaj."
+  },
+  "settings": {
+    "tabs": {
+      "general": "Ogólne informacje",
+      "notifications": "Zawiadomienia",
+      "plan": "Plan i kredyty",
+      "integrations": "Integracje",
+      "developer": "Deweloper",
+      "export": "Eksportuj"
+    },
+    "general": {
+      "title": "Ustawienia ogólne",
+      "language": {
+        "label": "Język",
+        "change": "Zmień",
+        "uiFallback": "Interfejs jest pokazany w języku angielskim. Twoje preferencje ({{language}}) są zapisane dla Twojego profilu i dat."
+      },
+      "timezone": {
+        "label": "Strefa czasowa",
+        "adjust": "Zmień",
+        "currentTime": "Aktualny czas",
+        "noMatch": "Żadne strefy czasowe nie pasują do Twojego wyszukiwania"
+      },
+      "theme": {
+        "label": "Motyw interfejsu",
+        "light": "Podpal",
+        "dark": "Mroczny/a/e",
+        "system": "System",
+        "followsDevice": "(następuje po urządzeniu)"
+      },
+      "syncSaving": "Zapisywanie…",
+      "syncSaved": "Zapisane",
+      "syncError": "Nie udało się zapisać"
+    },
+    "notifications": {
+      "title": "Zawiadomienia",
+      "productUpdates": "Aktualizacje produktu",
+      "lessonReminders": "Przypomnienia o lekcjach",
+      "weeklyInsights": "Tygodniowe statystyki",
+      "channels": {
+        "emailAndApp": "E-mail i aplikacja",
+        "emailOnly": "Tylko e-mail",
+        "appOnly": "Tylko aplikacja"
+      },
+      "currentChannel": "Aktualny kanał: {{channel}}",
+      "edit": "Edytuj",
+      "manageDefaults": "Zarządzaj domyślnymi powiadomieniami"
+    },
+    "integrations": {
+      "title": "Integracje",
+      "addNew": "dodaj nową integrację",
+      "status": {
+        "connected": "Połączono",
+        "available": "Dostępny",
+        "comingSoon": "Wkrótce"
+      },
+      "googleClassroom": {
+        "name": "Google Classroom",
+        "description": "Automatycznie synchronizuj zadania i harmonogramy."
+      },
+      "microsoftTeams": {
+        "name": "Microsoft Teams",
+        "description": "Włącz synchronizację spotkań i zadań w usłudze Teams."
+      },
+      "canvasLms": {
+        "name": "Canvas LMS",
+        "description": "Bezpośrednia integracja dziennika ocen dla użytkowników systemu Canvas."
+      }
+    },
+    "developer": {
+      "title": "Dostęp do API i deweloperów",
+      "connectedApps": "Połączone aplikacje",
+      "connectedAppsDesc": "3 aplikacje mają dostęp do miejsca pracy dydaktycznej.",
+      "manageTokens": "Zarządzaj tokenami API"
+    },
+    "export": {
+      "title": "Eksportuj i kopia zapasowa",
+      "downloadData": "Pobierz dane obszaru roboczego",
+      "downloadDataDesc": "Szablony, oceny i historia czatu",
+      "scheduleBackups": "Zaplanuj cotygodniowe kopie zapasowe"
+    },
+    "plan": {
+      "yourCredits": "Twoje punkty",
+      "memberSince": "Członek od {{date}}",
+      "activateCode": "+ Aktywuj kod",
+      "creditsRemaining": "/ {{total}} kredyty",
+      "remainingPct": "Pozostało: {{pct}}%",
+      "expires": "Wygasa: {{date}}",
+      "autoRenewing": "Automatyczne odnawianie",
+      "noActiveCredits": "Brak aktywnych kredytów. Aktywuj kod, aby rozpocząć.",
+      "activateCreditsLink": "Aktywuj kredyty →",
+      "usageBreakdown": "Podział wykorzystania",
+      "last30Days": "Ostatnie 30 dni",
+      "activity": "Aktywność",
+      "activityFallback": "Aktywność",
+      "left": "Pozostało: {{count}}"
+    }
+  },
+  "nav": {
+    "dashboard": "Pulpit",
+    "teacherTools": "Narzędzia dla nauczycieli",
+    "teacherToolsOverview": "Informacje ogólne",
+    "teacherToolsAnalytics": "Analityka",
+    "quiz": "Quiz",
+    "assignment": "Przeznaczenie",
+    "worksheet": "Arkusz",
+    "exams": "Egzaminy",
+    "templates": "Biblioteka szablonów",
+    "chatbots": "Wyspecjalizowane chatboty",
+    "youtubeQuiz": "Generator quizów YouTube",
+    "pixgen": "PixGen (AI Media Studio)",
+    "learningHub": "Centrum Kształcenia Zawodowego",
+    "personalization": "Personalizacja",
+    "administration": "administracja",
+    "reporting": "Zgłaszanie nieprawidłowości",
+    "assessment": "Ocena",
+    "contentManagement": "Zarządzaj niestandardową treścią",
+    "history": "Historia",
+    "analytics": "Analityka",
+    "useCases": "Poznaj przykłady zastosowania",
+    "profile": "Profil",
+    "settings": "Ustawienia",
+    "accessCodes": "Kody dostępu",
+    "contentPacks": "Pakiety zawartości",
+    "documents": "Dokumenty",
+    "learningHubContent": "Treść Centrum szkoleniowego",
+    "organization": "Organizacja",
+    "parent": "Telefon",
+    "school": "Szkoła",
+    "uploadDocument": "Prześlij dokument"
+  },
+  "workspace": {
+    "fallbackName": "Przestrzeń robocza",
+    "scopeType": {
+      "institution": "Instytucja",
+      "organization": "Organizacja",
+      "personal": "Osobowe "
+    },
+    "switcher": {
+      "title": "Przełącz obszar roboczy",
+      "active": "Aktywna"
+    }
+  },
+  "login": {
+    "subtitle": "Zaloguj się na swoje konto",
+    "emailLabel": "Adres e-mail",
+    "emailPlaceholder": "ty@przykład.pl",
+    "passwordLabel": "Hasło",
+    "rememberMe": "Zapamiętaj mnie",
+    "forgotPassword": "Zapomniałeś hasła?",
+    "signIn": "Zaloguj się",
+    "signingIn": "Logowanie",
+    "noAccount": "Nie masz założonego konta?",
+    "signUpLink": "Zarejestruj się",
+    "error": "Nie udało się zalogować. Sprawdź swoje dane uwierzytelniające."
+  },
+  "teacherTools": {
+    "breadcrumbTeacherTools": "Narzędzia dla nauczycieli",
+    "breadcrumbTemplates": "Szablony",
+    "edit": "Edytuj",
+    "duplicate": "Duplikat",
+    "archive": "Archiwum",
+    "delete": "Delete",
+    "toolAssign": "Przypisz",
+    "toolSheet": "Blacha",
+    "toolExam": "Egzamin",
+    "range7d": "Ostatnie 7 dni",
+    "range30d": "Ostatnie 30 dni",
+    "rangeAll": "Zawsze",
+    "previewData": "Podgląd danych",
+    "previewDataHint": "— Rzeczywiste wyniki pojawią się tutaj po przesłaniu przez uczniów.",
+    "statContentCreated": "Utworzono treść",
+    "overview": {
+      "kpiTotalActive": "Łączna liczba aktywnych pozycji",
+      "kpiScheduledWeek": "Zaplanowano na ten tydzień",
+      "kpiPendingDrafts": "Oczekujące wersje robocze",
+      "kpiPublished": "Wszystkie opublikowane dane",
+      "kpiAvgQuizScore": "WYNIKI QUIZU",
+      "kpiQuizzesTaken": "Quizy zrobione"
+    }
+  },
+  "quiz": {
+    "breadcrumb": "Quiz"
+  },
+  "assignment": {
+    "breadcrumb": "Przeznaczenie"
+  },
+  "worksheet": {
+    "breadcrumb": "Arkusz"
+  },
+  "exam": {
+    "breadcrumb": "Egzaminy",
+    "detail": {
+      "tabs": {
+        "analytics": "Analityka",
+        "results": "Wyniki",
+        "candidates": "Kandydaci"
+      }
+    },
+    "statMarks": "oznaczenia"
+  },
+  "status": {
+    "draft": "Projekt",
+    "published": "Opublikowane",
+    "active": "Aktywna",
+    "closed": "Zamknięte",
+    "graded": "Ocenione",
+    "submitted": "Przesłane",
+    "pending": "Oczekujące",
+    "archived": "Zarchiwizowane",
+    "completed": "Projekt zakończony",
+    "upcoming": "Już wkrótce",
+    "ongoing": "Trwa nadal",
+    "cancelled": "Anulowane",
+    "late": "Późno ",
+    "onTime": "Na czas"
+  },
+  "dashboard": {
+    "recentActivity": "Najnowsza aktywność",
+    "viewAll": "Pokaż wszystko",
+    "teacherToolsOverview": "Przegląd narzędzi dla nauczycieli",
+    "greetingMorning": "Dzień dobry, {{name}}",
+    "greetingAfternoon": "Dzień dobry, {{name}}",
+    "greetingEvening": "Dobry wieczór, {{name}}",
+    "defaultName": "nauczycielu",
+    "workspaceReady": "Twoja przestrzeń robocza jest gotowa.",
+    "activeContent": "{{count}} aktywnych elementów w przestrzeni",
+    "createFirstQuiz": "Utwórz pierwszy quiz, aby zacząć.",
+    "createFirstQuizCta": "Utwórz quiz",
+    "totalContent": "Cała zawartość",
+    "thisWeek": "W tym tygodniu",
+    "draftBacklog": "Szkice w kolejce",
+    "published": "Opublikowano",
+    "dayStreak": "Seria dni",
+    "upcomingDeadlines": "Nadchodzące terminy",
+    "noDeadlines": "Brak nadchodzących terminów",
+    "noActivity": "Brak ostatniej aktywności",
+    "draftsToFinish": "Szkice do ukończenia",
+    "all": "Wszystkie",
+    "noDrafts": "Brak szkiców",
+    "coreWorkflows": "Główne przepływy",
+    "dueToday": "Termin dziś",
+    "dueInDays": "Termin za {{count}} dni",
+    "dueSoon": "Wkrótce termin: {{title}}",
+    "continueDraft": "Kontynuuj szkic: {{title}}",
+    "tools": {
+      "quiz": "Quiz",
+      "assignment": "Przeznaczenie",
+      "worksheet": "Arkusz",
+      "exam": "Egzamin"
+    }
+  },
+  "tenantSelection": {
+    "title": "Wybierz obszar roboczy",
+    "subtitle": "Wybierz obszar roboczy, aby kontynuować",
+    "workspace": "Przestrzeń robocza",
+    "signingIn": "Logowanie",
+    "scope": {
+      "institution": "Instytucja",
+      "organization": "Organizacja",
+      "personalWorkspace": "Osobisty obszar roboczy"
+    }
+  }
+}

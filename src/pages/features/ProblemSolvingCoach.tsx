@@ -45,6 +45,7 @@ import {
   ArrowLeft,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface WordProblem {
   problem: string
   context: string
@@ -95,6 +96,7 @@ interface ReasoningFramework {
 }
 
 const ProblemSolvingCoach = () => {
+  const { t } = useTranslation()
   const [activeTab, setActiveTab] = useState<'word-problems' | 'real-world' | 'strategies' | 'reasoning' | 'practice' | 'assessment'>('word-problems')
   const [gradeLevel, setGradeLevel] = useState('5')
   const [topic, setTopic] = useState('')
@@ -324,12 +326,12 @@ const ProblemSolvingCoach = () => {
   }
 
   const tabs = [
-    { id: 'word-problems', label: 'Word Problems', icon: Puzzle },
-    { id: 'real-world', label: 'Real-World Applications', icon: Globe },
-    { id: 'strategies', label: 'Problem Strategies', icon: Lightbulb },
-    { id: 'reasoning', label: 'Reasoning Framework', icon: Brain },
-    { id: 'practice', label: 'Practice Generator', icon: Target },
-    { id: 'assessment', label: 'Assessment Tools', icon: FileText },
+    { id: 'word-problems', label: t('problemSolvingCoach.tabs.word-problems'), icon: Puzzle },
+    { id: 'real-world', label: t('problemSolvingCoach.tabs.real-world'), icon: Globe },
+    { id: 'strategies', label: t('problemSolvingCoach.tabs.strategies'), icon: Lightbulb },
+    { id: 'reasoning', label: t('problemSolvingCoach.tabs.reasoning'), icon: Brain },
+    { id: 'practice', label: t('problemSolvingCoach.tabs.practice'), icon: Target },
+    { id: 'assessment', label: t('problemSolvingCoach.tabs.assessment'), icon: FileText },
   ]
 
   return (
@@ -344,36 +346,32 @@ const ProblemSolvingCoach = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-3xl font-bold">Problem-Solving Coach</h1>
+                  <h1 className="text-3xl font-bold">{t('problemSolvingCoach.problemSolvingCoach')}</h1>
                   <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
                     <Star className="h-3 w-3" /> 4.8★
                   </span>
                   <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" /> Premium
-                  </span>
+                    <Lock className="inline h-3 w-3 mr-1" />{t('problemSolvingCoach.premium')}</span>
                 </div>
-                <p className="mt-2 text-orange-100">
-                  Real-world math applications, word problem strategies, and mathematical reasoning development 
-                  for confident problem solvers.
-                </p>
+                <p className="mt-2 text-orange-100">{t('problemSolvingCoach.realWorldMathApplicationsWordProblemStrategiesAndMathem')}</p>
               </div>
             </div>
             <div className="flex flex-wrap gap-3 mt-6">
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <Globe className="h-4 w-4" />
-                <span>Real-World Math</span>
+                <span>{t('problemSolvingCoach.realWorldMath')}</span>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <Puzzle className="h-4 w-4" />
-                <span>Word Problem Strategies</span>
+                <span>{t('problemSolvingCoach.wordProblemStrategies')}</span>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <Brain className="h-4 w-4" />
-                <span>Mathematical Reasoning</span>
+                <span>{t('problemSolvingCoach.mathematicalReasoning')}</span>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <Lightbulb className="h-4 w-4" />
-                <span>Step-by-Step Guidance</span>
+                <span>{t('problemSolvingCoach.stepByStepGuidance')}</span>
               </div>
             </div>
           </div>
@@ -385,7 +383,7 @@ const ProblemSolvingCoach = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Problems Solved</p>
+              <p className="text-sm font-medium text-gray-600">{t('problemSolvingCoach.problemsSolved')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">2,456</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-100 text-orange-600">
@@ -396,7 +394,7 @@ const ProblemSolvingCoach = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Students Supported</p>
+              <p className="text-sm font-medium text-gray-600">{t('problemSolvingCoach.studentsSupported')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">3,234</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
@@ -407,7 +405,7 @@ const ProblemSolvingCoach = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Success Rate</p>
+              <p className="text-sm font-medium text-gray-600">{t('problemSolvingCoach.successRate')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">89%</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow-100 text-yellow-600">
@@ -418,7 +416,7 @@ const ProblemSolvingCoach = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Strategies Taught</p>
+              <p className="text-sm font-medium text-gray-600">{t('problemSolvingCoach.strategiesTaught')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">15</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600">
@@ -459,9 +457,7 @@ const ProblemSolvingCoach = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-1 space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Grade Level
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('problemSolvingCoach.gradeLevel')}</label>
                     <select
                       value={gradeLevel}
                       onChange={(e) => setGradeLevel(e.target.value)}
@@ -469,7 +465,7 @@ const ProblemSolvingCoach = () => {
                     >
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
                         <option key={grade} value={grade}>
-                          Grade {grade}
+                          {t('common.gradeOption', { grade })}
                         </option>
                       ))}
                     </select>
@@ -482,18 +478,16 @@ const ProblemSolvingCoach = () => {
                       type="text"
                       value={topic}
                       onChange={(e) => setTopic(e.target.value)}
-                      placeholder="e.g., Addition, Fractions, Algebra"
+                      placeholder={t('problemSolvingCoach.eGAdditionFractionsAlgebra')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Paste Word Problem or Generate
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('problemSolvingCoach.pasteWordProblemOrGenerate')}</label>
                     <textarea
                       value={problemInput}
                       onChange={(e) => setProblemInput(e.target.value)}
-                      placeholder="Paste a word problem here or leave blank to generate one..."
+                      placeholder={t('problemSolvingCoach.pasteAWordProblemHereOrLeaveBlankToGenerate')}
                       rows={8}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
                     />
@@ -505,14 +499,10 @@ const ProblemSolvingCoach = () => {
                   >
                     {isGenerating ? (
                       <>
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                        Analyzing...
-                      </>
+                        <RefreshCw className="h-4 w-4 animate-spin" />{t('problemSolvingCoach.analyzing')}</>
                     ) : (
                       <>
-                        <Sparkles className="h-4 w-4" />
-                        Analyze Problem
-                      </>
+                        <Sparkles className="h-4 w-4" />{t('problemSolvingCoach.analyzeProblem')}</>
                     )}
                   </button>
                 </div>
@@ -534,7 +524,7 @@ const ProblemSolvingCoach = () => {
                             {wordProblem.mathTopic}
                           </span>
                         </div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-3">Problem:</h3>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('problemSolvingCoach.problem')}</h3>
                         <p className="text-gray-700 text-base leading-relaxed bg-white p-4 rounded-lg border border-orange-200">
                           {wordProblem.problem}
                         </p>
@@ -542,9 +532,7 @@ const ProblemSolvingCoach = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-white p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <ArrowRight className="h-5 w-5 text-orange-600" />
-                          Step-by-Step Solution
-                        </h3>
+                          <ArrowRight className="h-5 w-5 text-orange-600" />{t('problemSolvingCoach.stepByStepSolution')}</h3>
                         <div className="space-y-4">
                           {wordProblem.solution.steps.map((step, idx) => (
                             <div key={idx} className="rounded-lg border-2 border-orange-200 bg-orange-50 p-5">
@@ -564,7 +552,7 @@ const ProblemSolvingCoach = () => {
                           ))}
                         </div>
                         <div className="mt-4 p-4 rounded-lg bg-green-50 border-2 border-green-300">
-                          <p className="text-sm font-semibold text-green-800 mb-1">Final Answer:</p>
+                          <p className="text-sm font-semibold text-green-800 mb-1">{t('problemSolvingCoach.finalAnswer')}</p>
                           <p className="text-base font-bold text-green-900">{wordProblem.solution.finalAnswer}</p>
                           <p className="text-xs text-green-700 mt-2">{wordProblem.solution.check}</p>
                         </div>
@@ -572,9 +560,7 @@ const ProblemSolvingCoach = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Lightbulb className="h-5 w-5 text-blue-600" />
-                          Problem-Solving Strategies
-                        </h3>
+                          <Lightbulb className="h-5 w-5 text-blue-600" />{t('problemSolvingCoach.problemSolvingStrategies')}</h3>
                         <ul className="space-y-2">
                           {wordProblem.strategies.map((strategy, idx) => (
                             <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -587,9 +573,7 @@ const ProblemSolvingCoach = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Puzzle className="h-5 w-5 text-purple-600" />
-                          Similar Practice Problems
-                        </h3>
+                          <Puzzle className="h-5 w-5 text-purple-600" />{t('problemSolvingCoach.similarPracticeProblems')}</h3>
                         <ul className="space-y-2">
                           {wordProblem.similarProblems.map((problem, idx) => (
                             <li key={idx} className="text-sm text-gray-700 bg-white p-3 rounded-lg border border-purple-200">
@@ -600,16 +584,12 @@ const ProblemSolvingCoach = () => {
                       </div>
 
                       <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                        <Download className="h-4 w-4" />
-                        Download Problem Analysis
-                      </button>
+                        <Download className="h-4 w-4" />{t('problemSolvingCoach.downloadProblemAnalysis')}</button>
                     </div>
                   ) : (
                     <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
                       <Puzzle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm font-medium text-gray-600">
-                        Paste a word problem or enter a topic to get step-by-step solutions and strategies
-                      </p>
+                      <p className="text-sm font-medium text-gray-600">{t('problemSolvingCoach.pasteAWordProblemOrEnterATopicToGet')}</p>
                     </div>
                   )}
                 </div>
@@ -623,9 +603,7 @@ const ProblemSolvingCoach = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-1 space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Grade Level
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('problemSolvingCoach.gradeLevel')}</label>
                     <select
                       value={gradeLevel}
                       onChange={(e) => setGradeLevel(e.target.value)}
@@ -633,20 +611,18 @@ const ProblemSolvingCoach = () => {
                     >
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
                         <option key={grade} value={grade}>
-                          Grade {grade}
+                          {t('common.gradeOption', { grade })}
                         </option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Real-World Scenario or Topic
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('problemSolvingCoach.realWorldScenarioOrTopic')}</label>
                     <input
                       type="text"
                       value={topic}
                       onChange={(e) => setTopic(e.target.value)}
-                      placeholder="e.g., Budgeting, Cooking, Sports, Shopping"
+                      placeholder={t('problemSolvingCoach.eGBudgetingCookingSportsShopping')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
                     />
                   </div>
@@ -657,14 +633,10 @@ const ProblemSolvingCoach = () => {
                   >
                     {isGenerating ? (
                       <>
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                        Generating...
-                      </>
+                        <RefreshCw className="h-4 w-4 animate-spin" />{t('problemSolvingCoach.generating')}</>
                     ) : (
                       <>
-                        <Sparkles className="h-4 w-4" />
-                        Generate Application
-                      </>
+                        <Sparkles className="h-4 w-4" />{t('problemSolvingCoach.generateApplication')}</>
                     )}
                   </button>
                 </div>
@@ -687,7 +659,7 @@ const ProblemSolvingCoach = () => {
                       </div>
 
                       <div className="rounded-2xl border border-gray-200 bg-white p-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-3">Problem:</h3>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('problemSolvingCoach.problem')}</h3>
                         <p className="text-gray-700 bg-gray-50 p-4 rounded-lg border border-gray-200">
                           {realWorldApp.problem}
                         </p>
@@ -695,9 +667,7 @@ const ProblemSolvingCoach = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                          <CheckCircle2 className="h-5 w-5 text-green-600" />
-                          Solution
-                        </h3>
+                          <CheckCircle2 className="h-5 w-5 text-green-600" />{t('problemSolvingCoach.solution')}</h3>
                         <p className="text-gray-700 whitespace-pre-line bg-white p-4 rounded-lg border border-green-200">
                           {realWorldApp.solution}
                         </p>
@@ -705,9 +675,7 @@ const ProblemSolvingCoach = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <ArrowRight className="h-5 w-5 text-blue-600" />
-                          Extension Problems
-                        </h3>
+                          <ArrowRight className="h-5 w-5 text-blue-600" />{t('problemSolvingCoach.extensionProblems')}</h3>
                         <ul className="space-y-2">
                           {realWorldApp.extensions.map((extension, idx) => (
                             <li key={idx} className="text-sm text-gray-700 flex items-start gap-2 bg-white p-3 rounded-lg border border-blue-200">
@@ -720,9 +688,7 @@ const ProblemSolvingCoach = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Lightbulb className="h-5 w-5 text-purple-600" />
-                          Real-World Connections
-                        </h3>
+                          <Lightbulb className="h-5 w-5 text-purple-600" />{t('problemSolvingCoach.realWorldConnections')}</h3>
                         <ul className="space-y-2">
                           {realWorldApp.connections.map((connection, idx) => (
                             <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
@@ -734,16 +700,12 @@ const ProblemSolvingCoach = () => {
                       </div>
 
                       <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                        <Download className="h-4 w-4" />
-                        Download Real-World Application
-                      </button>
+                        <Download className="h-4 w-4" />{t('problemSolvingCoach.downloadRealWorldApplication')}</button>
                     </div>
                   ) : (
                     <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
                       <Globe className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm font-medium text-gray-600">
-                        Enter a real-world scenario or topic to generate math applications
-                      </p>
+                      <p className="text-sm font-medium text-gray-600">{t('problemSolvingCoach.enterARealWorldScenarioOrTopicToGenerateMath')}</p>
                     </div>
                   )}
                 </div>
@@ -758,12 +720,8 @@ const ProblemSolvingCoach = () => {
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                      <Lightbulb className="h-6 w-6 text-blue-600" />
-                      Problem-Solving Strategies Library
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      Comprehensive strategies to help students approach and solve word problems confidently.
-                    </p>
+                      <Lightbulb className="h-6 w-6 text-blue-600" />{t('problemSolvingCoach.problemSolvingStrategiesLibrary')}</h3>
+                    <p className="text-sm text-gray-600">{t('problemSolvingCoach.comprehensiveStrategiesToHelpStudentsApproachAndSolveWo')}</p>
                   </div>
                   <button
                     onClick={handleStrategies}
@@ -772,14 +730,10 @@ const ProblemSolvingCoach = () => {
                   >
                     {isGenerating ? (
                       <>
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                        Loading...
-                      </>
+                        <RefreshCw className="h-4 w-4 animate-spin" />{t('problemSolvingCoach.loading')}</>
                     ) : (
                       <>
-                        <Sparkles className="h-4 w-4" />
-                        Load Strategies
-                      </>
+                        <Sparkles className="h-4 w-4" />{t('problemSolvingCoach.loadStrategies')}</>
                     )}
                   </button>
                 </div>
@@ -800,7 +754,7 @@ const ProblemSolvingCoach = () => {
                         </div>
 
                         <div className="mb-4">
-                          <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Steps:</p>
+                          <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('problemSolvingCoach.steps')}</p>
                           <ol className="space-y-2">
                             {strategy.steps.map((step, stepIdx) => (
                               <li key={stepIdx} className="flex items-start gap-3 text-sm text-gray-700">
@@ -814,13 +768,13 @@ const ProblemSolvingCoach = () => {
                         </div>
 
                         <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                          <p className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-2">Example:</p>
+                          <p className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-2">{t('problemSolvingCoach.example')}</p>
                           <div className="mb-2">
-                            <p className="text-sm font-semibold text-gray-900 mb-1">Problem:</p>
+                            <p className="text-sm font-semibold text-gray-900 mb-1">{t('problemSolvingCoach.problem')}</p>
                             <p className="text-sm text-gray-700">{strategy.example.problem}</p>
                           </div>
                           <div>
-                            <p className="text-sm font-semibold text-gray-900 mb-1">Application:</p>
+                            <p className="text-sm font-semibold text-gray-900 mb-1">{t('problemSolvingCoach.application')}</p>
                             <p className="text-sm text-gray-700">{strategy.example.application}</p>
                           </div>
                         </div>
@@ -839,12 +793,8 @@ const ProblemSolvingCoach = () => {
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                      <Brain className="h-6 w-6 text-indigo-600" />
-                      Mathematical Reasoning Framework
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      A systematic approach to developing mathematical reasoning and critical thinking skills.
-                    </p>
+                      <Brain className="h-6 w-6 text-indigo-600" />{t('problemSolvingCoach.mathematicalReasoningFramework')}</h3>
+                    <p className="text-sm text-gray-600">{t('problemSolvingCoach.aSystematicApproachToDevelopingMathematicalReasoningAnd')}</p>
                   </div>
                   <button
                     onClick={handleReasoningFramework}
@@ -853,14 +803,10 @@ const ProblemSolvingCoach = () => {
                   >
                     {isGenerating ? (
                       <>
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                        Loading...
-                      </>
+                        <RefreshCw className="h-4 w-4 animate-spin" />{t('problemSolvingCoach.loading')}</>
                     ) : (
                       <>
-                        <Sparkles className="h-4 w-4" />
-                        Load Framework
-                      </>
+                        <Sparkles className="h-4 w-4" />{t('problemSolvingCoach.loadFramework')}</>
                     )}
                   </button>
                 </div>
@@ -893,9 +839,7 @@ const ProblemSolvingCoach = () => {
 
                     <div className="bg-white rounded-xl p-6 border-2 border-indigo-200">
                       <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                        <Lightbulb className="h-5 w-5 text-indigo-600" />
-                        Example Applications
-                      </h4>
+                        <Lightbulb className="h-5 w-5 text-indigo-600" />{t('problemSolvingCoach.exampleApplications')}</h4>
                       <div className="space-y-3">
                         {reasoningFramework.examples.map((example, idx) => (
                           <div key={idx} className="bg-indigo-50 rounded-lg p-4 border border-indigo-200">
@@ -915,15 +859,11 @@ const ProblemSolvingCoach = () => {
             <div className="space-y-6">
               <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Target className="h-6 w-6 text-green-600" />
-                  Practice Problem Generator
-                </h3>
-                <p className="text-sm text-gray-600 mb-6">
-                  Generate customized word problems and practice sets based on grade level and math topics.
-                </p>
+                  <Target className="h-6 w-6 text-green-600" />{t('problemSolvingCoach.practiceProblemGenerator')}</h3>
+                <p className="text-sm text-gray-600 mb-6">{t('problemSolvingCoach.generateCustomizedWordProblemsAndPracticeSetsBasedOnGra')}</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('problemSolvingCoach.gradeLevel')}</label>
                     <select
                       value={gradeLevel}
                       onChange={(e) => setGradeLevel(e.target.value)}
@@ -931,56 +871,54 @@ const ProblemSolvingCoach = () => {
                     >
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
                         <option key={grade} value={grade}>
-                          Grade {grade}
+                          {t('common.gradeOption', { grade })}
                         </option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Math Topic</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('problemSolvingCoach.mathTopic')}</label>
                     <input
                       type="text"
                       value={topic}
                       onChange={(e) => setTopic(e.target.value)}
-                      placeholder="e.g., Fractions, Percentages, Algebra"
+                      placeholder={t('problemSolvingCoach.eGFractionsPercentagesAlgebra')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Number of Problems</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('problemSolvingCoach.numberOfProblems')}</label>
                     <select className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100">
-                      <option>5 problems</option>
-                      <option>10 problems</option>
-                      <option>15 problems</option>
-                      <option>20 problems</option>
+                      <option>{t('problemSolvingCoach.kProblems')}</option>
+                      <option>{t('problemSolvingCoach.k0Problems')}</option>
+                      <option>{t('problemSolvingCoach.k5Problems')}</option>
+                      <option>{t('problemSolvingCoach.k0Problems2')}</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Difficulty Level</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('problemSolvingCoach.difficultyLevel')}</label>
                     <select className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100">
-                      <option>Mixed</option>
-                      <option>Easy</option>
-                      <option>Medium</option>
-                      <option>Hard</option>
+                      <option>{t('problemSolvingCoach.mixed')}</option>
+                      <option>{t('problemSolvingCoach.easy')}</option>
+                      <option>{t('problemSolvingCoach.medium')}</option>
+                      <option>{t('problemSolvingCoach.hard')}</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Context Type</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('problemSolvingCoach.contextType')}</label>
                     <select className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100">
-                      <option>Mixed Real-World</option>
-                      <option>Money & Shopping</option>
-                      <option>Time & Scheduling</option>
-                      <option>Measurement</option>
-                      <option>Sports & Games</option>
+                      <option>{t('problemSolvingCoach.mixedRealWorld')}</option>
+                      <option>{t('problemSolvingCoach.moneyShopping')}</option>
+                      <option>{t('problemSolvingCoach.timeScheduling')}</option>
+                      <option>{t('problemSolvingCoach.measurement')}</option>
+                      <option>{t('problemSolvingCoach.sportsGames')}</option>
                     </select>
                   </div>
                 </div>
                 <button className="w-full rounded-lg bg-green-600 px-6 py-3 text-sm font-semibold text-white hover:bg-green-700 flex items-center justify-center gap-2">
-                  <Sparkles className="h-4 w-4" />
-                  Generate Practice Set
-                </button>
+                  <Sparkles className="h-4 w-4" />{t('problemSolvingCoach.generatePracticeSet')}</button>
               </div>
             </div>
           )}
@@ -990,12 +928,8 @@ const ProblemSolvingCoach = () => {
             <div className="space-y-6">
               <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <FileText className="h-6 w-6 text-purple-600" />
-                  Assessment Tools
-                </h3>
-                <p className="text-sm text-gray-600 mb-6">
-                  Create assessments to evaluate problem-solving skills and mathematical reasoning.
-                </p>
+                  <FileText className="h-6 w-6 text-purple-600" />{t('problemSolvingCoach.assessmentTools')}</h3>
+                <p className="text-sm text-gray-600 mb-6">{t('problemSolvingCoach.createAssessmentsToEvaluateProblemSolvingSkillsAndMathe')}</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {[
                     { type: 'Problem-Solving Rubric', icon: ClipboardCheck, description: 'Assess solution process and reasoning', color: 'purple' },
@@ -1009,9 +943,7 @@ const ProblemSolvingCoach = () => {
                       </div>
                       <h4 className="text-base font-semibold text-gray-900 mb-2">{assessment.type}</h4>
                       <p className="text-sm text-gray-600 mb-4">{assessment.description}</p>
-                      <button className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">
-                        Create Assessment
-                      </button>
+                      <button className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">{t('problemSolvingCoach.createAssessment')}</button>
                     </div>
                   ))}
                 </div>
@@ -1023,79 +955,63 @@ const ProblemSolvingCoach = () => {
 
       {/* Additional Features Section */}
       <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-6">Advanced AI-Powered Features</h2>
+        <h2 className="text-2xl font-semibold text-gray-900 mb-6">{t('problemSolvingCoach.advancedAiPoweredFeatures')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-orange-50 to-amber-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-100 text-orange-600 mb-4">
               <Globe className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Real-World Context</h3>
-            <p className="text-sm text-gray-600">
-              Connect math to everyday situations: shopping, cooking, sports, travel, and more.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('problemSolvingCoach.realWorldContext')}</h3>
+            <p className="text-sm text-gray-600">{t('problemSolvingCoach.connectMathToEverydaySituationsShoppingCookingSportsTra')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-amber-50 to-yellow-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 text-amber-600 mb-4">
               <Puzzle className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Word Problem Analysis</h3>
-            <p className="text-sm text-gray-600">
-              Break down complex word problems into manageable steps with clear explanations.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('problemSolvingCoach.wordProblemAnalysis')}</h3>
+            <p className="text-sm text-gray-600">{t('problemSolvingCoach.breakDownComplexWordProblemsIntoManageableStepsWithClea')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-yellow-50 to-green-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow-100 text-yellow-600 mb-4">
               <Brain className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Reasoning Development</h3>
-            <p className="text-sm text-gray-600">
-              Build critical thinking and mathematical reasoning through guided frameworks.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('problemSolvingCoach.reasoningDevelopment')}</h3>
+            <p className="text-sm text-gray-600">{t('problemSolvingCoach.buildCriticalThinkingAndMathematicalReasoningThroughGui')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600 mb-4">
               <Lightbulb className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Strategy Library</h3>
-            <p className="text-sm text-gray-600">
-              Access comprehensive problem-solving strategies with examples and when to use them.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('problemSolvingCoach.strategyLibrary')}</h3>
+            <p className="text-sm text-gray-600">{t('problemSolvingCoach.accessComprehensiveProblemSolvingStrategiesWithExamples')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-emerald-50 to-blue-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 mb-4">
               <Target className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Practice Generator</h3>
-            <p className="text-sm text-gray-600">
-              Generate unlimited practice problems tailored to grade level and topics.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('problemSolvingCoach.practiceGenerator')}</h3>
+            <p className="text-sm text-gray-600">{t('problemSolvingCoach.generateUnlimitedPracticeProblemsTailoredToGradeLevelAn')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 mb-4">
               <TrendingUp className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Progress Tracking</h3>
-            <p className="text-sm text-gray-600">
-              Monitor student progress in problem-solving skills and identify areas for improvement.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('problemSolvingCoach.progressTracking')}</h3>
+            <p className="text-sm text-gray-600">{t('problemSolvingCoach.monitorStudentProgressInProblemSolvingSkillsAndIdentify')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-cyan-50 to-indigo-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600 mb-4">
               <Users className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Differentiation</h3>
-            <p className="text-sm text-gray-600">
-              Automatically adapt problems for different skill levels and learning styles.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('problemSolvingCoach.differentiation')}</h3>
+            <p className="text-sm text-gray-600">{t('problemSolvingCoach.automaticallyAdaptProblemsForDifferentSkillLevelsAndLea')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 mb-4">
               <GraduationCap className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Standards Alignment</h3>
-            <p className="text-sm text-gray-600">
-              All content aligned with Common Core Math Standards and state curricula.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('problemSolvingCoach.standardsAlignment')}</h3>
+            <p className="text-sm text-gray-600">{t('problemSolvingCoach.allContentAlignedWithCommonCoreMathStandardsAndState')}</p>
           </div>
         </div>
       </div>

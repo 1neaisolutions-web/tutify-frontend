@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 
 export function Phase2Badge({ className = '' }: { className?: string }) {
+  const { t } = useTranslation()
   return (
     <span
       className={`inline-flex items-center rounded-full bg-indigo-600 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white ${className}`}
@@ -13,7 +15,7 @@ export function Phase2Badge({ className = '' }: { className?: string }) {
 /** Use on disabled controls; provides hover/focus hint for Phase 2 gating. */
 export function LockedTooltip({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
-    <span className={`inline-flex cursor-not-allowed ${className}`} tabIndex={0} title="Available in Phase 2">
+    <span className={`inline-flex cursor-not-allowed ${className}`} tabIndex={0} title={t('teacherTools.phase2Tooltip')}>
       {children}
     </span>
   )
@@ -38,7 +40,7 @@ export function Phase2Section({
       <div
         className="pointer-events-auto absolute inset-0 cursor-not-allowed bg-white/35 backdrop-blur-[0.5px]"
         role="presentation"
-        title="This workflow is locked until Phase 2."
+        title={t('teacherTools.phase2OverlayTitle')}
       />
       <p className="pointer-events-none absolute bottom-3 left-4 right-4 text-center text-xs leading-snug text-indigo-900/90">{footnote}</p>
     </div>

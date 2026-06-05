@@ -1,0 +1,318 @@
+{
+  "common": {
+    "loading": "読み込み中...",
+    "cancel": "取り消す",
+    "search": "検索",
+    "addNew": "追加",
+    "save": "保存",
+    "upload": "アップロード",
+    "delete": "削除",
+    "export": "書き出し",
+    "all": "すべて",
+    "back": "戻る",
+    "comingSoon": "近日登場",
+    "comingSoonHint": "この機能はご利用いただけません。",
+    "noDataFound": "データが見つかりません",
+    "noDataFoundHint": "フィルターを調整するか、検索してみてください。",
+    "retry": "もう一度試す",
+    "showLess": "簡易表示",
+    "showMore": "もっと表示"
+  },
+  "app": {
+    "name": "教師アシスタント",
+    "studentName": "学生アシスタント"
+  },
+  "languageDropdown": {
+    "loading": "言語の読み込み",
+    "placeholder": "言語を選択する",
+    "searchPlaceholder": "言語を検索",
+    "listLabel": "言語",
+    "noMatch": "「__ PH 0 __」に一致する言語がありません",
+    "count": "__ PH 0 __言語",
+    "count_one": "__ PH 0 __言語",
+    "count_other": "__ PH 0 __言語",
+    "countAvailable": "発売中",
+    "countMatch": "「__ PH 0 __」に一致"
+  },
+  "layout": {
+    "activateCredits": "クレジットを有効にする",
+    "credits": "クレジット",
+    "messages": "メッセージ",
+    "notifications": "通知",
+    "newCount": "__ PH 0 __ NEW",
+    "noMessages": "メッセージなし",
+    "noMessagesHint": "メッセージを受け取ると、ここに表示されます。",
+    "noNotifications": "通知がありません",
+    "noNotificationsHint": "アップデートがあると、ここに表示されます。",
+    "viewAllMessages": "すべてのメッセージを表示",
+    "viewAllNotifications": "全ての通知を見る",
+    "signOut": "サインアウト",
+    "signingOut": "サインアウト中",
+    "allCaughtUp": "すべて既読になっています。",
+    "noNewNotifications": "新しい通知はありません",
+    "noNotificationsYet": "まだ通知はありません",
+    "notificationsEmptyHint": "アップデートがあると、ここに表示されます。"
+  },
+  "settings": {
+    "tabs": {
+      "general": "一般",
+      "notifications": "通知",
+      "plan": "プランと旅行クーポン",
+      "integrations": "統合",
+      "developer": "開発者",
+      "export": "書き出し"
+    },
+    "general": {
+      "title": "一般的な設定",
+      "language": {
+        "label": "言語",
+        "change": "変更",
+        "uiFallback": "インターフェースは英語で表示されます。ご希望の設定（ __ PH 0 __ ）がプロフィールと日付に保存されました。"
+      },
+      "timezone": {
+        "label": "タイムゾーン",
+        "adjust": "アジャスト",
+        "currentTime": "現在の時間",
+        "noMatch": "検索に一致するタイムゾーンがありません"
+      },
+      "theme": {
+        "label": "インターフェーステーマ",
+        "light": "ライト",
+        "dark": "ダーク",
+        "system": "システム",
+        "followsDevice": "（デバイスに従います）"
+      },
+      "syncSaving": "保存中…",
+      "syncSaved": "セーブ",
+      "syncError": "保存に失敗しました"
+    },
+    "notifications": {
+      "title": "通知",
+      "productUpdates": "製品のアップデート",
+      "lessonReminders": "レッスンのリマインダー",
+      "weeklyInsights": "週ごとの分析データ",
+      "channels": {
+        "emailAndApp": "メールとアプリ",
+        "emailOnly": "電子メールのみ",
+        "appOnly": "アプリのみ"
+      },
+      "currentChannel": "現在のチャンネル： __ PH 0 __",
+      "edit": "編集",
+      "manageDefaults": "通知のデフォルトを管理する"
+    },
+    "integrations": {
+      "title": "統合",
+      "addNew": "新規インテグレーションの追加",
+      "status": {
+        "connected": "接続済み",
+        "available": "発売中",
+        "comingSoon": "近日登場"
+      },
+      "googleClassroom": {
+        "name": "グーガルクラスルーム",
+        "description": "割り当てと名簿を自動的に同期します。"
+      },
+      "microsoftTeams": {
+        "name": "マイクロソフトチーム",
+        "description": "Teams会議と割り当ての同期を有効にします。"
+      },
+      "canvasLms": {
+        "name": "キャンバスLMS",
+        "description": "Canvasユーザー向けの直接成績簿統合。"
+      }
+    },
+    "developer": {
+      "title": "APIと開発者アクセス",
+      "connectedApps": "接続されたアプリ",
+      "connectedAppsDesc": "3つのアプリがティーチングワークスペースにアクセスできます。",
+      "manageTokens": "APIトークンの管理"
+    },
+    "export": {
+      "title": "エクスポートとバックアップ",
+      "downloadData": "ワークスペースデータをダウンロード",
+      "downloadDataDesc": "テンプレート、アセスメント、チャット履歴",
+      "scheduleBackups": "毎週のバックアップをスケジュールする"
+    },
+    "plan": {
+      "yourCredits": "あなたのクレジット",
+      "memberSince": "__ PH 0 __以降のメンバー",
+      "activateCode": "+コードを有効にする",
+      "creditsRemaining": "/__ PH 0 __クレジット",
+      "remainingPct": "残り__ PH 0 __ %",
+      "expires": "有効期限__ PH 0 __",
+      "autoRenewing": "自動更新",
+      "noActiveCredits": "有効なクレジットはありません。コードを有効にして開始してください。",
+      "activateCreditsLink": "クレジットを有効にする →",
+      "usageBreakdown": "使用状況の内訳",
+      "last30Days": "過去 30 日",
+      "activity": "Activity - アクティビティ",
+      "activityFallback": "Activity - アクティビティ",
+      "left": "__ PH 0 __残り"
+    }
+  },
+  "nav": {
+    "dashboard": "ダッシュボード",
+    "teacherTools": "教師用ツール",
+    "teacherToolsOverview": "概要",
+    "teacherToolsAnalytics": "アナリティクス",
+    "quiz": "テスト",
+    "assignment": "割り当て",
+    "worksheet": "ワークシート",
+    "exams": "検査",
+    "templates": "テンプレートライブラリ",
+    "chatbots": "専用チャットボット",
+    "youtubeQuiz": "YouTubeクイズジェネレーター",
+    "pixgen": "PixGen （ AI Media Studio ）",
+    "learningHub": "プロフェッショナルラーニングハブ",
+    "personalization": "パーソナル",
+    "administration": "事務部",
+    "reporting": "レポート",
+    "assessment": "査定",
+    "contentManagement": "コンテンツ管理",
+    "history": "履歴",
+    "analytics": "アナリティクス",
+    "useCases": "ユースケースを見る",
+    "profile": "材料形状",
+    "settings": "設定",
+    "accessCodes": "アクセスコード",
+    "contentPacks": "コンテンツパック",
+    "documents": "資料",
+    "learningHubContent": "ラーニングハブコンテンツ",
+    "organization": "組織",
+    "parent": "親",
+    "school": "学校",
+    "uploadDocument": "タスク文書をアップロードする"
+  },
+  "workspace": {
+    "fallbackName": "ワークスペース",
+    "scopeType": {
+      "institution": "機関名",
+      "organization": "組織",
+      "personal": "個人"
+    },
+    "switcher": {
+      "title": "ワークスペースを切り替える",
+      "active": "有効"
+    }
+  },
+  "login": {
+    "subtitle": "アカウントにサインイン",
+    "emailLabel": "メールアドレス",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "パスワード",
+    "rememberMe": "ログイン情報を保持する",
+    "forgotPassword": "パスワードをお忘れですか？",
+    "signIn": "サインイン",
+    "signingIn": "ログイン中...",
+    "noAccount": "アカウントはお持ちですか？",
+    "signUpLink": "サインアップ",
+    "error": "サインインに失敗しました。認証情報を確認してください。"
+  },
+  "teacherTools": {
+    "breadcrumbTeacherTools": "教師用ツール",
+    "breadcrumbTemplates": "テンプレート",
+    "edit": "編集",
+    "duplicate": "複製",
+    "archive": "アーカイブ",
+    "delete": "削除",
+    "toolAssign": "割当",
+    "toolSheet": "シート",
+    "toolExam": "検査",
+    "range7d": "過去1週間",
+    "range30d": "過去 30 日",
+    "rangeAll": "全期間",
+    "previewData": "データのプレビュー",
+    "previewDataHint": "—生徒が提出すると、実際の結果がここに表示されます。",
+    "statContentCreated": "コンテンツが作成されました。",
+    "overview": {
+      "kpiTotalActive": "アクティブなアイテムの合計",
+      "kpiScheduledWeek": "今週予定されています",
+      "kpiPendingDrafts": "保留中の下書き",
+      "kpiPublished": "公開済みアイテム",
+      "kpiAvgQuizScore": "クイズの平均スコア",
+      "kpiQuizzesTaken": "受験したクイズ"
+    }
+  },
+  "quiz": {
+    "breadcrumb": "テスト"
+  },
+  "assignment": {
+    "breadcrumb": "割り当て"
+  },
+  "worksheet": {
+    "breadcrumb": "ワークシート"
+  },
+  "exam": {
+    "breadcrumb": "検査",
+    "detail": {
+      "tabs": {
+        "analytics": "アナリティクス",
+        "results": "結果",
+        "candidates": "求人応募者"
+      }
+    },
+    "statMarks": "得点"
+  },
+  "status": {
+    "draft": "下書き",
+    "published": "公開済み",
+    "active": "有効",
+    "closed": "クローズ",
+    "graded": "ランク付けされた繊維くず",
+    "submitted": "提出済み",
+    "pending": "保留中",
+    "archived": "アーカイブ済み",
+    "completed": "完了",
+    "upcoming": "Upcoming",
+    "ongoing": "継続中",
+    "cancelled": "キャンセルされました",
+    "late": "遅れた",
+    "onTime": "時間通り"
+  },
+  "dashboard": {
+    "recentActivity": "最近のアクティビティ",
+    "viewAll": "すべて表示",
+    "teacherToolsOverview": "教師ツールの概要",
+    "greetingMorning": "おはようございます、{{name}}",
+    "greetingAfternoon": "こんにちは、{{name}}",
+    "greetingEvening": "こんばんは、{{name}}",
+    "defaultName": "先生",
+    "workspaceReady": "ワークスペースの準備ができました。",
+    "activeContent": "ワークスペースに{{count}}件のアクティブ項目",
+    "createFirstQuiz": "始めるには最初のクイズを作成してください。",
+    "createFirstQuizCta": "クイズを作成",
+    "totalContent": "コンテンツ合計",
+    "thisWeek": "今週",
+    "draftBacklog": "下書きの滞留",
+    "published": "公開済み",
+    "dayStreak": "連続日数",
+    "upcomingDeadlines": "今後の期限",
+    "noDeadlines": "今後の期限はありません",
+    "noActivity": "最近の活動はありません",
+    "draftsToFinish": "仕上げる下書き",
+    "all": "すべて",
+    "noDrafts": "下書きなし",
+    "coreWorkflows": "主要ワークフロー",
+    "dueToday": "今日が期限",
+    "dueInDays": "{{count}}日後が期限",
+    "dueSoon": "まもなく期限: {{title}}",
+    "continueDraft": "下書きを続ける: {{title}}",
+    "tools": {
+      "quiz": "テスト",
+      "assignment": "割り当て",
+      "worksheet": "ワークシート",
+      "exam": "検査"
+    }
+  },
+  "tenantSelection": {
+    "title": "ワークスペースを選択してください。",
+    "subtitle": "続行するにはワークスペースを選択してください",
+    "workspace": "ワークスペース",
+    "signingIn": "ログイン中...",
+    "scope": {
+      "institution": "機関名",
+      "organization": "組織",
+      "personalWorkspace": "パーソナルワークスペース"
+    }
+  }
+}

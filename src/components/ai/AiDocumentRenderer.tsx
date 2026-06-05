@@ -2,6 +2,7 @@ import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import type { AiDocument } from '../../lib/aiDocument'
+import { lessonPhasesMarkdownComponents } from './lessonPhasesMarkdown'
 
 const SECTION_MARKER_REGEX = /\[\[SECTION:[^\]]*\]\]/g
 
@@ -56,8 +57,19 @@ export function AiDocumentRenderer({
               )}
               <div className="text-[15px] leading-[1.75] text-gray-800">
                 {content ? (
-                  <div className="prose prose-gray max-w-none prose-p:my-2.5 prose-p:leading-[1.75] prose-ul:my-3 prose-ol:my-3 prose-li:my-0.5 prose-headings:mb-2 prose-headings:mt-4 prose-table:text-sm">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+                  <div
+                    className={
+                      sec.key === 'lesson_flow'
+                        ? 'ai-lesson-phases-prose max-w-none text-[15px] leading-[1.75] text-gray-800'
+                        : 'prose prose-gray max-w-none prose-p:my-2.5 prose-p:leading-[1.75] prose-ul:my-3 prose-ol:my-3 prose-li:my-0.5 prose-headings:mb-2 prose-headings:mt-4 prose-table:text-sm'
+                    }
+                  >
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      components={sec.key === 'lesson_flow' ? lessonPhasesMarkdownComponents : undefined}
+                    >
+                      {content}
+                    </ReactMarkdown>
                   </div>
                 ) : (
                   <span className="text-gray-400">{isStreaming ? '...' : '\u00a0'}</span>

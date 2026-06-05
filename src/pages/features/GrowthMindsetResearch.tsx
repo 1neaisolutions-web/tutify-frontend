@@ -26,6 +26,7 @@ import {
   Heart,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface MindsetCharacteristic {
   characteristic: string
   fixedMindset: string
@@ -43,6 +44,7 @@ interface Strategy {
 const GROWTH_SLUG = 'growth-mindset-research'
 
 function GrowthMindsetResearchInner() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [activeSection, setActiveSection] = useState<'overview' | 'characteristics' | 'strategies' | 'language' | 'implementation'>('overview')
 
@@ -174,28 +176,19 @@ function GrowthMindsetResearchInner() {
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition"
           >
             <ArrowLeft className="h-5 w-5" />
-            <span className="text-sm font-semibold">Back to Learning Hub</span>
+            <span className="text-sm font-semibold">{t('growthMindsetResearch.backToLearningHub')}</span>
           </button>
           <div className="bg-white rounded-3xl shadow-xl p-8 border border-purple-100">
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-4">
-                  <span className="px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-semibold uppercase tracking-wide">
-                    Student motivation
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-semibold uppercase tracking-wide">{t('growthMindsetResearch.studentMotivation')}</span>
                   <span className="text-gray-400">•</span>
                   <span className="text-sm text-gray-600 flex items-center gap-1">
-                    <Clock className="h-4 w-4" />
-                    6 min read
-                  </span>
+                    <Clock className="h-4 w-4" />{t('growthMindsetResearch.kMinRead')}</span>
                 </div>
-                <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                  Growth Mindset: Dweck's Research in Practice
-                </h1>
-                <p className="text-lg text-gray-700 leading-relaxed">
-                  How to cultivate a growth mindset in students and transform their approach to learning challenges. 
-                  Based on Carol Dweck's groundbreaking research on the power of believing you can improve.
-                </p>
+                <h1 className="text-4xl font-bold text-gray-900 mb-4">{t('growthMindsetResearch.growthMindsetDweckSResearchInPractice')}</h1>
+                <p className="text-lg text-gray-700 leading-relaxed">{t('growthMindsetResearch.howToCultivateAGrowthMindsetInStudentsAndTransform')}</p>
               </div>
               <div className="flex items-center gap-2 ml-6">
                 <button className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition">
@@ -243,60 +236,51 @@ function GrowthMindsetResearchInner() {
             <div className="space-y-6">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Lightbulb className="h-6 w-6 text-purple-600" />
-                  What is Growth Mindset?
-                </h2>
+                  <Lightbulb className="h-6 w-6 text-purple-600" />{t('growthMindsetResearch.whatIsGrowthMindset')}</h2>
                 <div className="prose max-w-none text-gray-700 space-y-4">
-                  <p>
-                    Carol Dweck's research revolutionized our understanding of how beliefs about intelligence affect learning. 
-                    She identified two mindsets:
-                  </p>
+                  <p>{t('growthMindsetResearch.carolDweckSResearchRevolutionizedOurUnderstandingOfHowB')}</p>
                   <div className="grid md:grid-cols-2 gap-6 mt-6">
                     <div className="bg-red-50 rounded-xl p-6 border border-red-200">
-                      <h3 className="text-lg font-bold text-red-900 mb-3">Fixed Mindset</h3>
-                      <p className="text-sm text-red-800 mb-3">
-                        The belief that intelligence and abilities are fixed traits that cannot be changed.
-                      </p>
+                      <h3 className="text-lg font-bold text-red-900 mb-3">{t('growthMindsetResearch.fixedMindset')}</h3>
+                      <p className="text-sm text-red-800 mb-3">{t('growthMindsetResearch.theBeliefThatIntelligenceAndAbilitiesAreFixedTraitsThat')}</p>
                       <ul className="space-y-2 text-sm text-red-700">
                         <li className="flex items-start gap-2">
                           <span className="text-red-600">•</span>
-                          <span>Believes intelligence is innate</span>
+                          <span>{t('growthMindsetResearch.believesIntelligenceIsInnate')}</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <span className="text-red-600">•</span>
-                          <span>Avoids challenges</span>
+                          <span>{t('growthMindsetResearch.avoidsChallenges')}</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <span className="text-red-600">•</span>
-                          <span>Gives up easily</span>
+                          <span>{t('growthMindsetResearch.givesUpEasily')}</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <span className="text-red-600">•</span>
-                          <span>Sees effort as fruitless</span>
+                          <span>{t('growthMindsetResearch.seesEffortAsFruitless')}</span>
                         </li>
                       </ul>
                     </div>
                     <div className="bg-green-50 rounded-xl p-6 border border-green-200">
-                      <h3 className="text-lg font-bold text-green-900 mb-3">Growth Mindset</h3>
-                      <p className="text-sm text-green-800 mb-3">
-                        The belief that intelligence and abilities can be developed through dedication and hard work.
-                      </p>
+                      <h3 className="text-lg font-bold text-green-900 mb-3">{t('growthMindsetResearch.growthMindset')}</h3>
+                      <p className="text-sm text-green-800 mb-3">{t('growthMindsetResearch.theBeliefThatIntelligenceAndAbilitiesCanBeDevelopedThro')}</p>
                       <ul className="space-y-2 text-sm text-green-700">
                         <li className="flex items-start gap-2">
                           <span className="text-green-600">•</span>
-                          <span>Believes intelligence can grow</span>
+                          <span>{t('growthMindsetResearch.believesIntelligenceCanGrow')}</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <span className="text-green-600">•</span>
-                          <span>Embraces challenges</span>
+                          <span>{t('growthMindsetResearch.embracesChallenges')}</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <span className="text-green-600">•</span>
-                          <span>Persists through obstacles</span>
+                          <span>{t('growthMindsetResearch.persistsThroughObstacles')}</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <span className="text-green-600">•</span>
-                          <span>Sees effort as path to mastery</span>
+                          <span>{t('growthMindsetResearch.seesEffortAsPathToMastery')}</span>
                         </li>
                       </ul>
                     </div>
@@ -306,28 +290,26 @@ function GrowthMindsetResearchInner() {
 
               <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl border border-purple-200 p-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <TrendingUp className="h-6 w-6 text-purple-600" />
-                  Research Findings
-                </h2>
+                  <TrendingUp className="h-6 w-6 text-purple-600" />{t('growthMindsetResearch.researchFindings')}</h2>
                 <div className="space-y-4">
                   <div className="bg-white rounded-xl p-6 border border-purple-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Research Results</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('growthMindsetResearch.keyResearchResults')}</h3>
                     <ul className="space-y-3 text-gray-700">
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                        <span>Students with growth mindsets show significantly higher achievement over time</span>
+                        <span>{t('growthMindsetResearch.studentsWithGrowthMindsetsShowSignificantlyHigherAchiev')}</span>
                       </li>
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                        <span>Praising intelligence can actually decrease motivation and performance</span>
+                        <span>{t('growthMindsetResearch.praisingIntelligenceCanActuallyDecreaseMotivationAndPer')}</span>
                       </li>
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                        <span>Growth mindset interventions can improve grades, especially for struggling students</span>
+                        <span>{t('growthMindsetResearch.growthMindsetInterventionsCanImproveGradesEspeciallyFor')}</span>
                       </li>
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                        <span>Mindsets can be changed through targeted teaching and feedback</span>
+                        <span>{t('growthMindsetResearch.mindsetsCanBeChangedThroughTargetedTeachingAndFeedback')}</span>
                       </li>
                     </ul>
                   </div>
@@ -339,23 +321,23 @@ function GrowthMindsetResearchInner() {
           {activeSection === 'characteristics' && (
             <div className="space-y-6">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Fixed vs Growth Mindset Characteristics</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('growthMindsetResearch.fixedVsGrowthMindsetCharacteristics')}</h2>
                 <div className="space-y-4">
                   {mindsetCharacteristics.map((item, idx) => (
                     <div key={idx} className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4">{item.characteristic}</h3>
                       <div className="grid md:grid-cols-2 gap-4 mb-4">
                         <div className="bg-red-50 rounded-lg p-4 border border-red-200">
-                          <p className="text-xs font-semibold text-red-700 uppercase tracking-wide mb-2">Fixed Mindset</p>
+                          <p className="text-xs font-semibold text-red-700 uppercase tracking-wide mb-2">{t('growthMindsetResearch.fixedMindset')}</p>
                           <p className="text-sm text-red-800">{item.fixedMindset}</p>
                         </div>
                         <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-                          <p className="text-xs font-semibold text-green-700 uppercase tracking-wide mb-2">Growth Mindset</p>
+                          <p className="text-xs font-semibold text-green-700 uppercase tracking-wide mb-2">{t('growthMindsetResearch.growthMindset')}</p>
                           <p className="text-sm text-green-800">{item.growthMindset}</p>
                         </div>
                       </div>
                       <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                        <p className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-2">Teacher Action</p>
+                        <p className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-2">{t('growthMindsetResearch.teacherAction')}</p>
                         <p className="text-sm text-blue-800">{item.teacherAction}</p>
                       </div>
                     </div>
@@ -368,7 +350,7 @@ function GrowthMindsetResearchInner() {
           {activeSection === 'strategies' && (
             <div className="space-y-6">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Strategies for Cultivating Growth Mindset</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('growthMindsetResearch.strategiesForCultivatingGrowthMindset')}</h2>
                 <div className="space-y-6">
                   {strategies.map((strategy, idx) => (
                     <div key={idx} className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition">
@@ -380,7 +362,7 @@ function GrowthMindsetResearchInner() {
                           <h3 className="text-lg font-semibold text-gray-900 mb-2">{strategy.strategy}</h3>
                           <p className="text-gray-700 mb-4">{strategy.description}</p>
                           <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                            <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">Examples</p>
+                            <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">{t('growthMindsetResearch.examples')}</p>
                             <ul className="space-y-2">
                               {strategy.examples.map((example, exIdx) => (
                                 <li key={exIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -391,7 +373,7 @@ function GrowthMindsetResearchInner() {
                             </ul>
                           </div>
                           <div className="bg-purple-50 rounded-lg p-3 border border-purple-200">
-                            <p className="text-xs font-semibold text-purple-800 mb-1">Impact</p>
+                            <p className="text-xs font-semibold text-purple-800 mb-1">{t('growthMindsetResearch.impact')}</p>
                             <p className="text-sm text-purple-700">{strategy.impact}</p>
                           </div>
                         </div>
@@ -406,25 +388,23 @@ function GrowthMindsetResearchInner() {
           {activeSection === 'language' && (
             <div className="space-y-6">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">The Power of Language</h2>
-                <p className="text-gray-700 mb-6">
-                  The words we use shape students' beliefs about their abilities. Here's how to reframe common phrases:
-                </p>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('growthMindsetResearch.thePowerOfLanguage')}</h2>
+                <p className="text-gray-700 mb-6">{t('growthMindsetResearch.theWordsWeUseShapeStudentsBeliefsAboutTheirAbilities')}</p>
                 <div className="space-y-4">
                   {languageExamples.map((example, idx) => (
                     <div key={idx} className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition">
                       <div className="grid md:grid-cols-2 gap-4">
                         <div className="bg-red-50 rounded-lg p-4 border border-red-200">
-                          <p className="text-xs font-semibold text-red-700 uppercase tracking-wide mb-2">Fixed Mindset Language</p>
+                          <p className="text-xs font-semibold text-red-700 uppercase tracking-wide mb-2">{t('growthMindsetResearch.fixedMindsetLanguage')}</p>
                           <p className="text-sm text-red-800 italic">"{example.fixed}"</p>
                         </div>
                         <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-                          <p className="text-xs font-semibold text-green-700 uppercase tracking-wide mb-2">Growth Mindset Language</p>
+                          <p className="text-xs font-semibold text-green-700 uppercase tracking-wide mb-2">{t('growthMindsetResearch.growthMindsetLanguage')}</p>
                           <p className="text-sm text-green-800 italic">"{example.growth}"</p>
                         </div>
                       </div>
                       <div className="mt-4 bg-blue-50 rounded-lg p-3 border border-blue-200">
-                        <p className="text-xs font-semibold text-blue-800 mb-1">Why This Matters</p>
+                        <p className="text-xs font-semibold text-blue-800 mb-1">{t('growthMindsetResearch.whyThisMatters')}</p>
                         <p className="text-sm text-blue-700">{example.reason}</p>
                       </div>
                     </div>
@@ -437,80 +417,74 @@ function GrowthMindsetResearchInner() {
           {activeSection === 'implementation' && (
             <div className="space-y-6">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Implementation Guide</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('growthMindsetResearch.implementationGuide')}</h2>
                 
                 <div className="space-y-6">
                   <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                      <Target className="h-5 w-5 text-purple-600" />
-                      Week 1-2: Foundation
-                    </h3>
+                      <Target className="h-5 w-5 text-purple-600" />{t('growthMindsetResearch.week12Foundation')}</h3>
                     <ul className="space-y-2 text-gray-700">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                        <span>Introduce the concept of growth mindset to students</span>
+                        <span>{t('growthMindsetResearch.introduceTheConceptOfGrowthMindsetToStudents')}</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                        <span>Teach about brain plasticity and how the brain grows</span>
+                        <span>{t('growthMindsetResearch.teachAboutBrainPlasticityAndHowTheBrainGrows')}</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                        <span>Start using growth-oriented language in your feedback</span>
+                        <span>{t('growthMindsetResearch.startUsingGrowthOrientedLanguageInYourFeedback')}</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                        <span>Create a "Mistakes Help Us Learn" display</span>
+                        <span>{t('growthMindsetResearch.createAMistakesHelpUsLearnDisplay')}</span>
                       </li>
                     </ul>
                   </div>
 
                   <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                      <Target className="h-5 w-5 text-blue-600" />
-                      Week 3-4: Practice
-                    </h3>
+                      <Target className="h-5 w-5 text-blue-600" />{t('growthMindsetResearch.week34Practice')}</h3>
                     <ul className="space-y-2 text-gray-700">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                        <span>Implement process praise in all feedback</span>
+                        <span>{t('growthMindsetResearch.implementProcessPraiseInAllFeedback')}</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                        <span>Help students set learning goals instead of performance goals</span>
+                        <span>{t('growthMindsetResearch.helpStudentsSetLearningGoalsInsteadOfPerformanceGoals')}</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                        <span>Teach students to reframe challenges as opportunities</span>
+                        <span>{t('growthMindsetResearch.teachStudentsToReframeChallengesAsOpportunities')}</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                        <span>Celebrate effort and persistence, not just achievement</span>
+                        <span>{t('growthMindsetResearch.celebrateEffortAndPersistenceNotJustAchievement')}</span>
                       </li>
                     </ul>
                   </div>
 
                   <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                      <Target className="h-5 w-5 text-green-600" />
-                      Ongoing: Sustain
-                    </h3>
+                      <Target className="h-5 w-5 text-green-600" />{t('growthMindsetResearch.ongoingSustain')}</h3>
                     <ul className="space-y-2 text-gray-700">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                        <span>Consistently use growth mindset language</span>
+                        <span>{t('growthMindsetResearch.consistentlyUseGrowthMindsetLanguage')}</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                        <span>Share stories of growth and improvement</span>
+                        <span>{t('growthMindsetResearch.shareStoriesOfGrowthAndImprovement')}</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                        <span>Model growth mindset in your own learning</span>
+                        <span>{t('growthMindsetResearch.modelGrowthMindsetInYourOwnLearning')}</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                        <span>Regularly reflect on mindset with students</span>
+                        <span>{t('growthMindsetResearch.regularlyReflectOnMindsetWithStudents')}</span>
                       </li>
                     </ul>
                   </div>
@@ -518,23 +492,23 @@ function GrowthMindsetResearchInner() {
               </div>
 
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Quick Wins</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">{t('growthMindsetResearch.quickWins')}</h3>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
-                    <p className="text-sm font-semibold text-purple-900 mb-2">Start Today</p>
-                    <p className="text-sm text-purple-700">Replace one instance of intelligence praise with process praise</p>
+                    <p className="text-sm font-semibold text-purple-900 mb-2">{t('growthMindsetResearch.startToday')}</p>
+                    <p className="text-sm text-purple-700">{t('growthMindsetResearch.replaceOneInstanceOfIntelligencePraiseWithProcessPraise')}</p>
                   </div>
                   <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                    <p className="text-sm font-semibold text-blue-900 mb-2">This Week</p>
-                    <p className="text-sm text-blue-700">Add "yet" to your vocabulary when students say "I can't"</p>
+                    <p className="text-sm font-semibold text-blue-900 mb-2">{t('growthMindsetResearch.thisWeek')}</p>
+                    <p className="text-sm text-blue-700">{t('growthMindsetResearch.addYetToYourVocabularyWhenStudentsSayICan')}</p>
                   </div>
                   <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-                    <p className="text-sm font-semibold text-green-900 mb-2">This Month</p>
-                    <p className="text-sm text-green-700">Teach a lesson about brain plasticity and growth</p>
+                    <p className="text-sm font-semibold text-green-900 mb-2">{t('growthMindsetResearch.thisMonth')}</p>
+                    <p className="text-sm text-green-700">{t('growthMindsetResearch.teachALessonAboutBrainPlasticityAndGrowth')}</p>
                   </div>
                   <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
-                    <p className="text-sm font-semibold text-amber-900 mb-2">Ongoing</p>
-                    <p className="text-sm text-amber-700">Celebrate mistakes that lead to learning</p>
+                    <p className="text-sm font-semibold text-amber-900 mb-2">{t('growthMindsetResearch.ongoing')}</p>
+                    <p className="text-sm text-amber-700">{t('growthMindsetResearch.celebrateMistakesThatLeadToLearning')}</p>
                   </div>
                 </div>
               </div>

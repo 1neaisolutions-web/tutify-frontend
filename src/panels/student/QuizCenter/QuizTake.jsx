@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -52,6 +53,7 @@ const formatTime = (sec) => {
 };
 
 const QuizTake = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const quiz = useMemo(() => quizBank[id] || null, [id]);
@@ -89,7 +91,7 @@ const QuizTake = () => {
   if (!quiz) {
     return (
       <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950 px-6 py-6">
-        <p className="text-sm text-gray-700 dark:text-gray-200">Quiz not found.</p>
+        <p className="text-sm text-gray-700 dark:text-gray-200">{t('studentPanel.quiz.take.notFound')}</p>
       </div>
     );
   }
@@ -99,7 +101,7 @@ const QuizTake = () => {
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between gap-4">
         <div>
           <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{quiz.title}</h1>
-          <p className="text-sm text-gray-600 dark:text-gray-300">Timer: {formatTime(state.remainingSec)}</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.quiz.take.timer', { time: formatTime(state.remainingSec) })}</p>
         </div>
         <button
           type="button"

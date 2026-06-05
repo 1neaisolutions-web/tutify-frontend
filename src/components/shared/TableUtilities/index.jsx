@@ -1,10 +1,10 @@
 import { Box } from '@mui/material';
+import i18n from '../../../i18n';
 import { CustomPopover } from '../CustomPopover';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { PopoverData } from '../PopoverData';
 import { getStatusStyles } from '../../../utils/utils';
 
-// Status Utility
 export const AuditionStatusUtil = (status) => {
   return (
     <div className='w-full flex items-center justify-center'>
@@ -13,18 +13,16 @@ export const AuditionStatusUtil = (status) => {
           ${getStatusStyles(status)} 
           font text-center text-[12px] px-2 py-0.5 rounded text-white capitalize`}
       >
-        {status || 'Unknown'}
+        {status || i18n.t('shared.status.unknown')}
       </div>
     </div>
   );
 };
 
-// Action
 export const ActionUtil = (restProps, popoverData, isOpen) => {
   return (
     <>
         <CustomPopover
-          // success={errorsShow?.success ? errorsShow?.success : modalOpen}
           trigger={<MoreVertIcon sx={{ color: 'black', fontSize: 'large' }} />}
           anchorOrigin={{
             vertical: 'bottom',

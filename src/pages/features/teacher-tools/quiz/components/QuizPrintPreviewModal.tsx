@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation, type TFunction } from 'react-i18next'
 import { Printer, X } from 'lucide-react'
 import { clampResponseLines, type QuizQuestionStub } from '../../demo/generationFromSources'
 import { groupQuizStubsByType } from '../../utils/generateQuizPdf'
@@ -32,7 +33,8 @@ function esc(s: string): string {
 function buildHandoutPrintDocument(
   meta: QuizPrintMeta,
   stubs: QuizQuestionStub[],
-  layout: HandoutLayoutOpts = DEFAULT_HANDOUT_LAYOUT
+  layout: HandoutLayoutOpts,
+  t: TFunction,
 ): string {
   const groups = groupQuizStubsByType(stubs)
   let qn = 1
@@ -48,15 +50,15 @@ function buildHandoutPrintDocument(
               item.options && item.options.length > 0
                 ? `<ol class="opts">${item.options.map((o) => `<li>${esc(o)}</li>`).join('')}</ol>`
                 : ''
-            body = `${opts}<p class="hint">Select one answer. Mark clearly in the circles: ○ A &nbsp; ○ B &nbsp; ○ C &nbsp; ○ D</p>`
+            body = `${opts}<p class="hint">${esc(t('quiz.printPreview.mcqHint'))}</p>`
           } else if (item.type === 'tf') {
-            body = '<p class="tf">○ True &nbsp;&nbsp;&nbsp; ○ False</p>'
+            body = `<p class="tf">${esc(t('quiz.printPreview.tfTrueFalse'))}</p>`
           } else {
             const nl = clampResponseLines(item.responseLines)
             body = `<div class="lines">${Array.from({ length: nl }, () => '<div class="l"></div>').join('')}</div>`
           }
           return `<div class="q"><p class="stem"><span class="qn">Q${num}.</span> ${esc(item.prompt)}${
-            item.points != null ? ` <span class="pts">(${item.points} marks)</span>` : ''
+            item.points != null ? ` <span class="pts">${esc(t('quiz.printPreview.marksSuffix', { count: item.points }))}</span>` : ''
           }</p>${body}</div>`
         })
         .join('')
@@ -64,9 +66,9 @@ function buildHandoutPrintDocument(
     })
     .join('')
 
-  const topicLine = meta.topic ? `<p><strong>Topic:</strong> ${esc(meta.topic)}</p>` : ''
+  const topicLine = meta.topic ? `<p><strong>${esc(t('quiz.printPreview.topic'))}</strong> ${esc(meta.topic)}</p>` : ''
   const srcLine = meta.sourceSummaryLine
-    ? `<p><strong>Materials:</strong> ${esc(meta.sourceSummaryLine)}</p>`
+    ? `<p><strong>${esc(t('quiz.printPreview.materials'))}</strong> ${esc(meta.sourceSummaryLine)}</p>`
     : ''
 
   return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><title>${esc(meta.title)}</title>
@@ -92,11 +94,11 @@ function buildHandoutPrintDocument(
 </style></head><body>
   <h1>${esc(meta.title)}</h1>
   <div class="banner">
-    <p>${esc(meta.subject)} · ${esc(meta.grade)} · Time: ${meta.timeLimitMinutes} minutes</p>
+    <p>${esc(meta.subject)} · ${esc(meta.grade)} · ${esc(t('quiz.printPreview.timeMinutes', { count: meta.timeLimitMinutes }))}</p>
     ${topicLine}
     ${srcLine}
   </div>
-  <div class="instr"><strong>Instructions for students:</strong> ${esc(meta.studentInstructions || '—')}</div>
+  <div class="instr"><strong>${esc(t('quiz.printPreview.instructionsForStudents'))}</strong> ${esc(meta.studentInstructions || '—')}</div>
   ${sectionsHtml}
 </body></html>`
 }
@@ -113,6 +115,7 @@ type Props = {
 }
 
 export function QuizPrintPreviewModal({ open, onClose, meta, stubs, savedLayout, onSaveLayout }: Props) {
+  const { t } = useTranslation()
   const [draftLayout, setDraftLayout] = useState<HandoutLayoutOpts>(savedLayout)
 
   useEffect(() => {
@@ -120,7 +123,7 @@ export function QuizPrintPreviewModal({ open, onClose, meta, stubs, savedLayout,
   }, [open, savedLayout])
 
   const handlePrint = useCallback(() => {
-    const html = buildHandoutPrintDocument(meta, stubs, draftLayout)
+    const html = buildHandoutPrintDocument(meta, stubs, draftLayout, t)
     const iframe = document.createElement('iframe')
     iframe.setAttribute('style', 'position:fixed;right:0;bottom:0;width:0;height:0;border:0')
     document.body.appendChild(iframe)
@@ -138,7 +141,7 @@ export function QuizPrintPreviewModal({ open, onClose, meta, stubs, savedLayout,
     setTimeout(() => {
       document.body.removeChild(iframe)
     }, 500)
-  }, [meta, stubs, draftLayout])
+  }, [meta, stubs, draftLayout, t])
 
   const handleSaveAndClose = () => {
     onSaveLayout(draftLayout)
@@ -152,16 +155,13 @@ export function QuizPrintPreviewModal({ open, onClose, meta, stubs, savedLayout,
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <button type="button" className="absolute inset-0 bg-black/50" aria-label="Close preview" onClick={onClose} />
+      <button type="button" className="absolute inset-0 bg-black/50" aria-label={t('teacherTools.ariaClosePreview')} onClick={onClose} />
       <div className="relative flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-gray-200 bg-gray-100 shadow-2xl">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 bg-white px-5 py-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-indigo-700">Print preview</p>
-            <h2 className="text-lg font-semibold text-gray-900">Student handout layout</h2>
-            <p className="mt-0.5 text-xs text-gray-600">
-              Preview only — tune line height and spacing below, then use Save layout and close so PDF export and the next
-              print use your settings. Close without saving keeps the previous layout.
-            </p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-indigo-700">{t('quiz.printPreview.kicker')}</p>
+            <h2 className="text-lg font-semibold text-gray-900">{t('quiz.printPreview.title')}</h2>
+            <p className="mt-0.5 text-xs text-gray-600">{t('quiz.printPreview.hint')}</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <button
@@ -170,14 +170,14 @@ export function QuizPrintPreviewModal({ open, onClose, meta, stubs, savedLayout,
               className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-50"
             >
               <Printer className="h-4 w-4" />
-              Print (current preview)
+              {t('quiz.printPreview.printCurrent')}
             </button>
             <button
               type="button"
               onClick={handleSaveAndClose}
               className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500"
             >
-              Save layout and close
+              {t('quiz.printPreview.saveLayoutClose')}
             </button>
             <button
               type="button"
@@ -185,15 +185,15 @@ export function QuizPrintPreviewModal({ open, onClose, meta, stubs, savedLayout,
               className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50"
             >
               <X className="h-4 w-4" />
-              Close
+              {t('teacherTools.close')}
             </button>
           </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-3 border-b border-indigo-100 bg-indigo-50/50 px-5 py-2.5">
-          <span className="text-xs font-semibold uppercase tracking-wide text-indigo-900">Handout spacing</span>
+          <span className="text-xs font-semibold uppercase tracking-wide text-indigo-900">{t('quiz.printPreview.handoutSpacing')}</span>
           <label className="flex items-center gap-1.5 text-xs text-gray-800">
-            <span className="text-gray-600">Line height</span>
+            <span className="text-gray-600">{t('quiz.printPreview.lineHeight')}</span>
             <select
               value={draftLayout.bodyLineHeight}
               onChange={(e) =>
@@ -212,7 +212,7 @@ export function QuizPrintPreviewModal({ open, onClose, meta, stubs, savedLayout,
             </select>
           </label>
           <label className="flex items-center gap-1.5 text-xs text-gray-800">
-            <span className="text-gray-600">Space after each question</span>
+            <span className="text-gray-600">{t('quiz.printPreview.spaceAfterQuestion')}</span>
             <select
               value={draftLayout.questionGapPx}
               onChange={(e) =>
@@ -231,7 +231,7 @@ export function QuizPrintPreviewModal({ open, onClose, meta, stubs, savedLayout,
             </select>
           </label>
           <label className="flex items-center gap-1.5 text-xs text-gray-800">
-            <span className="text-gray-600">Short answer line height</span>
+            <span className="text-gray-600">{t('quiz.printPreview.shortAnswerLineHeight')}</span>
             <select
               value={draftLayout.ruledLineSpacingPx}
               onChange={(e) =>
@@ -259,13 +259,21 @@ export function QuizPrintPreviewModal({ open, onClose, meta, stubs, savedLayout,
             <h1 className="font-sans text-xl font-bold text-gray-900">{meta.title}</h1>
             <div className="mt-2 font-sans text-xs text-gray-600">
               <p>
-                {meta.subject} · {meta.grade} · Time: {meta.timeLimitMinutes} minutes
+                {meta.subject} · {meta.grade} · {t('quiz.printPreview.timeMinutes', { count: meta.timeLimitMinutes })}
               </p>
-              {meta.topic ? <p className="mt-1">Topic: {meta.topic}</p> : null}
-              {meta.sourceSummaryLine ? <p className="mt-1">Materials: {meta.sourceSummaryLine}</p> : null}
+              {meta.topic ? (
+                <p className="mt-1">
+                  {t('quiz.printPreview.topic')} {meta.topic}
+                </p>
+              ) : null}
+              {meta.sourceSummaryLine ? (
+                <p className="mt-1">
+                  {t('quiz.printPreview.materials')} {meta.sourceSummaryLine}
+                </p>
+              ) : null}
             </div>
             <div className="mt-5 whitespace-pre-wrap border border-gray-200 bg-gray-50/80 px-4 py-3 text-xs text-gray-800">
-              <span className="font-semibold">Instructions for students:</span> {meta.studentInstructions || '—'}
+              <span className="font-semibold">{t('quiz.printPreview.instructionsForStudents')}</span> {meta.studentInstructions || '—'}
             </div>
 
             {groups.map((g) => (
@@ -284,7 +292,10 @@ export function QuizPrintPreviewModal({ open, onClose, meta, stubs, savedLayout,
                         <p className="whitespace-pre-wrap leading-relaxed">
                           <span className="font-semibold">Q{num}.</span> {item.prompt}
                           {item.points != null ? (
-                            <span className="text-xs font-normal text-gray-500"> ({item.points} marks)</span>
+                            <span className="text-xs font-normal text-gray-500">
+                              {' '}
+                              {t('quiz.printPreview.marksSuffix', { count: item.points })}
+                            </span>
                           ) : null}
                         </p>
                         {item.type === 'mcq' && item.options && item.options.length > 0 ? (
@@ -297,14 +308,10 @@ export function QuizPrintPreviewModal({ open, onClose, meta, stubs, savedLayout,
                           </ol>
                         ) : null}
                         {item.type === 'mcq' ? (
-                          <p className="mt-2 text-xs text-gray-500">
-                            Select one answer. Mark clearly: ○ A &nbsp; ○ B &nbsp; ○ C &nbsp; ○ D
-                          </p>
+                          <p className="mt-2 text-xs text-gray-500">{t('quiz.printPreview.mcqHint')}</p>
                         ) : null}
                         {item.type === 'tf' ? (
-                          <p className="mt-3 text-sm text-gray-800">
-                            ○ True &nbsp;&nbsp;&nbsp; ○ False
-                          </p>
+                          <p className="mt-3 text-sm text-gray-800">{t('quiz.printPreview.tfTrueFalse')}</p>
                         ) : null}
                         {item.type === 'short' ? (
                           <ShortAnswerHandoutLines

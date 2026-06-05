@@ -51,6 +51,7 @@ import * as chatbotApi from '../../api/chatbots'
 import { useSnackbar } from '../../hooks/useSnackbar'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 
+import { useTranslation } from 'react-i18next'
 interface VisualExplanation {
   concept: string
   explanation: string
@@ -109,6 +110,7 @@ function inferTabFromPayload(parsed: Record<string, unknown>): TutorTab | null {
 }
 
 const AlgebraGeometryTutor = () => {
+  const { t } = useTranslation()
   const { toast } = useSnackbar()
   const CHATBOT_SLUG = 'algebra-geometry-tutor'
   const [activeTab, setActiveTab] = useState<TutorTab>('visual')
@@ -131,7 +133,7 @@ const AlgebraGeometryTutor = () => {
     onRestore: async ({ tabKey, userContent, assistantContent, assistantMetadata }) => {
       try {
         if (!assistantContent?.trim()) {
-          toast.info('This history entry has no saved output to restore.')
+          toast.info(t('algebraGeometryTutor.thisHistoryEntryHasNoSavedOutputToRestore'))
           return
         }
         const meta = assistantMetadata || {}
@@ -180,7 +182,7 @@ const AlgebraGeometryTutor = () => {
           setScaffoldedPractice(parsed as unknown as ScaffoldedPractice)
         }
       } catch {
-        toast.info('Could not load this conversation from History.')
+        toast.info(t('algebraGeometryTutor.couldNotLoadThisConversationFromHistory'))
       }
     },
   })
@@ -252,7 +254,7 @@ const AlgebraGeometryTutor = () => {
           conversation_id: conversationIdForActiveTab ?? undefined,
         })
         .then((r) => pinFromResponse(r.conversation_id))
-        .catch(() => toast.info('Generated, but could not save to History.'))
+        .catch(() => toast.info(t('algebraGeometryTutor.generatedButCouldNotSaveToHistory')))
     }, 2000)
   }
 
@@ -340,7 +342,7 @@ const AlgebraGeometryTutor = () => {
           conversation_id: conversationIdForActiveTab ?? undefined,
         })
         .then((r) => pinFromResponse(r.conversation_id))
-        .catch(() => toast.info('Generated, but could not save to History.'))
+        .catch(() => toast.info(t('algebraGeometryTutor.generatedButCouldNotSaveToHistory')))
     }, 2000)
   }
 
@@ -443,17 +445,17 @@ const AlgebraGeometryTutor = () => {
           conversation_id: conversationIdForActiveTab ?? undefined,
         })
         .then((r) => pinFromResponse(r.conversation_id))
-        .catch(() => toast.info('Generated, but could not save to History.'))
+        .catch(() => toast.info(t('algebraGeometryTutor.generatedButCouldNotSaveToHistory')))
     }, 2000)
   }
 
   const tabs = [
-    { id: 'visual', label: 'Visual Explanations', icon: Eye },
-    { id: 'proof', label: 'Proof Strategies', icon: Brain },
-    { id: 'practice', label: 'Scaffolded Practice', icon: Layers },
-    { id: 'interactive', label: 'Interactive Tools', icon: PlayCircle },
-    { id: 'assessment', label: 'Assessment', icon: FileText },
-    { id: 'resources', label: 'Resources', icon: BookOpen },
+    { id: 'visual', label: t('algebraGeometryTutor.tabs.visual'), icon: Eye },
+    { id: 'proof', label: t('algebraGeometryTutor.tabs.proof'), icon: Brain },
+    { id: 'practice', label: t('algebraGeometryTutor.tabs.practice'), icon: Layers },
+    { id: 'interactive', label: t('algebraGeometryTutor.tabs.interactive'), icon: PlayCircle },
+    { id: 'assessment', label: t('algebraGeometryTutor.tabs.assessment'), icon: FileText },
+    { id: 'resources', label: t('algebraGeometryTutor.tabs.resources'), icon: BookOpen },
   ]
 
   return (
@@ -468,36 +470,32 @@ const AlgebraGeometryTutor = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-3xl font-bold">Algebra & Geometry Tutor</h1>
+                  <h1 className="text-3xl font-bold">{t('algebraGeometryTutor.algebraGeometryTutor')}</h1>
                   <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
                     <Star className="h-3 w-3" /> 4.7★
                   </span>
                   <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" /> Premium
-                  </span>
+                    <Lock className="inline h-3 w-3 mr-1" />{t('algebraGeometryTutor.premium')}</span>
                 </div>
-                <p className="mt-2 text-indigo-100">
-                  Advanced mathematics support with visual explanations, proof strategies, 
-                  and scaffolded practice for algebra and geometry.
-                </p>
+                <p className="mt-2 text-indigo-100">{t('algebraGeometryTutor.advancedMathematicsSupportWithVisualExplanationsProofSt')}</p>
               </div>
             </div>
             <div className="flex flex-wrap gap-3 mt-6">
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <Eye className="h-4 w-4" />
-                <span>Visual Explanations</span>
+                <span>{t('algebraGeometryTutor.visualExplanations')}</span>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <Brain className="h-4 w-4" />
-                <span>Proof Strategies</span>
+                <span>{t('algebraGeometryTutor.proofStrategies')}</span>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <Layers className="h-4 w-4" />
-                <span>Scaffolded Practice</span>
+                <span>{t('algebraGeometryTutor.scaffoldedPractice')}</span>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <PlayCircle className="h-4 w-4" />
-                <span>Interactive Tools</span>
+                <span>{t('algebraGeometryTutor.interactiveTools')}</span>
               </div>
             </div>
           </div>
@@ -509,7 +507,7 @@ const AlgebraGeometryTutor = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Visuals Created</p>
+              <p className="text-sm font-medium text-gray-600">{t('algebraGeometryTutor.visualsCreated')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">2,847</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600">
@@ -520,7 +518,7 @@ const AlgebraGeometryTutor = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Proofs Explained</p>
+              <p className="text-sm font-medium text-gray-600">{t('algebraGeometryTutor.proofsExplained')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">1,234</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600">
@@ -531,7 +529,7 @@ const AlgebraGeometryTutor = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Students Supported</p>
+              <p className="text-sm font-medium text-gray-600">{t('algebraGeometryTutor.studentsSupported')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">3,456</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-pink-100 text-pink-600">
@@ -542,7 +540,7 @@ const AlgebraGeometryTutor = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Mastery Rate</p>
+              <p className="text-sm font-medium text-gray-600">{t('algebraGeometryTutor.masteryRate')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">91%</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600">
@@ -583,22 +581,18 @@ const AlgebraGeometryTutor = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-1 space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Subject
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('algebraGeometryTutor.subject')}</label>
                     <select
                       value={subject}
                       onChange={(e) => setSubject(e.target.value as 'algebra' | 'geometry')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                     >
-                      <option value="algebra">Algebra</option>
-                      <option value="geometry">Geometry</option>
+                      <option value="algebra">{t('algebraGeometryTutor.algebra')}</option>
+                      <option value="geometry">{t('algebraGeometryTutor.geometry')}</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Topic/Concept
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('algebraGeometryTutor.topicConcept')}</label>
                     <input
                       type="text"
                       value={topic}
@@ -608,9 +602,7 @@ const AlgebraGeometryTutor = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Grade Level
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('algebraGeometryTutor.gradeLevel')}</label>
                     <select
                       value={gradeLevel}
                       onChange={(e) => setGradeLevel(e.target.value)}
@@ -618,7 +610,7 @@ const AlgebraGeometryTutor = () => {
                     >
                       {[6, 7, 8, 9, 10, 11, 12].map((grade) => (
                         <option key={grade} value={grade}>
-                          Grade {grade}
+                          {t('common.gradeOption', { grade })}
                         </option>
                       ))}
                     </select>
@@ -630,14 +622,10 @@ const AlgebraGeometryTutor = () => {
                   >
                     {isGenerating ? (
                       <>
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                        Generating...
-                      </>
+                        <RefreshCw className="h-4 w-4 animate-spin" />{t('algebraGeometryTutor.generating')}</>
                     ) : (
                       <>
-                        <Sparkles className="h-4 w-4" />
-                        Generate Visual Explanation
-                      </>
+                        <Sparkles className="h-4 w-4" />{t('algebraGeometryTutor.generateVisualExplanation')}</>
                     )}
                   </button>
                 </div>
@@ -659,7 +647,7 @@ const AlgebraGeometryTutor = () => {
                       </div>
 
                       <div className="rounded-2xl border border-gray-200 bg-white p-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Step-by-Step Visual Guide</h3>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('algebraGeometryTutor.stepByStepVisualGuide')}</h3>
                         <div className="space-y-4">
                           {visualExplanation.steps.map((step, idx) => (
                             <div key={idx} className="rounded-lg border-2 border-indigo-200 bg-indigo-50 p-5">
@@ -684,9 +672,7 @@ const AlgebraGeometryTutor = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <PlayCircle className="h-5 w-5 text-purple-600" />
-                          Interactive Elements
-                        </h3>
+                          <PlayCircle className="h-5 w-5 text-purple-600" />{t('algebraGeometryTutor.interactiveElements')}</h3>
                         <ul className="space-y-2">
                           {visualExplanation.interactiveElements.map((element, idx) => (
                             <li key={idx} className="flex items-start gap-2 text-sm text-gray-700 bg-white rounded-lg p-3 border border-purple-200">
@@ -699,21 +685,15 @@ const AlgebraGeometryTutor = () => {
 
                       <div className="grid grid-cols-2 gap-4">
                         <button className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                          <PlayCircle className="h-4 w-4" />
-                          Launch Interactive
-                        </button>
+                          <PlayCircle className="h-4 w-4" />{t('algebraGeometryTutor.launchInteractive')}</button>
                         <button className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                          <Download className="h-4 w-4" />
-                          Download Visual
-                        </button>
+                          <Download className="h-4 w-4" />{t('algebraGeometryTutor.downloadVisual')}</button>
                       </div>
                     </div>
                   ) : (
                     <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
                       <Eye className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm font-medium text-gray-600">
-                        Enter a topic and generate visual explanations with step-by-step guides
-                      </p>
+                      <p className="text-sm font-medium text-gray-600">{t('algebraGeometryTutor.enterATopicAndGenerateVisualExplanationsWithStepBy')}</p>
                     </div>
                   )}
                 </div>
@@ -727,40 +707,34 @@ const AlgebraGeometryTutor = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-1 space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Subject
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('algebraGeometryTutor.subject')}</label>
                     <select
                       value={subject}
                       onChange={(e) => setSubject(e.target.value as 'algebra' | 'geometry')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                     >
-                      <option value="algebra">Algebra</option>
-                      <option value="geometry">Geometry</option>
+                      <option value="algebra">{t('algebraGeometryTutor.algebra')}</option>
+                      <option value="geometry">{t('algebraGeometryTutor.geometry')}</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Theorem/Statement to Prove
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('algebraGeometryTutor.theoremStatementToProve')}</label>
                     <input
                       type="text"
                       value={topic}
                       onChange={(e) => setTopic(e.target.value)}
-                      placeholder="e.g., Pythagorean Theorem, Angle Sum Theorem"
+                      placeholder={t('algebraGeometryTutor.eGPythagoreanTheoremAngleSumTheorem')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Proof Type
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('algebraGeometryTutor.proofType')}</label>
                     <select className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100">
-                      <option>Direct Proof</option>
-                      <option>Indirect Proof</option>
-                      <option>Proof by Contradiction</option>
-                      <option>Proof by Induction</option>
-                      <option>Proof by Construction</option>
+                      <option>{t('algebraGeometryTutor.directProof')}</option>
+                      <option>{t('algebraGeometryTutor.indirectProof')}</option>
+                      <option>{t('algebraGeometryTutor.proofByContradiction')}</option>
+                      <option>{t('algebraGeometryTutor.proofByInduction')}</option>
+                      <option>{t('algebraGeometryTutor.proofByConstruction')}</option>
                     </select>
                   </div>
                   <button
@@ -770,14 +744,10 @@ const AlgebraGeometryTutor = () => {
                   >
                     {isGenerating ? (
                       <>
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                        Generating...
-                      </>
+                        <RefreshCw className="h-4 w-4 animate-spin" />{t('algebraGeometryTutor.generating')}</>
                     ) : (
                       <>
-                        <Sparkles className="h-4 w-4" />
-                        Generate Proof Strategy
-                      </>
+                        <Sparkles className="h-4 w-4" />{t('algebraGeometryTutor.generateProofStrategy')}</>
                     )}
                   </button>
                 </div>
@@ -799,7 +769,7 @@ const AlgebraGeometryTutor = () => {
                       </div>
 
                       <div className="rounded-2xl border border-gray-200 bg-white p-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Proof Steps</h3>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('algebraGeometryTutor.proofSteps')}</h3>
                         <div className="space-y-4">
                           {proofStrategy.steps.map((step, idx) => (
                             <div key={idx} className="rounded-lg border-2 border-indigo-200 bg-indigo-50 p-5">
@@ -810,7 +780,7 @@ const AlgebraGeometryTutor = () => {
                                 <div className="flex-1">
                                   <p className="text-sm font-semibold text-gray-900 mb-2">{step.statement}</p>
                                   <div className="bg-white rounded-lg p-3 border border-indigo-200 mb-2">
-                                    <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">Justification:</p>
+                                    <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('algebraGeometryTutor.justification')}</p>
                                     <p className="text-sm text-gray-700">{step.justification}</p>
                                   </div>
                                   {step.visual && (
@@ -828,9 +798,7 @@ const AlgebraGeometryTutor = () => {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6">
                           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                            <Lightbulb className="h-5 w-5 text-green-600" />
-                            Helpful Hints
-                          </h3>
+                            <Lightbulb className="h-5 w-5 text-green-600" />{t('algebraGeometryTutor.helpfulHints')}</h3>
                           <ul className="space-y-2">
                             {proofStrategy.hints.map((hint, idx) => (
                               <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -843,9 +811,7 @@ const AlgebraGeometryTutor = () => {
 
                         <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-amber-50 to-orange-50 p-6">
                           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                            <AlertCircle className="h-5 w-5 text-amber-600" />
-                            Common Mistakes
-                          </h3>
+                            <AlertCircle className="h-5 w-5 text-amber-600" />{t('algebraGeometryTutor.commonMistakes')}</h3>
                           <ul className="space-y-2">
                             {proofStrategy.commonMistakes.map((mistake, idx) => (
                               <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -858,16 +824,12 @@ const AlgebraGeometryTutor = () => {
                       </div>
 
                       <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                        <Download className="h-4 w-4" />
-                        Download Proof Guide
-                      </button>
+                        <Download className="h-4 w-4" />{t('algebraGeometryTutor.downloadProofGuide')}</button>
                     </div>
                   ) : (
                     <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
                       <Brain className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm font-medium text-gray-600">
-                        Enter a theorem or statement to generate proof strategies with step-by-step guidance
-                      </p>
+                      <p className="text-sm font-medium text-gray-600">{t('algebraGeometryTutor.enterATheoremOrStatementToGenerateProofStrategiesWith')}</p>
                     </div>
                   )}
                 </div>
@@ -881,34 +843,28 @@ const AlgebraGeometryTutor = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-1 space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Subject
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('algebraGeometryTutor.subject')}</label>
                     <select
                       value={subject}
                       onChange={(e) => setSubject(e.target.value as 'algebra' | 'geometry')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                     >
-                      <option value="algebra">Algebra</option>
-                      <option value="geometry">Geometry</option>
+                      <option value="algebra">{t('algebraGeometryTutor.algebra')}</option>
+                      <option value="geometry">{t('algebraGeometryTutor.geometry')}</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Topic
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('algebraGeometryTutor.topic')}</label>
                     <input
                       type="text"
                       value={topic}
                       onChange={(e) => setTopic(e.target.value)}
-                      placeholder="e.g., Quadratic Equations, Triangle Congruence"
+                      placeholder={t('algebraGeometryTutor.eGQuadraticEquationsTriangleCongruence')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Grade Level
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('algebraGeometryTutor.gradeLevel')}</label>
                     <select
                       value={gradeLevel}
                       onChange={(e) => setGradeLevel(e.target.value)}
@@ -916,7 +872,7 @@ const AlgebraGeometryTutor = () => {
                     >
                       {[6, 7, 8, 9, 10, 11, 12].map((grade) => (
                         <option key={grade} value={grade}>
-                          Grade {grade}
+                          {t('common.gradeOption', { grade })}
                         </option>
                       ))}
                     </select>
@@ -928,14 +884,10 @@ const AlgebraGeometryTutor = () => {
                   >
                     {isGenerating ? (
                       <>
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                        Generating...
-                      </>
+                        <RefreshCw className="h-4 w-4 animate-spin" />{t('algebraGeometryTutor.generating')}</>
                     ) : (
                       <>
-                        <Sparkles className="h-4 w-4" />
-                        Generate Practice Problems
-                      </>
+                        <Sparkles className="h-4 w-4" />{t('algebraGeometryTutor.generatePracticeProblems')}</>
                     )}
                   </button>
                 </div>
@@ -948,7 +900,7 @@ const AlgebraGeometryTutor = () => {
                           <Layers className="h-5 w-5 text-indigo-600" />
                           {scaffoldedPractice.topic}
                         </h3>
-                        <p className="text-sm text-gray-600">Scaffolded practice from foundation to advanced levels</p>
+                        <p className="text-sm text-gray-600">{t('algebraGeometryTutor.scaffoldedPracticeFromFoundationToAdvancedLevels')}</p>
                       </div>
 
                       {scaffoldedPractice.levels.map((level, levelIdx) => {
@@ -975,11 +927,11 @@ const AlgebraGeometryTutor = () => {
                               {level.problems.map((problem) => (
                                 <div key={problem.id} className="bg-white rounded-xl p-5 border border-gray-200">
                                   <div className="mb-3">
-                                    <p className="text-sm font-semibold text-gray-900 mb-2">Problem:</p>
+                                    <p className="text-sm font-semibold text-gray-900 mb-2">{t('algebraGeometryTutor.problem')}</p>
                                     <p className="text-gray-700">{problem.question}</p>
                                   </div>
                                   <div className="mb-3">
-                                    <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Hints:</p>
+                                    <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('algebraGeometryTutor.hints')}</p>
                                     <ul className="space-y-1">
                                       {problem.hints.map((hint, hintIdx) => (
                                         <li key={hintIdx} className="text-sm text-gray-600 flex items-start gap-2">
@@ -990,13 +942,11 @@ const AlgebraGeometryTutor = () => {
                                     </ul>
                                   </div>
                                   <details className="mt-3">
-                                    <summary className="text-sm font-semibold text-indigo-600 cursor-pointer hover:text-indigo-700">
-                                      Show Solution
-                                    </summary>
+                                    <summary className="text-sm font-semibold text-indigo-600 cursor-pointer hover:text-indigo-700">{t('algebraGeometryTutor.showSolution')}</summary>
                                     <div className="mt-2 p-3 bg-indigo-50 rounded-lg border border-indigo-200">
-                                      <p className="text-sm font-semibold text-gray-900 mb-1">Solution:</p>
+                                      <p className="text-sm font-semibold text-gray-900 mb-1">{t('algebraGeometryTutor.solution')}</p>
                                       <p className="text-sm text-gray-700 mb-2">{problem.solution}</p>
-                                      <p className="text-sm font-semibold text-gray-900 mb-1">Explanation:</p>
+                                      <p className="text-sm font-semibold text-gray-900 mb-1">{t('algebraGeometryTutor.explanation')}</p>
                                       <p className="text-sm text-gray-700">{problem.explanation}</p>
                                     </div>
                                   </details>
@@ -1008,16 +958,12 @@ const AlgebraGeometryTutor = () => {
                       })}
 
                       <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                        <Download className="h-4 w-4" />
-                        Download Practice Set
-                      </button>
+                        <Download className="h-4 w-4" />{t('algebraGeometryTutor.downloadPracticeSet')}</button>
                     </div>
                   ) : (
                     <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
                       <Layers className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm font-medium text-gray-600">
-                        Enter a topic to generate scaffolded practice problems from foundation to advanced levels
-                      </p>
+                      <p className="text-sm font-medium text-gray-600">{t('algebraGeometryTutor.enterATopicToGenerateScaffoldedPracticeProblemsFromFoun')}</p>
                     </div>
                   )}
                 </div>
@@ -1030,12 +976,8 @@ const AlgebraGeometryTutor = () => {
             <div className="space-y-6">
               <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <PlayCircle className="h-6 w-6 text-blue-600" />
-                  Interactive Learning Tools
-                </h3>
-                <p className="text-sm text-gray-600 mb-6">
-                  Access interactive tools for algebra and geometry visualization and manipulation.
-                </p>
+                  <PlayCircle className="h-6 w-6 text-blue-600" />{t('algebraGeometryTutor.interactiveLearningTools')}</h3>
+                <p className="text-sm text-gray-600 mb-6">{t('algebraGeometryTutor.accessInteractiveToolsForAlgebraAndGeometryVisualizatio')}</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {[
                     { name: 'Graphing Calculator', icon: LineChart, color: 'blue', description: 'Plot functions, analyze graphs' },
@@ -1051,9 +993,7 @@ const AlgebraGeometryTutor = () => {
                       </div>
                       <h4 className="text-base font-semibold text-gray-900 mb-2">{tool.name}</h4>
                       <p className="text-sm text-gray-600 mb-4">{tool.description}</p>
-                      <button className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">
-                        Launch Tool
-                      </button>
+                      <button className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">{t('algebraGeometryTutor.launchTool')}</button>
                     </div>
                   ))}
                 </div>
@@ -1066,12 +1006,8 @@ const AlgebraGeometryTutor = () => {
             <div className="space-y-6">
               <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <FileText className="h-6 w-6 text-indigo-600" />
-                  Assessment Tools
-                </h3>
-                <p className="text-sm text-gray-600 mb-6">
-                  Create comprehensive assessments aligned with learning objectives.
-                </p>
+                  <FileText className="h-6 w-6 text-indigo-600" />{t('algebraGeometryTutor.assessmentTools')}</h3>
+                <p className="text-sm text-gray-600 mb-6">{t('algebraGeometryTutor.createComprehensiveAssessmentsAlignedWithLearningObject')}</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {[
                     { type: 'Concept Check', icon: Target, description: 'Quick understanding assessment', color: 'blue' },
@@ -1085,9 +1021,7 @@ const AlgebraGeometryTutor = () => {
                       </div>
                       <h4 className="text-base font-semibold text-gray-900 mb-2">{assessment.type}</h4>
                       <p className="text-sm text-gray-600 mb-4">{assessment.description}</p>
-                      <button className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">
-                        Create Assessment
-                      </button>
+                      <button className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">{t('algebraGeometryTutor.createAssessment')}</button>
                     </div>
                   ))}
                 </div>
@@ -1100,9 +1034,7 @@ const AlgebraGeometryTutor = () => {
             <div className="space-y-6">
               <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-teal-50 to-cyan-50 p-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <BookOpen className="h-6 w-6 text-teal-600" />
-                  Learning Resources
-                </h3>
+                  <BookOpen className="h-6 w-6 text-teal-600" />{t('algebraGeometryTutor.learningResources')}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {[
                     { title: 'Video Tutorials', count: '245', icon: PlayCircle },
@@ -1118,9 +1050,7 @@ const AlgebraGeometryTutor = () => {
                         <span className="text-2xl font-bold text-gray-900">{resource.count}</span>
                       </div>
                       <h4 className="text-base font-semibold text-gray-900 mb-2">{resource.title}</h4>
-                      <button className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">
-                        Browse Resources
-                      </button>
+                      <button className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">{t('algebraGeometryTutor.browseResources')}</button>
                     </div>
                   ))}
                 </div>
@@ -1132,61 +1062,49 @@ const AlgebraGeometryTutor = () => {
 
       {/* Additional Features Section */}
       <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-6">Advanced AI-Powered Features</h2>
+        <h2 className="text-2xl font-semibold text-gray-900 mb-6">{t('algebraGeometryTutor.advancedAiPoweredFeatures')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 mb-4">
               <Eye className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Dynamic Visualizations</h3>
-            <p className="text-sm text-gray-600">
-              Interactive graphs, diagrams, and 3D models that respond to user input and parameter changes.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('algebraGeometryTutor.dynamicVisualizations')}</h3>
+            <p className="text-sm text-gray-600">{t('algebraGeometryTutor.interactiveGraphsDiagramsAnd3dModelsThatRespondToUser')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600 mb-4">
               <Brain className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Intelligent Proof Assistance</h3>
-            <p className="text-sm text-gray-600">
-              AI-powered hints and suggestions to guide students through complex proof constructions.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('algebraGeometryTutor.intelligentProofAssistance')}</h3>
+            <p className="text-sm text-gray-600">{t('algebraGeometryTutor.aiPoweredHintsAndSuggestionsToGuideStudentsThroughCompl')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-pink-50 to-rose-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-pink-100 text-pink-600 mb-4">
               <Layers className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Adaptive Scaffolding</h3>
-            <p className="text-sm text-gray-600">
-              Problems automatically adjust difficulty based on student performance and understanding.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('algebraGeometryTutor.adaptiveScaffolding')}</h3>
+            <p className="text-sm text-gray-600">{t('algebraGeometryTutor.problemsAutomaticallyAdjustDifficultyBasedOnStudentPerf')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 mb-4">
               <TrendingUp className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Real-Time Feedback</h3>
-            <p className="text-sm text-gray-600">
-              Instant feedback on solutions with detailed explanations and alternative approaches.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('algebraGeometryTutor.realTimeFeedback')}</h3>
+            <p className="text-sm text-gray-600">{t('algebraGeometryTutor.instantFeedbackOnSolutionsWithDetailedExplanationsAndAl')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-cyan-50 to-teal-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600 mb-4">
               <GraduationCap className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Standards Alignment</h3>
-            <p className="text-sm text-gray-600">
-              All content aligned with Common Core, state standards, and international curricula.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('algebraGeometryTutor.standardsAlignment')}</h3>
+            <p className="text-sm text-gray-600">{t('algebraGeometryTutor.allContentAlignedWithCommonCoreStateStandardsAndInterna')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-teal-50 to-green-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-100 text-teal-600 mb-4">
               <Users className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Personalized Learning</h3>
-            <p className="text-sm text-gray-600">
-              Customized learning paths based on individual student strengths and learning styles.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('algebraGeometryTutor.personalizedLearning')}</h3>
+            <p className="text-sm text-gray-600">{t('algebraGeometryTutor.customizedLearningPathsBasedOnIndividualStudentStrength')}</p>
           </div>
         </div>
       </div>

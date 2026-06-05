@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 const SuggestedPromptChip = ({ text, onClick }) => {
   return (
     <button

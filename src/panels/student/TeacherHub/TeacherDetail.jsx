@@ -1,7 +1,9 @@
+import { useTranslation } from 'react-i18next';
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const TeacherDetail = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
@@ -25,9 +27,7 @@ const TeacherDetail = () => {
           type="button"
           onClick={() => navigate('/student/teachers')}
           className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900"
-        >
-          Back
-        </button>
+        >{t('studentPanel.common.back')}</button>
       </div>
 
       <div className="px-6 py-6 max-w-3xl space-y-4">
@@ -39,19 +39,19 @@ const TeacherDetail = () => {
 
         <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4">
           <label className="block">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Send a message</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{t('studentPanel.teachers.detail.sendMessage')}</span>
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               className="mt-1 w-full min-h-[120px] rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 px-3 py-2 text-sm text-gray-900 dark:text-gray-100"
-              placeholder="Type your question…"
+              placeholder={t('studentPanel.teachers.detail.placeholder')}
             />
           </label>
           <button
             type="button"
             onClick={() => {
               setMessage('');
-              window.alert('Message sent (demo).');
+              window.alert(t('studentPanel.teachers.detail.successAlert'));
             }}
             disabled={!message.trim()}
             className="mt-3 px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700 disabled:opacity-50"

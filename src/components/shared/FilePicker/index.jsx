@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CrossIcon } from '../../../assets/icons';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
@@ -10,7 +11,7 @@ export const FilePicker = ({
   error = false,
   errorMsg = '',
   className = '',
-  placeholder = 'Choose a file',
+  placeholder,
   accept = '',
   required,
   icon,
@@ -18,6 +19,8 @@ export const FilePicker = ({
   url = '',
   view,
 }) => {
+  const { t } = useTranslation();
+  const resolvedPlaceholder = placeholder ?? t('shared.filePicker.defaultPlaceholder');
   const [fileName, setFileName] = useState('');
 
   useEffect(() => {
@@ -119,7 +122,7 @@ export const FilePicker = ({
           <span
             className={`${fileName ? 'text-black truncate' : 'text-input-placeholder'}`}
           >
-            {fileName || placeholder}
+            {fileName || resolvedPlaceholder}
           </span>
           <div className='flex items-center gap-2'>
             {fileName && (

@@ -55,11 +55,13 @@ import {
   mapArtAssessmentRubricResult,
 } from '../../utils/visualArtsAdapters'
 
+import { useTranslation } from 'react-i18next'
 const CHATBOT_SLUG = 'visual-arts-studio-assistant'
 
 type TabType = 'history' | 'technique' | 'portfolio' | 'projects' | 'literacy' | 'cultural' | 'assessment' | 'differentiation'
 
 const VisualArtsStudioAssistant = () => {
+  const { t } = useTranslation()
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const [activeTab, setActiveTab] = useState<TabType>('history')
@@ -145,7 +147,7 @@ const VisualArtsStudioAssistant = () => {
           setCulturalConnection(mapCulturalConnectionsResult(raw))
         } else if (tab === 'assessment') setAssessmentRubric(mapArtAssessmentRubricResult(raw))
       } catch {
-        toast.error('Could not restore saved output from History.')
+        toast.error(t('visualArtsStudioAssistant.couldNotRestoreSavedOutputFromHistory'))
       }
     },
   })
@@ -172,13 +174,13 @@ const VisualArtsStudioAssistant = () => {
       if (response == null) return
       setArtMovement(mapArtHistoryResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Art movement profile loaded')
+      toast.success(t('visualArtsStudioAssistant.artMovementProfileLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load art movement'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('visualArtsStudioAssistant.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -203,13 +205,13 @@ const VisualArtsStudioAssistant = () => {
       if (response == null) return
       setTechniqueGuide(mapArtTechniqueResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Technique guide loaded')
+      toast.success(t('visualArtsStudioAssistant.techniqueGuideLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load technique guide'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('visualArtsStudioAssistant.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -234,13 +236,13 @@ const VisualArtsStudioAssistant = () => {
       if (response == null) return
       setPortfolioAssessment(mapPortfolioDevelopmentResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Portfolio guidance generated')
+      toast.success(t('visualArtsStudioAssistant.portfolioGuidanceGenerated'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to generate portfolio assessment'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('visualArtsStudioAssistant.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -266,13 +268,13 @@ const VisualArtsStudioAssistant = () => {
       if (response == null) return
       setCreativeProject(mapCreativeProjectResult(response.result, mediaType))
       pinFromResponse(response.conversation_id)
-      toast.success('Creative project generated')
+      toast.success(t('visualArtsStudioAssistant.creativeProjectGenerated'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to generate project'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('visualArtsStudioAssistant.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -300,13 +302,13 @@ const VisualArtsStudioAssistant = () => {
       if (response == null) return
       setVisualAnalysis(mapVisualLiteracyResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Visual analysis generated')
+      toast.success(t('visualArtsStudioAssistant.visualAnalysisGenerated'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to analyze artwork'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('visualArtsStudioAssistant.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -334,13 +336,13 @@ const VisualArtsStudioAssistant = () => {
       if (response == null) return
       setCulturalConnection(mapCulturalConnectionsResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Cultural connections generated')
+      toast.success(t('visualArtsStudioAssistant.culturalConnectionsGenerated'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to find connections'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('visualArtsStudioAssistant.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -365,13 +367,13 @@ const VisualArtsStudioAssistant = () => {
       if (response == null) return
       setAssessmentRubric(mapArtAssessmentRubricResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Rubric generated')
+      toast.success(t('visualArtsStudioAssistant.rubricGenerated'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to generate rubric'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('visualArtsStudioAssistant.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -379,14 +381,14 @@ const VisualArtsStudioAssistant = () => {
   }
 
   const tabs = [
-    { id: 'history' as TabType, label: 'Art History Explorer', icon: BookOpen },
-    { id: 'technique' as TabType, label: 'Technique Guidance', icon: Brush },
-    { id: 'portfolio' as TabType, label: 'Portfolio Development', icon: Award },
-    { id: 'projects' as TabType, label: 'Creative Projects', icon: Lightbulb },
-    { id: 'literacy' as TabType, label: 'Visual Literacy', icon: Eye },
-    { id: 'cultural' as TabType, label: 'Cultural Connections', icon: Globe },
-    { id: 'assessment' as TabType, label: 'Assessment Builder', icon: FileCheck },
-    { id: 'differentiation' as TabType, label: 'Differentiation Tools', icon: Users },
+    { id: 'history' as TabType, label: t('visualArtsStudioAssistant.tabs.history'), icon: BookOpen },
+    { id: 'technique' as TabType, label: t('visualArtsStudioAssistant.tabs.technique'), icon: Brush },
+    { id: 'portfolio' as TabType, label: t('visualArtsStudioAssistant.tabs.portfolio'), icon: Award },
+    { id: 'projects' as TabType, label: t('visualArtsStudioAssistant.tabs.projects'), icon: Lightbulb },
+    { id: 'literacy' as TabType, label: t('visualArtsStudioAssistant.tabs.literacy'), icon: Eye },
+    { id: 'cultural' as TabType, label: t('visualArtsStudioAssistant.tabs.cultural'), icon: Globe },
+    { id: 'assessment' as TabType, label: t('visualArtsStudioAssistant.tabs.assessment'), icon: FileCheck },
+    { id: 'differentiation' as TabType, label: t('visualArtsStudioAssistant.tabs.differentiation'), icon: Users },
   ]
 
   return (
@@ -410,41 +412,35 @@ const VisualArtsStudioAssistant = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-3xl font-bold">Visual Arts Studio Assistant</h1>
+                  <h1 className="text-3xl font-bold">{t('visualArtsStudioAssistant.visualArtsStudioAssistant')}</h1>
                   <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
                     <Star className="h-3 w-3" /> 4.9★
                   </span>
                   <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" /> Premium
-                  </span>
+                    <Lock className="inline h-3 w-3 mr-1" />{t('visualArtsStudioAssistant.premium')}</span>
                   <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
-                    <Globe className="inline h-3 w-3 mr-1" /> Global Perspective
-                  </span>
+                    <Globe className="inline h-3 w-3 mr-1" />{t('visualArtsStudioAssistant.globalPerspective')}</span>
                 </div>
-                <p className="mt-2 text-pink-100">
-                  Transform your classroom into a dynamic studio. Blend artistic fundamentals with critical thinking, 
-                  cultural awareness, and inclusive differentiation. Support art history, visual literacy, studio techniques, 
-                  and portfolio development with a global perspective.
-                </p>
+                <p className="mt-2 text-pink-100">{t('visualArtsStudioAssistant.transformYourClassroomIntoADynamicStudioBlendArtisticFu')}</p>
               </div>
             </div>
             
             {/* Quick Settings */}
             <div className="flex flex-wrap gap-4 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Grade Level:</label>
+                <label className="text-sm font-medium">{t('visualArtsStudioAssistant.gradeLevel')}</label>
                 <select
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
                   className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
                 >
-                  <option value="K-5">K-5</option>
+                  <option value="K-5">{t('visualArtsStudioAssistant.k5')}</option>
                   <option value="6-8">6-8</option>
                   <option value="9-12">9-12</option>
                 </select>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Media:</label>
+                <label className="text-sm font-medium">{t('visualArtsStudioAssistant.media')}</label>
                 <select
                   value={mediaType}
                   onChange={(e) => setMediaType(e.target.value)}
@@ -456,7 +452,7 @@ const VisualArtsStudioAssistant = () => {
                 </select>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Cultural Region:</label>
+                <label className="text-sm font-medium">{t('visualArtsStudioAssistant.culturalRegion')}</label>
                 <select
                   value={culturalRegion}
                   onChange={(e) => setCulturalRegion(e.target.value)}
@@ -505,15 +501,10 @@ const VisualArtsStudioAssistant = () => {
                   <BookOpen className="h-6 w-6 text-purple-600" />
                   Art History Explorer (Global Perspective)
                 </h2>
-                <p className="text-gray-600 mb-4">
-                  Explore art movements from around the world. Discover cultural contexts, key artists, 
-                  and artistic connections across time and place.
-                </p>
+                <p className="text-gray-600 mb-4">{t('visualArtsStudioAssistant.exploreArtMovementsFromAroundTheWorldDiscoverCulturalCo')}</p>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select Art Movement
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('visualArtsStudioAssistant.selectArtMovement')}</label>
                     <select
                       value={selectedMovement}
                       onChange={(e) => setSelectedMovement(e.target.value)}
@@ -532,14 +523,10 @@ const VisualArtsStudioAssistant = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Exploring...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('visualArtsStudioAssistant.exploring')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Explore Movement
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('visualArtsStudioAssistant.exploreMovement')}</>
                       )}
                     </button>
                   </div>
@@ -567,18 +554,18 @@ const VisualArtsStudioAssistant = () => {
 
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Description</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.description')}</h4>
                       <p className="text-gray-700">{artMovement.description}</p>
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Cultural Context</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.culturalContext')}</h4>
                       <p className="text-gray-700">{artMovement.culturalContext}</p>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Key Artists</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.keyArtists')}</h4>
                         <div className="flex flex-wrap gap-2">
                           {artMovement.keyArtists.map((artist, i) => (
                             <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -588,7 +575,7 @@ const VisualArtsStudioAssistant = () => {
                         </div>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Characteristics</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.characteristics')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {artMovement.characteristics.map((char, i) => (
                             <li key={i}>{char}</li>
@@ -598,7 +585,7 @@ const VisualArtsStudioAssistant = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Notable Artworks</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.notableArtworks')}</h4>
                       <div className="space-y-2">
                         {artMovement.notableArtworks.map((artwork, i) => (
                           <div key={i} className="bg-gray-50 p-3 rounded-lg">
@@ -611,7 +598,7 @@ const VisualArtsStudioAssistant = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Related Movements</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.relatedMovements')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {artMovement.relatedMovements.map((movement, i) => (
                           <span key={i} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
@@ -631,25 +618,21 @@ const VisualArtsStudioAssistant = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Brush className="h-6 w-6 text-blue-600" />
-                  Studio Technique Guidance
-                </h2>
+                  <Brush className="h-6 w-6 text-blue-600" />{t('visualArtsStudioAssistant.studioTechniqueGuidance')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select Technique
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('visualArtsStudioAssistant.selectTechnique')}</label>
                     <select
                       value={selectedTechnique}
                       onChange={(e) => setSelectedTechnique(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     >
-                      <option>Watercolor Painting</option>
-                      <option>Charcoal Drawing</option>
-                      <option>Acrylic Painting</option>
-                      <option>Oil Painting</option>
-                      <option>Printmaking</option>
-                      <option>Ceramics</option>
+                      <option>{t('visualArtsStudioAssistant.watercolorPainting')}</option>
+                      <option>{t('visualArtsStudioAssistant.charcoalDrawing')}</option>
+                      <option>{t('visualArtsStudioAssistant.acrylicPainting')}</option>
+                      <option>{t('visualArtsStudioAssistant.oilPainting')}</option>
+                      <option>{t('visualArtsStudioAssistant.printmaking')}</option>
+                      <option>{t('visualArtsStudioAssistant.ceramics')}</option>
                     </select>
                   </div>
                   <div className="flex items-end">
@@ -660,14 +643,10 @@ const VisualArtsStudioAssistant = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Loading...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('visualArtsStudioAssistant.loading')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Get Guide
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('visualArtsStudioAssistant.getGuide')}</>
                       )}
                     </button>
                   </div>
@@ -689,7 +668,7 @@ const VisualArtsStudioAssistant = () => {
                   <div className="space-y-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Materials</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.materials')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {techniqueGuide.materials.map((material, i) => (
                             <li key={i}>{material}</li>
@@ -697,7 +676,7 @@ const VisualArtsStudioAssistant = () => {
                         </ul>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Tools</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.tools')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {techniqueGuide.tools.map((tool, i) => (
                             <li key={i}>{tool}</li>
@@ -707,7 +686,7 @@ const VisualArtsStudioAssistant = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-4">Step-by-Step Process</h4>
+                      <h4 className="font-semibold text-gray-900 mb-4">{t('visualArtsStudioAssistant.stepByStepProcess')}</h4>
                       <div className="space-y-4">
                         {techniqueGuide.steps.map((step, i) => (
                           <div key={i} className="border-l-4 border-blue-500 pl-4">
@@ -719,7 +698,7 @@ const VisualArtsStudioAssistant = () => {
                             </div>
                             <p className="text-gray-700 mb-2">{step.description}</p>
                             <div>
-                              <span className="text-sm font-medium text-gray-700">Tips:</span>
+                              <span className="text-sm font-medium text-gray-700">{t('visualArtsStudioAssistant.tips')}</span>
                               <ul className="list-disc list-inside ml-4 text-sm text-gray-600">
                                 {step.tips.map((tip, j) => (
                                   <li key={j}>{tip}</li>
@@ -728,7 +707,7 @@ const VisualArtsStudioAssistant = () => {
                             </div>
                             {step.safetyNotes && step.safetyNotes.length > 0 && (
                               <div className="mt-2">
-                                <span className="text-sm font-medium text-red-700">Safety Notes:</span>
+                                <span className="text-sm font-medium text-red-700">{t('visualArtsStudioAssistant.safetyNotes')}</span>
                                 <ul className="list-disc list-inside ml-4 text-sm text-red-600">
                                   {step.safetyNotes.map((note, j) => (
                                     <li key={j}>{note}</li>
@@ -743,7 +722,7 @@ const VisualArtsStudioAssistant = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Common Mistakes</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.commonMistakes')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {techniqueGuide.commonMistakes.map((mistake, i) => (
                             <li key={i}>{mistake}</li>
@@ -751,7 +730,7 @@ const VisualArtsStudioAssistant = () => {
                         </ul>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Variations</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.variations')}</h4>
                         <div className="flex flex-wrap gap-2">
                           {techniqueGuide.variations.map((variation, i) => (
                             <span key={i} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
@@ -763,7 +742,7 @@ const VisualArtsStudioAssistant = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Cultural Examples</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.culturalExamples')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {techniqueGuide.culturalExamples.map((example, i) => (
                           <li key={i}>{example}</li>
@@ -781,23 +760,19 @@ const VisualArtsStudioAssistant = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-6 border border-amber-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Award className="h-6 w-6 text-amber-600" />
-                  Portfolio Development Assistant
-                </h2>
+                  <Award className="h-6 w-6 text-amber-600" />{t('visualArtsStudioAssistant.portfolioDevelopmentAssistant')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Portfolio Type
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('visualArtsStudioAssistant.portfolioType')}</label>
                     <select
                       value={portfolioType}
                       onChange={(e) => setPortfolioType(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500"
                     >
-                      <option>General Portfolio</option>
-                      <option>AP Studio Art Portfolio</option>
-                      <option>College Application Portfolio</option>
-                      <option>Exhibition Portfolio</option>
+                      <option>{t('visualArtsStudioAssistant.generalPortfolio')}</option>
+                      <option>{t('visualArtsStudioAssistant.apStudioArtPortfolio')}</option>
+                      <option>{t('visualArtsStudioAssistant.collegeApplicationPortfolio')}</option>
+                      <option>{t('visualArtsStudioAssistant.exhibitionPortfolio')}</option>
                     </select>
                   </div>
                   <div className="flex items-end">
@@ -808,14 +783,10 @@ const VisualArtsStudioAssistant = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Generating...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('visualArtsStudioAssistant.generating')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Generate Assessment
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('visualArtsStudioAssistant.generateAssessment')}</>
                       )}
                     </button>
                   </div>
@@ -824,7 +795,7 @@ const VisualArtsStudioAssistant = () => {
 
               {portfolioAssessment && (
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">Portfolio Assessment Criteria</h3>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">{t('visualArtsStudioAssistant.portfolioAssessmentCriteria')}</h3>
                   
                   <div className="space-y-4">
                     {portfolioAssessment.criteria.map((criterion, idx) => (
@@ -837,7 +808,7 @@ const VisualArtsStudioAssistant = () => {
                         </div>
                         <p className="text-gray-700 mb-2">{criterion.description}</p>
                         <div>
-                          <span className="text-sm font-medium text-gray-700">Indicators:</span>
+                          <span className="text-sm font-medium text-gray-700">{t('visualArtsStudioAssistant.indicators')}</span>
                           <ul className="list-disc list-inside ml-4 text-sm text-gray-600">
                             {criterion.indicators.map((indicator, i) => (
                               <li key={i}>{indicator}</li>
@@ -850,7 +821,7 @@ const VisualArtsStudioAssistant = () => {
 
                   <div className="mt-6 grid md:grid-cols-2 gap-6">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Reflection Prompts</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.reflectionPrompts')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {portfolioAssessment.reflectionPrompts.map((prompt, i) => (
                           <li key={i}>{prompt}</li>
@@ -858,7 +829,7 @@ const VisualArtsStudioAssistant = () => {
                       </ul>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Documentation Tips</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.documentationTips')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {portfolioAssessment.documentationTips.map((tip, i) => (
                           <li key={i}>{tip}</li>
@@ -868,7 +839,7 @@ const VisualArtsStudioAssistant = () => {
                   </div>
 
                   <div className="mt-4">
-                    <h4 className="font-semibold text-gray-900 mb-2">Presentation Guidelines</h4>
+                    <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.presentationGuidelines')}</h4>
                     <ul className="list-disc list-inside space-y-1 text-gray-700">
                       {portfolioAssessment.presentationGuidelines.map((guideline, i) => (
                         <li key={i}>{guideline}</li>
@@ -885,38 +856,32 @@ const VisualArtsStudioAssistant = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Lightbulb className="h-6 w-6 text-green-600" />
-                  Creative Project Generator
-                </h2>
+                  <Lightbulb className="h-6 w-6 text-green-600" />{t('visualArtsStudioAssistant.creativeProjectGenerator')}</h2>
                 <div className="grid md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Project Theme
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('visualArtsStudioAssistant.projectTheme')}</label>
                     <select
                       value={projectTheme}
                       onChange={(e) => setProjectTheme(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
                     >
-                      <option>Identity Collage</option>
-                      <option>Nature Printmaking</option>
-                      <option>Cultural Portraits</option>
-                      <option>Environmental Art</option>
+                      <option>{t('visualArtsStudioAssistant.identityCollage')}</option>
+                      <option>{t('visualArtsStudioAssistant.naturePrintmaking')}</option>
+                      <option>{t('visualArtsStudioAssistant.culturalPortraits')}</option>
+                      <option>{t('visualArtsStudioAssistant.environmentalArt')}</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Duration
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('visualArtsStudioAssistant.duration')}</label>
                     <select
                       value={projectDuration}
                       onChange={(e) => setProjectDuration(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
                     >
-                      <option>2-3 weeks</option>
-                      <option>3-4 weeks</option>
-                      <option>4-6 weeks</option>
-                      <option>6-8 weeks</option>
+                      <option>{t('visualArtsStudioAssistant.k3Weeks')}</option>
+                      <option>{t('visualArtsStudioAssistant.k4Weeks')}</option>
+                      <option>{t('visualArtsStudioAssistant.k6Weeks')}</option>
+                      <option>{t('visualArtsStudioAssistant.k8Weeks')}</option>
                     </select>
                   </div>
                   <div className="flex items-end">
@@ -927,14 +892,10 @@ const VisualArtsStudioAssistant = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Generating...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('visualArtsStudioAssistant.generating')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Generate Project
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('visualArtsStudioAssistant.generateProject')}</>
                       )}
                     </button>
                   </div>
@@ -963,7 +924,7 @@ const VisualArtsStudioAssistant = () => {
 
                     <div className="space-y-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Learning Objectives</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.learningObjectives')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {creativeProject.learningObjectives.map((obj, i) => (
                             <li key={i}>{obj}</li>
@@ -973,7 +934,7 @@ const VisualArtsStudioAssistant = () => {
 
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Required Materials</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.requiredMaterials')}</h4>
                           <ul className="list-disc list-inside space-y-1 text-gray-700">
                             {creativeProject.materials.required.map((material, i) => (
                               <li key={i}>{material}</li>
@@ -984,7 +945,7 @@ const VisualArtsStudioAssistant = () => {
                           </div>
                         </div>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Optional Materials</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.optionalMaterials')}</h4>
                           <ul className="list-disc list-inside space-y-1 text-gray-700">
                             {creativeProject.materials.optional.map((material, i) => (
                               <li key={i}>{material}</li>
@@ -994,7 +955,7 @@ const VisualArtsStudioAssistant = () => {
                       </div>
 
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-4">Project Phases</h4>
+                        <h4 className="font-semibold text-gray-900 mb-4">{t('visualArtsStudioAssistant.projectPhases')}</h4>
                         <div className="space-y-4">
                           {creativeProject.steps.map((phase, idx) => (
                             <div key={idx} className="border-l-4 border-green-500 pl-4">
@@ -1016,7 +977,7 @@ const VisualArtsStudioAssistant = () => {
 
                       <div className="grid md:grid-cols-3 gap-4">
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Beginner</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.beginner')}</h4>
                           <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                             {creativeProject.differentiation.beginner.map((item, i) => (
                               <li key={i}>{item}</li>
@@ -1024,7 +985,7 @@ const VisualArtsStudioAssistant = () => {
                           </ul>
                         </div>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Intermediate</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.intermediate')}</h4>
                           <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                             {creativeProject.differentiation.intermediate.map((item, i) => (
                               <li key={i}>{item}</li>
@@ -1032,7 +993,7 @@ const VisualArtsStudioAssistant = () => {
                           </ul>
                         </div>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Advanced</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.advanced')}</h4>
                           <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                             {creativeProject.differentiation.advanced.map((item, i) => (
                               <li key={i}>{item}</li>
@@ -1043,7 +1004,7 @@ const VisualArtsStudioAssistant = () => {
 
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Cultural Connections</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.culturalConnections')}</h4>
                           <div className="flex flex-wrap gap-2">
                             {creativeProject.culturalConnections.map((connection, i) => (
                               <span key={i} className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
@@ -1053,7 +1014,7 @@ const VisualArtsStudioAssistant = () => {
                           </div>
                         </div>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Cross-Curricular</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.crossCurricular')}</h4>
                           <ul className="list-disc list-inside space-y-1 text-gray-700">
                             {creativeProject.crossCurricular.map((subject, i) => (
                               <li key={i}>{subject}</li>
@@ -1073,31 +1034,25 @@ const VisualArtsStudioAssistant = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 border border-indigo-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Eye className="h-6 w-6 text-indigo-600" />
-                  Visual Literacy Analyzer
-                </h2>
+                  <Eye className="h-6 w-6 text-indigo-600" />{t('visualArtsStudioAssistant.visualLiteracyAnalyzer')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Artwork Title
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('visualArtsStudioAssistant.artworkTitle')}</label>
                     <input
                       type="text"
                       value={artworkTitle}
                       onChange={(e) => setArtworkTitle(e.target.value)}
-                      placeholder="Enter artwork title..."
+                      placeholder={t('visualArtsStudioAssistant.enterArtworkTitle')}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Artist Name
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('visualArtsStudioAssistant.artistName')}</label>
                     <input
                       type="text"
                       value={artistName}
                       onChange={(e) => setArtistName(e.target.value)}
-                      placeholder="Enter artist name..."
+                      placeholder={t('visualArtsStudioAssistant.enterArtistName')}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
                     />
                   </div>
@@ -1109,14 +1064,10 @@ const VisualArtsStudioAssistant = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Analyzing...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('visualArtsStudioAssistant.analyzing')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Analyze Artwork
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('visualArtsStudioAssistant.analyzeArtwork')}</>
                   )}
                 </button>
               </div>
@@ -1130,7 +1081,7 @@ const VisualArtsStudioAssistant = () => {
 
                   <div className="space-y-6">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Formal Elements</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">{t('visualArtsStudioAssistant.formalElements')}</h4>
                       <div className="grid md:grid-cols-2 gap-4">
                         {Object.entries(visualAnalysis.formalElements).map(([element, descriptions]) => (
                           <div key={element} className="border border-gray-200 rounded-lg p-3">
@@ -1146,7 +1097,7 @@ const VisualArtsStudioAssistant = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Principles of Design</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">{t('visualArtsStudioAssistant.principlesOfDesign')}</h4>
                       <div className="grid md:grid-cols-2 gap-4">
                         {Object.entries(visualAnalysis.principlesOfDesign).map(([principle, description]) => (
                           <div key={principle} className="border border-gray-200 rounded-lg p-3">
@@ -1158,7 +1109,7 @@ const VisualArtsStudioAssistant = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Contextual Analysis</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">{t('visualArtsStudioAssistant.contextualAnalysis')}</h4>
                       <div className="grid md:grid-cols-2 gap-4">
                         {Object.entries(visualAnalysis.contextualAnalysis).map(([context, analysis]) => (
                           <div key={context} className="border border-gray-200 rounded-lg p-3">
@@ -1170,7 +1121,7 @@ const VisualArtsStudioAssistant = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Critical Thinking Questions</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">{t('visualArtsStudioAssistant.criticalThinkingQuestions')}</h4>
                       <div className="grid md:grid-cols-2 gap-4">
                         {Object.entries(visualAnalysis.criticalQuestions).map(([level, questions]) => (
                           <div key={level} className="border border-gray-200 rounded-lg p-3">
@@ -1195,35 +1146,29 @@ const VisualArtsStudioAssistant = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-pink-50 to-rose-50 rounded-xl p-6 border border-pink-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Globe className="h-6 w-6 text-pink-600" />
-                  Cultural Connections & Global Perspectives
-                </h2>
+                  <Globe className="h-6 w-6 text-pink-600" />{t('visualArtsStudioAssistant.culturalConnectionsGlobalPerspectives')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Artwork/Theme
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('visualArtsStudioAssistant.artworkTheme')}</label>
                     <input
                       type="text"
                       value={connectionArtwork}
                       onChange={(e) => setConnectionArtwork(e.target.value)}
-                      placeholder="Enter artwork or theme..."
+                      placeholder={t('visualArtsStudioAssistant.enterArtworkOrTheme')}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Theme Focus
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('visualArtsStudioAssistant.themeFocus')}</label>
                     <select
                       value={connectionTheme}
                       onChange={(e) => setConnectionTheme(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500"
                     >
-                      <option>Identity</option>
-                      <option>Heritage</option>
-                      <option>Social Justice</option>
-                      <option>Environment</option>
+                      <option>{t('visualArtsStudioAssistant.identity')}</option>
+                      <option>{t('visualArtsStudioAssistant.heritage')}</option>
+                      <option>{t('visualArtsStudioAssistant.socialJustice')}</option>
+                      <option>{t('visualArtsStudioAssistant.environment')}</option>
                     </select>
                   </div>
                 </div>
@@ -1234,14 +1179,10 @@ const VisualArtsStudioAssistant = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Finding Connections...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('visualArtsStudioAssistant.findingConnections')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Find Connections
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('visualArtsStudioAssistant.findConnections')}</>
                   )}
                 </button>
               </div>
@@ -1261,7 +1202,7 @@ const VisualArtsStudioAssistant = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Themes</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.themes')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {culturalConnection.themes.map((theme, i) => (
                           <span key={i} className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
@@ -1273,7 +1214,7 @@ const VisualArtsStudioAssistant = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Techniques</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.techniques')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {culturalConnection.techniques.map((tech, i) => (
                             <li key={i}>{tech}</li>
@@ -1281,7 +1222,7 @@ const VisualArtsStudioAssistant = () => {
                         </ul>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Contemporary Relevance</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.contemporaryRelevance')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {culturalConnection.contemporaryRelevance.map((rel, i) => (
                             <li key={i}>{rel}</li>
@@ -1291,7 +1232,7 @@ const VisualArtsStudioAssistant = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Cross-Cultural Influences</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.crossCulturalInfluences')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {culturalConnection.crossCulturalInfluences.map((influence, i) => (
                           <li key={i}>{influence}</li>
@@ -1300,7 +1241,7 @@ const VisualArtsStudioAssistant = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Teaching Strategies</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.teachingStrategies')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {culturalConnection.teachingStrategies.map((strategy, i) => (
                           <li key={i}>{strategy}</li>
@@ -1318,23 +1259,19 @@ const VisualArtsStudioAssistant = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-xl p-6 border border-teal-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <FileText className="h-6 w-6 text-teal-600" />
-                  Assessment & Rubrics Builder
-                </h2>
+                  <FileText className="h-6 w-6 text-teal-600" />{t('visualArtsStudioAssistant.assessmentRubricsBuilder')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Project Type
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('visualArtsStudioAssistant.projectType')}</label>
                     <select
                       value={assessmentProjectType}
                       onChange={(e) => setAssessmentProjectType(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500"
                     >
-                      <option>Mixed Media Project</option>
-                      <option>Portfolio Assessment</option>
-                      <option>Studio Project</option>
-                      <option>Research Project</option>
+                      <option>{t('visualArtsStudioAssistant.mixedMediaProject')}</option>
+                      <option>{t('visualArtsStudioAssistant.portfolioAssessment')}</option>
+                      <option>{t('visualArtsStudioAssistant.studioProject')}</option>
+                      <option>{t('visualArtsStudioAssistant.researchProject')}</option>
                     </select>
                   </div>
                   <div className="flex items-end">
@@ -1345,14 +1282,10 @@ const VisualArtsStudioAssistant = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Generating...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('visualArtsStudioAssistant.generating')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Generate Rubric
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('visualArtsStudioAssistant.generateRubric')}</>
                       )}
                     </button>
                   </div>
@@ -1364,7 +1297,7 @@ const VisualArtsStudioAssistant = () => {
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-2xl font-bold text-gray-900">{assessmentRubric.title}</h3>
                     <div className="text-right">
-                      <span className="text-sm text-gray-500">Total Points</span>
+                      <span className="text-sm text-gray-500">{t('visualArtsStudioAssistant.totalPoints')}</span>
                       <p className="text-2xl font-bold text-teal-600">{assessmentRubric.totalPoints}</p>
                     </div>
                   </div>
@@ -1373,12 +1306,12 @@ const VisualArtsStudioAssistant = () => {
                     <table className="w-full border-collapse">
                       <thead>
                         <tr className="bg-gray-50">
-                          <th className="border border-gray-200 px-4 py-3 text-left text-sm font-semibold text-gray-900">Category</th>
-                          <th className="border border-gray-200 px-4 py-3 text-center text-sm font-semibold text-gray-900">Excellent</th>
-                          <th className="border border-gray-200 px-4 py-3 text-center text-sm font-semibold text-gray-900">Proficient</th>
-                          <th className="border border-gray-200 px-4 py-3 text-center text-sm font-semibold text-gray-900">Developing</th>
-                          <th className="border border-gray-200 px-4 py-3 text-center text-sm font-semibold text-gray-900">Beginning</th>
-                          <th className="border border-gray-200 px-4 py-3 text-center text-sm font-semibold text-gray-900">Points</th>
+                          <th className="border border-gray-200 px-4 py-3 text-left text-sm font-semibold text-gray-900">{t('visualArtsStudioAssistant.category')}</th>
+                          <th className="border border-gray-200 px-4 py-3 text-center text-sm font-semibold text-gray-900">{t('visualArtsStudioAssistant.excellent')}</th>
+                          <th className="border border-gray-200 px-4 py-3 text-center text-sm font-semibold text-gray-900">{t('visualArtsStudioAssistant.proficient')}</th>
+                          <th className="border border-gray-200 px-4 py-3 text-center text-sm font-semibold text-gray-900">{t('visualArtsStudioAssistant.developing')}</th>
+                          <th className="border border-gray-200 px-4 py-3 text-center text-sm font-semibold text-gray-900">{t('visualArtsStudioAssistant.beginning')}</th>
+                          <th className="border border-gray-200 px-4 py-3 text-center text-sm font-semibold text-gray-900">{t('visualArtsStudioAssistant.points')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1397,7 +1330,7 @@ const VisualArtsStudioAssistant = () => {
                   </div>
 
                   <div className="mt-6">
-                    <h4 className="font-semibold text-gray-900 mb-2">Standards Alignment</h4>
+                    <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.standardsAlignment')}</h4>
                     <div className="flex flex-wrap gap-2">
                       {assessmentRubric.standards.map((standard, i) => (
                         <span key={i} className="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-xs font-medium">
@@ -1416,39 +1349,33 @@ const VisualArtsStudioAssistant = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-violet-50 to-purple-50 rounded-xl p-6 border border-violet-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Users className="h-6 w-6 text-violet-600" />
-                  Differentiation & Inclusion Tools
-                </h2>
-                <p className="text-gray-600">
-                  Tools and strategies to make visual arts education accessible and inclusive for all learners.
-                </p>
+                  <Users className="h-6 w-6 text-violet-600" />{t('visualArtsStudioAssistant.differentiationInclusionTools')}</h2>
+                <p className="text-gray-600">{t('visualArtsStudioAssistant.toolsAndStrategiesToMakeVisualArtsEducationAccessibleAn')}</p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Target className="h-5 w-5 text-violet-600" />
-                    Skill Level Differentiation
-                  </h3>
+                    <Target className="h-5 w-5 text-violet-600" />{t('visualArtsStudioAssistant.skillLevelDifferentiation')}</h3>
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Beginner Adaptations</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.beginnerAdaptations')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
-                        <li>Simplified techniques and materials</li>
-                        <li>Step-by-step guided instruction</li>
-                        <li>Pre-cut materials and templates</li>
-                        <li>Visual demonstrations and examples</li>
-                        <li>Extended time for completion</li>
+                        <li>{t('visualArtsStudioAssistant.simplifiedTechniquesAndMaterials')}</li>
+                        <li>{t('visualArtsStudioAssistant.stepByStepGuidedInstruction')}</li>
+                        <li>{t('visualArtsStudioAssistant.preCutMaterialsAndTemplates')}</li>
+                        <li>{t('visualArtsStudioAssistant.visualDemonstrationsAndExamples')}</li>
+                        <li>{t('visualArtsStudioAssistant.extendedTimeForCompletion')}</li>
                       </ul>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Advanced Extensions</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.advancedExtensions')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
-                        <li>Complex multi-media projects</li>
-                        <li>Independent research and exploration</li>
-                        <li>Curatorial and exhibition opportunities</li>
-                        <li>Mentorship and peer teaching</li>
-                        <li>Portfolio development focus</li>
+                        <li>{t('visualArtsStudioAssistant.complexMultiMediaProjects')}</li>
+                        <li>{t('visualArtsStudioAssistant.independentResearchAndExploration')}</li>
+                        <li>{t('visualArtsStudioAssistant.curatorialAndExhibitionOpportunities')}</li>
+                        <li>{t('visualArtsStudioAssistant.mentorshipAndPeerTeaching')}</li>
+                        <li>{t('visualArtsStudioAssistant.portfolioDevelopmentFocus')}</li>
                       </ul>
                     </div>
                   </div>
@@ -1456,28 +1383,26 @@ const VisualArtsStudioAssistant = () => {
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Heart className="h-5 w-5 text-violet-600" />
-                    Inclusive Strategies
-                  </h3>
+                    <Heart className="h-5 w-5 text-violet-600" />{t('visualArtsStudioAssistant.inclusiveStrategies')}</h3>
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Universal Design for Learning</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.universalDesignForLearning')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
-                        <li>Multiple means of representation</li>
-                        <li>Multiple means of engagement</li>
-                        <li>Multiple means of expression</li>
-                        <li>Flexible materials and tools</li>
-                        <li>Accessible workspace design</li>
+                        <li>{t('visualArtsStudioAssistant.multipleMeansOfRepresentation')}</li>
+                        <li>{t('visualArtsStudioAssistant.multipleMeansOfEngagement')}</li>
+                        <li>{t('visualArtsStudioAssistant.multipleMeansOfExpression')}</li>
+                        <li>{t('visualArtsStudioAssistant.flexibleMaterialsAndTools')}</li>
+                        <li>{t('visualArtsStudioAssistant.accessibleWorkspaceDesign')}</li>
                       </ul>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Cultural Responsiveness</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('visualArtsStudioAssistant.culturalResponsiveness')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
-                        <li>Diverse artist representation</li>
-                        <li>Cultural context integration</li>
-                        <li>Multilingual vocabulary support</li>
-                        <li>Respectful cultural exploration</li>
-                        <li>Student voice and choice</li>
+                        <li>{t('visualArtsStudioAssistant.diverseArtistRepresentation')}</li>
+                        <li>{t('visualArtsStudioAssistant.culturalContextIntegration')}</li>
+                        <li>{t('visualArtsStudioAssistant.multilingualVocabularySupport')}</li>
+                        <li>{t('visualArtsStudioAssistant.respectfulCulturalExploration')}</li>
+                        <li>{t('visualArtsStudioAssistant.studentVoiceAndChoice')}</li>
                       </ul>
                     </div>
                   </div>
@@ -1485,34 +1410,30 @@ const VisualArtsStudioAssistant = () => {
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Zap className="h-5 w-5 text-violet-600" />
-                    Alternative Assessments
-                  </h3>
+                    <Zap className="h-5 w-5 text-violet-600" />{t('visualArtsStudioAssistant.alternativeAssessments')}</h3>
                   <div className="space-y-4">
                     <ul className="list-disc list-inside space-y-1 text-gray-700">
-                      <li>Process portfolios over product</li>
-                      <li>Verbal and written reflections</li>
-                      <li>Peer and self-assessments</li>
-                      <li>Digital documentation options</li>
-                      <li>Adaptive rubrics and criteria</li>
-                      <li>Multiple demonstration methods</li>
+                      <li>{t('visualArtsStudioAssistant.processPortfoliosOverProduct')}</li>
+                      <li>{t('visualArtsStudioAssistant.verbalAndWrittenReflections')}</li>
+                      <li>{t('visualArtsStudioAssistant.peerAndSelfAssessments')}</li>
+                      <li>{t('visualArtsStudioAssistant.digitalDocumentationOptions')}</li>
+                      <li>{t('visualArtsStudioAssistant.adaptiveRubricsAndCriteria')}</li>
+                      <li>{t('visualArtsStudioAssistant.multipleDemonstrationMethods')}</li>
                     </ul>
                   </div>
                 </div>
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <GraduationCap className="h-5 w-5 text-violet-600" />
-                    Accommodation Ideas
-                  </h3>
+                    <GraduationCap className="h-5 w-5 text-violet-600" />{t('visualArtsStudioAssistant.accommodationIdeas')}</h3>
                   <div className="space-y-4">
                     <ul className="list-disc list-inside space-y-1 text-gray-700">
-                      <li>Adaptive tools and materials</li>
-                      <li>Modified workspace arrangements</li>
-                      <li>Assistive technology integration</li>
-                      <li>Visual and tactile supports</li>
-                      <li>Extended time and breaks</li>
-                      <li>Collaborative work options</li>
+                      <li>{t('visualArtsStudioAssistant.adaptiveToolsAndMaterials')}</li>
+                      <li>{t('visualArtsStudioAssistant.modifiedWorkspaceArrangements')}</li>
+                      <li>{t('visualArtsStudioAssistant.assistiveTechnologyIntegration')}</li>
+                      <li>{t('visualArtsStudioAssistant.visualAndTactileSupports')}</li>
+                      <li>{t('visualArtsStudioAssistant.extendedTimeAndBreaks')}</li>
+                      <li>{t('visualArtsStudioAssistant.collaborativeWorkOptions')}</li>
                     </ul>
                   </div>
                 </div>

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { FileText, Star } from 'lucide-react'
 import { TeacherToolsPageHeader, TableSkeletonRows } from '../components'
@@ -12,6 +13,7 @@ import { useSnackbar } from '../../../../hooks/useSnackbar'
 const tabs: Array<'all' | ToolType> = ['all', 'quiz', 'assignment', 'worksheet', 'exam']
 
 export default function TeacherToolsTemplates() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { toast } = useSnackbar()
   const [tab, setTab] = useState<(typeof tabs)[number]>('all')
@@ -23,9 +25,9 @@ export default function TeacherToolsTemplates() {
   return (
     <div className="space-y-6">
       <TeacherToolsPageHeader
-        title="Teacher Tools templates"
-        subtitle="Featured, most used, and institution templates — duplicate or start from a preset."
-        breadcrumbs={[{ label: 'Teacher Tools', to: '/teacher-tools' }, { label: 'Templates' }]}
+        title={t('teacherTools.templates.title')}
+        subtitle={t('teacherTools.templates.subtitle')}
+        breadcrumbs={[{ label: t('teacherTools.breadcrumbTeacherTools'), to: '/teacher-tools' }, { label: t('teacherTools.breadcrumbTemplates') }]}
       />
 
       <div className="flex flex-wrap gap-2">
@@ -63,11 +65,11 @@ export default function TeacherToolsTemplates() {
           <table className="min-w-full text-sm">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-3 py-3 text-left">Template</th>
-                <th className="px-3 py-3 text-left">Tool</th>
-                <th className="px-3 py-3 text-left">Subject</th>
-                <th className="px-3 py-3 text-left">Last used</th>
-                <th className="px-3 py-3 text-left">Actions</th>
+                <th className="px-3 py-3 text-left">{t('teacherTools.colTemplate')}</th>
+                <th className="px-3 py-3 text-left">{t('teacherTools.colTool')}</th>
+                <th className="px-3 py-3 text-left">{t('teacherTools.subject')}</th>
+                <th className="px-3 py-3 text-left">{t('teacherTools.colLastUsed')}</th>
+                <th className="px-3 py-3 text-left">{t('teacherTools.colActions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -89,7 +91,7 @@ export default function TeacherToolsTemplates() {
                       onClick={() => {
                         const path = `${templateCreatePath(t.toolType)}?${templatePrefillSearchParams(t)}`
                         navigate(path)
-                        toast.success('Opened create flow with template fields')
+                        toast.success(t('teacherTools.templates.toastOpenedTemplate'))
                       }}
                     >
                       Use
@@ -100,7 +102,7 @@ export default function TeacherToolsTemplates() {
                       onClick={() => {
                         const path = `${templateCreatePath(t.toolType)}?${templatePrefillSearchParams(t, { duplicate: true })}`
                         navigate(path)
-                        toast.success('Opened create flow (copy from template)')
+                        toast.success(t('teacherTools.templates.toastOpenedCopy'))
                       }}
                     >
                       Duplicate

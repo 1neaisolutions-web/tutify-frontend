@@ -20,6 +20,7 @@ import {
   X,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template'
@@ -39,6 +40,7 @@ interface GroupingScenario {
 }
 
 const AdvancedGroupingModule = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -282,19 +284,13 @@ Groups formed randomly:
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 6 of 6
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('advancedGroupingModule.module6Of6')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    25 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('advancedGroupingModule.k5Min')}</span>
                 </div>
-                <h1 className="text-3xl font-bold">Advanced Grouping Strategies</h1>
-                <p className="mt-2 text-green-100">
-                  Master sophisticated grouping techniques that maximize learning through strategic student placement and collaboration
-                </p>
+                <h1 className="text-3xl font-bold">{t('advancedGroupingModule.advancedGroupingStrategies')}</h1>
+                <p className="mt-2 text-green-100">{t('advancedGroupingModule.masterSophisticatedGroupingTechniquesThatMaximizeLearni')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm">
@@ -321,7 +317,7 @@ Groups formed randomly:
         {/* Lessons Sidebar */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('advancedGroupingModule.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isCompleted = completedLessons.includes(lesson.id)
@@ -365,7 +361,7 @@ Groups formed randomly:
             </div>
             <div className="mt-6 pt-6 border-t border-gray-200">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-gray-600">Progress</span>
+                <span className="text-xs text-gray-600">{t('advancedGroupingModule.progress')}</span>
                 <span className="text-xs font-semibold text-gray-900">{Math.round(moduleProgress)}%</span>
               </div>
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -388,7 +384,7 @@ Groups formed randomly:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Video className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Video Lesson</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('advancedGroupingModule.videoLesson')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                   </div>
@@ -412,7 +408,7 @@ Groups formed randomly:
                 </div>
 
                 <div className="bg-green-50 rounded-lg p-6 border border-green-200">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Key Points</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('advancedGroupingModule.keyPoints')}</h3>
                   <ul className="space-y-2">
                     {currentLessonData.content.keyPoints?.map((point: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -430,14 +426,10 @@ Groups formed randomly:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('advancedGroupingModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('advancedGroupingModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -450,7 +442,7 @@ Groups formed randomly:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <BookOpen className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Reading</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('advancedGroupingModule.reading')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                   </div>
@@ -472,7 +464,7 @@ Groups formed randomly:
 
                 {currentLessonData.content.keyTakeaways && (
                   <div className="bg-green-50 rounded-lg p-6 border border-green-200">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-3">Key Takeaways</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('advancedGroupingModule.keyTakeaways')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyTakeaways.map((takeaway: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -491,14 +483,10 @@ Groups formed randomly:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('advancedGroupingModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('advancedGroupingModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -511,7 +499,7 @@ Groups formed randomly:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Zap className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Interactive Tool</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('advancedGroupingModule.interactiveTool')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                     <p className="mt-2 text-gray-600">{currentLessonData.content.description}</p>
@@ -522,7 +510,7 @@ Groups formed randomly:
                 </div>
 
                 <div className="bg-green-50 rounded-lg p-6 border border-green-200 mb-6">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Planning Steps</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('advancedGroupingModule.planningSteps')}</h3>
                   <ol className="space-y-2">
                     {currentLessonData.content.steps?.map((step: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -537,22 +525,18 @@ Groups formed randomly:
 
                 <div className="bg-white rounded-lg p-6 border border-gray-200 space-y-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Scenario Name *
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">{t('advancedGroupingModule.scenarioName')}</label>
                     <input
                       type="text"
                       value={currentScenario.scenario}
                       onChange={(e) => setCurrentScenario({ ...currentScenario, scenario: e.target.value })}
-                      placeholder="e.g., Collaborative Research Project"
+                      placeholder={t('advancedGroupingModule.eGCollaborativeResearchProject')}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Learning Goal *
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">{t('advancedGroupingModule.learningGoal')}</label>
                     <textarea
                       value={currentScenario.learningGoal}
                       onChange={(e) => setCurrentScenario({ ...currentScenario, learningGoal: e.target.value })}
@@ -563,26 +547,22 @@ Groups formed randomly:
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Grouping Type
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">{t('advancedGroupingModule.groupingType')}</label>
                     <select
                       value={currentScenario.groupingType}
                       onChange={(e) => setCurrentScenario({ ...currentScenario, groupingType: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     >
-                      <option>Heterogeneous</option>
-                      <option>Homogeneous</option>
-                      <option>Interest-Based</option>
-                      <option>Learning Style</option>
-                      <option>Random</option>
+                      <option>{t('advancedGroupingModule.heterogeneous')}</option>
+                      <option>{t('advancedGroupingModule.homogeneous')}</option>
+                      <option>{t('advancedGroupingModule.interestBased')}</option>
+                      <option>{t('advancedGroupingModule.learningStyle')}</option>
+                      <option>{t('advancedGroupingModule.random')}</option>
                     </select>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Rationale
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">{t('advancedGroupingModule.rationale2')}</label>
                     <textarea
                       value={currentScenario.rationale}
                       onChange={(e) => setCurrentScenario({ ...currentScenario, rationale: e.target.value })}
@@ -593,24 +573,20 @@ Groups formed randomly:
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Students in Group
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">{t('advancedGroupingModule.studentsInGroup')}</label>
                     <div className="flex gap-2 mb-2">
                       <input
                         type="text"
                         value={currentStudent}
                         onChange={(e) => setCurrentStudent(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleAddStudent()}
-                        placeholder="Enter student name"
+                        placeholder={t('advancedGroupingModule.enterStudentName')}
                         className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                       />
                       <button
                         onClick={handleAddStudent}
                         className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-                      >
-                        Add
-                      </button>
+                      >{t('advancedGroupingModule.add')}</button>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {currentScenario.students.map((student, idx) => (
@@ -634,9 +610,7 @@ Groups formed randomly:
                     onClick={handleAddScenario}
                     className="w-full px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
                   >
-                    <Plus className="h-5 w-5" />
-                    Add Grouping Scenario
-                  </button>
+                    <Plus className="h-5 w-5" />{t('advancedGroupingModule.addGroupingScenario')}</button>
 
                   {scenarios.length > 0 && (
                     <div className="pt-6 border-t border-gray-200">
@@ -656,12 +630,12 @@ Groups formed randomly:
                                 <X className="h-4 w-4" />
                               </button>
                             </div>
-                            <p className="text-sm text-gray-700 mb-2"><strong>Goal:</strong> {scenario.learningGoal}</p>
+                            <p className="text-sm text-gray-700 mb-2"><strong>{t('advancedGroupingModule.goal')}</strong> {scenario.learningGoal}</p>
                             {scenario.rationale && (
-                              <p className="text-sm text-gray-600 mb-2"><strong>Rationale:</strong> {scenario.rationale}</p>
+                              <p className="text-sm text-gray-600 mb-2"><strong>{t('advancedGroupingModule.rationale')}</strong> {scenario.rationale}</p>
                             )}
                             <div className="mt-2">
-                              <p className="text-xs font-semibold text-gray-700 mb-1">Students:</p>
+                              <p className="text-xs font-semibold text-gray-700 mb-1">{t('advancedGroupingModule.students')}</p>
                               <div className="flex flex-wrap gap-1">
                                 {scenario.students.map((student, sIdx) => (
                                   <span key={sIdx} className="px-2 py-1 bg-green-50 text-green-700 rounded text-xs">
@@ -679,9 +653,7 @@ Groups formed randomly:
                         }}
                         className="mt-4 w-full px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
                       >
-                        <Users className="h-5 w-5" />
-                        Save Grouping Plan
-                      </button>
+                        <Users className="h-5 w-5" />{t('advancedGroupingModule.saveGroupingPlan')}</button>
                     </div>
                   )}
                 </div>
@@ -693,14 +665,10 @@ Groups formed randomly:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('advancedGroupingModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('advancedGroupingModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -713,7 +681,7 @@ Groups formed randomly:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <FileText className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Template</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('advancedGroupingModule.template')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                     <p className="mt-2 text-gray-600">{currentLessonData.content.description}</p>
@@ -724,7 +692,7 @@ Groups formed randomly:
                 </div>
 
                 <div className="bg-white rounded-lg p-6 border border-gray-200">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-4">Template Sections</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('advancedGroupingModule.templateSections')}</h3>
                   <div className="space-y-3">
                     {currentLessonData.content.sections?.map((section: string, idx: number) => (
                       <div key={idx} className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
@@ -740,18 +708,18 @@ Groups formed randomly:
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <button className="p-4 bg-green-50 border-2 border-green-200 rounded-lg hover:bg-green-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-green-600" />
-                    <span className="text-sm font-semibold text-gray-900">Elementary Template</span>
-                    <span className="text-xs text-gray-600">Grades K-5</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('advancedGroupingModule.elementaryTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('advancedGroupingModule.gradesK5')}</span>
                   </button>
                   <button className="p-4 bg-green-50 border-2 border-green-200 rounded-lg hover:bg-green-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-green-600" />
-                    <span className="text-sm font-semibold text-gray-900">Middle School Template</span>
-                    <span className="text-xs text-gray-600">Grades 6-8</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('advancedGroupingModule.middleSchoolTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('advancedGroupingModule.grades68')}</span>
                   </button>
                   <button className="p-4 bg-green-50 border-2 border-green-200 rounded-lg hover:bg-green-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-green-600" />
-                    <span className="text-sm font-semibold text-gray-900">High School Template</span>
-                    <span className="text-xs text-gray-600">Grades 9-12</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('advancedGroupingModule.highSchoolTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('advancedGroupingModule.grades912')}</span>
                   </button>
                 </div>
 
@@ -762,14 +730,10 @@ Groups formed randomly:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('advancedGroupingModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('advancedGroupingModule.markAsComplete')}</>
                   )}
                 </button>
               </div>

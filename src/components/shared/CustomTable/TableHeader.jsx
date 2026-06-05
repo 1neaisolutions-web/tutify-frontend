@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
@@ -38,6 +39,8 @@ const TableHeader = ({
   noCheckbox,
   centerHeaderColumnName,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <TableHead
       sx={{
@@ -101,7 +104,7 @@ const TableHeader = ({
                     whiteSpace: 'nowrap',
                   }}
                 >
-                  {selectedIds?.length} Selected
+                  {t('table.selected', { count: selectedIds?.length })}
                 </Box>
               </Box>
             ) : (

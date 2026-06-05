@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { Navigate } from 'react-router-dom';
+import React, { useMemo, useRef } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { sideMenuRoutes } from './sideMenuConfig';
 
@@ -70,11 +70,40 @@ export const RoleBasedRedirect = () => {
 };
 
 export const UnknownRouteRedirect = () => {
+  const location = useLocation();
   const user = useSelector((state) => state?.auth?.user);
   const isRehydrated = useSelector((state) => state?._persist?.rehydrated);
+  const lastRedirectRef = useRef({ pathname: null, destination: null });
+
+  const normalizePath = (p) => {
+    if (typeof p !== 'string') return ''
+    // Strip trailing slashes so "/dashboard" and "/dashboard/" are treated the same.
+    const trimmed = p.replace(/\/+$/, '')
+    return trimmed.length ? trimmed : '/'
+  };
+
   if (isRehydrated === false || (isRehydrated === undefined && user === null)) {
     return null;
   }
-  return <Navigate to={user ? '/dashboard' : '/login'} replace />;
+
+  if (!user) {
+    return <Navigate to='/login' replace />;
+  }
+
+  const destination = getFirstRouteByRole(user?.role || '');
+  // Avoid redirect loops when the target path is not registered for this role
+  if (normalizePath(location.pathname) === normalizePath(destination)) {
+    return null;
+  }
+
+  // Hard guard: if we already attempted to redirect from the same pathname
+  // to the same destination, don't keep re-triggering Navigate.
+  const alreadyAttempted =
+    normalizePath(lastRedirectRef.current.pathname) === normalizePath(location.pathname) &&
+    normalizePath(lastRedirectRef.current.destination) === normalizePath(destination);
+  if (alreadyAttempted) return null;
+
+  lastRedirectRef.current = { pathname: normalizePath(location.pathname), destination: normalizePath(destination) };
+  return <Navigate to={destination} replace />;
 };
 

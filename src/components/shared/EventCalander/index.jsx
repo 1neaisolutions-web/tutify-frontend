@@ -1,10 +1,10 @@
 import { useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 
-// Local Imports
 import './index.css';
 import { getStatusStyles } from '../../../utils/utils';
 
@@ -22,9 +22,11 @@ const CalendarEvent = ({
   onEventClick,
   calendarRef,
 }) => {
-
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   initialView = searchParams.get('view') === 'month' ? 'dayGridMonth' : searchParams.get('view') === 'week' ? 'timeGridWeek' : searchParams.get('view') === 'day' ? 'timeGridDay' : initialView;
+
+  const allDayText = t('shared.calendar.allDay');
 
   return (
     <div className='bg-white rounded-xl h-full'>
@@ -56,10 +58,10 @@ const CalendarEvent = ({
               dayMaxEventRows: 3,
             },
             timeGridWeek: {
-              allDayText: 'All Day',
+              allDayText,
             },
             timeGridDay: {
-              allDayText: 'All Day',
+              allDayText,
             },
           }}
           customButtons={{}}

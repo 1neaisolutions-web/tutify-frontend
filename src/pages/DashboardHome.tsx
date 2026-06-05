@@ -1,7 +1,9 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { formatDate } from '../lib/i18n/format'
 import {
   Flame,
   Layers,
@@ -24,13 +26,14 @@ dayjs.extend(relativeTime)
 
 // ── Tool icon & colour map ────────────────────────────────────────────────────
 const TOOL_META = {
-  quiz: { label: 'Quiz', colour: 'blue' },
-  assignment: { label: 'Assignment', colour: 'green' },
-  worksheet: { label: 'Worksheet', colour: 'orange' },
-  exam: { label: 'Exam', colour: 'purple' },
+  quiz: { i18nKey: 'dashboard.tools.quiz', colour: 'blue' },
+  assignment: { i18nKey: 'dashboard.tools.assignment', colour: 'green' },
+  worksheet: { i18nKey: 'dashboard.tools.worksheet', colour: 'orange' },
+  exam: { i18nKey: 'dashboard.tools.exam', colour: 'purple' },
 } as const
 
 function ToolBadge({ tool }: { tool: DashboardItem['tool'] }) {
+  const { t } = useTranslation()
   const meta = TOOL_META[tool]
   const colours: Record<string, string> = {
     blue: 'bg-blue-100 text-blue-700',
@@ -40,25 +43,33 @@ function ToolBadge({ tool }: { tool: DashboardItem['tool'] }) {
   }
   return (
     <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${colours[meta.colour]}`}>
-      {meta.label}
+      {t(meta.i18nKey)}
     </span>
   )
 }
 
 function StatusPill({ status }: { status: string }) {
+  const { t } = useTranslation()
   const map: Record<string, string> = {
     draft: 'bg-gray-100 text-gray-600',
     published: 'bg-green-100 text-green-700',
     scheduled: 'bg-blue-100 text-blue-700',
     archived: 'bg-gray-100 text-gray-400',
   }
-  return <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${map[status] ?? map.draft}`}>{status}</span>
+  const statusKey = `status.${status}` as const
+  const label = t(statusKey, { defaultValue: status })
+  return <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${map[status] ?? map.draft}`}>{label}</span>
 }
 
 function DaysUntil({ dueAt }: { dueAt: string }) {
+  const { t } = useTranslation()
   const d = dayjs(dueAt).diff(dayjs(), 'day')
   const colour = d <= 1 ? 'text-red-600' : d <= 3 ? 'text-amber-600' : 'text-gray-500'
-  return <span className={`text-xs font-medium ${colour}`}>{d === 0 ? 'today' : `${d}d`}</span>
+  return (
+    <span className={`text-xs font-medium ${colour}`}>
+      {d === 0 ? t('dashboard.dueToday') : t('dashboard.dueInDays', { count: d })}
+    </span>
+  )
 }
 
 function KPISkeleton() {
@@ -75,28 +86,45 @@ function KPISkeleton() {
 }
 
 const featureWorkflows = [
-  { path: '/templates', icon: FileText, title: 'Templates Library', color: 'bg-blue-500' },
-  { path: '/chatbots', icon: MessageSquare, title: 'Specialized Chatbots', color: 'bg-green-500' },
-  { path: '/youtube-quiz', icon: Youtube, title: 'YouTube Quiz Generator', color: 'bg-red-500' },
-  { path: '/pixgen', icon: Image, title: 'PixGen (AI Media Studio)', color: 'bg-purple-500' },
-  { path: '/learning-hub', icon: BookOpen, title: 'Professional Learning Hub', color: 'bg-orange-500' },
-  { path: '/history', icon: History, title: 'History & Personalisation', color: 'bg-indigo-500' },
+  { path: '/templates', icon: FileText, i18nKey: 'nav.templates', color: 'bg-blue-500' },
+  { path: '/chatbots', icon: MessageSquare, i18nKey: 'nav.chatbots', color: 'bg-green-500' },
+  { path: '/youtube-quiz', icon: Youtube, i18nKey: 'nav.youtubeQuiz', color: 'bg-red-500' },
+  { path: '/pixgen', icon: Image, i18nKey: 'nav.pixgen', color: 'bg-purple-500' },
+  { path: '/learning-hub', icon: BookOpen, i18nKey: 'nav.learningHub', color: 'bg-orange-500' },
+  { path: '/history', icon: History, i18nKey: 'nav.history', color: 'bg-indigo-500' },
 ]
 
 const DashboardHome = () => {
-  const { greeting, stats, statsLoading, recentActivity, upcomingDeadlines, draftItems, streak, thisWeekCount } =
+  const { t } = useTranslation()
+  const { user, stats, statsLoading, recentActivity, upcomingDeadlines, draftItems, streak, thisWeekCount } =
     useDashboardData()
+
+  const greeting = useMemo(() => {
+    const hour = dayjs().hour()
+    const key =
+      hour < 12
+        ? 'dashboard.greetingMorning'
+        : hour < 17
+          ? 'dashboard.greetingAfternoon'
+          : 'dashboard.greetingEvening'
+    const firstName =
+      user?.first_name ||
+      user?.firstName ||
+      (user?.full_name ?? '').split(' ')[0] ||
+      t('dashboard.defaultName')
+    return t(key, { name: firstName })
+  }, [user, t])
 
   const heroCTA = useMemo(() => {
     if (upcomingDeadlines.length > 0) {
       const first = upcomingDeadlines[0]
-      return { label: `Due soon: ${first.title}`, path: first.path }
+      return { label: t('dashboard.dueSoon', { title: first.title }), path: first.path }
     }
     if (draftItems.length > 0) {
-      return { label: `Continue: ${draftItems[0].title}`, path: draftItems[0].path }
+      return { label: t('dashboard.continueDraft', { title: draftItems[0].title }), path: draftItems[0].path }
     }
-    return { label: 'Create your first quiz', path: '/teacher-tools/quiz/create' }
-  }, [upcomingDeadlines, draftItems])
+    return { label: t('dashboard.createFirstQuiz'), path: '/teacher-tools/quiz/create' }
+  }, [upcomingDeadlines, draftItems, t])
 
   return (
     <div className="space-y-8">
@@ -105,12 +133,14 @@ const DashboardHome = () => {
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))]" />
         <div className="relative z-10 flex items-start justify-between">
           <div className="space-y-3 max-w-xl">
-            <p className="text-white/60 text-sm">{dayjs().format('dddd, MMMM D')}</p>
+            <p className="text-white/60 text-sm">
+              {formatDate(new Date(), { weekday: 'long', month: 'long', day: 'numeric' })}
+            </p>
             <h1 className="text-3xl font-bold">{greeting}</h1>
             <p className="text-white/80">
               {(stats?.summary.total_active ?? 0) > 0
-                ? `You have ${stats?.summary.total_active} active content items across all tools.`
-                : 'Your workspace is ready. Build your first piece of content to get started.'}
+                ? t('dashboard.activeContent', { count: stats?.summary.total_active ?? 0 })
+                : t('dashboard.workspaceReady')}
             </p>
             <div className="flex flex-wrap gap-3 pt-1">
               <Link
@@ -123,7 +153,7 @@ const DashboardHome = () => {
                 to="/teacher-tools"
                 className="inline-flex items-center gap-2 rounded-lg border border-white/40 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10"
               >
-                Teacher Tools overview
+                {t('dashboard.teacherToolsOverview')}
               </Link>
             </div>
           </div>
@@ -132,7 +162,7 @@ const DashboardHome = () => {
               <Flame className="h-6 w-6 text-orange-300" />
               <div>
                 <p className="text-2xl font-bold leading-none">{streak}</p>
-                <p className="text-xs text-white/70">day streak</p>
+                <p className="text-xs text-white/70">{t('dashboard.dayStreak')}</p>
               </div>
             </div>
           )}
@@ -145,15 +175,15 @@ const DashboardHome = () => {
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { label: 'Total Content', value: stats?.summary.total_active ?? 0, icon: Layers, color: 'text-blue-600 bg-blue-100' },
-            { label: 'This Week', value: thisWeekCount, icon: TrendingUp, color: 'text-green-600 bg-green-100' },
-            { label: 'Draft Backlog', value: stats?.summary.total_draft ?? 0, icon: FileEdit, color: 'text-amber-600 bg-amber-100' },
-            { label: 'Published', value: stats?.summary.total_published ?? 0, icon: CheckCircle, color: 'text-emerald-600 bg-emerald-100' },
-          ].map(({ label, value, icon: Icon, color }) => (
-            <div key={label} className="card">
+            { labelKey: 'dashboard.totalContent', value: stats?.summary.total_active ?? 0, icon: Layers, color: 'text-blue-600 bg-blue-100' },
+            { labelKey: 'dashboard.thisWeek', value: thisWeekCount, icon: TrendingUp, color: 'text-green-600 bg-green-100' },
+            { labelKey: 'dashboard.draftBacklog', value: stats?.summary.total_draft ?? 0, icon: FileEdit, color: 'text-amber-600 bg-amber-100' },
+            { labelKey: 'dashboard.published', value: stats?.summary.total_published ?? 0, icon: CheckCircle, color: 'text-emerald-600 bg-emerald-100' },
+          ].map(({ labelKey, value, icon: Icon, color }) => (
+            <div key={labelKey} className="card">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">{label}</p>
+                  <p className="text-sm text-gray-600">{t(labelKey)}</p>
                   <p className="text-3xl font-bold text-gray-900 mt-1">{value}</p>
                 </div>
                 <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${color}`}>
@@ -171,14 +201,14 @@ const DashboardHome = () => {
           <div className="card">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-semibold text-gray-900 flex items-center gap-2">
-                <AlertCircle className="h-4 w-4 text-amber-500" /> Upcoming deadlines
+                <AlertCircle className="h-4 w-4 text-amber-500" /> {t('dashboard.upcomingDeadlines')}
               </h2>
               <Link to="/teacher-tools" className="text-sm font-semibold text-primary-600 hover:text-primary-500">
-                View all
+                {t('dashboard.viewAll')}
               </Link>
             </div>
             {upcomingDeadlines.length === 0 ? (
-              <p className="text-sm text-gray-500 py-4 text-center">No deadlines in the next 7 days.</p>
+              <p className="text-sm text-gray-500 py-4 text-center">{t('dashboard.noDeadlines')}</p>
             ) : (
               <ul className="space-y-2">
                 {upcomingDeadlines.map((item) => (
@@ -201,13 +231,13 @@ const DashboardHome = () => {
 
           <div className="card">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-semibold text-gray-900">Recent activity</h2>
+              <h2 className="font-semibold text-gray-900">{t('dashboard.recentActivity')}</h2>
             </div>
             {recentActivity.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-sm text-gray-500">No activity yet.</p>
+                <p className="text-sm text-gray-500">{t('dashboard.noActivity')}</p>
                 <Link to="/teacher-tools/quiz/create" className="mt-3 inline-block text-sm font-semibold text-primary-600 hover:text-primary-500">
-                  Create your first quiz →
+                  {t('dashboard.createFirstQuizCta')}
                 </Link>
               </div>
             ) : (
@@ -238,14 +268,14 @@ const DashboardHome = () => {
           <div className="card">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-semibold text-gray-900 flex items-center gap-2">
-                <FileEdit className="h-4 w-4 text-gray-500" /> Drafts to finish
+                <FileEdit className="h-4 w-4 text-gray-500" /> {t('dashboard.draftsToFinish')}
               </h2>
               <Link to="/teacher-tools" className="text-sm font-semibold text-primary-600 hover:text-primary-500">
-                All
+                {t('dashboard.all')}
               </Link>
             </div>
             {draftItems.length === 0 ? (
-              <p className="text-sm text-gray-500 py-4 text-center">No drafts — you're all caught up!</p>
+              <p className="text-sm text-gray-500 py-4 text-center">{t('dashboard.noDrafts')}</p>
             ) : (
               <ul className="space-y-2">
                 {draftItems.map((item) => (
@@ -267,15 +297,15 @@ const DashboardHome = () => {
 
       {/* ── Core workflows (navigation, no data needed) ───────────────────── */}
       <section>
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Core workflows</h2>
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('dashboard.coreWorkflows')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featureWorkflows.map(({ path, icon: Icon, title, color }) => (
+          {featureWorkflows.map(({ path, icon: Icon, i18nKey, color }) => (
             <Link key={path} to={path} className="card hover:shadow-md transition-shadow group">
               <div className="flex items-center gap-4">
                 <div className={`${color} w-11 h-11 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform`}>
                   <Icon className="w-5 h-5 text-white" />
                 </div>
-                <p className="font-semibold text-gray-900 group-hover:text-primary-600 transition-colors">{title}</p>
+                <p className="font-semibold text-gray-900 group-hover:text-primary-600 transition-colors">{t(i18nKey)}</p>
               </div>
             </Link>
           ))}

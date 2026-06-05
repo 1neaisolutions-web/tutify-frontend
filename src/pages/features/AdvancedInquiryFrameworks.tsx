@@ -21,6 +21,7 @@ import {
   Lightbulb,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template'
@@ -32,6 +33,7 @@ interface LessonContent {
 }
 
 const AdvancedInquiryFrameworks = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -147,19 +149,13 @@ PBL is a teaching method where students learn by actively engaging in real-world
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 8
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('advancedInquiryFrameworks.module8')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    80 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('advancedInquiryFrameworks.k0Min')}</span>
                 </div>
-                <h1 className="text-3xl font-bold">Advanced Inquiry Frameworks</h1>
-                <p className="mt-2 text-teal-100">
-                  Master PBL, design thinking, and student-led research projects
-                </p>
+                <h1 className="text-3xl font-bold">{t('advancedInquiryFrameworks.advancedInquiryFrameworks')}</h1>
+                <p className="mt-2 text-teal-100">{t('advancedInquiryFrameworks.masterPblDesignThinkingAndStudentLedResearchProjects')}</p>
               </div>
             </div>
             <div className="h-2 bg-white/20 rounded-full overflow-hidden">
@@ -172,7 +168,7 @@ PBL is a teaching method where students learn by actively engaging in real-world
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('advancedInquiryFrameworks.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isActive = idx === currentLesson
@@ -230,7 +226,7 @@ PBL is a teaching method where students learn by actively engaging in real-world
                   </div>
                 </div>
                 <div className="bg-teal-50 rounded-xl p-6 border border-teal-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Points</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('advancedInquiryFrameworks.keyPoints')}</h3>
                   <ul className="space-y-2">
                     {currentLessonData.content.keyPoints.map((point: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -279,9 +275,7 @@ PBL is a teaching method where students learn by actively engaging in real-world
                   </ul>
                 </div>
                 <button className="w-full px-6 py-4 bg-teal-600 text-white rounded-xl font-semibold hover:bg-teal-700 transition flex items-center justify-center gap-2">
-                  <Download className="h-5 w-5" />
-                  Download Template
-                </button>
+                  <Download className="h-5 w-5" />{t('advancedInquiryFrameworks.downloadTemplate')}</button>
               </div>
             )}
 
@@ -291,9 +285,7 @@ PBL is a teaching method where students learn by actively engaging in real-world
                 disabled={currentLesson === 0}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
-                <ArrowLeft className="h-4 w-4" />
-                Previous
-              </button>
+                <ArrowLeft className="h-4 w-4" />{t('advancedInquiryFrameworks.previous')}</button>
               <button
                 onClick={() => {
                   handleLessonComplete(currentLessonData.id)
@@ -305,18 +297,12 @@ PBL is a teaching method where students learn by actively engaging in real-world
               >
                 {completedLessons.includes(currentLessonData.id) ? (
                   <>
-                    <CheckCircle2 className="h-4 w-4" />
-                    Marked Complete
-                  </>
+                    <CheckCircle2 className="h-4 w-4" />{t('advancedInquiryFrameworks.markedComplete')}</>
                 ) : currentLesson === lessons.length - 1 ? (
                   <>
-                    <Trophy className="h-4 w-4" />
-                    Complete Module
-                  </>
+                    <Trophy className="h-4 w-4" />{t('advancedInquiryFrameworks.completeModule')}</>
                 ) : (
-                  <>
-                    Complete & Next
-                    <ArrowRight className="h-4 w-4" />
+                  <>{t('advancedInquiryFrameworks.completeNext')}<ArrowRight className="h-4 w-4" />
                   </>
                 )}
               </button>
@@ -326,8 +312,8 @@ PBL is a teaching method where students learn by actively engaging in real-world
           {completedLessons.length === lessons.length && (
             <div className="mt-6 rounded-2xl border-2 border-green-300 bg-gradient-to-br from-green-50 to-emerald-50 p-8 text-center">
               <Trophy className="h-16 w-16 text-green-600 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Module Complete!</h3>
-              <p className="text-gray-700 mb-6">Congratulations! You've completed all modules in the Student Engagement Path.</p>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('advancedInquiryFrameworks.moduleComplete')}</h3>
+              <p className="text-gray-700 mb-6">{t('advancedInquiryFrameworks.congratulationsYouVeCompletedAllModulesInTheStudentEnga')}</p>
               <button
                 onClick={() => navigate('/learning-hub/student-engagement-path')}
                 className="rounded-full bg-green-600 px-6 py-3 text-sm font-semibold text-white hover:bg-green-700"

@@ -1,4 +1,5 @@
 import type { NavigateFunction } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   ArrowLeft,
   ArrowRight,
@@ -112,7 +113,32 @@ const AIGrowthStudentEngagementPathView = ({
   levelFilter,
   setLevelFilter,
 }: AIGrowthStudentEngagementPathViewProps) => {
+  const { t: tr } = useTranslation()
   const t = content.pathTheme ?? resolveAIGrowthPathTheme(content.themeId)
+  const levelLabel = (level: string) => {
+    switch (level) {
+      case 'Beginner':
+        return tr('learningHubSections.levels.beginner')
+      case 'Intermediate':
+        return tr('learningHubSections.levels.intermediate')
+      case 'Advanced':
+        return tr('learningHubSections.levels.advanced')
+      default:
+        return level
+    }
+  }
+  const impactLabel = (impact: string) => {
+    switch (impact) {
+      case 'High':
+        return tr('learningHubSections.impact.high')
+      case 'Medium':
+        return tr('learningHubSections.impact.medium')
+      case 'Low':
+        return tr('learningHubSections.impact.low')
+      default:
+        return impact
+    }
+  }
   const extras = content.studentEngagementExtras
   if (!extras) return null
 
@@ -145,7 +171,7 @@ const AIGrowthStudentEngagementPathView = ({
                   <span className='text-white/80'>•</span>
                   <span className='text-white/80 text-sm flex items-center gap-1'>
                     <Clock className='h-3 w-3' />
-                    {content.estimatedTime} estimated
+                    {content.estimatedTime} {tr('learningHubSections.growth.estimated')}
                   </span>
                 </div>
                 <h1 className='text-3xl font-bold'>{item.title}</h1>
@@ -155,17 +181,17 @@ const AIGrowthStudentEngagementPathView = ({
             <div className='flex flex-wrap items-center gap-4 text-sm'>
               <div className='flex items-center gap-2'>
                 <Target className='w-4 h-4 shrink-0' />
-                <span>{content.impactLevel} Impact</span>
+                <span>{impactLabel(content.impactLevel)} {tr('learningHubSections.growth.impactLabel')}</span>
               </div>
               <div className='flex items-center gap-2'>
                 <Trophy className='w-4 h-4 shrink-0' />
                 <span>
-                  {completedCount} of {availableModulesCount} modules completed
+                  {tr('learningHubSections.growth.modulesCompletedCount', { completed: completedCount, total: availableModulesCount })}
                 </span>
               </div>
               <div className='flex items-center gap-2'>
                 <TrendingUp className='w-4 h-4 shrink-0' />
-                <span>{Math.round(progress)}% Complete</span>
+                <span>{tr('learningHubSections.growth.percentComplete', { percent: Math.round(progress) })}</span>
               </div>
             </div>
             <div className='mt-4 h-2 bg-white/20 rounded-full overflow-hidden'>
@@ -182,17 +208,17 @@ const AIGrowthStudentEngagementPathView = ({
           </div>
           <div className='flex-1 min-w-0'>
             <div className='flex flex-wrap items-center gap-2 mb-2'>
-              <h3 className='text-lg font-semibold text-gray-900'>AI-Powered Learning Guidance</h3>
-              <span className={t.guidancePersonalizedBadge}>Personalized</span>
+              <h3 className='text-lg font-semibold text-gray-900'>{tr('learningHubSections.growth.aiGuidance')}</h3>
+              <span className={t.guidancePersonalizedBadge}>{tr('learningHubSections.growth.personalized')}</span>
             </div>
             <p className='text-sm font-medium text-gray-900 mb-2'>{content.aiGuidance.recommendation}</p>
             <p className='text-sm text-gray-700 mb-4'>{content.aiGuidance.reason}</p>
             <div className={`bg-white rounded-lg p-4 border mb-4 ${t.guidanceTipBoxBorder}`}>
-              <p className='text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2'>Personalized Tip</p>
+              <p className='text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2'>{tr('learningHubSections.growth.personalizedTip')}</p>
               <p className='text-sm text-gray-700'>{content.aiGuidance.personalizedTip}</p>
             </div>
             <div>
-              <p className='text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2'>Your Next Steps</p>
+              <p className='text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2'>{tr('learningHubSections.growth.yourNextSteps')}</p>
               <ul className='space-y-1'>
                 {content.aiGuidance.nextSteps.map((step) => (
                   <li key={step} className='flex items-start gap-2 text-sm text-gray-700'>
@@ -210,7 +236,7 @@ const AIGrowthStudentEngagementPathView = ({
         <div className='lg:col-span-2 space-y-6'>
           <div className='bg-white rounded-2xl border border-gray-200 p-6 shadow-sm'>
             <div className='flex items-center justify-between mb-4'>
-              <h2 className='text-xl font-bold text-gray-900'>Expected Impact on Your Teaching</h2>
+              <h2 className='text-xl font-bold text-gray-900'>{tr('learningHubSections.growth.expectedImpact')}</h2>
               <TrendingUp className='h-5 w-5 text-green-600 shrink-0' />
             </div>
             <div className='space-y-4'>
@@ -235,7 +261,7 @@ const AIGrowthStudentEngagementPathView = ({
 
           <div className='bg-white rounded-2xl border border-gray-200 p-6 shadow-sm'>
             <div className='flex items-center justify-between mb-6'>
-              <h2 className='text-xl font-bold text-gray-900'>Learning Modules</h2>
+              <h2 className='text-xl font-bold text-gray-900'>{tr('learningHubSections.growth.learningModules')}</h2>
               <div className='flex items-center gap-2'>
                 <Filter className='h-4 w-4 text-gray-400 shrink-0' />
                 <select
@@ -243,10 +269,10 @@ const AIGrowthStudentEngagementPathView = ({
                   onChange={(e) => setLevelFilter(e.target.value as 'all' | 'Beginner' | 'Intermediate' | 'Advanced')}
                   className='text-xs border border-gray-300 rounded-lg px-3 py-1 text-gray-700 focus:outline-none focus:ring-2 focus:ring-amber-100'
                 >
-                  <option value='all'>All Levels</option>
-                  <option value='Beginner'>Beginner</option>
-                  <option value='Intermediate'>Intermediate</option>
-                  <option value='Advanced'>Advanced</option>
+                  <option value='all'>{tr('learningHubSections.levels.all')}</option>
+                  <option value='Beginner'>{tr('learningHubSections.levels.beginner')}</option>
+                  <option value='Intermediate'>{tr('learningHubSections.levels.intermediate')}</option>
+                  <option value='Advanced'>{tr('learningHubSections.levels.advanced')}</option>
                 </select>
               </div>
             </div>
@@ -282,19 +308,19 @@ const AIGrowthStudentEngagementPathView = ({
                         </div>
                         <p className='text-sm text-gray-700 ml-10 mb-3'>{module.description}</p>
                         <div className='flex flex-wrap items-center gap-2 ml-10'>
-                          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${levelPill(module.level)}`}>{module.level}</span>
-                          <span className={`px-2 py-1 rounded-full text-xs font-semibold border ${impactPill(module.impact)}`}>{module.impact} Impact</span>
+                          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${levelPill(module.level)}`}>{levelLabel(module.level)}</span>
+                          <span className={`px-2 py-1 rounded-full text-xs font-semibold border ${impactPill(module.impact)}`}>{impactLabel(module.impact)} {tr('learningHubSections.growth.impactLabel')}</span>
                           <span className='px-2 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold flex items-center gap-1'>
                             <Clock className='h-3 w-3' />
                             {module.duration}
                           </span>
-                          <span className='px-2 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-semibold'>{module.assessment.points} points</span>
+                          <span className='px-2 py-1 rounded-full bg-purple-100 text-purple-700 text-xs font-semibold'>{module.assessment.points} {tr('learningHubSections.growth.points')}</span>
                         </div>
                       </div>
                     </div>
 
                     <div className='ml-10 mb-4'>
-                      <p className='text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2'>Skills You&apos;ll Gain</p>
+                      <p className='text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2'>{tr('learningHubSections.growth.skillsGain')}</p>
                       <div className='flex flex-wrap gap-2'>
                         {module.skillIds.map((skillId) => (
                           <span key={skillId} className='px-2 py-1 rounded bg-white border border-gray-200 text-xs text-gray-700'>
@@ -306,7 +332,7 @@ const AIGrowthStudentEngagementPathView = ({
 
                     {module.learningOutcomes.length > 0 ? (
                       <div className='ml-10 mb-4'>
-                        <p className='text-sm font-semibold text-gray-900 mb-2'>Learning Outcomes</p>
+                        <p className='text-sm font-semibold text-gray-900 mb-2'>{tr('learningHubSections.growth.learningOutcomes')}</p>
                         <ul className='space-y-1'>
                           {module.learningOutcomes.map((outcome) => (
                             <li key={outcome} className='flex items-start gap-2 text-sm text-gray-700'>
@@ -322,7 +348,7 @@ const AIGrowthStudentEngagementPathView = ({
                       <>
                         {module.content.length > 0 ? (
                           <div className='ml-10 mb-4 bg-white rounded-lg p-5 border border-amber-200'>
-                            <p className='text-sm font-semibold text-gray-900 mb-3'>Module Content</p>
+                            <p className='text-sm font-semibold text-gray-900 mb-3'>{tr('learningHubSections.growth.moduleContent')}</p>
                             <div className='space-y-3'>
                               {module.content.map((row, itemIdx) => {
                                 const ContentIcon =
@@ -345,7 +371,7 @@ const AIGrowthStudentEngagementPathView = ({
                                       </div>
                                     </div>
                                     {row.points ? (
-                                      <span className='px-2 py-1 rounded bg-amber-100 text-amber-700 text-xs font-semibold shrink-0'>{row.points} pts</span>
+                                      <span className='px-2 py-1 rounded bg-amber-100 text-amber-700 text-xs font-semibold shrink-0'>{row.points} {tr('learningHubSections.growth.pts')}</span>
                                     ) : null}
                                   </div>
                                 )
@@ -354,15 +380,15 @@ const AIGrowthStudentEngagementPathView = ({
                           </div>
                         ) : null}
                         <div className='ml-10 mb-4 pt-4 border-t border-gray-200'>
-                          <p className='text-sm font-semibold text-gray-900 mb-2'>Assessment</p>
+                          <p className='text-sm font-semibold text-gray-900 mb-2'>{tr('learningHubSections.growth.assessment')}</p>
                           <div className='bg-purple-50 rounded-lg p-3 border border-purple-200'>
                             <p className='text-sm font-medium text-gray-900 mb-1'>{module.assessment.type}</p>
                             <p className='text-xs text-gray-700'>{module.assessment.description}</p>
-                            <p className='text-xs text-purple-700 font-semibold mt-1'>{module.assessment.points} points</p>
+                            <p className='text-xs text-purple-700 font-semibold mt-1'>{module.assessment.points} {tr('learningHubSections.growth.points')}</p>
                           </div>
                         </div>
                         <div className='ml-10 mb-4 pt-4 border-t border-gray-200'>
-                          <p className='text-sm font-semibold text-gray-900 mb-2'>Real-World Application</p>
+                          <p className='text-sm font-semibold text-gray-900 mb-2'>{tr('learningHubSections.growth.realWorldApp')}</p>
                           <p className='text-sm text-gray-700 bg-blue-50 rounded-lg p-3 border border-blue-200'>{module.realWorldApplication}</p>
                         </div>
                       </>
@@ -376,7 +402,7 @@ const AIGrowthStudentEngagementPathView = ({
                           className='px-4 py-2 rounded-lg bg-gray-200 text-gray-500 text-sm font-semibold cursor-not-allowed flex items-center gap-2'
                         >
                           <Lock className='h-4 w-4' />
-                          {originalIndex === 3 ? 'Locked - Complete first 3 modules to unlock' : 'Locked - Complete previous module to unlock'}
+                          {originalIndex === 3 ? tr('learningHubSections.growth.lockedFirstThree') : tr('learningHubSections.growth.lockedPrevious')}
                         </button>
                       ) : isCompleted ? (
                         <button
@@ -385,7 +411,7 @@ const AIGrowthStudentEngagementPathView = ({
                           className='px-4 py-2 rounded-lg bg-green-600 text-white text-sm font-semibold hover:bg-green-700 flex items-center gap-2'
                         >
                           <Eye className='h-4 w-4' />
-                          Review Module
+                          {tr('learningHubSections.growth.reviewModule')}
                         </button>
                       ) : (
                         <>
@@ -403,12 +429,12 @@ const AIGrowthStudentEngagementPathView = ({
                             {isActive ? (
                               <>
                                 <Eye className='h-4 w-4' />
-                                Hide Details
+                                {tr('learningHubSections.growth.hideDetails')}
                               </>
                             ) : (
                               <>
                                 <Play className='h-4 w-4' />
-                                Start Module
+                                {tr('learningHubSections.growth.startModule')}
                               </>
                             )}
                           </button>
@@ -418,7 +444,7 @@ const AIGrowthStudentEngagementPathView = ({
                             className='px-4 py-2 rounded-lg border-2 border-green-600 text-green-600 text-sm font-semibold hover:bg-green-50 flex items-center gap-2'
                           >
                             <CheckCircle2 className='h-4 w-4' />
-                            Mark Complete
+                            {tr('learningHubSections.growth.markComplete')}
                           </button>
                         </>
                       )}
@@ -432,11 +458,11 @@ const AIGrowthStudentEngagementPathView = ({
 
         <div className='lg:col-span-1 space-y-6'>
           <div className='bg-white rounded-2xl border border-gray-200 p-6 shadow-sm'>
-            <h3 className='text-lg font-semibold text-gray-900 mb-4'>Your Progress</h3>
+            <h3 className='text-lg font-semibold text-gray-900 mb-4'>{tr('learningHubSections.growth.yourProgress')}</h3>
             <div className='space-y-4'>
               <div>
                 <div className='flex items-center justify-between mb-2'>
-                  <span className='text-sm font-medium text-gray-700'>Overall Completion</span>
+                  <span className='text-sm font-medium text-gray-700'>{tr('learningHubSections.growth.overallCompletion')}</span>
                   <span className='text-sm font-bold text-amber-600'>{Math.round(progress)}%</span>
                 </div>
                 <div className='h-3 bg-gray-200 rounded-full overflow-hidden'>
@@ -449,11 +475,11 @@ const AIGrowthStudentEngagementPathView = ({
               <div className='grid grid-cols-2 gap-4 pt-4 border-t border-gray-200'>
                 <div className='text-center'>
                   <p className='text-2xl font-bold text-gray-900'>{completedCount}</p>
-                  <p className='text-xs text-gray-600'>Completed</p>
+                  <p className='text-xs text-gray-600'>{tr('learningHubSections.growth.completed')}</p>
                 </div>
                 <div className='text-center'>
                   <p className='text-2xl font-bold text-gray-900'>{availableModulesCount - completedCount}</p>
-                  <p className='text-xs text-gray-600'>Remaining</p>
+                  <p className='text-xs text-gray-600'>{tr('learningHubSections.growth.remaining')}</p>
                 </div>
               </div>
             </div>
@@ -462,7 +488,7 @@ const AIGrowthStudentEngagementPathView = ({
           <div className='bg-white rounded-2xl border border-gray-200 p-6 shadow-sm'>
             <h3 className='text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2'>
               <Trophy className='h-5 w-5 text-amber-600' />
-              Achievements
+              {tr('learningHubSections.growth.achievements')}
             </h3>
             <div className='space-y-3'>
               {extras.achievements.map((badge) => {
@@ -486,28 +512,28 @@ const AIGrowthStudentEngagementPathView = ({
           </div>
 
           <div className='bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl border border-amber-200 p-6 shadow-sm'>
-            <h3 className='text-lg font-semibold text-gray-900 mb-4'>Quick Actions</h3>
+            <h3 className='text-lg font-semibold text-gray-900 mb-4'>{tr('learningHubSections.growth.quickActions')}</h3>
             <div className='space-y-2'>
               <button
                 type='button'
                 className='w-full text-left px-4 py-3 rounded-lg bg-white border border-amber-200 hover:bg-amber-50 transition flex items-center gap-2'
               >
                 <Download className='h-4 w-4 text-amber-600' />
-                <span className='text-sm font-medium text-gray-900'>Download Certificate</span>
+                <span className='text-sm font-medium text-gray-900'>{tr('learningHubSections.growth.downloadCertificate')}</span>
               </button>
               <button
                 type='button'
                 className='w-full text-left px-4 py-3 rounded-lg bg-white border border-amber-200 hover:bg-amber-50 transition flex items-center gap-2'
               >
                 <Share2 className='h-4 w-4 text-amber-600' />
-                <span className='text-sm font-medium text-gray-900'>Share Progress</span>
+                <span className='text-sm font-medium text-gray-900'>{tr('learningHubSections.growth.shareProgress')}</span>
               </button>
               <button
                 type='button'
                 className='w-full text-left px-4 py-3 rounded-lg bg-white border border-amber-200 hover:bg-amber-50 transition flex items-center gap-2'
               >
                 <Settings className='h-4 w-4 text-amber-600' />
-                <span className='text-sm font-medium text-gray-900'>Customize Path</span>
+                <span className='text-sm font-medium text-gray-900'>{tr('learningHubSections.growth.customizePath')}</span>
               </button>
             </div>
           </div>

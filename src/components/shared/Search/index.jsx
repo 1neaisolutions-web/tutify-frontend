@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { CrossIcon } from '../../../assets/icons';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -8,6 +9,8 @@ export const Search = ({
   setIsSearchOpen,
   className,
 }) => {
+  const { t } = useTranslation();
+
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen);
     if (isSearchOpen) {
@@ -27,7 +30,7 @@ export const Search = ({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search..."
+            placeholder={`${t('common.search')}...`}
             className="w-full pl-8 pr-8 px-3 py-2 text-[14px] border border-primary rounded-lg focus:outline-none h-[35px]"
           />
           <CrossIcon

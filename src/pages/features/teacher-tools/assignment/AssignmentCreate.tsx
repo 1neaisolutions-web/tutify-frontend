@@ -1,7 +1,23 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams, useLocation, useSearchParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { TeacherToolsPageHeader, TeacherToolsWizardStepper } from '../components'
+import {
+  TeacherToolsConfigureNav,
+  TeacherToolsCreateLayout,
+  TeacherToolsCreateReviewFooter,
+  TeacherToolsExemplarReviewBanner,
+  TeacherToolsFieldErrors,
+  TeacherToolsPageHeader,
+  TeacherToolsReviewHeaderCompact,
+  TeacherToolsWizardFooter,
+} from '../components'
+import { TEACHER_TOOLS_CREATION_STEPS } from '../config/teacherToolsCreationSteps'
+import { useTeacherToolsSubWizard } from '../hooks/useTeacherToolsSubWizard'
+import { useTeacherToolsExemplarPreview } from '../hooks/useTeacherToolsExemplarPreview'
+import { useTeacherToolsDirtyBaseline } from '../hooks/useTeacherToolsDirtyBaseline'
+import { useTeacherToolsFormBaselineReady } from '../hooks/useTeacherToolsFormBaselineReady'
+import { useTeacherToolsLeaveGuard } from '../hooks/useTeacherToolsLeaveGuard'
 import { demoClasses, type DemoAssignment } from '../demo/teacherToolsDemoData'
 import { formatSourceSummary, type AssignmentBriefLineStub, type AssignmentBriefTopicStub, type QuizDifficultyId } from '../demo/generationFromSources'
 import { downloadAssignmentBriefPdf } from '../utils/generateAssignmentPdf'
@@ -37,10 +53,16 @@ import {
 import { QuizGeneratingOverlay } from '../quiz/components/QuizGeneratingOverlay'
 import { AssignmentPrintPreviewModal, type AssignmentPrintMeta } from './components/AssignmentPrintPreviewModal'
 import { DEFAULT_HANDOUT_LAYOUT, type HandoutLayoutOpts } from '../quiz/config/handoutLayoutConfig'
-import { QUIZ_CREATION_STEPS } from '../quiz/config/quizCreationConfig'
 import { useQuizRagScope } from '../quiz/hooks/useQuizRagScope'
-import { ASSIGNMENT_TOPIC_COUNT, validateRagAssignmentBuild } from './config/assignmentCreationConfig'
+import {
+  ASSIGNMENT_TOPIC_COUNT,
+  validateAssignmentBuildSubStep,
+  validateRagAssignmentBuild,
+  type AssignmentRagBuildInput,
+} from './config/assignmentCreationConfig'
+import { ASSIGNMENT_BUILD_SUB_STEPS, type AssignmentBuildSubStepId } from './config/assignmentWizardSteps'
 import { AssignmentRagBuildSection, type TopicVolumeMode } from './components/AssignmentRagBuildSection'
+import { ASSIGNMENT_EXEMPLAR } from '../exemplars/assignmentExemplar'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const appDispatch = store.dispatch as any
@@ -63,6 +85,7 @@ function newIdempotencyKey(): string {
 }
 
 export default function AssignmentCreate() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const [searchParams] = useSearchParams()
@@ -96,21 +119,18 @@ export default function AssignmentCreate() {
   const [handoutLayout, setHandoutLayout] = useState<HandoutLayoutOpts>(DEFAULT_HANDOUT_LAYOUT)
   const handoutLayoutRef = useRef<HandoutLayoutOpts>(DEFAULT_HANDOUT_LAYOUT)
 
-  const [title, setTitle] = useState('Research brief')
+  const [title, setTitle] = useState(() => t('assignment.defaultTitle'))
   const [subject, setSubject] = useState<string>(SUBJECTS[1])
   const [grade, setGrade] = useState<string>(GRADES[0])
   const [assignmentType, setAssignmentType] = useState('Structured response')
   const [dueAt, setDueAt] = useState(dueDateIso(14))
-  const [studentInstructions, setStudentInstructions] = useState(
-    'Submit your work as a single document. Cite all sources using the format shown in class.'
-  )
+  const [studentInstructions, setStudentInstructions] = useState(() => t('assignment.defaultInstructions'))
   const [rigorProfile, setRigorProfile] = useState('Standard')
   const [topicMixMode, setTopicMixMode] = useState<TopicVolumeMode>('balanced')
   const [topicCount, setTopicCount] = useState(ASSIGNMENT_TOPIC_COUNT.default)
   const [difficulty, setDifficulty] = useState<QuizDifficultyId>('standard')
   const [generatorInstructions, setGeneratorInstructions] = useState('')
 
-  const [discardOpen, setDiscardOpen] = useState(false)
   const [loadedTopic, setLoadedTopic] = useState<string | undefined>(undefined)
   const [hydrateReady, setHydrateReady] = useState(!isEdit)
   const [publishPending, setPublishPending] = useState(false)
@@ -139,6 +159,172 @@ export default function AssignmentCreate() {
     initialGenerateWithoutSources: hydratedRag?.withoutSources,
   })
 
+  const subWizard = useTeacherToolsSubWizard(ASSIGNMENT_BUILD_SUB_STEPS, {
+    storageKey: 'tutify-assignment-create-substep',
+  })
+  const { isExemplarPreview, enterExemplarPreview, exitExemplarPreview } = useTeacherToolsExemplarPreview()
+
+  const assignmentBuildInput: AssignmentRagBuildInput = useMemo(
+    () => ({
+      title,
+      generateWithoutSources: rag.generateWithoutSources,
+      selectedBookIds: rag.selectedBookIds,
+      selectedTopics: rag.selectedTopics,
+      scopeRefinement: rag.scopeRefinement,
+      topicCount,
+    }),
+    [
+      title,
+      rag.generateWithoutSources,
+      rag.selectedBookIds,
+      rag.selectedTopics,
+      rag.scopeRefinement,
+      topicCount,
+    ],
+  )
+
+  const currentStepValidation = useMemo(
+    () => validateAssignmentBuildSubStep(subWizard.currentStepId as AssignmentBuildSubStepId, assignmentBuildInput),
+    [subWizard.currentStepId, assignmentBuildInput],
+  )
+
+  const fullBuildValidation = useMemo(() => validateRagAssignmentBuild(assignmentBuildInput), [assignmentBuildInput])
+
+  const hasGeneratedContent = topicBlocks.length > 0 && !isExemplarPreview
+  const topMaxReachable = topicBlocks.length > 0 ? 1 : 0
+
+  const formBaselineReady = useTeacherToolsFormBaselineReady(hydrateReady, isEdit)
+
+  const formSnapshot = useMemo(
+    () =>
+      JSON.stringify({
+        phase,
+        title,
+        subject,
+        grade,
+        assignmentType,
+        dueAt,
+        studentInstructions,
+        rigorProfile,
+        topicMixMode,
+        topicCount,
+        difficulty,
+        generatorInstructions,
+        topics: topicBlocks.map((t) => t.id),
+        rag: rag.generationSignature,
+        subStep: subWizard.currentStep,
+        subMax: subWizard.maxUnlockedStep,
+        exemplar: isExemplarPreview,
+        liveAssignmentId,
+      }),
+    [
+      phase,
+      title,
+      subject,
+      grade,
+      assignmentType,
+      dueAt,
+      studentInstructions,
+      rigorProfile,
+      topicMixMode,
+      topicCount,
+      difficulty,
+      generatorInstructions,
+      topicBlocks,
+      rag.generationSignature,
+      subWizard.currentStep,
+      subWizard.maxUnlockedStep,
+      isExemplarPreview,
+      liveAssignmentId,
+    ],
+  )
+
+  const { isDirty: isFormDirty, clearBaseline } = useTeacherToolsDirtyBaseline(
+    formSnapshot,
+    formBaselineReady,
+  )
+
+  const hasUnsavedWork = useMemo(() => {
+    const wizardProgress =
+      isExemplarPreview ||
+      subWizard.currentStep > 0 ||
+      subWizard.maxUnlockedStep > 0 ||
+      (!isEdit && phase === 'review')
+
+    if (isEdit) {
+      return isFormDirty || rag.isDirty || wizardProgress
+    }
+
+    return (
+      isFormDirty ||
+      rag.isDirty ||
+      topicBlocks.length > 0 ||
+      !!liveAssignmentId ||
+      wizardProgress
+    )
+  }, [
+    isEdit,
+    isFormDirty,
+    rag.isDirty,
+    topicBlocks.length,
+    liveAssignmentId,
+    phase,
+    isExemplarPreview,
+    subWizard.currentStep,
+    subWizard.maxUnlockedStep,
+  ])
+
+  const clearSessionOnLeave = useCallback(() => {
+    rag.resetSources()
+    subWizard.clearStorage()
+    subWizard.resetWizard()
+    exitExemplarPreview()
+    if (!isEdit) setLiveAssignmentId(null)
+    clearBaseline()
+  }, [rag, subWizard, exitExemplarPreview, isEdit, clearBaseline])
+
+  const { discardOpen, requestLeave, confirmDiscard, cancelDiscard } = useTeacherToolsLeaveGuard(
+    hasUnsavedWork,
+    clearSessionOnLeave,
+  )
+
+  const handleBackToConfigure = useCallback(() => {
+    if (isExemplarPreview) {
+      exitExemplarPreview()
+      setTopicBlocks([])
+      setLiveAssignmentId(null)
+      subWizard.resetWizard()
+    }
+    setPhase('build')
+  }, [isExemplarPreview, exitExemplarPreview, subWizard])
+
+  const handleShowExemplar = useCallback(() => {
+    const ex = ASSIGNMENT_EXEMPLAR.input
+    setLiveAssignmentId(null)
+    enterExemplarPreview()
+    setTitle(ex.title)
+    setSubject(ex.subject)
+    setGrade(ex.grade)
+    setAssignmentType(ex.assignmentType)
+    setDueAt(ex.dueAt)
+    setStudentInstructions(ex.studentInstructions)
+    setRigorProfile(ex.rigorProfile)
+    setTopicCount(ex.topicCount)
+    setDifficulty(ex.difficulty)
+    setGeneratorInstructions(ex.generatorInstructions)
+    rag.applySourceSnapshot({
+      bookIds: ex.bookIds,
+      topics: ex.topics,
+      refinement: ex.scopeRefinement,
+      generateWithoutSources: ex.generateWithoutSources,
+    })
+    setTopicBlocks(ASSIGNMENT_EXEMPLAR.output.topics)
+    setBuildErrors([])
+    subWizard.unlockAllSteps()
+    setPhase('review')
+    toast.success(t('teacherTools.toastExemplarLoaded'))
+  }, [rag, subWizard, toast, enterExemplarPreview])
+
   useEffect(() => {
     if (isEdit && assignmentId) setLiveAssignmentId(assignmentId)
     else if (!isEdit) {
@@ -163,7 +349,7 @@ export default function AssignmentCreate() {
     if (topic) setLoadedTopic(topic)
     if (searchParams.get('fromTemplate') && !templateToastRef.current) {
       templateToastRef.current = true
-      toast.success('Prefilled from template')
+      toast.success(t('teacherTools.toastPrefilledTemplate'))
     }
   }, [isEdit, searchParams, toast])
 
@@ -178,7 +364,7 @@ export default function AssignmentCreate() {
       const a = await api.getAssignment(assignmentId)
       if (cancelled) return
       if (!a) {
-        toast.error('Assignment not found')
+        toast.error(t('assignment.toastNotFound'))
         navigate('/teacher-tools/assignment')
         return
       }
@@ -190,7 +376,7 @@ export default function AssignmentCreate() {
       setStudentInstructions(
         typeof a.studentInstructions === 'string' && a.studentInstructions.trim()
           ? a.studentInstructions
-          : 'Submit your work as a single document. Cite all sources using the format shown in class.',
+          : t('assignment.defaultInstructions'),
       )
       if (a.topic) setLoadedTopic(a.topic)
       if (a.rigorProfile) setRigorProfile(a.rigorProfile)
@@ -218,7 +404,7 @@ export default function AssignmentCreate() {
 
   const buildShellCreatePayload = useCallback((): AssignmentCreatePayload => {
     return {
-      title: title.trim() || 'Untitled assignment',
+      title: title.trim() || t('assignment.untitled'),
       subject,
       grade,
       classes: [classKeyForGrade(grade)],
@@ -262,13 +448,14 @@ export default function AssignmentCreate() {
     })
     if (!v.ok) {
       setBuildErrors(v.errors)
-      toast.error('Fix the highlighted fields to generate.')
+      toast.error(t('teacherTools.toastFixFields'))
       return
     }
     setBuildErrors([])
     setGenerationError(null)
     setCreditGate(null)
     setRegenCreditGate(null)
+    exitExemplarPreview()
     setGenerating(true)
     setGenProgress(0.12)
     const steps = window.setInterval(() => {
@@ -284,8 +471,8 @@ export default function AssignmentCreate() {
         setLiveAssignmentId(created.id)
       }
       if (!assignmentId) {
-        setGenerationError('Could not create assignment.')
-        toast.error('Could not create assignment.')
+        setGenerationError(t('assignment.createGenerationError'))
+        toast.error(t('assignment.toastCreateFailed'))
         return
       }
       const ensuredAssignmentId = assignmentId
@@ -305,7 +492,7 @@ export default function AssignmentCreate() {
       ).unwrap()
       setTopicBlocks(genResult.assignment.briefTopics as AssignmentBriefTopicStub[])
       setPhase('review')
-      toast.success('Assignment brief generated — review below.')
+      toast.success(t('assignment.toastBriefGenerated'))
       if (genResult.warnings?.length) {
         console.warn('Assignment generation warnings:', genResult.warnings)
       }
@@ -317,8 +504,8 @@ export default function AssignmentCreate() {
         setGenerationError(null)
         return
       }
-      setGenerationError('Generation failed. Check your connection and try again.')
-      toast.error('Could not generate assignment brief.')
+      setGenerationError(t('assignment.generationFailed'))
+      toast.error(t('assignment.toastGenerateFailed'))
     } finally {
       window.clearInterval(steps)
       setGenerating(false)
@@ -360,7 +547,7 @@ export default function AssignmentCreate() {
         }),
       ).unwrap()
       setTopicBlocks(genResult.assignment.briefTopics as AssignmentBriefTopicStub[])
-      toast.success('Brief regenerated.')
+      toast.success(t('assignment.toastBriefRegenerated'))
       refreshCredits()
     } catch (e) {
       const credit = parseCreditErrorFromUnknown(e)
@@ -368,7 +555,7 @@ export default function AssignmentCreate() {
         setCreditGate(credit)
         return
       }
-      toast.error('Could not regenerate brief.')
+      toast.error(t('assignment.toastBriefRegenFailed'))
     } finally {
       window.clearInterval(steps)
       setGenerating(false)
@@ -396,7 +583,7 @@ export default function AssignmentCreate() {
             b.id === topicId ? { ...(res.topic as AssignmentBriefTopicStub), id: topicId } : b,
           ),
         )
-        toast.success('Topic section regenerated.')
+        toast.success(t('assignment.toastTopicRegenerated'))
         refreshCredits()
       } catch (e) {
         const credit = parseCreditErrorFromUnknown(e)
@@ -442,13 +629,13 @@ export default function AssignmentCreate() {
     (topicId: string, lineIndex: number) => {
       const t = topicBlocks.find((x) => x.id === topicId)
       if (!t || t.lines.length <= 1) {
-        toast.error('Keep at least one line in each topic, or remove the whole topic from build.')
+        toast.error(t('assignment.toastKeepOneLine'))
         return
       }
       setTopicBlocks((prev) =>
         prev.map((b) => (b.id === topicId ? { ...b, lines: b.lines.filter((_, i) => i !== lineIndex) } : b)),
       )
-      toast.success('Line removed')
+      toast.success(t('assignment.toastLineRemoved'))
     },
     [topicBlocks, toast],
   )
@@ -479,7 +666,7 @@ export default function AssignmentCreate() {
             return { ...b, lines }
           }),
         )
-        toast.success('Line regenerated.')
+        toast.success(t('assignment.toastLineRegenerated'))
         refreshCredits()
       } catch (e) {
         const credit = parseCreditErrorFromUnknown(e)
@@ -511,7 +698,7 @@ export default function AssignmentCreate() {
     setTopicBlocks((prev) =>
       prev.map((t) => (t.id === topicId ? { ...t, lines: [...t.lines, line] } : t)),
     )
-    toast.success('Line added.')
+    toast.success(t('assignment.toastLineAdded'))
   }, [toast])
 
   const addTopicManual = useCallback(() => {
@@ -523,13 +710,13 @@ export default function AssignmentCreate() {
         lines: [
           {
             id: newDemoId('asg-line'),
-            text: 'Edit this line — add objectives, tasks, or evidence expectations for this topic.',
+            text: t('assignment.defaultLineText'),
           },
         ],
       }
       return [...prev, topic]
     })
-    toast.success('Topic section added.')
+    toast.success(t('assignment.toastTopicAdded'))
   }, [toast])
 
   const deleteTopic = useCallback(
@@ -537,25 +724,29 @@ export default function AssignmentCreate() {
       setEditingLine((cur) => (cur?.topicId === topicId ? null : cur))
       setAddingLineTopicId((cur) => (cur === topicId ? null : cur))
       setTopicBlocks((prev) => prev.filter((t) => t.id !== topicId))
-      toast.success('Topic section removed')
+      toast.success(t('assignment.toastTopicRemoved'))
     },
     [toast],
   )
 
-  const goList = () => navigate('/teacher-tools/assignment')
+  const goList = useCallback(() => navigate('/teacher-tools/assignment'), [navigate])
+
+  const handleExitToList = useCallback(() => {
+    requestLeave(goList)
+  }, [requestLeave, goList])
 
   const handleHandoutLayoutSave = useCallback(
     (layout: HandoutLayoutOpts) => {
       const next = { ...DEFAULT_HANDOUT_LAYOUT, ...layout }
       handoutLayoutRef.current = next
       setHandoutLayout(next)
-      toast.success('Handout spacing saved. PDF export and print use these settings.')
+      toast.success(t('assignment.toastHandoutSaved'))
     },
     [toast],
   )
 
   const assignmentPrintMeta: AssignmentPrintMeta = {
-    title: title.trim() || 'Assignment',
+    title: title.trim() || t('assignment.fallbackTitle'),
     subject,
     grade,
     dueAt,
@@ -569,7 +760,7 @@ export default function AssignmentCreate() {
     try {
       downloadAssignmentBriefPdf(
         {
-          title: title.trim() || 'Assignment',
+          title: title.trim() || t('assignment.fallbackTitle'),
           subject,
           grade,
           dueAt,
@@ -582,15 +773,15 @@ export default function AssignmentCreate() {
         handoutLayoutRef.current,
         `${(title || 'assignment').replace(/\s+/g, '-').slice(0, 32)}-assignment-brief.pdf`,
       )
-      toast.success('PDF downloaded')
+      toast.success(t('teacherTools.toastPdfDownloaded'))
     } catch {
-      toast.error('Could not generate PDF')
+      toast.error(t('teacherTools.toastPdfFailed'))
     }
   }, [rag, title, subject, grade, dueAt, assignmentType, studentInstructions, topicBlocks, toast])
 
   const buildPayload = useCallback(
     (status: 'draft' | 'active') => ({
-      title: title.trim() || 'Untitled assignment',
+      title: title.trim() || t('assignment.untitled'),
       subject,
       grade,
       classes: [classKeyForGrade(grade)],
@@ -641,8 +832,12 @@ export default function AssignmentCreate() {
   )
 
   const handleSaveDraft = useCallback(async () => {
+    if (isExemplarPreview) {
+      toast.error(t('teacherTools.toastExemplarNotSaved'))
+      return
+    }
     if (topicBlocks.length === 0) {
-      toast.error('Generate a brief before saving a draft.')
+      toast.error(t('assignment.toastDraftNeedsBrief'))
       return
     }
     setSaveDraftPending(true)
@@ -651,26 +846,26 @@ export default function AssignmentCreate() {
       if (isEdit && assignmentId) {
         const res = await api.updateAssignment(assignmentId, payload)
         if (!res.ok) {
-          if (res.error === 'READ_ONLY') toast.error('Sample library items cannot be edited.')
-          else toast.error('Could not save draft')
+          if (res.error === 'READ_ONLY') toast.error(t('teacherTools.toastReadOnly'))
+          else toast.error(t('teacherTools.toastDraftFailed'))
           return
         }
-        toast.success('Draft saved')
+        toast.success(t('teacherTools.toastDraftSaved'))
         navigate(`/teacher-tools/assignment/${assignmentId}`)
         return
       }
       if (liveAssignmentId) {
         const res = await api.updateAssignment(liveAssignmentId, payload)
         if (!res.ok) {
-          toast.error('Could not save draft')
+          toast.error(t('teacherTools.toastDraftFailed'))
           return
         }
-        toast.success('Draft saved')
+        toast.success(t('teacherTools.toastDraftSaved'))
         navigate(`/teacher-tools/assignment/${liveAssignmentId}`)
         return
       }
       const { id } = await api.createAssignment(buildDemoForSave('draft'))
-      toast.success('Draft saved')
+      toast.success(t('teacherTools.toastDraftSaved'))
       navigate(`/teacher-tools/assignment/${id}`)
     } finally {
       setSaveDraftPending(false)
@@ -688,8 +883,12 @@ export default function AssignmentCreate() {
   ])
 
   const handlePublish = useCallback(async () => {
+    if (isExemplarPreview) {
+      toast.error(t('teacherTools.toastExemplarCannotPublish'))
+      return
+    }
     if (topicBlocks.length === 0) {
-      toast.error('Generate a brief before publishing.')
+      toast.error(t('assignment.toastPublishNeedsBrief'))
       return
     }
     setPublishPending(true)
@@ -699,21 +898,21 @@ export default function AssignmentCreate() {
         const res = await api.updateAssignment(assignmentId, payload)
         if (!res.ok) {
           if (res.error === 'READ_ONLY')
-            toast.error('Sample library items cannot be edited. Duplicate from the list first.')
-          else toast.error('Could not save assignment')
+            toast.error(t('assignment.toastDuplicateFirst'))
+          else toast.error(t('assignment.toastSaveFailed'))
           return
         }
-        toast.success('Assignment updated')
+        toast.success(t('assignment.publishUpdated'))
       } else if (liveAssignmentId) {
         const res = await api.updateAssignment(liveAssignmentId, payload)
         if (!res.ok) {
-          toast.error('Could not save assignment')
+          toast.error(t('assignment.toastSaveFailed'))
           return
         }
-        toast.success('Assignment published')
+        toast.success(t('assignment.publishAssignment'))
       } else {
         await api.createAssignment(buildDemoForSave('active'))
-        toast.success('Assignment published')
+        toast.success(t('assignment.publishAssignment'))
       }
       navigate('/teacher-tools/assignment')
     } finally {
@@ -736,42 +935,111 @@ export default function AssignmentCreate() {
       <div className="min-h-[40vh] space-y-3 p-8">
         <div className="h-4 w-48 animate-pulse rounded bg-gray-200" />
         <div className="h-32 max-w-xl animate-pulse rounded-2xl bg-gray-100" />
-        <p className="text-sm text-gray-600">Loading assignment…</p>
+        <p className="text-sm text-gray-600">{t('assignment.loading')}</p>
       </div>
     )
   }
 
   const wizardStep = phase === 'build' ? 0 : 1
 
-  return (
-    <div className="space-y-6 pb-10">
-      <TeacherToolsPageHeader
-        title={isEdit ? 'Edit assignment' : 'Create assignment'}
-        subtitle="Choose catalog sources, define retrieval scope, run generation, then review and publish."
-        breadcrumbs={[
-          { label: 'Teacher Tools', to: '/teacher-tools' },
-          { label: 'Assignment', to: '/teacher-tools/assignment' },
-          { label: isEdit ? 'Edit' : 'Create' },
-        ]}
-      />
+  const buildFooter = (
+    <TeacherToolsWizardFooter
+      isFirstStep={subWizard.isFirstStep}
+      isLastStep={subWizard.isLastStep}
+      canGoNext={currentStepValidation.ok}
+      onBack={subWizard.goBack}
+      onNext={() => {
+        if (!currentStepValidation.ok) {
+          setBuildErrors(currentStepValidation.errors)
+          return
+        }
+        setBuildErrors([])
+        subWizard.goNext()
+      }}
+      onGenerate={() => {
+        if (!fullBuildValidation.ok) {
+          setBuildErrors(fullBuildValidation.errors)
+          toast.error(t('teacherTools.toastFixFields'))
+          return
+        }
+        setBuildErrors([])
+        void runGeneration()
+      }}
+      generating={generating}
+      generateLabel={t('assignment.generateLabel')}
+      onShowExemplar={handleShowExemplar}
+      onExitToList={handleExitToList}
+      exitLabel={t('assignment.exitLabel')}
+    />
+  )
 
-      <TeacherToolsWizardStepper
-        steps={[...QUIZ_CREATION_STEPS]}
-        current={wizardStep}
-        onStepClick={(i) => {
-          if (i === 1 && topicBlocks.length === 0) {
-            toast.error('Generate the brief first to open review.')
-            return
-          }
-          setPhase(i === 0 ? 'build' : 'review')
-        }}
-      />
+  const reviewFooter = (
+    <TeacherToolsCreateReviewFooter
+      exitLabel={t('assignment.exitLabel')}
+      onExitToList={handleExitToList}
+      onEditRequirements={handleBackToConfigure}
+      publish={{
+        onPrintPreview: () => setPrintOpen(true),
+        printPreviewDisabled: topicBlocks.length === 0,
+        onSaveDraft: () => void handleSaveDraft(),
+        saveDraftPending,
+        saveDraftDisabled: topicBlocks.length === 0 || isExemplarPreview,
+        onExportPdf: exportPdf,
+        exportDisabled: topicBlocks.length === 0,
+        onPublish: () => void handlePublish(),
+        publishPending,
+        publishDisabled: topicBlocks.length === 0 || isExemplarPreview,
+        publishLabel: isEdit ? t('assignment.saveChanges') : t('assignment.publishButton'),
+      }}
+    />
+  )
+
+  return (
+    <>
+    <TeacherToolsCreateLayout
+      header={
+        <>
+          <TeacherToolsPageHeader
+            variant="compact"
+            title={isEdit ? t('assignment.editTitle') : t('assignment.createTitle')}
+            subtitle={t('assignment.createSubtitle')}
+            breadcrumbs={[
+              { label: t('teacherTools.breadcrumbTeacherTools'), to: '/teacher-tools' },
+              { label: t('assignment.breadcrumb'), to: '/teacher-tools/assignment' },
+              { label: isEdit ? t('teacherTools.breadcrumbEdit') : t('teacherTools.breadcrumbCreate') },
+            ]}
+          />
+          <div className="pb-2">
+            <TeacherToolsConfigureNav
+              primarySteps={[...TEACHER_TOOLS_CREATION_STEPS]}
+              primaryCurrent={wizardStep}
+              primaryMaxReachable={topMaxReachable}
+              onPrimaryStepClick={(i) => {
+                if (i === 1 && topicBlocks.length === 0) {
+                  toast.error(t('assignment.toastReviewNeedsGenerate'))
+                  return
+                }
+                if (i === 0) handleBackToConfigure()
+                else setPhase('review')
+              }}
+              showSubSteps={phase === 'build'}
+              subSteps={ASSIGNMENT_BUILD_SUB_STEPS}
+              subCurrent={subWizard.currentStep}
+              subMaxUnlocked={subWizard.maxUnlockedStep}
+              onSubStepClick={subWizard.goToStep}
+            />
+          </div>
+        </>
+      }
+      footer={phase === 'build' ? buildFooter : reviewFooter}
+    >
+      <div className="space-y-4 pb-4">
 
       {generationError && (
         <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
           {generationError}
           <button type="button" className="ml-3 font-semibold underline" onClick={() => setGenerationError(null)}>
-            Dismiss
+            {t('teacherTools.dismiss')}
           </button>
         </div>
       )}
@@ -789,7 +1057,9 @@ export default function AssignmentCreate() {
 
       {phase === 'build' && (
         <>
+          <TeacherToolsFieldErrors errors={currentStepValidation.errors} />
           <AssignmentRagBuildSection
+            activeStepId={subWizard.currentStepId as AssignmentBuildSubStepId}
             rag={rag}
             title={title}
             onTitleChange={setTitle}
@@ -813,31 +1083,10 @@ export default function AssignmentCreate() {
             onDifficultyChange={setDifficulty}
             generatorInstructions={generatorInstructions}
             onGeneratorInstructionsChange={setGeneratorInstructions}
-            validationErrors={buildErrors}
           />
-          <div className="sticky bottom-4 z-10 mt-8 flex flex-col gap-3 rounded-2xl border border-indigo-200 bg-white/95 p-4 shadow-lg backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between">
-            <div className="min-w-0">
-              <p className="text-sm font-semibold text-gray-900">Ready to generate from your scope</p>
-              <p className="mt-0.5 text-xs text-gray-600">
-                Primary action runs a retrieval + generation pass using the selected titles and topic strands above.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => void runGeneration()}
-              disabled={generating}
-              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-md hover:bg-emerald-500 disabled:opacity-60"
-            >
-              {generating ? (
-                <>
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                  Generating…
-                </>
-              ) : (
-                'Generate from selected materials'
-              )}
-            </button>
-          </div>
+          {buildErrors.length > 0 && !currentStepValidation.errors.length && (
+            <TeacherToolsFieldErrors errors={buildErrors} />
+          )}
         </>
       )}
 
@@ -852,60 +1101,55 @@ export default function AssignmentCreate() {
       )}
 
       {phase === 'review' && (
-        <div className="space-y-6">
-          <div className="flex flex-col gap-4 rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/80 to-white p-6 shadow-sm lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-indigo-700">REVIEW</p>
-              <h2 className="mt-1 text-lg font-semibold text-gray-900">Generated assignment brief</h2>
-              <p className="mt-1 max-w-2xl text-sm text-gray-600">
-                Edit lines, reorder topics, or regenerate sections. When you publish, this snapshot is stored for students and exports.
-              </p>
-              <p className="mt-2 text-xs text-gray-500">{formatSourceSummary(rag.getGenerationContext())}</p>
-            </div>
-            <div className="flex flex-col items-stretch gap-3 sm:items-end">
-              <div className="flex flex-wrap items-center gap-2">
-                <div className="rounded-xl bg-white px-4 py-2 text-center shadow-sm ring-1 ring-gray-100">
-                  <p className="text-2xl font-semibold text-gray-900">{topicBlocks.length}</p>
-                  <p className="text-xs text-gray-500">Topics</p>
-                </div>
-                <div className="rounded-xl bg-white px-4 py-2 text-center shadow-sm ring-1 ring-gray-100">
-                  <p className="text-2xl font-semibold text-gray-900">{totalBriefLines}</p>
-                  <p className="text-xs text-gray-500">Brief lines</p>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-2">
+        <div className="space-y-3">
+          {isExemplarPreview && <TeacherToolsExemplarReviewBanner />}
+          <TeacherToolsReviewHeaderCompact
+            title={t('assignment.briefTitle')}
+            sourceTag={formatSourceSummary(rag.getGenerationContext())}
+            stats={[
+              { label: t('assignment.statTopics'), value: topicBlocks.length },
+              { label: t('assignment.statLines'), value: totalBriefLines },
+            ]}
+            actions={
+              <>
                 <button
                   type="button"
                   onClick={() => setPrintOpen(true)}
                   disabled={topicBlocks.length === 0}
-                  className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white px-4 py-2 text-xs font-semibold text-indigo-900 shadow-sm hover:bg-indigo-50 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-lg border border-indigo-200 bg-white px-2 py-1 text-xs font-semibold text-indigo-800 hover:bg-indigo-50 disabled:opacity-50"
                 >
-                  <Eye className="h-3.5 w-3.5" />
-                  Print preview
+                  {t('quiz.review.printPreview')}
                 </button>
                 <button
                   type="button"
                   onClick={addTopicManual}
-                  className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white px-4 py-2 text-xs font-semibold text-emerald-900 shadow-sm hover:bg-emerald-50"
+                  className="rounded-lg border border-emerald-200 bg-white px-2 py-1 text-xs font-semibold text-emerald-800 hover:bg-emerald-50"
                 >
-                  <PlusCircle className="h-3.5 w-3.5" />
-                  Add topic
+                  {t('assignment.review.addTopic')}
                 </button>
-              </div>
-            </div>
-          </div>
+                <button
+                  type="button"
+                  disabled={generating || !liveAssignmentId || isExemplarPreview}
+                  onClick={() => void regenerateAll()}
+                  className="rounded-lg border border-indigo-200 bg-white px-2 py-1 text-xs font-semibold text-indigo-800 hover:bg-indigo-50 disabled:opacity-50"
+                >
+                  {t('assignment.review.regenerateAll')}
+                </button>
+              </>
+            }
+          />
 
           {topicBlocks.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-12 text-center">
-              <p className="text-sm font-medium text-gray-800">No brief sections yet.</p>
-              <p className="mt-1 text-sm text-gray-600">Generate from build, or start by adding a topic section.</p>
+              <p className="text-sm font-medium text-gray-800">{t('assignment.noBriefSections')}</p>
+              <p className="mt-1 text-sm text-gray-600">{t('assignment.noBriefSectionsHint')}</p>
               <div className="mt-4 flex flex-wrap justify-center gap-2">
                 <button
                   type="button"
-                  onClick={() => setPhase('build')}
+                  onClick={handleBackToConfigure}
                   className="rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm hover:bg-gray-50"
                 >
-                  Back to build
+                  {t('quiz.review.backToBuild')}
                 </button>
                 <button
                   type="button"
@@ -913,34 +1157,23 @@ export default function AssignmentCreate() {
                   className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500"
                 >
                   <PlusCircle className="h-4 w-4" />
-                  Add topic
+                  {t('teacherTools.addTopic')}
                 </button>
               </div>
             </div>
           ) : (
-            <section className="overflow-hidden rounded-2xl border-[0.5px] border-gray-200 bg-white shadow-sm">
-              <div className="flex flex-wrap items-center gap-3 border-b border-gray-100 bg-gradient-to-r from-indigo-50/60 to-white px-6 py-4">
-                <h3 className="font-semibold text-gray-900">Assignment brief</h3>
-                <span className="ml-auto max-w-[min(100%,14rem)] truncate text-xs text-gray-500" title={formatSourceSummary(rag.getGenerationContext())}>
-                  {formatSourceSummary(rag.getGenerationContext())}
-                </span>
-                <button
-                  type="button"
-                  disabled={generating || !liveAssignmentId}
-                  onClick={() => void regenerateAll()}
-                  className="text-xs font-semibold text-indigo-600 hover:text-indigo-500 disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  Regenerate all
-                </button>
+            <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+              <div className="flex flex-wrap items-center gap-2 border-b border-gray-100 bg-gray-50/80 px-3 py-2">
+                <h3 className="text-sm font-semibold text-gray-900">{t('assignment.briefTitle')}</h3>
                 <button
                   type="button"
                   onClick={addTopicManual}
-                  className="text-xs font-semibold text-indigo-600 hover:text-indigo-500"
+                  className="ml-auto text-xs font-semibold text-emerald-700 hover:text-emerald-600"
                 >
-                  Add topic
+                  {t('teacherTools.addTopic')}
                 </button>
               </div>
-              <div className="space-y-4 p-6">
+              <div className="space-y-4 p-4">
                 {topicBlocks.map((topic, ti) => (
                   <div key={topic.id} className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
                     <div className="flex flex-wrap items-center gap-2 border-b border-gray-100 bg-emerald-50/50 px-4 py-3">
@@ -948,7 +1181,7 @@ export default function AssignmentCreate() {
                       <div className="ml-auto flex flex-wrap gap-1">
                         <button
                           type="button"
-                          title="Move topic up"
+                          title={t('teacherTools.moveTopicUp')}
                           disabled={ti === 0}
                           onClick={() => moveTopic(ti, -1)}
                           className="rounded-lg p-1.5 text-gray-600 hover:bg-gray-200 disabled:opacity-30"
@@ -957,7 +1190,7 @@ export default function AssignmentCreate() {
                         </button>
                         <button
                           type="button"
-                          title="Move topic down"
+                          title={t('teacherTools.moveTopicDown')}
                           disabled={ti === topicBlocks.length - 1}
                           onClick={() => moveTopic(ti, 1)}
                           className="rounded-lg p-1.5 text-gray-600 hover:bg-gray-200 disabled:opacity-30"
@@ -966,7 +1199,7 @@ export default function AssignmentCreate() {
                         </button>
                         <button
                           type="button"
-                          title="Regenerate topic"
+                          title={t('teacherTools.regenerateTopic')}
                           disabled={!liveAssignmentId || generating || regenTopicId === topic.id}
                           onClick={() => void regenerateTopic(topic.id)}
                           className="rounded-lg p-1.5 text-amber-800 hover:bg-amber-100 disabled:cursor-not-allowed disabled:opacity-40"
@@ -975,7 +1208,7 @@ export default function AssignmentCreate() {
                         </button>
                         <button
                           type="button"
-                          title="Add line to this topic"
+                          title={t('teacherTools.addLineToTopic')}
                           onClick={() => setAddingLineTopicId(topic.id)}
                           className="inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-semibold text-emerald-800 hover:bg-emerald-100"
                         >
@@ -984,7 +1217,7 @@ export default function AssignmentCreate() {
                         </button>
                         <button
                           type="button"
-                          title="Delete entire topic section"
+                          title={t('teacherTools.deleteTopic')}
                           onClick={() => deleteTopic(topic.id)}
                           className="rounded-lg p-1.5 text-red-700 hover:bg-red-50"
                         >
@@ -1002,7 +1235,7 @@ export default function AssignmentCreate() {
                           <div className="flex shrink-0 gap-1">
                             <button
                               type="button"
-                              title="Move up"
+                              title={t('teacherTools.moveUp')}
                               disabled={li === 0}
                               onClick={() => moveLineInTopic(topic.id, li, -1)}
                               className="rounded-lg p-1.5 text-gray-600 hover:bg-gray-200 disabled:opacity-30"
@@ -1011,7 +1244,7 @@ export default function AssignmentCreate() {
                             </button>
                             <button
                               type="button"
-                              title="Move down"
+                              title={t('teacherTools.moveDown')}
                               disabled={li === topic.lines.length - 1}
                               onClick={() => moveLineInTopic(topic.id, li, 1)}
                               className="rounded-lg p-1.5 text-gray-600 hover:bg-gray-200 disabled:opacity-30"
@@ -1020,7 +1253,7 @@ export default function AssignmentCreate() {
                             </button>
                             <button
                               type="button"
-                              title="Edit"
+                              title={t('exam.detail.edit')}
                               onClick={() => {
                                 setEditingLine({ topicId: topic.id, lineId: line.id })
                                 setEditingLineValue(line.text)
@@ -1031,7 +1264,7 @@ export default function AssignmentCreate() {
                             </button>
                             <button
                               type="button"
-                              title="Regenerate line"
+                              title={t('teacherTools.regenerateLine')}
                               disabled={
                                 !liveAssignmentId ||
                                 generating ||
@@ -1044,7 +1277,7 @@ export default function AssignmentCreate() {
                             </button>
                             <button
                               type="button"
-                              title="Remove"
+                              title={t('teacherTools.remove')}
                               onClick={() => deleteLine(topic.id, li)}
                               className="rounded-lg p-1.5 text-red-700 hover:bg-red-50"
                             >
@@ -1059,76 +1292,10 @@ export default function AssignmentCreate() {
               </div>
             </section>
           )}
-
-          <div className="flex flex-wrap items-center gap-2 border-t border-gray-200 pt-6">
-            <button
-              type="button"
-              onClick={() => setPhase('build')}
-              className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50"
-            >
-              ← Edit requirements
-            </button>
-            <button
-              type="button"
-              disabled={generating || !liveAssignmentId}
-              onClick={() => void regenerateAll()}
-              className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-900 hover:bg-indigo-100 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <Sparkles className="h-4 w-4" />
-              Regenerate all
-            </button>
-          </div>
-
-          <div className="rounded-2xl border border-gray-200 bg-gray-50/80 p-5">
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">Publish & export</p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              <button
-                type="button"
-                disabled={saveDraftPending || topicBlocks.length === 0}
-                onClick={() => void handleSaveDraft()}
-                className="rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50"
-              >
-                {saveDraftPending ? 'Saving draft…' : 'Save draft'}
-              </button>
-              <button
-                type="button"
-                onClick={() => setPrintOpen(true)}
-                disabled={topicBlocks.length === 0}
-                className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50"
-              >
-                <Printer className="h-4 w-4" />
-                Print preview
-              </button>
-              <button
-                type="button"
-                onClick={exportPdf}
-                disabled={topicBlocks.length === 0}
-                className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50"
-              >
-                <Download className="h-4 w-4" />
-                Export PDF
-              </button>
-              <button
-                type="button"
-                disabled
-                title="Coming with LMS integration"
-                className="inline-flex cursor-not-allowed items-center gap-2 rounded-full border border-dashed border-gray-300 bg-white/60 px-4 py-2 text-sm font-medium text-gray-400"
-              >
-                <FileJson className="h-4 w-4" />
-                QTI / LMS (soon)
-              </button>
-              <button
-                type="button"
-                disabled={publishPending || topicBlocks.length === 0}
-                onClick={() => void handlePublish()}
-                className="ml-auto rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 disabled:opacity-50"
-              >
-                {publishPending ? 'Publishing…' : isEdit ? 'Save changes' : 'Publish assignment'}
-              </button>
-            </div>
-          </div>
         </div>
       )}
+      </div>
+    </TeacherToolsCreateLayout>
 
       <AssignmentPrintPreviewModal
         open={printOpen}
@@ -1141,26 +1308,22 @@ export default function AssignmentCreate() {
 
       <CustomModal
         open={discardOpen}
-        close={() => setDiscardOpen(false)}
-        title="Discard changes?"
-        primaryButtonText="Leave"
+        close={cancelDiscard}
+        title={t('teacherTools.leaveTitle')}
+        primaryButtonText={t('teacherTools.leave')}
         isDelete
-        handleSave={() => {
-          rag.resetSources()
-          setDiscardOpen(false)
-          goList()
-        }}
+        handleSave={confirmDiscard}
       >
         <p className="py-3 text-sm text-gray-600">
-          Unsaved catalog scope (titles, topics, refinement) will be cleared. Continue?
+          You have unsaved changes on this page. If you leave now, your progress will be cleared.
         </p>
       </CustomModal>
 
       <CustomModal
         open={editingLine !== null}
         close={() => setEditingLine(null)}
-        title="Edit brief line"
-        primaryButtonText="Save"
+        title={t('assignment.editLineTitle')}
+        primaryButtonText={t('teacherTools.save')}
         handleSave={() => {
           if (!editingLine) return
           updateLineText(editingLine.topicId, editingLine.lineId, editingLineValue)
@@ -1183,10 +1346,12 @@ export default function AssignmentCreate() {
         }}
         title={
           addingLineTopicId
-            ? `Add line — ${topicBlocks.find((t) => t.id === addingLineTopicId)?.title ?? 'Topic'}`
-            : 'Add brief line'
+            ? t('assignment.addLineTopic', {
+                topic: topicBlocks.find((tb) => tb.id === addingLineTopicId)?.title ?? t('teacherTools.topic'),
+              })
+            : t('assignment.addBriefLine')
         }
-        primaryButtonText="Add line"
+        primaryButtonText={t('assignment.addLineButton')}
         handleSave={() => {
           if (!addingLineTopicId || !addingLineValue.trim()) return
           addLineToTopic(addingLineTopicId, addingLineValue.trim())
@@ -1199,22 +1364,9 @@ export default function AssignmentCreate() {
           value={addingLineValue}
           onChange={(e) => setAddingLineValue(e.target.value)}
           className="mt-2 w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
-          placeholder="Write a new brief line for this topic section…"
+          placeholder={t('assignment.addLinePlaceholder')}
         />
       </CustomModal>
-
-      <div className="flex flex-wrap gap-3 border-t border-gray-200 pt-6">
-        <button
-          type="button"
-          onClick={() => {
-            if (rag.isDirty) setDiscardOpen(true)
-            else goList()
-          }}
-          className="text-sm font-semibold text-primary-600 hover:text-primary-500"
-        >
-          ← Back to assignment list
-        </button>
-      </div>
-    </div>
+    </>
   )
 }

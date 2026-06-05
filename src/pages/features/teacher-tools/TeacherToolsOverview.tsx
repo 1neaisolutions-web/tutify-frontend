@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
+import { useTranslation, type TFunction } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import {
   BarChart3,
@@ -59,7 +60,7 @@ function contentDetailPath(tool: ToolKind, id: string): string {
   }
 }
 
-function formatRelativeActivity(iso: string): string {
+function formatRelativeActivity(iso: string, t: TFunction): string {
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return ''
   const now = Date.now()
@@ -68,27 +69,51 @@ function formatRelativeActivity(iso: string): string {
   if (diffMs < 0) {
     return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: d.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined })
   }
-  if (absSec < 45) return 'Just now'
-  if (absSec < 3600) return `${Math.floor(absSec / 60)}m ago`
-  if (absSec < 86400) return `${Math.floor(absSec / 3600)}h ago`
+  if (absSec < 45) return t('teacherTools.overview.relativeJustNow')
+  if (absSec < 3600) return t('history.minutesAgo', { count: Math.floor(absSec / 60) })
+  if (absSec < 86400) return t('history.hoursAgo', { count: Math.floor(absSec / 3600) })
   const diffDays = Math.floor(absSec / 86400)
-  if (diffDays === 1) return 'Yesterday'
-  if (diffDays < 7) return `${diffDays}d ago`
+  if (diffDays === 1) return t('teacherTools.overview.relativeYesterday')
+  if (diffDays < 7) return t('history.daysAgo', { count: diffDays })
   return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
 }
 
-function deadlineUrgency(dateYmd: string): { headline: string; tone: 'soon' | 'week' | 'later' } {
+function deadlineUrgency(dateYmd: string, t: TFunction): { headline: string; tone: 'soon' | 'week' | 'later' } {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
   const target = new Date(`${dateYmd}T12:00:00`)
   const diffDays = Math.round((target.getTime() - today.getTime()) / 86400000)
-  if (diffDays === 0) return { headline: 'Today', tone: 'soon' }
-  if (diffDays === 1) return { headline: 'Tomorrow', tone: 'soon' }
-  if (diffDays <= 3) return { headline: `In ${diffDays} days`, tone: 'soon' }
-  if (diffDays <= 14) return { headline: `In ${diffDays} days`, tone: 'week' }
+  if (diffDays === 0) return { headline: t('teacherTools.overview.urgencyToday'), tone: 'soon' }
+  if (diffDays === 1) return { headline: t('teacherTools.overview.urgencyTomorrow'), tone: 'soon' }
+  if (diffDays <= 3) return { headline: t('teacherTools.overview.urgencyInDays', { count: diffDays }), tone: 'soon' }
+  if (diffDays <= 14) return { headline: t('teacherTools.overview.urgencyInDays', { count: diffDays }), tone: 'week' }
   return {
     headline: target.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }),
     tone: 'later',
+  }
+}
+
+function actionLabelForStatus(status: string, t: TFunction, isLive = false): string {
+  if (status === 'draft') return t('teacherTools.overview.actionSavedDraft')
+  if (isLive) return t('teacherTools.overview.actionLive')
+  if (status === 'published') return t('teacherTools.overview.actionPublished')
+  if (status === 'scheduled') return t('teacherTools.overview.actionScheduled')
+  if (status === 'archived') return t('teacherTools.overview.actionArchived')
+  return t('teacherTools.overview.actionUpdated')
+}
+
+function toolLabel(tool: ToolKind, t: TFunction): string {
+  switch (tool) {
+    case 'Quiz':
+      return t('quiz.breadcrumb')
+    case 'Assignment':
+      return t('teacherTools.toolAssign')
+    case 'Worksheet':
+      return t('teacherTools.toolSheet')
+    case 'Exam':
+      return t('teacherTools.toolExam')
+    default:
+      return tool
   }
 }
 
@@ -123,6 +148,7 @@ const TOOL_ACCENTS: Record<
 }
 
 export default function TeacherToolsOverview() {
+  const { t } = useTranslation()
   const { allQuizzes, allAssignments, allWorksheets, allExams } = useTeacherToolsDemo()
   const { data: stats, isLoading: statsLoading } = useGetStatsQuery()
 
@@ -181,16 +207,7 @@ export default function TeacherToolsOverview() {
     allQuizzes.forEach((q) => {
       const d = q.updatedAt ?? q.createdAt ?? q.assignedAt ?? ''
       if (!d) return
-      const actionLabel =
-        q.status === 'draft'
-          ? 'Saved as draft'
-          : q.status === 'published'
-            ? 'Published'
-            : q.status === 'scheduled'
-              ? 'Scheduled'
-              : q.status === 'archived'
-                ? 'Archived'
-                : 'Updated'
+      const actionLabel = actionLabelForStatus(q.status, t)
       const actType =
         q.status === 'draft' ? 'created' : q.status === 'scheduled' ? 'scheduled' : 'published'
       entries.push({
@@ -210,14 +227,7 @@ export default function TeacherToolsOverview() {
     allAssignments.forEach((a) => {
       const d = a.updatedAt ?? a.createdAt ?? (a.dueAt ? `${a.dueAt}T12:00:00.000Z` : '')
       if (!d) return
-      const actionLabel =
-        a.status === 'draft'
-          ? 'Saved as draft'
-          : isAssignmentLive(a.status)
-            ? 'Live'
-            : a.status === 'archived'
-              ? 'Archived'
-              : 'Updated'
+      const actionLabel = actionLabelForStatus(a.status, t, isAssignmentLive(a.status))
       entries.push({
         id: `asgn-${a.id}`,
         contentId: a.id,
@@ -235,14 +245,7 @@ export default function TeacherToolsOverview() {
     allWorksheets.forEach((w) => {
       const d = w.createdAt ?? ''
       if (!d) return
-      const actionLabel =
-        w.status === 'draft'
-          ? 'Saved as draft'
-          : w.status === 'published'
-            ? 'Published'
-            : w.status === 'archived'
-              ? 'Archived'
-              : 'Updated'
+      const actionLabel = actionLabelForStatus(w.status, t)
       entries.push({
         id: `ws-${w.id}`,
         contentId: w.id,
@@ -260,14 +263,7 @@ export default function TeacherToolsOverview() {
     allExams.forEach((e) => {
       const d = e.scheduleStart ?? ''
       if (!d) return
-      const actionLabel =
-        e.status === 'draft'
-          ? 'Saved as draft'
-          : e.status === 'scheduled'
-            ? 'Scheduled'
-            : e.status === 'archived'
-              ? 'Archived'
-              : 'Updated'
+      const actionLabel = actionLabelForStatus(e.status, t)
       entries.push({
         id: `exam-${e.id}`,
         contentId: e.id,
@@ -283,7 +279,7 @@ export default function TeacherToolsOverview() {
     })
 
     return entries.sort((a, b) => b.activityDate.localeCompare(a.activityDate)).slice(0, 20)
-  }, [allQuizzes, allAssignments, allWorksheets, allExams])
+  }, [allQuizzes, allAssignments, allWorksheets, allExams, t])
 
   const visibleFeed = liveActivityFeed
 
@@ -420,10 +416,10 @@ export default function TeacherToolsOverview() {
     const examCount = stats?.exams.total ?? allExams.length
     const max = Math.max(quizCount, assignCount, wsCount, examCount, 1)
     return [
-      { label: 'Quiz', value: quizCount, max, colorClass: 'bg-indigo-500' },
-      { label: 'Assign', value: assignCount, max, colorClass: 'bg-violet-500' },
-      { label: 'Sheet', value: wsCount, max, colorClass: 'bg-emerald-500' },
-      { label: 'Exam', value: examCount, max, colorClass: 'bg-amber-500' },
+      { label: t('quiz.breadcrumb'), value: quizCount, max, colorClass: 'bg-indigo-500' },
+      { label: t('teacherTools.toolAssign'), value: assignCount, max, colorClass: 'bg-violet-500' },
+      { label: t('teacherTools.toolSheet'), value: wsCount, max, colorClass: 'bg-emerald-500' },
+      { label: t('teacherTools.toolExam'), value: examCount, max, colorClass: 'bg-amber-500' },
     ]
   }, [stats, allQuizzes, allAssignments, allWorksheets, allExams])
 
@@ -433,47 +429,44 @@ export default function TeacherToolsOverview() {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-2xl space-y-3">
             <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white/90">
-              <Wrench className="h-4 w-4" /> Teacher Tools
+              <Wrench className="h-4 w-4" /> {t('teacherTools.overview.kicker')}
             </div>
-            <h1 className="text-3xl font-semibold leading-tight">Your teaching content command center</h1>
-            <p className="text-sm text-white/80">
-              Create, assign, and analyze quizzes, assignments, worksheets, and exams — with a workflow built for
-              international schools and multi-class teaching.
-            </p>
+            <h1 className="text-3xl font-semibold leading-tight">{t('teacherTools.overview.heroTitle')}</h1>
+            <p className="text-sm text-white/80">{t('teacherTools.overview.heroSubtitle')}</p>
             <div className="flex flex-wrap gap-2">
               <Link
                 to="/teacher-tools/quiz/create"
                 className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-primary-900 shadow hover:bg-gray-100"
               >
-                <Plus className="h-4 w-4" /> Create Quiz
+                <Plus className="h-4 w-4" /> {t('teacherTools.createQuiz')}
               </Link>
               <Link
                 to="/teacher-tools/assignment/create"
                 className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/20"
               >
-                Create Assignment
+                {t('teacherTools.createAssignment')}
               </Link>
               <Link
                 to="/teacher-tools/worksheet/create"
                 className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/20"
               >
-                Create Worksheet
+                {t('teacherTools.createWorksheet')}
               </Link>
               <Link
                 to="/teacher-tools/exams/create"
                 className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/20"
               >
-                Create Exam
+                {t('teacherTools.createExam')}
               </Link>
             </div>
           </div>
           <div className="grid w-full max-w-sm gap-3 rounded-2xl bg-white/10 p-5 backdrop-blur">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-white/70">Pending drafts</span>
+              <span className="text-white/70">{t('teacherTools.overview.kpiPendingDrafts')}</span>
               <span className="text-2xl font-semibold">{statsLoading ? '…' : kpis.totalDraft}</span>
             </div>
             <div className="flex items-center justify-between text-sm">
-              <span className="text-white/70">Published items</span>
+              <span className="text-white/70">{t('teacherTools.overview.kpiPublished')}</span>
               <span className="text-2xl font-semibold">{statsLoading ? '…' : kpis.totalPublished}</span>
             </div>
           </div>
@@ -482,25 +475,25 @@ export default function TeacherToolsOverview() {
 
       <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-gray-200 bg-white px-4 py-3 shadow-sm">
         <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
-          <span className="rounded-full bg-gray-100 px-2 py-1">Live</span>
-          <span>{SUBJECTS.length} subjects supported</span>
+          <span className="rounded-full bg-gray-100 px-2 py-1">{t('teacherTools.overview.actionLive')}</span>
+          <span>{t('teacherTools.overview.subjectsSupported', { count: SUBJECTS.length })}</span>
         </div>
-        <div className="text-xs text-gray-500">Overview shows your latest content activity and upcoming dates.</div>
+        <div className="text-xs text-gray-500">{t('teacherTools.overview.overviewHint')}</div>
       </div>
 
       {statsLoading && <CardGridSkeleton n={6} />}
 
       {!statsLoading && (
         <>
-          <p className="text-xs text-gray-500">Global metrics — not narrowed by filters below.</p>
+          <p className="text-xs text-gray-500">{t('teacherTools.overview.globalMetrics')}</p>
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {[
-              { label: 'Total active items', value: kpis.totalActive, icon: Layers },
-              { label: 'Scheduled this week', value: kpis.scheduledThisWeek, icon: Calendar },
-              { label: 'Pending drafts', value: kpis.totalDraft, icon: ClipboardCheck },
-              { label: 'Published items', value: kpis.totalPublished, icon: TrendingUp },
-              { label: 'Avg quiz score', value: kpis.avgScore !== null ? `${kpis.avgScore}%` : '—', icon: BarChart3 },
-              { label: 'Quizzes taken', value: allQuizzes.filter((q) => q.submissionCount > 0).length, icon: Sparkles },
+              { label: t('teacherTools.overview.kpiTotalActive'), value: kpis.totalActive, icon: Layers },
+              { label: t('teacherTools.overview.kpiScheduledWeek'), value: kpis.scheduledThisWeek, icon: Calendar },
+              { label: t('teacherTools.overview.kpiPendingDrafts'), value: kpis.totalDraft, icon: ClipboardCheck },
+              { label: t('teacherTools.overview.kpiPublished'), value: kpis.totalPublished, icon: TrendingUp },
+              { label: t('teacherTools.overview.kpiAvgQuizScore'), value: kpis.avgScore !== null ? `${kpis.avgScore}%` : '—', icon: BarChart3 },
+              { label: t('teacherTools.overview.kpiQuizzesTaken'), value: allQuizzes.filter((q) => q.submissionCount > 0).length, icon: Sparkles },
             ].map((k) => (
               <div key={k.label} className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
                 <div className="flex items-center justify-between">
@@ -515,14 +508,12 @@ export default function TeacherToolsOverview() {
       )}
 
       <SimpleBarChart
-        title="Tool library"
-        subtitle="Total items created per tool"
+        title={t('teacherTools.chartToolLibrary')}
+        subtitle={t('teacherTools.chartToolLibrarySubtitle')}
         points={liveToolPoints}
       />
 
-      <p className="text-xs font-medium text-gray-600">
-        Latest activity and upcoming dates from your library
-      </p>
+      <p className="text-xs font-medium text-gray-600">{t('teacherTools.overview.activitySectionTitle')}</p>
       <section className="grid gap-6 lg:grid-cols-2">
         <div className="overflow-hidden rounded-3xl border border-gray-200/90 bg-white shadow-[0_2px_8px_rgba(15,23,42,0.06)] ring-1 ring-black/[0.04]">
           <div className="border-b border-gray-100 bg-gradient-to-br from-slate-50/90 via-white to-primary-50/30 px-5 py-4 sm:px-6">
@@ -532,10 +523,8 @@ export default function TeacherToolsOverview() {
                   <Sparkles className="h-5 w-5" aria-hidden />
                 </span>
                 <div>
-                  <h3 className="text-base font-semibold tracking-tight text-gray-900">Recent activity</h3>
-                  <p className="mt-0.5 text-xs leading-relaxed text-gray-500">
-                    Live from your library — opens the item. Filter by type above.
-                  </p>
+                  <h3 className="text-base font-semibold tracking-tight text-gray-900">{t('teacherTools.overview.recentActivity')}</h3>
+                  <p className="mt-0.5 text-xs leading-relaxed text-gray-500">{t('teacherTools.overview.recentActivityHint')}</p>
                 </div>
               </div>
               {visibleFeed.length > 0 && (
@@ -550,7 +539,7 @@ export default function TeacherToolsOverview() {
               {visibleFeed.map((a) => {
                 const acc = TOOL_ACCENTS[a.tool]
                 const Icon = acc.Icon
-                const rel = formatRelativeActivity(a.activityDate)
+                const rel = formatRelativeActivity(a.activityDate, t)
                 return (
                   <li key={a.id}>
                     <Link
@@ -580,7 +569,7 @@ export default function TeacherToolsOverview() {
                           <span
                             className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${acc.chip}`}
                           >
-                            {a.tool}
+                            {toolLabel(a.tool, t)}
                           </span>
                           <span className="text-[11px] text-gray-500">{a.actionLabel}</span>
                         </div>
@@ -600,20 +589,17 @@ export default function TeacherToolsOverview() {
                   <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 text-gray-400 ring-1 ring-gray-200/80">
                     <ClipboardCheck className="h-8 w-8" aria-hidden />
                   </div>
-                  <p className="text-sm font-semibold text-gray-900">Your timeline is ready</p>
+                  <p className="text-sm font-semibold text-gray-900">{t('teacherTools.overview.timelineReady')}</p>
                   <p className="mt-2 max-w-[260px] text-xs leading-relaxed text-gray-500">
-                    Saves, publishes, and schedules will appear here as you work — tied to each quiz, assignment, worksheet, and
-                    exam.
+                    {t('teacherTools.overview.timelineEmpty')}
                   </p>
                 </div>
               ) : (
                 <div className="flex flex-col items-center px-4 py-12 text-center">
                   <div className="mb-3 rounded-full bg-amber-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-amber-800 ring-1 ring-amber-200/70">
-                    No matches
+                    {t('teacherTools.noMatches')}
                   </div>
-                  <p className="max-w-xs text-sm text-gray-600">
-                    No activity items available right now.
-                  </p>
+                  <p className="max-w-xs text-sm text-gray-600">{t('teacherTools.overview.noActivity')}</p>
                 </div>
               ))}
           </div>
@@ -627,10 +613,8 @@ export default function TeacherToolsOverview() {
                   <CalendarClock className="h-5 w-5" aria-hidden />
                 </span>
                 <div>
-                  <h3 className="text-base font-semibold tracking-tight text-gray-900">Upcoming deadlines</h3>
-                  <p className="mt-0.5 text-xs leading-relaxed text-gray-500">
-                    Due dates and scheduled exams — soon worksheet due dates too.
-                  </p>
+                  <h3 className="text-base font-semibold tracking-tight text-gray-900">{t('teacherTools.overview.upcomingDeadlines')}</h3>
+                  <p className="mt-0.5 text-xs leading-relaxed text-gray-500">{t('teacherTools.overview.deadlinesHint')}</p>
                 </div>
               </div>
               {visibleDeadlines.length > 0 && (
@@ -645,7 +629,7 @@ export default function TeacherToolsOverview() {
               {visibleDeadlines.map((d) => {
                 const acc = TOOL_ACCENTS[d.tool]
                 const Icon = acc.Icon
-                const urg = deadlineUrgency(d.date)
+                const urg = deadlineUrgency(d.date, t)
                 const urgencyRing =
                   urg.tone === 'soon'
                     ? 'bg-amber-50 text-amber-950 ring-amber-200/90'
@@ -679,7 +663,7 @@ export default function TeacherToolsOverview() {
                         </p>
                         <div className="mt-1.5 flex flex-wrap items-center gap-2">
                           <span className={`text-[10px] font-semibold uppercase tracking-wide ${acc.chip} rounded-full px-2 py-0.5`}>
-                            {d.tool}
+                            {toolLabel(d.tool, t)}
                           </span>
                           <span className="text-[11px] tabular-nums text-gray-500">{d.date}</span>
                         </div>
@@ -699,19 +683,17 @@ export default function TeacherToolsOverview() {
                   <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-50 to-white text-emerald-600 ring-1 ring-emerald-200/70">
                     <Calendar className="h-8 w-8" aria-hidden />
                   </div>
-                  <p className="text-sm font-semibold text-gray-900">No upcoming dates</p>
+                  <p className="text-sm font-semibold text-gray-900">{t('teacherTools.overview.noUpcoming')}</p>
                   <p className="mt-2 max-w-[260px] text-xs leading-relaxed text-gray-500">
-                    Add due dates on quizzes and assignments or schedule exams — they roll up here in chronological order.
+                    {t('teacherTools.overview.deadlinesEmpty')}
                   </p>
                 </div>
               ) : (
                 <div className="flex flex-col items-center px-4 py-12 text-center">
                   <div className="mb-3 rounded-full bg-amber-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-amber-800 ring-1 ring-amber-200/70">
-                    No matches
+                    {t('teacherTools.noMatches')}
                   </div>
-                  <p className="max-w-xs text-sm text-gray-600">
-                    No deadlines available right now.
-                  </p>
+                  <p className="max-w-xs text-sm text-gray-600">{t('teacherTools.overview.noDeadlines')}</p>
                 </div>
               ))}
           </div>
@@ -721,21 +703,18 @@ export default function TeacherToolsOverview() {
       <section className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Recent hand-ins</h3>
-            <p className="mt-0.5 text-xs text-gray-500">Student submission tracking.</p>
+            <h3 className="text-lg font-semibold text-gray-900">{t('teacherTools.overview.recentHandins')}</h3>
+            <p className="mt-0.5 text-xs text-gray-500">{t('teacherTools.overview.handinsHint')}</p>
           </div>
-          <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-500">Phase 2</span>
+          <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-500">{t('teacherTools.phase2Badge')}</span>
         </div>
-        <p className="mt-3 text-sm text-gray-500">
-          When students submit quizzes, assignments, worksheets, and exams, their hand-ins appear here. Student-facing portal
-          coming in Phase 2.
-        </p>
+        <p className="mt-3 text-sm text-gray-500">{t('teacherTools.overview.handinsBody')}</p>
       </section>
 
       <section className="grid gap-6">
         <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-900">Continue editing</h3>
-          <p className="mt-0.5 text-xs text-gray-500">Drafts in your library — opens the editor.</p>
+          <h3 className="text-lg font-semibold text-gray-900">{t('teacherTools.overview.continueEditing')}</h3>
+          <p className="mt-0.5 text-xs text-gray-500">{t('teacherTools.overview.draftsHint')}</p>
           <ul className="mt-4 space-y-2">
             {visibleDrafts.map((d) => (
               <li key={`${d.tool}-${d.id}`}>
@@ -753,7 +732,7 @@ export default function TeacherToolsOverview() {
             ))}
           </ul>
               {visibleDrafts.length === 0 && (
-            <p className="mt-2 text-sm text-gray-500">No drafts match these filters.</p>
+            <p className="mt-2 text-sm text-gray-500">{t('teacherTools.overview.noDraftsFilter')}</p>
           )}
         </div>
       </section>

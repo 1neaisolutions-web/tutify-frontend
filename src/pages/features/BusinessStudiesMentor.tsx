@@ -52,11 +52,13 @@ import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
 
+import { useTranslation } from 'react-i18next'
 const BUSINESS_MENTOR_SLUG = 'business-studies-mentor'
 
 type TabType = 'standards' | 'entrepreneurship' | 'economics' | 'financial' | 'scenarios' | 'trade' | 'cultural' | 'assessment'
 
 const BusinessStudiesMentor = () => {
+  const { t } = useTranslation()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const [activeTab, setActiveTab] = useState<TabType>('standards')
   const [gradeLevel, setGradeLevel] = useState('9-12')
@@ -321,14 +323,14 @@ const BusinessStudiesMentor = () => {
   }
 
   const tabs = [
-    { id: 'standards' as TabType, label: 'International Standards', icon: Award },
-    { id: 'entrepreneurship' as TabType, label: 'Entrepreneurship', icon: Lightbulb },
-    { id: 'economics' as TabType, label: 'Economics', icon: TrendingUp },
-    { id: 'financial' as TabType, label: 'Financial Literacy', icon: DollarSign },
-    { id: 'scenarios' as TabType, label: 'Business Scenarios', icon: Briefcase },
-    { id: 'trade' as TabType, label: 'Trade Agreements', icon: Network },
-    { id: 'cultural' as TabType, label: 'Cross-Cultural Guide', icon: Globe },
-    { id: 'assessment' as TabType, label: 'Assessment Tools', icon: FileText },
+    { id: 'standards' as TabType, label: t('businessStudiesMentor.tabs.standards'), icon: Award },
+    { id: 'entrepreneurship' as TabType, label: t('businessStudiesMentor.tabs.entrepreneurship'), icon: Lightbulb },
+    { id: 'economics' as TabType, label: t('businessStudiesMentor.tabs.economics'), icon: TrendingUp },
+    { id: 'financial' as TabType, label: t('businessStudiesMentor.tabs.financial'), icon: DollarSign },
+    { id: 'scenarios' as TabType, label: t('businessStudiesMentor.tabs.scenarios'), icon: Briefcase },
+    { id: 'trade' as TabType, label: t('businessStudiesMentor.tabs.trade'), icon: Network },
+    { id: 'cultural' as TabType, label: t('businessStudiesMentor.tabs.cultural'), icon: Globe },
+    { id: 'assessment' as TabType, label: t('businessStudiesMentor.tabs.assessment'), icon: FileText },
   ]
   // Exclude last sub-chatbot (Trade Agreements) from UI; data still from backend for rest
   const visibleTabs = tabs.filter((t) => t.id !== 'trade')
@@ -353,29 +355,23 @@ const BusinessStudiesMentor = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-3xl font-bold">Business Studies Mentor</h1>
+                  <h1 className="text-3xl font-bold">{t('businessStudiesMentor.businessStudiesMentor')}</h1>
                   <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
                     <Star className="h-3 w-3" /> 4.9★
                   </span>
                   <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" /> Premium
-                  </span>
+                    <Lock className="inline h-3 w-3 mr-1" />{t('businessStudiesMentor.premium')}</span>
                   <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
-                    <Globe className="inline h-3 w-3 mr-1" /> International Focus
-                  </span>
+                    <Globe className="inline h-3 w-3 mr-1" />{t('businessStudiesMentor.internationalFocus')}</span>
                 </div>
-                <p className="mt-2 text-blue-100">
-                  Advanced tools for teaching international business, entrepreneurship, economics, and financial literacy. 
-                  Prepare students to compete globally and bring business opportunities to their country through 
-                  comprehensive understanding of international standards, trade agreements, and cross-cultural business practices.
-                </p>
+                <p className="mt-2 text-blue-100">{t('businessStudiesMentor.heroDescription')}</p>
               </div>
             </div>
             
             {/* Quick Settings */}
             <div className="flex flex-wrap gap-4 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Grade Level:</label>
+                <label className="text-sm font-medium">{t('businessStudiesMentor.gradeLevel')}</label>
                 <select
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
@@ -383,11 +379,11 @@ const BusinessStudiesMentor = () => {
                 >
                   <option value="9-12">9-12</option>
                   <option value="11-12">11-12</option>
-                  <option value="College">College</option>
+                  <option value="College">{t('businessStudiesMentor.college')}</option>
                 </select>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Region:</label>
+                <label className="text-sm font-medium">{t('businessStudiesMentor.region')}</label>
                 <select
                   value={selectedRegion}
                   onChange={(e) => setSelectedRegion(e.target.value)}
@@ -399,7 +395,7 @@ const BusinessStudiesMentor = () => {
                 </select>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Industry:</label>
+                <label className="text-sm font-medium">{t('businessStudiesMentor.industry')}</label>
                 <select
                   value={selectedIndustry}
                   onChange={(e) => setSelectedIndustry(e.target.value)}
@@ -445,26 +441,19 @@ const BusinessStudiesMentor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Award className="h-6 w-6 text-blue-600" />
-                  International Business Standards
-                </h2>
-                <p className="text-gray-600 mb-4">
-                  Explore global business standards that enable international trade and business operations. 
-                  Understand compliance requirements and benefits for global market access.
-                </p>
+                  <Award className="h-6 w-6 text-blue-600" />{t('businessStudiesMentor.internationalBusinessStandards')}</h2>
+                <p className="text-gray-600 mb-4">{t('businessStudiesMentor.exploreGlobalBusinessStandardsThatEnableInternationalTr')}</p>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select Standard
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('businessStudiesMentor.selectStandard')}</label>
                     <select
                       value={selectedStandard}
                       onChange={(e) => setSelectedStandard(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     >
-                      <option>ISO 9001</option>
-                      <option>IFRS</option>
-                      <option>WTO Trade Rules</option>
+                      <option>{t('businessStudiesMentor.iso9001')}</option>
+                      <option>{t('businessStudiesMentor.ifrs')}</option>
+                      <option>{t('businessStudiesMentor.wtoTradeRules')}</option>
                     </select>
                   </div>
                   <div className="flex items-end">
@@ -475,14 +464,10 @@ const BusinessStudiesMentor = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Loading...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('businessStudiesMentor.loading')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Explore Standard
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('businessStudiesMentor.exploreStandard')}</>
                       )}
                     </button>
                   </div>
@@ -510,13 +495,13 @@ const BusinessStudiesMentor = () => {
 
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Description</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.description')}</h4>
                       <p className="text-gray-700">{businessStandard.description}</p>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Key Principles</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.keyPrinciples')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {businessStandard.keyPrinciples.map((principle, i) => (
                             <li key={i}>{principle}</li>
@@ -524,7 +509,7 @@ const BusinessStudiesMentor = () => {
                         </ul>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Application Areas</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.applicationAreas')}</h4>
                         <div className="flex flex-wrap gap-2">
                           {businessStandard.applicationAreas.map((area, i) => (
                             <span key={i} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
@@ -536,7 +521,7 @@ const BusinessStudiesMentor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Compliance Requirements</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.complianceRequirements')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {businessStandard.complianceRequirements.map((req, i) => (
                           <li key={i}>{req}</li>
@@ -545,7 +530,7 @@ const BusinessStudiesMentor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Benefits</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.benefits')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {businessStandard.benefits.map((benefit, i) => (
                           <li key={i}>{benefit}</li>
@@ -554,7 +539,7 @@ const BusinessStudiesMentor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Case Studies</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.caseStudies')}</h4>
                       <div className="space-y-2">
                         {businessStandard.caseStudies.map((study, i) => (
                           <div key={i} className="bg-gray-50 p-3 rounded-lg">
@@ -576,13 +561,8 @@ const BusinessStudiesMentor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Lightbulb className="h-6 w-6 text-purple-600" />
-                  Entrepreneurship Framework
-                </h2>
-                <p className="text-gray-600 mb-4">
-                  Comprehensive framework for teaching entrepreneurship with international considerations. 
-                  Guide students through ideation, planning, and launch stages.
-                </p>
+                  <Lightbulb className="h-6 w-6 text-purple-600" />{t('businessStudiesMentor.entrepreneurshipFramework')}</h2>
+                <p className="text-gray-600 mb-4">{t('businessStudiesMentor.comprehensiveFrameworkForTeachingEntrepreneurshipWithIn')}</p>
                 <button
                   onClick={handleGetEntrepreneurshipFramework}
                   disabled={isGenerating}
@@ -590,14 +570,10 @@ const BusinessStudiesMentor = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('businessStudiesMentor.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load Framework
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('businessStudiesMentor.loadFramework')}</>
                   )}
                 </button>
               </div>
@@ -618,7 +594,7 @@ const BusinessStudiesMentor = () => {
 
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Activities</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.activities')}</h4>
                           <ul className="list-disc list-inside space-y-1 text-gray-700">
                             {stage.activities.map((activity, i) => (
                               <li key={i}>{activity}</li>
@@ -626,7 +602,7 @@ const BusinessStudiesMentor = () => {
                           </ul>
                         </div>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Skills Developed</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.skillsDeveloped')}</h4>
                           <div className="flex flex-wrap gap-2">
                             {stage.skills.map((skill, i) => (
                               <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -638,7 +614,7 @@ const BusinessStudiesMentor = () => {
                       </div>
 
                       <div className="mt-4 pt-4 border-t border-gray-200">
-                        <h4 className="font-semibold text-gray-900 mb-2">International Considerations</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.internationalConsiderations')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {stage.internationalConsiderations.map((consideration, i) => (
                             <li key={i}>{consideration}</li>
@@ -648,7 +624,7 @@ const BusinessStudiesMentor = () => {
 
                       <div className="mt-4 grid md:grid-cols-2 gap-4">
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Challenges</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.challenges')}</h4>
                           <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                             {stage.challenges.map((challenge, i) => (
                               <li key={i}>{challenge}</li>
@@ -656,7 +632,7 @@ const BusinessStudiesMentor = () => {
                           </ul>
                         </div>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Success Factors</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.successFactors')}</h4>
                           <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                             {stage.successFactors.map((factor, i) => (
                               <li key={i}>{factor}</li>
@@ -676,24 +652,20 @@ const BusinessStudiesMentor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <TrendingUp className="h-6 w-6 text-green-600" />
-                  Economic Concepts
-                </h2>
+                  <TrendingUp className="h-6 w-6 text-green-600" />{t('businessStudiesMentor.economicConcepts')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select Concept
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('businessStudiesMentor.selectConcept')}</label>
                     <select
                       value={selectedConcept}
                       onChange={(e) => setSelectedConcept(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
                     >
-                      <option>Supply and Demand</option>
-                      <option>Comparative Advantage</option>
-                      <option>Exchange Rates</option>
-                      <option>Market Structures</option>
-                      <option>Economic Growth</option>
+                      <option>{t('businessStudiesMentor.supplyAndDemand')}</option>
+                      <option>{t('businessStudiesMentor.comparativeAdvantage')}</option>
+                      <option>{t('businessStudiesMentor.exchangeRates')}</option>
+                      <option>{t('businessStudiesMentor.marketStructures')}</option>
+                      <option>{t('businessStudiesMentor.economicGrowth')}</option>
                     </select>
                   </div>
                   <div className="flex items-end">
@@ -704,14 +676,10 @@ const BusinessStudiesMentor = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Loading...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('businessStudiesMentor.loading')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Get Concept
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('businessStudiesMentor.getConcept')}</>
                       )}
                     </button>
                   </div>
@@ -732,13 +700,13 @@ const BusinessStudiesMentor = () => {
 
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Description</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.description')}</h4>
                       <p className="text-gray-700">{economicConcept.description}</p>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Key Terms</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.keyTerms')}</h4>
                         <div className="flex flex-wrap gap-2">
                           {economicConcept.keyTerms.map((term, i) => (
                             <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -748,7 +716,7 @@ const BusinessStudiesMentor = () => {
                         </div>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Real-World Examples</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.realWorldExamples')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {economicConcept.realWorldExamples.map((example, i) => (
                             <li key={i}>{example}</li>
@@ -758,7 +726,7 @@ const BusinessStudiesMentor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">International Implications</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.internationalImplications')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {economicConcept.internationalImplications.map((implication, i) => (
                           <li key={i}>{implication}</li>
@@ -768,7 +736,7 @@ const BusinessStudiesMentor = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Teaching Strategies</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.teachingStrategies')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {economicConcept.teachingStrategies.map((strategy, i) => (
                             <li key={i}>{strategy}</li>
@@ -776,7 +744,7 @@ const BusinessStudiesMentor = () => {
                         </ul>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Case Studies</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.caseStudies')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {economicConcept.caseStudies.map((study, i) => (
                             <li key={i}>{study}</li>
@@ -795,23 +763,19 @@ const BusinessStudiesMentor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-6 border border-amber-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <DollarSign className="h-6 w-6 text-amber-600" />
-                  Financial Literacy Modules
-                </h2>
+                  <DollarSign className="h-6 w-6 text-amber-600" />{t('businessStudiesMentor.financialLiteracyModules')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Topic
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('businessStudiesMentor.topic')}</label>
                     <select
                       value={financialTopic}
                       onChange={(e) => setFinancialTopic(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500"
                     >
-                      <option>Personal Budgeting</option>
-                      <option>Investment Basics</option>
-                      <option>Credit & Debt</option>
-                      <option>Retirement Planning</option>
+                      <option>{t('businessStudiesMentor.personalBudgeting')}</option>
+                      <option>{t('businessStudiesMentor.investmentBasics')}</option>
+                      <option>{t('businessStudiesMentor.creditDebt')}</option>
+                      <option>{t('businessStudiesMentor.retirementPlanning')}</option>
                     </select>
                   </div>
                   <div className="flex items-end">
@@ -822,14 +786,10 @@ const BusinessStudiesMentor = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Generating...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('businessStudiesMentor.generating')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Generate Module
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('businessStudiesMentor.generateModule')}</>
                       )}
                     </button>
                   </div>
@@ -842,7 +802,7 @@ const BusinessStudiesMentor = () => {
                   
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Learning Objectives</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.learningObjectives')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {financialModule.learningObjectives.map((obj, i) => (
                           <li key={i}>{obj}</li>
@@ -852,7 +812,7 @@ const BusinessStudiesMentor = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Key Concepts</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.keyConcepts')}</h4>
                         <div className="flex flex-wrap gap-2">
                           {financialModule.keyConcepts.map((concept, i) => (
                             <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -862,7 +822,7 @@ const BusinessStudiesMentor = () => {
                         </div>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Activities</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.activities')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {financialModule.activities.map((activity, i) => (
                             <li key={i}>{activity}</li>
@@ -872,7 +832,7 @@ const BusinessStudiesMentor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">International Perspectives</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.internationalPerspectives')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {financialModule.internationalPerspectives.map((perspective, i) => (
                           <li key={i}>{perspective}</li>
@@ -881,7 +841,7 @@ const BusinessStudiesMentor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Assessment</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.assessment')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {financialModule.assessment.map((item, i) => (
                           <li key={i}>{item}</li>
@@ -899,23 +859,19 @@ const BusinessStudiesMentor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 border border-indigo-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Briefcase className="h-6 w-6 text-indigo-600" />
-                  Real-World Business Scenarios
-                </h2>
+                  <Briefcase className="h-6 w-6 text-indigo-600" />{t('businessStudiesMentor.realWorldBusinessScenarios')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Scenario Type
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('businessStudiesMentor.scenarioType')}</label>
                     <select
                       value={scenarioType}
                       onChange={(e) => setScenarioType(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
                     >
-                      <option>Export Expansion</option>
-                      <option>Startup Pitch</option>
-                      <option>Market Entry</option>
-                      <option>Joint Venture</option>
+                      <option>{t('businessStudiesMentor.exportExpansion')}</option>
+                      <option>{t('businessStudiesMentor.startupPitch')}</option>
+                      <option>{t('businessStudiesMentor.marketEntry')}</option>
+                      <option>{t('businessStudiesMentor.jointVenture')}</option>
                     </select>
                   </div>
                   <div className="flex items-end">
@@ -926,14 +882,10 @@ const BusinessStudiesMentor = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Generating...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('businessStudiesMentor.generating')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Generate Scenario
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('businessStudiesMentor.generateScenario')}</>
                       )}
                     </button>
                   </div>
@@ -964,12 +916,12 @@ const BusinessStudiesMentor = () => {
 
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Scenario</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.scenario')}</h4>
                       <p className="text-gray-700">{businessScenario.scenario}</p>
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Learning Objectives</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.learningObjectives')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {businessScenario.objectives.map((obj, i) => (
                           <li key={i}>{obj}</li>
@@ -978,7 +930,7 @@ const BusinessStudiesMentor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Key Questions</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.keyQuestions')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {businessScenario.questions.map((q, i) => (
                           <li key={i}>{q}</li>
@@ -988,7 +940,7 @@ const BusinessStudiesMentor = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Resources</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.resources')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {businessScenario.resources.map((resource, i) => (
                             <li key={i}>{resource}</li>
@@ -996,7 +948,7 @@ const BusinessStudiesMentor = () => {
                         </ul>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">International Elements</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.internationalElements')}</h4>
                         <div className="flex flex-wrap gap-2">
                           {businessScenario.internationalElements.map((element, i) => (
                             <span key={i} className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
@@ -1008,7 +960,7 @@ const BusinessStudiesMentor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Expected Outcomes</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.expectedOutcomes')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {businessScenario.expectedOutcomes.map((outcome, i) => (
                           <li key={i}>{outcome}</li>
@@ -1026,13 +978,8 @@ const BusinessStudiesMentor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-xl p-6 border border-teal-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Network className="h-6 w-6 text-teal-600" />
-                  International Trade Agreements
-                </h2>
-                <p className="text-gray-600 mb-4">
-                  Explore major trade agreements that shape global commerce. Understand how these agreements 
-                  create opportunities for international business and economic growth.
-                </p>
+                  <Network className="h-6 w-6 text-teal-600" />{t('businessStudiesMentor.internationalTradeAgreements')}</h2>
+                <p className="text-gray-600 mb-4">{t('businessStudiesMentor.exploreMajorTradeAgreementsThatShapeGlobalCommerceUnder')}</p>
                 <button
                   onClick={handleGetTradeAgreements}
                   disabled={isGenerating}
@@ -1040,14 +987,10 @@ const BusinessStudiesMentor = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('businessStudiesMentor.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load Trade Agreements
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('businessStudiesMentor.loadTradeAgreements')}</>
                   )}
                 </button>
               </div>
@@ -1075,7 +1018,7 @@ const BusinessStudiesMentor = () => {
 
                       <div className="space-y-4">
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Participating Countries</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.participatingCountries')}</h4>
                           <div className="flex flex-wrap gap-2">
                             {agreement.countries.map((country, i) => (
                               <span key={i} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium">
@@ -1087,7 +1030,7 @@ const BusinessStudiesMentor = () => {
 
                         <div className="grid md:grid-cols-2 gap-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Key Provisions</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.keyProvisions')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {agreement.keyProvisions.map((provision, i) => (
                                 <li key={i}>{provision}</li>
@@ -1095,7 +1038,7 @@ const BusinessStudiesMentor = () => {
                             </ul>
                           </div>
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Benefits</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.benefits')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {agreement.benefits.map((benefit, i) => (
                                 <li key={i}>{benefit}</li>
@@ -1106,7 +1049,7 @@ const BusinessStudiesMentor = () => {
 
                         <div className="grid md:grid-cols-2 gap-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Challenges</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.challenges')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {agreement.challenges.map((challenge, i) => (
                                 <li key={i}>{challenge}</li>
@@ -1114,7 +1057,7 @@ const BusinessStudiesMentor = () => {
                             </ul>
                           </div>
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Impact</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.impact')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {agreement.impact.map((impact, i) => (
                                 <li key={i}>{impact}</li>
@@ -1124,7 +1067,7 @@ const BusinessStudiesMentor = () => {
                         </div>
 
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-2">Teaching Points</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.teachingPoints')}</h4>
                           <ul className="list-disc list-inside space-y-1 text-gray-700">
                             {agreement.teachingPoints.map((point, i) => (
                               <li key={i}>{point}</li>
@@ -1144,24 +1087,20 @@ const BusinessStudiesMentor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-pink-50 to-rose-50 rounded-xl p-6 border border-pink-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Globe className="h-6 w-6 text-pink-600" />
-                  Cross-Cultural Business Guide
-                </h2>
+                  <Globe className="h-6 w-6 text-pink-600" />{t('businessStudiesMentor.crossCulturalBusinessGuide')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select Region
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('businessStudiesMentor.selectRegion')}</label>
                     <select
                       value={culturalRegion}
                       onChange={(e) => setCulturalRegion(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500"
                     >
-                      <option>Asia-Pacific</option>
-                      <option>Middle East</option>
-                      <option>Latin America</option>
-                      <option>Europe</option>
-                      <option>Africa</option>
+                      <option>{t('businessStudiesMentor.asiaPacific')}</option>
+                      <option>{t('businessStudiesMentor.middleEast')}</option>
+                      <option>{t('businessStudiesMentor.latinAmerica')}</option>
+                      <option>{t('businessStudiesMentor.europe')}</option>
+                      <option>{t('businessStudiesMentor.africa')}</option>
                     </select>
                   </div>
                   <div className="flex items-end">
@@ -1172,14 +1111,10 @@ const BusinessStudiesMentor = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Loading...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('businessStudiesMentor.loading')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Get Guide
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('businessStudiesMentor.getGuide')}</>
                       )}
                     </button>
                   </div>
@@ -1192,7 +1127,7 @@ const BusinessStudiesMentor = () => {
                   
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Business Practices</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.businessPractices')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {culturalGuide.businessPractices.map((practice, i) => (
                           <li key={i}>{practice}</li>
@@ -1202,7 +1137,7 @@ const BusinessStudiesMentor = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Communication Styles</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.communicationStyles')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {culturalGuide.communicationStyles.map((style, i) => (
                             <li key={i}>{style}</li>
@@ -1210,7 +1145,7 @@ const BusinessStudiesMentor = () => {
                         </ul>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Negotiation Approaches</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.negotiationApproaches')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {culturalGuide.negotiationApproaches.map((approach, i) => (
                             <li key={i}>{approach}</li>
@@ -1220,7 +1155,7 @@ const BusinessStudiesMentor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Cultural Considerations</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.culturalConsiderations')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {culturalGuide.culturalConsiderations.map((consideration, i) => (
                           <li key={i}>{consideration}</li>
@@ -1230,7 +1165,7 @@ const BusinessStudiesMentor = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Common Mistakes</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.commonMistakes')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {culturalGuide.commonMistakes.map((mistake, i) => (
                             <li key={i}>{mistake}</li>
@@ -1238,7 +1173,7 @@ const BusinessStudiesMentor = () => {
                         </ul>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Success Strategies</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.successStrategies')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {culturalGuide.successStrategies.map((strategy, i) => (
                             <li key={i}>{strategy}</li>
@@ -1248,7 +1183,7 @@ const BusinessStudiesMentor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Case Examples</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('businessStudiesMentor.caseExamples')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {culturalGuide.caseExamples.map((example, i) => (
                           <li key={i}>{example}</li>
@@ -1266,112 +1201,99 @@ const BusinessStudiesMentor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-violet-50 to-purple-50 rounded-xl p-6 border border-violet-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <FileText className="h-6 w-6 text-violet-600" />
-                  Assessment & Evaluation Tools
-                </h2>
-                <p className="text-gray-600">
-                  Comprehensive assessment tools for evaluating student understanding of international business concepts, 
-                  entrepreneurship skills, and financial literacy.
-                </p>
+                  <FileText className="h-6 w-6 text-violet-600" />{t('businessStudiesMentor.assessmentEvaluationTools')}</h2>
+                <p className="text-gray-600">{t('businessStudiesMentor.comprehensiveAssessmentToolsForEvaluatingStudentUnderst')}</p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Target className="h-5 w-5 text-violet-600" />
-                    Case Study Analysis Rubric
-                  </h3>
+                    <Target className="h-5 w-5 text-violet-600" />{t('businessStudiesMentor.caseStudyAnalysisRubric')}</h3>
                   <div className="space-y-3">
                     <div className="border-l-4 border-violet-500 pl-4">
                       <h4 className="font-semibold text-gray-900">Analysis Depth (25 points)</h4>
-                      <p className="text-sm text-gray-600">Excellent: Comprehensive analysis with multiple perspectives</p>
+                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.excellentComprehensiveAnalysisWithMultiplePerspectives')}</p>
                     </div>
                     <div className="border-l-4 border-violet-500 pl-4">
                       <h4 className="font-semibold text-gray-900">International Context (25 points)</h4>
-                      <p className="text-sm text-gray-600">Excellent: Strong understanding of global business factors</p>
+                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.excellentStrongUnderstandingOfGlobalBusinessFactors')}</p>
                     </div>
                     <div className="border-l-4 border-violet-500 pl-4">
                       <h4 className="font-semibold text-gray-900">Critical Thinking (25 points)</h4>
-                      <p className="text-sm text-gray-600">Excellent: Sophisticated evaluation and recommendations</p>
+                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.excellentSophisticatedEvaluationAndRecommendations')}</p>
                     </div>
                     <div className="border-l-4 border-violet-500 pl-4">
                       <h4 className="font-semibold text-gray-900">Communication (25 points)</h4>
-                      <p className="text-sm text-gray-600">Excellent: Clear, professional, well-structured presentation</p>
+                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.excellentClearProfessionalWellStructuredPresentation')}</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <BarChart3 className="h-5 w-5 text-violet-600" />
-                    Business Plan Evaluation
-                  </h3>
+                    <BarChart3 className="h-5 w-5 text-violet-600" />{t('businessStudiesMentor.businessPlanEvaluation')}</h3>
                   <div className="space-y-3">
                     <div className="border-l-4 border-violet-500 pl-4">
                       <h4 className="font-semibold text-gray-900">Market Analysis (20 points)</h4>
-                      <p className="text-sm text-gray-600">Includes global market opportunity assessment</p>
+                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.includesGlobalMarketOpportunityAssessment')}</p>
                     </div>
                     <div className="border-l-4 border-violet-500 pl-4">
                       <h4 className="font-semibold text-gray-900">Financial Projections (20 points)</h4>
-                      <p className="text-sm text-gray-600">Realistic multi-currency financial model</p>
+                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.realisticMultiCurrencyFinancialModel')}</p>
                     </div>
                     <div className="border-l-4 border-violet-500 pl-4">
                       <h4 className="font-semibold text-gray-900">International Strategy (20 points)</h4>
-                      <p className="text-sm text-gray-600">Clear expansion and cultural adaptation plan</p>
+                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.clearExpansionAndCulturalAdaptationPlan')}</p>
                     </div>
                     <div className="border-l-4 border-violet-500 pl-4">
                       <h4 className="font-semibold text-gray-900">Feasibility (20 points)</h4>
-                      <p className="text-sm text-gray-600">Realistic assessment of challenges and opportunities</p>
+                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.realisticAssessmentOfChallengesAndOpportunities')}</p>
                     </div>
                     <div className="border-l-4 border-violet-500 pl-4">
                       <h4 className="font-semibold text-gray-900">Presentation (20 points)</h4>
-                      <p className="text-sm text-gray-600">Professional pitch with visual aids</p>
+                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.professionalPitchWithVisualAids')}</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Coins className="h-5 w-5 text-violet-600" />
-                    Financial Literacy Assessment
-                  </h3>
+                    <Coins className="h-5 w-5 text-violet-600" />{t('businessStudiesMentor.financialLiteracyAssessment')}</h3>
                   <div className="space-y-3">
                     <div className="border-l-4 border-violet-500 pl-4">
                       <h4 className="font-semibold text-gray-900">Budget Creation (30 points)</h4>
-                      <p className="text-sm text-gray-600">Realistic budget with international cost considerations</p>
+                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.realisticBudgetWithInternationalCostConsiderations')}</p>
                     </div>
                     <div className="border-l-4 border-violet-500 pl-4">
                       <h4 className="font-semibold text-gray-900">Investment Understanding (30 points)</h4>
-                      <p className="text-sm text-gray-600">Knowledge of global investment options and risks</p>
+                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.knowledgeOfGlobalInvestmentOptionsAndRisks')}</p>
                     </div>
                     <div className="border-l-4 border-violet-500 pl-4">
                       <h4 className="font-semibold text-gray-900">Financial Decision Making (40 points)</h4>
-                      <p className="text-sm text-gray-600">Ability to make informed financial decisions with global perspective</p>
+                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.abilityToMakeInformedFinancialDecisionsWithGlobalPerspe')}</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Users className="h-5 w-5 text-violet-600" />
-                    Cross-Cultural Competency
-                  </h3>
+                    <Users className="h-5 w-5 text-violet-600" />{t('businessStudiesMentor.crossCulturalCompetency')}</h3>
                   <div className="space-y-3">
                     <div className="border-l-4 border-violet-500 pl-4">
                       <h4 className="font-semibold text-gray-900">Cultural Awareness (25 points)</h4>
-                      <p className="text-sm text-gray-600">Understanding of cultural differences and business practices</p>
+                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.understandingOfCulturalDifferencesAndBusinessPractices')}</p>
                     </div>
                     <div className="border-l-4 border-violet-500 pl-4">
                       <h4 className="font-semibold text-gray-900">Communication Skills (25 points)</h4>
-                      <p className="text-sm text-gray-600">Effective cross-cultural communication strategies</p>
+                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.effectiveCrossCulturalCommunicationStrategies')}</p>
                     </div>
                     <div className="border-l-4 border-violet-500 pl-4">
                       <h4 className="font-semibold text-gray-900">Adaptation Strategies (25 points)</h4>
-                      <p className="text-sm text-gray-600">Ability to adapt business approaches to different cultures</p>
+                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.abilityToAdaptBusinessApproachesToDifferentCultures')}</p>
                     </div>
                     <div className="border-l-4 border-violet-500 pl-4">
                       <h4 className="font-semibold text-gray-900">Case Application (25 points)</h4>
-                      <p className="text-sm text-gray-600">Application of cultural knowledge to real scenarios</p>
+                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.applicationOfCulturalKnowledgeToRealScenarios')}</p>
                     </div>
                   </div>
                 </div>

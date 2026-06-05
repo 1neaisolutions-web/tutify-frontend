@@ -1,4 +1,5 @@
 import { Loader2, Sparkles } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 type Props = {
   open: boolean
@@ -7,6 +8,7 @@ type Props = {
 }
 
 export function QuizGeneratingOverlay({ open, progress = 0.62 }: Props) {
+  const { t } = useTranslation()
   if (!open) return null
   return (
     <div
@@ -38,7 +40,7 @@ export function QuizGeneratingOverlay({ open, progress = 0.62 }: Props) {
           </div>
           <div className="flex items-center gap-2 text-xs text-gray-500">
             <Loader2 className="h-3.5 w-3.5 animate-spin text-indigo-600" aria-hidden />
-            <span>Vector retrieval · constraint checks · item synthesis (demo pipeline)</span>
+            <span>{t('quiz.generating.pipeline')}</span>
           </div>
         </div>
       </div>

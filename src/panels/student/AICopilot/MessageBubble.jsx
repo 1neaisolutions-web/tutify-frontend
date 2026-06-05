@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 const MessageBubble = ({ role, text }) => {
   const isUser = role === 'user';
   return (

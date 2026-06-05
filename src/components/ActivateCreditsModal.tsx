@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
 import { X, Loader2, CheckCircle2, AlertCircle, Coins } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { redeemCode } from '../api/subscriptions'
 import { useRefreshCreditBalance } from '../hooks/useRefreshCreditBalance'
 import { formatAccessCodeInput } from '../utils/accessCodeDisplay'
+import { formatDate, formatNumber } from '../lib/i18n/format'
 
 interface Props {
   open: boolean
@@ -12,6 +14,7 @@ interface Props {
 type Stage = 'idle' | 'loading' | 'success' | 'error'
 
 export default function ActivateCreditsModal({ open, onClose }: Props) {
+  const { t } = useTranslation()
   const refreshCreditBalance = useRefreshCreditBalance()
   const [code, setCode] = useState('')
   const [stage, setStage] = useState<Stage>('idle')
@@ -47,11 +50,11 @@ export default function ActivateCreditsModal({ open, onClose }: Props) {
         setStage('success')
         await refreshCreditBalance()
       } else {
-        setErrorMsg(res.error || 'Invalid code. Please try again.')
+        setErrorMsg(res.error || t('credits.activate.errors.invalid'))
         setStage('error')
       }
     } catch {
-      setErrorMsg('Something went wrong. Please try again.')
+      setErrorMsg(t('credits.activate.errors.generic'))
       setStage('error')
     }
   }
@@ -64,15 +67,12 @@ export default function ActivateCreditsModal({ open, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={stage !== 'loading' ? onClose : undefined}
       />
 
-      {/* Panel */}
       <div className="relative w-full max-w-md rounded-2xl bg-white shadow-2xl">
-        {/* Close */}
         {stage !== 'loading' && (
           <button
             onClick={onClose}
@@ -82,10 +82,8 @@ export default function ActivateCreditsModal({ open, onClose }: Props) {
           </button>
         )}
 
-        {/* Content */}
         <div className="p-8">
           {stage === 'success' && result ? (
-            /* ── Success state ── */
             <div className="text-center space-y-4">
               <div className="flex justify-center">
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
@@ -93,32 +91,28 @@ export default function ActivateCreditsModal({ open, onClose }: Props) {
                 </div>
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">You're all set</h2>
-                <p className="mt-1 text-sm text-gray-500">Your credits have been activated</p>
+                <h2 className="text-xl font-semibold text-gray-900">{t('credits.activate.success.title')}</h2>
+                <p className="mt-1 text-sm text-gray-500">{t('credits.activate.success.subtitle')}</p>
               </div>
               <div className="rounded-xl bg-gray-50 border border-gray-200 p-4 space-y-2 text-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-500">Credits added</span>
+                  <span className="text-gray-500">{t('credits.activate.success.creditsAdded')}</span>
                   <span className="font-semibold text-gray-900">
-                    {result.credits_added.toLocaleString()}
+                    {formatNumber(result.credits_added)}
                   </span>
                 </div>
                 {result.expires_at && !result.auto_renew && (
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-500">Valid until</span>
+                    <span className="text-gray-500">{t('credits.activate.success.validUntil')}</span>
                     <span className="font-medium text-gray-700">
-                      {new Date(result.expires_at).toLocaleDateString('en-US', {
-                        month: 'long',
-                        day: 'numeric',
-                        year: 'numeric',
-                      })}
+                      {formatDate(result.expires_at, { month: 'long', day: 'numeric', year: 'numeric' })}
                     </span>
                   </div>
                 )}
                 {result.auto_renew && (
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-500">Renewal</span>
-                    <span className="font-medium text-green-600">Auto-renewing</span>
+                    <span className="text-gray-500">{t('credits.activate.success.renewal')}</span>
+                    <span className="font-medium text-green-600">{t('credits.activate.success.autoRenewing')}</span>
                   </div>
                 )}
               </div>
@@ -126,11 +120,10 @@ export default function ActivateCreditsModal({ open, onClose }: Props) {
                 onClick={handleDone}
                 className="w-full rounded-xl bg-primary-600 py-3 text-sm font-semibold text-white hover:bg-primary-500 transition"
               >
-                Start using 1ne
+                {t('credits.activate.success.cta')}
               </button>
             </div>
           ) : (
-            /* ── Input state ── */
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-1">
                 <div className="flex items-center gap-3">
@@ -138,21 +131,21 @@ export default function ActivateCreditsModal({ open, onClose }: Props) {
                     <Coins className="h-5 w-5 text-amber-600" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">Activate credits</h2>
-                    <p className="text-sm text-gray-500">Enter your access code to get started</p>
+                    <h2 className="text-lg font-semibold text-gray-900">{t('credits.activate.title')}</h2>
+                    <p className="text-sm text-gray-500">{t('credits.activate.subtitle')}</p>
                   </div>
                 </div>
               </div>
 
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">
-                  Access code
+                  {t('credits.activate.codeLabel')}
                 </label>
                 <input
                   ref={inputRef}
                   value={code}
                   onChange={handleCodeChange}
-                  placeholder="XXXX-XXXX-XXXX"
+                  placeholder={t('credits.activate.codePlaceholder')}
                   disabled={stage === 'loading'}
                   className={`w-full rounded-xl border px-4 py-3 text-center text-lg font-mono font-semibold tracking-widest transition focus:outline-none focus:ring-2 ${
                     stage === 'error'
@@ -178,20 +171,20 @@ export default function ActivateCreditsModal({ open, onClose }: Props) {
                 {stage === 'loading' ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    Activating…
+                    {t('credits.activate.actions.activating')}
                   </>
                 ) : (
-                  'Activate'
+                  t('credits.activate.actions.activate')
                 )}
               </button>
 
               <p className="text-center text-xs text-gray-400">
-                Don't have a code?{' '}
+                {t('credits.activate.noCode.prompt')}{' '}
                 <a
                   href="mailto:1ne.aisolutions@gmail.com"
                   className="font-medium text-primary-600 hover:text-primary-500"
                 >
-                  Contact us
+                  {t('credits.activate.noCode.contact')}
                 </a>
               </p>
             </form>

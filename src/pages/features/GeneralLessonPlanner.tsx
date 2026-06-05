@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { FileText, Sparkles, Download, RefreshCw } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonPlanInputs {
   grade: number | ''
   subject: string
@@ -94,6 +95,7 @@ const sampleLessonPlan: LessonPlanOutput = {
 }
 
 const GeneralLessonPlanner = () => {
+  const { t } = useTranslation()
   const [inputs, setInputs] = useState<LessonPlanInputs>({
     grade: 5,
     subject: 'Science',
@@ -235,10 +237,8 @@ const GeneralLessonPlanner = () => {
             <FileText className="w-6 h-6 text-primary-600" />
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold text-gray-900">General Lesson Planner</h1>
-            <p className="text-sm text-gray-600 mt-0.5">
-              Create comprehensive lesson plans with learning objectives and activities
-            </p>
+            <h1 className="text-xl font-bold text-gray-900">{t('generalLessonPlanner.generalLessonPlanner')}</h1>
+            <p className="text-sm text-gray-600 mt-0.5">{t('generalLessonPlanner.createComprehensiveLessonPlansWithLearningObjectivesAnd')}</p>
           </div>
         </div>
       </div>
@@ -249,14 +249,13 @@ const GeneralLessonPlanner = () => {
           <div className="card">
             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
               <Sparkles className="w-5 h-5 text-primary-600" />
-              <span>Lesson Details</span>
+              <span>{t('generalLessonPlanner.lessonDetails')}</span>
             </h2>
 
             <div className="space-y-4">
               {/* Grade */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Grade <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('generalLessonPlanner.grade2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -265,15 +264,14 @@ const GeneralLessonPlanner = () => {
                   value={inputs.grade}
                   onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
                   className="input-field"
-                  placeholder="Enter grade (1-12)"
+                  placeholder={t('common.gradePlaceholder')}
                   required
                 />
               </div>
 
               {/* Subject */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Subject <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('generalLessonPlanner.subject2')}<span className="text-red-500">*</span>
                 </label>
                 <select
                   value={inputs.subject}
@@ -281,43 +279,41 @@ const GeneralLessonPlanner = () => {
                   className="input-field"
                   required
                 >
-                  <option value="">Select subject</option>
-                  <option value="English">English</option>
-                  <option value="Math">Math</option>
-                  <option value="Science">Science</option>
-                  <option value="Arts">Arts</option>
-                  <option value="Technology">Technology</option>
-                  <option value="Business">Business</option>
-                  <option value="General">General</option>
+                  <option value="">{t('generalLessonPlanner.selectSubject')}</option>
+                  <option value="English">{t('generalLessonPlanner.english')}</option>
+                  <option value="Math">{t('generalLessonPlanner.math')}</option>
+                  <option value="Science">{t('generalLessonPlanner.science')}</option>
+                  <option value="Arts">{t('generalLessonPlanner.arts')}</option>
+                  <option value="Technology">{t('generalLessonPlanner.technology')}</option>
+                  <option value="Business">{t('generalLessonPlanner.business')}</option>
+                  <option value="General">{t('generalLessonPlanner.general')}</option>
                 </select>
               </div>
 
               {/* Topic */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Topic <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('generalLessonPlanner.topic')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   value={inputs.topic}
                   onChange={(e) => handleInputChange('topic', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., Photosynthesis"
+                  placeholder={t('generalLessonPlanner.eGPhotosynthesis')}
                   required
                 />
               </div>
 
               {/* Duration */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Duration <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('generalLessonPlanner.duration2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   value={inputs.duration}
                   onChange={(e) => handleInputChange('duration', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., PT45M or 45 minutes"
+                  placeholder={t('generalLessonPlanner.eGPt45mOr45Minutes')}
                   required
                 />
                 <p className="mt-1 text-xs text-gray-500">
@@ -327,27 +323,23 @@ const GeneralLessonPlanner = () => {
 
               {/* Curriculum Profile */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Curriculum Profile
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('generalLessonPlanner.curriculumProfile')}</label>
                 <select
                   value={inputs.curriculum_profile}
                   onChange={(e) => handleInputChange('curriculum_profile', e.target.value)}
                   className="input-field"
                 >
                   <option value="">Select curriculum (optional)</option>
-                  <option value="US_COMMON_CORE">US Common Core</option>
+                  <option value="US_COMMON_CORE">{t('generalLessonPlanner.usCommonCore')}</option>
                   <option value="CBSE_IN">CBSE (India)</option>
                   <option value="ACARA_AU">ACARA (Australia)</option>
-                  <option value="UK_NATIONAL">UK National Curriculum</option>
+                  <option value="UK_NATIONAL">{t('generalLessonPlanner.ukNationalCurriculum')}</option>
                 </select>
               </div>
 
               {/* Learning Objectives */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Learning Objectives
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('generalLessonPlanner.learningObjectives')}</label>
                 <div className="flex gap-2 mb-2">
                   <input
                     type="text"
@@ -355,15 +347,13 @@ const GeneralLessonPlanner = () => {
                     onChange={(e) => setCurrentObjective(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && addObjective()}
                     className="input-field flex-1"
-                    placeholder="Enter learning objective"
+                    placeholder={t('generalLessonPlanner.enterLearningObjective')}
                   />
                   <button
                     type="button"
                     onClick={addObjective}
                     className="btn-primary whitespace-nowrap"
-                  >
-                    Add
-                  </button>
+                  >{t('generalLessonPlanner.add')}</button>
                 </div>
                 {inputs.learning_objectives.length > 0 && (
                   <div className="space-y-2">
@@ -388,33 +378,29 @@ const GeneralLessonPlanner = () => {
 
               {/* Prior Knowledge */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Prior Knowledge
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('generalLessonPlanner.priorKnowledge')}</label>
                 <textarea
                   value={inputs.prior_knowledge}
                   onChange={(e) => handleInputChange('prior_knowledge', e.target.value)}
                   className="input-field"
                   rows={3}
-                  placeholder="What do students already know about this topic?"
+                  placeholder={t('generalLessonPlanner.whatDoStudentsAlreadyKnowAboutThisTopic')}
                 />
               </div>
 
               {/* Teaching Method */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Teaching Method
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('generalLessonPlanner.teachingMethod')}</label>
                 <select
                   value={inputs.teaching_method}
                   onChange={(e) => handleInputChange('teaching_method', e.target.value)}
                   className="input-field"
                 >
                   <option value="">Select method (optional)</option>
-                  <option value="inquiry_based">Inquiry-Based</option>
-                  <option value="direct_instruction">Direct Instruction</option>
-                  <option value="project_based">Project-Based</option>
-                  <option value="cooperative_learning">Cooperative Learning</option>
+                  <option value="inquiry_based">{t('generalLessonPlanner.inquiryBased')}</option>
+                  <option value="direct_instruction">{t('generalLessonPlanner.directInstruction')}</option>
+                  <option value="project_based">{t('generalLessonPlanner.projectBased')}</option>
+                  <option value="cooperative_learning">{t('generalLessonPlanner.cooperativeLearning')}</option>
                 </select>
               </div>
 
@@ -427,16 +413,12 @@ const GeneralLessonPlanner = () => {
                   onChange={(e) => handleInputChange('differentiation_needed', e.target.checked)}
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />
-                <label htmlFor="differentiation" className="ml-2 text-sm text-gray-700">
-                  Include differentiation strategies
-                </label>
+                <label htmlFor="differentiation" className="ml-2 text-sm text-gray-700">{t('generalLessonPlanner.includeDifferentiationStrategies')}</label>
               </div>
 
               {/* Materials Available */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Materials Available
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('generalLessonPlanner.materialsAvailable')}</label>
                 <div className="flex gap-2 mb-2">
                   <input
                     type="text"
@@ -444,15 +426,13 @@ const GeneralLessonPlanner = () => {
                     onChange={(e) => setCurrentMaterial(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && addMaterial()}
                     className="input-field flex-1"
-                    placeholder="e.g., notebooks, chart paper"
+                    placeholder={t('generalLessonPlanner.eGNotebooksChartPaper')}
                   />
                   <button
                     type="button"
                     onClick={addMaterial}
                     className="btn-primary whitespace-nowrap"
-                  >
-                    Add
-                  </button>
+                  >{t('generalLessonPlanner.add')}</button>
                 </div>
                 {inputs.materials_available.length > 0 && (
                   <div className="flex flex-wrap gap-2">
@@ -477,66 +457,60 @@ const GeneralLessonPlanner = () => {
 
               {/* Student Grouping */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Student Grouping
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('generalLessonPlanner.studentGrouping')}</label>
                 <select
                   value={inputs.student_grouping}
                   onChange={(e) => handleInputChange('student_grouping', e.target.value)}
                   className="input-field"
                 >
                   <option value="">Select grouping (optional)</option>
-                  <option value="whole_class">Whole Class</option>
-                  <option value="pairs">Pairs</option>
-                  <option value="groups_of_4">Groups of 4</option>
-                  <option value="individual">Individual</option>
+                  <option value="whole_class">{t('generalLessonPlanner.wholeClass')}</option>
+                  <option value="pairs">{t('generalLessonPlanner.pairs')}</option>
+                  <option value="groups_of_4">{t('generalLessonPlanner.groupsOf4')}</option>
+                  <option value="individual">{t('generalLessonPlanner.individual')}</option>
                 </select>
               </div>
 
               {/* Language */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('generalLessonPlanner.language')}</label>
                 <input
                   type="text"
                   value={inputs.language}
                   onChange={(e) => handleInputChange('language', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., en-US"
+                  placeholder={t('generalLessonPlanner.eGEnUs')}
                 />
                 <p className="mt-1 text-xs text-gray-500">BCP47 format (e.g., en-US, fr-FR)</p>
               </div>
 
               {/* Tone Preference */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Tone Preference
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('generalLessonPlanner.tonePreference')}</label>
                 <select
                   value={inputs.tone_preference}
                   onChange={(e) => handleInputChange('tone_preference', e.target.value)}
                   className="input-field"
                 >
-                  <option value="teacher_friendly">Teacher-Friendly</option>
-                  <option value="formal">Formal</option>
-                  <option value="friendly">Friendly</option>
-                  <option value="creative">Creative</option>
-                  <option value="academic">Academic</option>
+                  <option value="teacher_friendly">{t('generalLessonPlanner.teacherFriendly')}</option>
+                  <option value="formal">{t('generalLessonPlanner.formal')}</option>
+                  <option value="friendly">{t('generalLessonPlanner.friendly')}</option>
+                  <option value="creative">{t('generalLessonPlanner.creative')}</option>
+                  <option value="academic">{t('generalLessonPlanner.academic')}</option>
                 </select>
               </div>
 
               {/* Output Format */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Output Format
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('generalLessonPlanner.outputFormat')}</label>
                 <select
                   value={inputs.output_format}
                   onChange={(e) => handleInputChange('output_format', e.target.value)}
                   className="input-field"
                 >
-                  <option value="teacher_friendly_text">Teacher-Friendly Text</option>
-                  <option value="structured_json">Structured JSON</option>
-                  <option value="markdown">Markdown</option>
+                  <option value="teacher_friendly_text">{t('generalLessonPlanner.teacherFriendlyText')}</option>
+                  <option value="structured_json">{t('generalLessonPlanner.structuredJson')}</option>
+                  <option value="markdown">{t('generalLessonPlanner.markdown')}</option>
                 </select>
               </div>
 
@@ -549,12 +523,12 @@ const GeneralLessonPlanner = () => {
                 {isGenerating ? (
                   <>
                     <RefreshCw className="w-5 h-5 animate-spin" />
-                    <span>Generating...</span>
+                    <span>{t('generalLessonPlanner.generating')}</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-5 h-5" />
-                    <span>Generate Lesson Plan</span>
+                    <span>{t('generalLessonPlanner.generateLessonPlan')}</span>
                   </>
                 )}
               </button>
@@ -567,18 +541,18 @@ const GeneralLessonPlanner = () => {
           {output ? (
             <div className="card">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Generated Lesson Plan</h2>
+                <h2 className="text-lg font-semibold text-gray-900">{t('generalLessonPlanner.generatedLessonPlan')}</h2>
                 <div className="flex gap-2">
                   <button className="btn-secondary flex items-center space-x-2">
                     <Download className="w-4 h-4" />
-                    <span>Download</span>
+                    <span>{t('generalLessonPlanner.download')}</span>
                   </button>
                   <button
                     onClick={() => setOutput(null)}
                     className="btn-secondary flex items-center space-x-2"
                   >
                     <RefreshCw className="w-4 h-4" />
-                    <span>New Plan</span>
+                    <span>{t('generalLessonPlanner.newPlan')}</span>
                   </button>
                 </div>
               </div>
@@ -589,26 +563,26 @@ const GeneralLessonPlanner = () => {
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">{output.title}</h3>
                   <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                     <span>
-                      <strong>Grade:</strong> {output.grade}
+                      <strong>{t('generalLessonPlanner.grade')}</strong> {output.grade}
                     </span>
                     <span>
-                      <strong>Subject:</strong> {output.subject}
+                      <strong>{t('generalLessonPlanner.subject')}</strong> {output.subject}
                     </span>
                     <span>
-                      <strong>Duration:</strong> {output.duration}
+                      <strong>{t('generalLessonPlanner.duration')}</strong> {output.duration}
                     </span>
                     <span>
-                      <strong>Cognitive Level:</strong> {output.cognitive_level}
+                      <strong>{t('generalLessonPlanner.cognitiveLevel')}</strong> {output.cognitive_level}
                     </span>
                     <span>
-                      <strong>Framework:</strong> {output.framework}
+                      <strong>{t('generalLessonPlanner.framework')}</strong> {output.framework}
                     </span>
                   </div>
                 </div>
 
                 {/* Learning Objectives */}
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Learning Objectives</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('generalLessonPlanner.learningObjectives')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-gray-700">
                     {output.learning_objectives.map((obj, index) => (
                       <li key={index}>{obj}</li>
@@ -618,7 +592,7 @@ const GeneralLessonPlanner = () => {
 
                 {/* Lesson Flow */}
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-3">Lesson Flow</h4>
+                  <h4 className="font-semibold text-gray-900 mb-3">{t('generalLessonPlanner.lessonFlow')}</h4>
                   <div className="space-y-4">
                     {output.lesson_flow.map((section, index) => (
                       <div key={index} className="bg-gray-50 rounded-lg p-4">
@@ -640,10 +614,10 @@ const GeneralLessonPlanner = () => {
 
                 {/* Assessment Plan */}
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Assessment Plan</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('generalLessonPlanner.assessmentPlan')}</h4>
                   <div className="space-y-3">
                     <div>
-                      <h5 className="text-sm font-medium text-gray-700 mb-1">Formative:</h5>
+                      <h5 className="text-sm font-medium text-gray-700 mb-1">{t('generalLessonPlanner.formative')}</h5>
                       <ul className="list-disc list-inside space-y-1 text-sm text-gray-600">
                         {output.assessment_plan.formative.map((item, index) => (
                           <li key={index}>{item}</li>
@@ -651,7 +625,7 @@ const GeneralLessonPlanner = () => {
                       </ul>
                     </div>
                     <div>
-                      <h5 className="text-sm font-medium text-gray-700 mb-1">Summative:</h5>
+                      <h5 className="text-sm font-medium text-gray-700 mb-1">{t('generalLessonPlanner.summative')}</h5>
                       <ul className="list-disc list-inside space-y-1 text-sm text-gray-600">
                         {output.assessment_plan.summative.map((item, index) => (
                           <li key={index}>{item}</li>
@@ -664,12 +638,10 @@ const GeneralLessonPlanner = () => {
                 {/* Differentiation */}
                 {output.differentiation && (
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Differentiation</h4>
+                    <h4 className="font-semibold text-gray-900 mb-2">{t('generalLessonPlanner.differentiation')}</h4>
                     <div className="space-y-3">
                       <div>
-                        <h5 className="text-sm font-medium text-gray-700 mb-1">
-                          Emerging Learners:
-                        </h5>
+                        <h5 className="text-sm font-medium text-gray-700 mb-1">{t('generalLessonPlanner.emergingLearners')}</h5>
                         <ul className="list-disc list-inside space-y-1 text-sm text-gray-600">
                           {output.differentiation.emerging.map((item, index) => (
                             <li key={index}>{item}</li>
@@ -677,9 +649,7 @@ const GeneralLessonPlanner = () => {
                         </ul>
                       </div>
                       <div>
-                        <h5 className="text-sm font-medium text-gray-700 mb-1">
-                          Advanced Learners:
-                        </h5>
+                        <h5 className="text-sm font-medium text-gray-700 mb-1">{t('generalLessonPlanner.advancedLearners')}</h5>
                         <ul className="list-disc list-inside space-y-1 text-sm text-gray-600">
                           {output.differentiation.advanced.map((item, index) => (
                             <li key={index}>{item}</li>
@@ -692,7 +662,7 @@ const GeneralLessonPlanner = () => {
 
                 {/* Reflection & Extensions */}
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Reflection & Extensions</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('generalLessonPlanner.reflectionExtensions')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-gray-700">
                     {output.reflection_extensions.map((item, index) => (
                       <li key={index}>{item}</li>
@@ -705,13 +675,8 @@ const GeneralLessonPlanner = () => {
             <div className="card">
               <div className="text-center py-12">
                 <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Your Lesson Plan Will Appear Here
-                </h3>
-                <p className="text-gray-600">
-                  Fill in the form on the left and click "Generate Lesson Plan" to create your
-                  customized lesson plan.
-                </p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('generalLessonPlanner.yourLessonPlanWillAppearHere')}</h3>
+                <p className="text-gray-600">{t('generalLessonPlanner.fillInTheFormOnTheLeftAndClickGenerate')}</p>
               </div>
             </div>
           )}

@@ -35,6 +35,7 @@ import {
 import axiosInstance from '../../redux/http'
 import { parseLearningPathFromRegistry } from '../../utils/learningHubGeneratedContent'
 
+import { useTranslation } from 'react-i18next'
 interface LearningModule {
   id: string
   title: string
@@ -81,6 +82,7 @@ interface AIGuidance {
 }
 
 const AIAssistedAssessmentPath = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const [activeModule, setActiveModule] = useState<string | null>(null)
@@ -445,25 +447,19 @@ const AIAssistedAssessmentPath = () => {
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    AI-Guided Learning Path
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('aIAssistedAssessmentPath.aiGuidedLearningPath')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    1.5 hours estimated
-                  </span>
+                    <Clock className="h-3 w-3" />{t('aIAssistedAssessmentPath.k5HoursEstimated')}</span>
                 </div>
-                <h1 className="text-3xl font-bold">AI-Assisted Assessment Design</h1>
-                <p className="mt-2 text-indigo-100">
-                  Leverage AI to automate rubric generation and create instant feedback loops that accelerate learning
-                </p>
+                <h1 className="text-3xl font-bold">{t('aIAssistedAssessmentPath.aiAssistedAssessmentDesign')}</h1>
+                <p className="mt-2 text-indigo-100">{t('aIAssistedAssessmentPath.leverageAiToAutomateRubricGenerationAndCreateInstantFee')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4" />
-                <span>Medium Impact</span>
+                <span>{t('aIAssistedAssessmentPath.mediumImpact')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Trophy className="w-4 h-4" />
@@ -492,19 +488,17 @@ const AIAssistedAssessmentPath = () => {
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
-              <h3 className="text-lg font-semibold text-gray-900">AI-Powered Learning Guidance</h3>
-              <span className="px-2 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-semibold">
-                Personalized
-              </span>
+              <h3 className="text-lg font-semibold text-gray-900">{t('aIAssistedAssessmentPath.aiPoweredLearningGuidance')}</h3>
+              <span className="px-2 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-semibold">{t('aIAssistedAssessmentPath.personalized')}</span>
             </div>
             <p className="text-sm font-medium text-gray-900 mb-2">{aiGuidance.recommendation}</p>
             <p className="text-sm text-gray-700 mb-4">{aiGuidance.reason}</p>
             <div className="bg-white rounded-lg p-4 border border-indigo-200 mb-4">
-              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Personalized Tip</p>
+              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('aIAssistedAssessmentPath.personalizedTip')}</p>
               <p className="text-sm text-gray-700">{aiGuidance.personalizedTip}</p>
             </div>
             <div>
-              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Your Next Steps</p>
+              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('aIAssistedAssessmentPath.yourNextSteps')}</p>
               <ul className="space-y-1">
                 {aiGuidance.nextSteps.map((step, idx) => (
                   <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -524,7 +518,7 @@ const AIAssistedAssessmentPath = () => {
           {/* Skill Impact Preview */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-gray-900">Expected Impact on Your Teaching</h2>
+              <h2 className="text-xl font-bold text-gray-900">{t('aIAssistedAssessmentPath.expectedImpactOnYourTeaching')}</h2>
               <TrendingUp className="h-5 w-5 text-indigo-600" />
             </div>
             <div className="space-y-4">
@@ -553,7 +547,7 @@ const AIAssistedAssessmentPath = () => {
           {/* Learning Modules */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Learning Modules</h2>
+              <h2 className="text-xl font-bold text-gray-900">{t('aIAssistedAssessmentPath.learningModules')}</h2>
               <Filter className="h-5 w-5 text-gray-400" />
             </div>
             <div className="space-y-4">
@@ -646,9 +640,7 @@ const AIAssistedAssessmentPath = () => {
                         {/* Learning Outcomes */}
                         <div>
                           <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                            <Target className="h-4 w-4 text-indigo-600" />
-                            Learning Outcomes
-                          </h4>
+                            <Target className="h-4 w-4 text-indigo-600" />{t('aIAssistedAssessmentPath.learningOutcomes')}</h4>
                           <ul className="space-y-2">
                             {module.learningOutcomes.map((outcome, outIdx) => (
                               <li key={outIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -662,9 +654,7 @@ const AIAssistedAssessmentPath = () => {
                         {/* Content */}
                         <div>
                           <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                            <BookOpen className="h-4 w-4 text-indigo-600" />
-                            Module Content
-                          </h4>
+                            <BookOpen className="h-4 w-4 text-indigo-600" />{t('aIAssistedAssessmentPath.moduleContent')}</h4>
                           <div className="space-y-2">
                             {module.content.map((item, contIdx) => (
                               <div key={contIdx} className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
@@ -690,9 +680,7 @@ const AIAssistedAssessmentPath = () => {
                         {/* Assessment */}
                         <div className="bg-indigo-50 rounded-lg p-4 border border-indigo-200">
                           <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                            <Award className="h-4 w-4 text-indigo-600" />
-                            Assessment
-                          </h4>
+                            <Award className="h-4 w-4 text-indigo-600" />{t('aIAssistedAssessmentPath.assessment')}</h4>
                           <p className="text-sm text-gray-700 mb-1">{module.assessment.type}</p>
                           <p className="text-sm text-gray-600">{module.assessment.description}</p>
                           <p className="text-xs text-indigo-600 font-semibold mt-2">{module.assessment.points} points</p>
@@ -701,9 +689,7 @@ const AIAssistedAssessmentPath = () => {
                         {/* Real-World Application */}
                         <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
                           <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                            <Lightbulb className="h-4 w-4 text-blue-600" />
-                            Real-World Application
-                          </h4>
+                            <Lightbulb className="h-4 w-4 text-blue-600" />{t('aIAssistedAssessmentPath.realWorldApplication')}</h4>
                           <p className="text-sm text-gray-700">{module.realWorldApplication}</p>
                         </div>
 
@@ -714,9 +700,7 @@ const AIAssistedAssessmentPath = () => {
                               onClick={() => setActiveModule(isExpanded ? null : module.id)}
                               className="px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition flex items-center gap-2"
                             >
-                              <Eye className="h-4 w-4" />
-                              Review Module
-                            </button>
+                              <Eye className="h-4 w-4" />{t('aIAssistedAssessmentPath.reviewModule')}</button>
                           ) : (
                             <>
                               <button
@@ -738,16 +722,12 @@ const AIAssistedAssessmentPath = () => {
                                 }}
                                 className="px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition flex items-center gap-2"
                               >
-                                <Play className="h-4 w-4" />
-                                Start Module
-                              </button>
+                                <Play className="h-4 w-4" />{t('aIAssistedAssessmentPath.startModule')}</button>
                               <button
                                 onClick={() => handleModuleComplete(module.id)}
                                 className="px-4 py-2 rounded-lg border-2 border-indigo-600 text-indigo-600 text-sm font-semibold hover:bg-indigo-50 transition flex items-center gap-2"
                               >
-                                <CheckCircle2 className="h-4 w-4" />
-                                Mark Complete
-                              </button>
+                                <CheckCircle2 className="h-4 w-4" />{t('aIAssistedAssessmentPath.markComplete')}</button>
                             </>
                           )}
                         </div>
@@ -764,11 +744,11 @@ const AIAssistedAssessmentPath = () => {
         <div className="space-y-6">
           {/* Progress Card */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Your Progress</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('aIAssistedAssessmentPath.yourProgress')}</h3>
             <div className="space-y-4">
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-gray-600">Modules Completed</span>
+                  <span className="text-sm text-gray-600">{t('aIAssistedAssessmentPath.modulesCompleted')}</span>
                   <span className="text-lg font-bold text-gray-900">{completedCount}/{unlockedModules.length}</span>
                 </div>
                 <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -779,7 +759,7 @@ const AIAssistedAssessmentPath = () => {
                 </div>
               </div>
               <div className="pt-4 border-t border-gray-200">
-                <p className="text-xs text-gray-500 mb-2">Skills You'll Master</p>
+                <p className="text-xs text-gray-500 mb-2">{t('aIAssistedAssessmentPath.skillsYouLlMaster')}</p>
                 <div className="flex flex-wrap gap-2">
                   {learningModules.slice(0, 3).flatMap(m => m.skills).slice(0, 6).map((skill, idx) => (
                     <span key={idx} className="px-2 py-1 bg-indigo-50 text-indigo-700 rounded text-xs font-medium">
@@ -793,19 +773,19 @@ const AIAssistedAssessmentPath = () => {
 
           {/* Quick Stats */}
           <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl border border-indigo-200 p-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Path Overview</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('aIAssistedAssessmentPath.pathOverview')}</h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Total Modules</span>
+                <span className="text-sm text-gray-600">{t('aIAssistedAssessmentPath.totalModules')}</span>
                 <span className="text-sm font-semibold text-gray-900">{learningModules.length}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Estimated Time</span>
-                <span className="text-sm font-semibold text-gray-900">1.5 hours</span>
+                <span className="text-sm text-gray-600">{t('aIAssistedAssessmentPath.estimatedTime')}</span>
+                <span className="text-sm font-semibold text-gray-900">{t('aIAssistedAssessmentPath.k5Hours')}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Impact Level</span>
-                <span className="px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs font-semibold">Medium</span>
+                <span className="text-sm text-gray-600">{t('aIAssistedAssessmentPath.impactLevel')}</span>
+                <span className="px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs font-semibold">{t('aIAssistedAssessmentPath.medium')}</span>
               </div>
             </div>
           </div>

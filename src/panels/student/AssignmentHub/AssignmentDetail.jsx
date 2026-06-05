@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -15,6 +16,7 @@ const lookup = (id) => {
 };
 
 const AssignmentDetail = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const assignment = lookup(id);
@@ -49,7 +51,7 @@ const AssignmentDetail = () => {
         }
       );
     } catch (e) {
-      setAiText(`Failed to load AI help. ${e?.message || ''}`.trim());
+      setAiText(t('studentPanel.assignments.detail.aiHelp.failed', { message: e?.message || '' }).trim());
       setAiLoading(false);
       cleanupRef.current = null;
     }
@@ -58,7 +60,7 @@ const AssignmentDetail = () => {
   if (!assignment) {
     return (
       <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950 px-6 py-6">
-        <p className="text-sm text-gray-700 dark:text-gray-200">Assignment not found.</p>
+        <p className="text-sm text-gray-700 dark:text-gray-200">{t('studentPanel.assignments.notFound')}</p>
       </div>
     );
   }
@@ -76,14 +78,14 @@ const AssignmentDetail = () => {
             onClick={() => navigate(`/student/assignments/${assignment.id}/submit`)}
             className="px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700"
           >
-            Submit
+            {t('studentPanel.common.submit')}
           </button>
           <button
             type="button"
             onClick={() => navigate('/student/assignments')}
             className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900"
           >
-            Back
+            {t('studentPanel.common.back')}
           </button>
         </div>
       </div>
@@ -91,12 +93,9 @@ const AssignmentDetail = () => {
       <div className="px-6 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">
           <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4">
-            <h2 className="font-semibold text-gray-900 dark:text-gray-100">Instructions</h2>
-            <p className="mt-2 text-sm text-gray-700 dark:text-gray-200">
-              Demo assignment detail page. In Phase 2, this content will come from the backend.
-            </p>
-            <p className="mt-3 text-sm text-gray-700 dark:text-gray-200">
-              Suggested starting point: <span className="font-medium">{assignment.prompt}</span>
+            <h2 className="font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.assignments.detail.instructions')}</h2>
+            <p className="mt-2 text-sm text-gray-700 dark:text-gray-200">{t('studentPanel.assignments.detail.instructionsDemo')}</p>
+            <p className="mt-3 text-sm text-gray-700 dark:text-gray-200">{t('studentPanel.common.suggestedStartingPoint')}<span className="font-medium">{assignment.prompt}</span>
             </p>
           </div>
         </div>
@@ -104,7 +103,7 @@ const AssignmentDetail = () => {
         <div className="lg:col-span-1">
           <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4">
             <div className="flex items-center justify-between">
-              <h2 className="font-semibold text-gray-900 dark:text-gray-100">AI Help</h2>
+              <h2 className="font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.assignments.detail.aiHelp.title')}</h2>
               <button
                 type="button"
                 onClick={() => {
@@ -115,7 +114,7 @@ const AssignmentDetail = () => {
                 }}
                 className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 text-sm text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900"
               >
-                {aiOpen ? 'Hide' : 'Open'}
+                {aiOpen ? t('studentPanel.common.hide') : t('studentPanel.common.open')}
               </button>
             </div>
 
@@ -128,7 +127,7 @@ const AssignmentDetail = () => {
                     disabled={aiLoading}
                     className="px-3 py-1.5 rounded-lg bg-primary-600 text-white hover:bg-primary-700 disabled:opacity-50 text-sm"
                   >
-                    {aiLoading ? 'Generating…' : 'Regenerate'}
+                    {aiLoading ? t('studentPanel.common.generating') : t('studentPanel.common.regenerate')}
                   </button>
                   <button
                     type="button"
@@ -139,18 +138,16 @@ const AssignmentDetail = () => {
                     }}
                     className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 text-sm text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900"
                   >
-                    Stop
+                    {t('studentPanel.common.stop')}
                   </button>
                 </div>
 
                 <div className="mt-3 rounded-lg bg-gray-50 dark:bg-gray-900/40 border border-gray-200 dark:border-gray-800 p-3 text-sm text-gray-800 dark:text-gray-100 whitespace-pre-wrap min-h-[140px]">
-                  {aiText || (aiLoading ? 'Thinking…' : 'No AI output yet.')}
+                  {aiText || (aiLoading ? t('studentPanel.common.thinking') : t('studentPanel.assignments.detail.aiHelp.noOutput'))}
                 </div>
               </div>
             ) : (
-              <p className="mt-3 text-sm text-gray-600 dark:text-gray-300">
-                Open to see a demo AI explanation (streaming).
-              </p>
+              <p className="mt-3 text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.assignments.detail.aiHelp.openHint')}</p>
             )}
           </div>
         </div>

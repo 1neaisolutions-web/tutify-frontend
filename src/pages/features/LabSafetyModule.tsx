@@ -28,6 +28,7 @@ import {
   CheckSquare,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template' | 'project'
@@ -52,6 +53,7 @@ interface RiskAssessment {
 }
 
 const LabSafetyModule = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -325,14 +327,10 @@ Schools must comply with Occupational Safety and Health Administration (OSHA) st
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 4
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('labSafetyModule.module4')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    75 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('labSafetyModule.k5Min')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
                     <Star className="h-3 w-3" />
@@ -342,16 +340,14 @@ Schools must comply with Occupational Safety and Health Administration (OSHA) st
                     }, 0)} / {lessons.reduce((sum, l) => sum + l.points, 0)} points
                   </span>
                 </div>
-                <h1 className="text-3xl font-bold">Lab Safety Protocols & Risk Management</h1>
-                <p className="mt-2 text-red-100">
-                  Establish comprehensive lab safety protocols and create a culture of safety in your STEM classroom
-                </p>
+                <h1 className="text-3xl font-bold">{t('labSafetyModule.labSafetyProtocolsRiskManagement')}</h1>
+                <p className="mt-2 text-red-100">{t('labSafetyModule.establishComprehensiveLabSafetyProtocolsAndCreateACultu')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm mb-4">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4" />
-                <span>High Impact</span>
+                <span>{t('labSafetyModule.highImpact')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Trophy className="w-4 h-4" />
@@ -376,7 +372,7 @@ Schools must comply with Occupational Safety and Health Administration (OSHA) st
         {/* Sidebar */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('labSafetyModule.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isActive = idx === currentLesson
@@ -436,9 +432,7 @@ Schools must comply with Occupational Safety and Health Administration (OSHA) st
                 </div>
                 {completedLessons.includes(currentLessonData.id) && (
                   <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-semibold flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4" />
-                    Completed
-                  </span>
+                    <CheckCircle2 className="h-4 w-4" />{t('labSafetyModule.completed')}</span>
                 )}
               </div>
             </div>
@@ -458,7 +452,7 @@ Schools must comply with Occupational Safety and Health Administration (OSHA) st
                 </div>
                 {currentLessonData.content.keyPoints && (
                   <div className="bg-red-50 rounded-xl p-6 border border-red-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Points</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('labSafetyModule.keyPoints')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyPoints.map((point: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -473,7 +467,7 @@ Schools must comply with Occupational Safety and Health Administration (OSHA) st
                 {/* Safety Protocols */}
                 {currentLessonData.id === 'safety-fundamentals' && (
                   <div className="bg-white rounded-xl p-6 border-2 border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Essential Safety Protocols</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('labSafetyModule.essentialSafetyProtocols')}</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {safetyProtocols.map((protocol, idx) => (
                         <div key={idx} className="bg-red-50 rounded-lg p-5 border border-red-200">
@@ -506,7 +500,7 @@ Schools must comply with Occupational Safety and Health Administration (OSHA) st
                 </div>
                 {currentLessonData.content.keyTakeaways && (
                   <div className="bg-purple-50 rounded-xl p-6 border border-purple-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Takeaways</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('labSafetyModule.keyTakeaways')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyTakeaways.map((takeaway: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -531,25 +525,23 @@ Schools must comply with Occupational Safety and Health Administration (OSHA) st
                       onClick={() => setShowRiskTool(true)}
                       className="w-full px-6 py-4 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition flex items-center justify-center gap-2"
                     >
-                      <Zap className="h-5 w-5" />
-                      Launch Risk Assessment Tool
-                    </button>
+                      <Zap className="h-5 w-5" />{t('labSafetyModule.launchRiskAssessmentTool')}</button>
                   ) : (
                     <div className="bg-white rounded-xl p-6 border-2 border-red-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Risk Assessment Tool</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('labSafetyModule.riskAssessmentTool')}</h3>
                       <div className="space-y-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Activity Name</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('labSafetyModule.activityName')}</label>
                           <input
                             type="text"
                             value={riskData.activity}
                             onChange={(e) => setRiskData({ ...riskData, activity: e.target.value })}
-                            placeholder="e.g., Acid-Base Titration"
+                            placeholder={t('labSafetyModule.eGAcidBaseTitration')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Potential Hazards</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('labSafetyModule.potentialHazards')}</label>
                           <textarea
                             value={riskData.hazards}
                             onChange={(e) => setRiskData({ ...riskData, hazards: e.target.value })}
@@ -559,17 +551,17 @@ Schools must comply with Occupational Safety and Health Administration (OSHA) st
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Control Measures</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('labSafetyModule.controlMeasures2')}</label>
                           <textarea
                             value={riskData.controls}
                             onChange={(e) => setRiskData({ ...riskData, controls: e.target.value })}
                             rows={4}
-                            placeholder="Describe control measures to mitigate risks..."
+                            placeholder={t('labSafetyModule.describeControlMeasuresToMitigateRisks')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Risk Level</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('labSafetyModule.riskLevel')}</label>
                           <div className="grid grid-cols-3 gap-2">
                             {(['Low', 'Medium', 'High'] as const).map((level) => (
                               <button
@@ -595,9 +587,7 @@ Schools must comply with Occupational Safety and Health Administration (OSHA) st
                             onClick={handleRiskSubmit}
                             disabled={!riskData.activity || !riskData.hazards}
                             className="flex-1 px-6 py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
-                          >
-                            Save Assessment
-                          </button>
+                          >{t('labSafetyModule.saveAssessment')}</button>
                           <button
                             onClick={() => setShowRiskTool(false)}
                             className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition"
@@ -612,7 +602,7 @@ Schools must comply with Occupational Safety and Health Administration (OSHA) st
 
                 {/* Risk Assessment Examples */}
                 <div className="bg-white rounded-xl p-6 border-2 border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Example Risk Assessments</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('labSafetyModule.exampleRiskAssessments')}</h3>
                   <div className="space-y-4">
                     {riskAssessments.map((assessment, idx) => (
                       <div key={idx} className="bg-red-50 rounded-lg p-5 border border-red-200">
@@ -628,7 +618,7 @@ Schools must comply with Occupational Safety and Health Administration (OSHA) st
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 mb-2">Hazards:</p>
+                            <p className="text-xs font-semibold text-gray-600 mb-2">{t('labSafetyModule.hazards')}</p>
                             <ul className="space-y-1">
                               {assessment.hazards.map((hazard, hIdx) => (
                                 <li key={hIdx} className="text-xs text-gray-700 flex items-start gap-1">
@@ -639,7 +629,7 @@ Schools must comply with Occupational Safety and Health Administration (OSHA) st
                             </ul>
                           </div>
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 mb-2">Control Measures:</p>
+                            <p className="text-xs font-semibold text-gray-600 mb-2">{t('labSafetyModule.controlMeasures')}</p>
                             <ul className="space-y-1">
                               {assessment.controls.map((control, cIdx) => (
                                 <li key={cIdx} className="text-xs text-gray-700 flex items-start gap-1">
@@ -668,44 +658,42 @@ Schools must comply with Occupational Safety and Health Administration (OSHA) st
                       onClick={() => setShowSafetyManual(true)}
                       className="w-full px-6 py-4 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
                     >
-                      <Rocket className="h-5 w-5" />
-                      Launch Safety Manual Builder
-                    </button>
+                      <Rocket className="h-5 w-5" />{t('labSafetyModule.launchSafetyManualBuilder')}</button>
                   ) : (
                     <div className="bg-white rounded-xl p-6 border-2 border-green-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Lab Safety Manual Builder</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('labSafetyModule.labSafetyManualBuilder')}</h3>
                       <div className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">School Name</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('labSafetyModule.schoolName')}</label>
                             <input
                               type="text"
-                              placeholder="Your School Name"
+                              placeholder={t('labSafetyModule.yourSchoolName')}
                               className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Grade Levels</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('labSafetyModule.gradeLevels')}</label>
                             <input
                               type="text"
-                              placeholder="e.g., 6-12"
+                              placeholder={t('labSafetyModule.eG612')}
                               className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                             />
                           </div>
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Emergency Contacts</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('labSafetyModule.emergencyContacts')}</label>
                           <textarea
                             rows={3}
-                            placeholder="List emergency contact numbers..."
+                            placeholder={t('labSafetyModule.listEmergencyContactNumbers')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Safety Protocols</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('labSafetyModule.safetyProtocols')}</label>
                           <textarea
                             rows={5}
-                            placeholder="Document your safety protocols..."
+                            placeholder={t('labSafetyModule.documentYourSafetyProtocols')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
@@ -713,9 +701,7 @@ Schools must comply with Occupational Safety and Health Administration (OSHA) st
                           <button
                             onClick={handleManualSubmit}
                             className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition"
-                          >
-                            Generate Safety Manual
-                          </button>
+                          >{t('labSafetyModule.generateSafetyManual')}</button>
                           <button
                             onClick={() => setShowSafetyManual(false)}
                             className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition"
@@ -729,7 +715,7 @@ Schools must comply with Occupational Safety and Health Administration (OSHA) st
                 </div>
 
                 <div className="bg-white rounded-xl p-6 border-2 border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Manual Requirements</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('labSafetyModule.manualRequirements')}</h3>
                   <ol className="space-y-3">
                     {currentLessonData.content.requirements.map((req: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
@@ -751,9 +737,7 @@ Schools must comply with Occupational Safety and Health Administration (OSHA) st
                 disabled={currentLesson === 0}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
-                <ArrowLeft className="h-4 w-4" />
-                Previous
-              </button>
+                <ArrowLeft className="h-4 w-4" />{t('labSafetyModule.previous')}</button>
 
               <button
                 onClick={() => {
@@ -766,18 +750,12 @@ Schools must comply with Occupational Safety and Health Administration (OSHA) st
               >
                 {completedLessons.includes(currentLessonData.id) ? (
                   <>
-                    <CheckCircle2 className="h-4 w-4" />
-                    Marked Complete
-                  </>
+                    <CheckCircle2 className="h-4 w-4" />{t('labSafetyModule.markedComplete')}</>
                 ) : currentLesson === lessons.length - 1 ? (
                   <>
-                    <Trophy className="h-4 w-4" />
-                    Complete Module
-                  </>
+                    <Trophy className="h-4 w-4" />{t('labSafetyModule.completeModule')}</>
                 ) : (
-                  <>
-                    Complete & Next
-                    <ArrowRight className="h-4 w-4" />
+                  <>{t('labSafetyModule.completeNext')}<ArrowRight className="h-4 w-4" />
                   </>
                 )}
               </button>
@@ -790,7 +768,7 @@ Schools must comply with Occupational Safety and Health Administration (OSHA) st
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-600 mb-4">
                 <Trophy className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Module Complete!</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('labSafetyModule.moduleComplete')}</h3>
               <p className="text-gray-700 mb-6">
                 You've earned {lessons.reduce((sum, l) => sum + l.points, 0)} points. Safety first!
               </p>
@@ -801,9 +779,7 @@ Schools must comply with Occupational Safety and Health Administration (OSHA) st
                 >
                   Continue to Next Module
                 </button>
-                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                  Download Certificate
-                </button>
+                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">{t('labSafetyModule.downloadCertificate')}</button>
               </div>
             </div>
           )}

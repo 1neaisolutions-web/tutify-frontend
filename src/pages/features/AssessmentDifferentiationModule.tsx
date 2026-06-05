@@ -20,6 +20,7 @@ import {
   X,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template'
@@ -38,6 +39,7 @@ interface AssessmentOption {
 }
 
 const AssessmentDifferentiationModule = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -293,19 +295,13 @@ Differentiated assessment provides multiple ways for students to demonstrate lea
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 5 of 6
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('assessmentDifferentiationModule.module5Of6')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    35 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('assessmentDifferentiationModule.k5Min')}</span>
                 </div>
-                <h1 className="text-3xl font-bold">Differentiated Assessment Strategies</h1>
-                <p className="mt-2 text-green-100">
-                  Learn how to differentiate assessments to accurately measure learning while accommodating diverse learners
-                </p>
+                <h1 className="text-3xl font-bold">{t('assessmentDifferentiationModule.differentiatedAssessmentStrategies')}</h1>
+                <p className="mt-2 text-green-100">{t('assessmentDifferentiationModule.learnHowToDifferentiateAssessmentsToAccuratelyMeasureLe')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm">
@@ -332,7 +328,7 @@ Differentiated assessment provides multiple ways for students to demonstrate lea
         {/* Lessons Sidebar */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('assessmentDifferentiationModule.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isCompleted = completedLessons.includes(lesson.id)
@@ -376,7 +372,7 @@ Differentiated assessment provides multiple ways for students to demonstrate lea
             </div>
             <div className="mt-6 pt-6 border-t border-gray-200">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-gray-600">Progress</span>
+                <span className="text-xs text-gray-600">{t('assessmentDifferentiationModule.progress')}</span>
                 <span className="text-xs font-semibold text-gray-900">{Math.round(moduleProgress)}%</span>
               </div>
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -399,7 +395,7 @@ Differentiated assessment provides multiple ways for students to demonstrate lea
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Video className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Video Lesson</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('assessmentDifferentiationModule.videoLesson')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                   </div>
@@ -423,7 +419,7 @@ Differentiated assessment provides multiple ways for students to demonstrate lea
                 </div>
 
                 <div className="bg-green-50 rounded-lg p-6 border border-green-200">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Key Points</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('assessmentDifferentiationModule.keyPoints')}</h3>
                   <ul className="space-y-2">
                     {currentLessonData.content.keyPoints?.map((point: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -441,14 +437,10 @@ Differentiated assessment provides multiple ways for students to demonstrate lea
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('assessmentDifferentiationModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('assessmentDifferentiationModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -461,7 +453,7 @@ Differentiated assessment provides multiple ways for students to demonstrate lea
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <BookOpen className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Reading</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('assessmentDifferentiationModule.reading')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                   </div>
@@ -483,7 +475,7 @@ Differentiated assessment provides multiple ways for students to demonstrate lea
 
                 {currentLessonData.content.keyTakeaways && (
                   <div className="bg-green-50 rounded-lg p-6 border border-green-200">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-3">Key Takeaways</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('assessmentDifferentiationModule.keyTakeaways')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyTakeaways.map((takeaway: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -502,14 +494,10 @@ Differentiated assessment provides multiple ways for students to demonstrate lea
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('assessmentDifferentiationModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('assessmentDifferentiationModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -522,7 +510,7 @@ Differentiated assessment provides multiple ways for students to demonstrate lea
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Zap className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Interactive Tool</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('assessmentDifferentiationModule.interactiveTool')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                     <p className="mt-2 text-gray-600">{currentLessonData.content.description}</p>
@@ -533,7 +521,7 @@ Differentiated assessment provides multiple ways for students to demonstrate lea
                 </div>
 
                 <div className="bg-green-50 rounded-lg p-6 border border-green-200 mb-6">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Design Steps</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('assessmentDifferentiationModule.designSteps')}</h3>
                   <ol className="space-y-2">
                     {currentLessonData.content.steps?.map((step: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -548,22 +536,18 @@ Differentiated assessment provides multiple ways for students to demonstrate lea
 
                 <div className="bg-white rounded-lg p-6 border border-gray-200 space-y-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Assessment Title *
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">{t('assessmentDifferentiationModule.assessmentTitle')}</label>
                     <input
                       type="text"
                       value={assessmentTitle}
                       onChange={(e) => setAssessmentTitle(e.target.value)}
-                      placeholder="e.g., Unit 3: Ecosystems Assessment"
+                      placeholder={t('assessmentDifferentiationModule.eGUnit3EcosystemsAssessment')}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Learning Objective *
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">{t('assessmentDifferentiationModule.learningObjective')}</label>
                     <textarea
                       value={learningObjective}
                       onChange={(e) => setLearningObjective(e.target.value)}
@@ -574,59 +558,57 @@ Differentiated assessment provides multiple ways for students to demonstrate lea
                   </div>
 
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-900 mb-4">Add Assessment Options</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('assessmentDifferentiationModule.addAssessmentOptions')}</h3>
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-semibold text-gray-900 mb-2">Option Name *</label>
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">{t('assessmentDifferentiationModule.optionName')}</label>
                         <input
                           type="text"
                           value={currentOption.option}
                           onChange={(e) => setCurrentOption({ ...currentOption, option: e.target.value })}
-                          placeholder="e.g., Written Essay"
+                          placeholder={t('assessmentDifferentiationModule.eGWrittenEssay')}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-gray-900 mb-2">Description *</label>
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">{t('assessmentDifferentiationModule.description')}</label>
                         <textarea
                           value={currentOption.description}
                           onChange={(e) => setCurrentOption({ ...currentOption, description: e.target.value })}
-                          placeholder="Describe this assessment option..."
+                          placeholder={t('assessmentDifferentiationModule.describeThisAssessmentOption')}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                           rows={3}
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-gray-900 mb-2">Format</label>
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">{t('assessmentDifferentiationModule.format')}</label>
                         <select
                           value={currentOption.format}
                           onChange={(e) => setCurrentOption({ ...currentOption, format: e.target.value })}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                         >
-                          <option>Written</option>
-                          <option>Visual</option>
-                          <option>Performance</option>
-                          <option>Oral</option>
-                          <option>Digital</option>
+                          <option>{t('assessmentDifferentiationModule.written')}</option>
+                          <option>{t('assessmentDifferentiationModule.visual')}</option>
+                          <option>{t('assessmentDifferentiationModule.performance')}</option>
+                          <option>{t('assessmentDifferentiationModule.oral')}</option>
+                          <option>{t('assessmentDifferentiationModule.digital')}</option>
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-gray-900 mb-2">Accommodations</label>
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">{t('assessmentDifferentiationModule.accommodations2')}</label>
                         <div className="flex gap-2 mb-2">
                           <input
                             type="text"
                             value={currentAccommodation}
                             onChange={(e) => setCurrentAccommodation(e.target.value)}
                             onKeyPress={(e) => e.key === 'Enter' && handleAddAccommodation()}
-                            placeholder="e.g., Extended time"
+                            placeholder={t('assessmentDifferentiationModule.eGExtendedTime')}
                             className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                           />
                           <button
                             onClick={handleAddAccommodation}
                             className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-                          >
-                            Add
-                          </button>
+                          >{t('assessmentDifferentiationModule.add')}</button>
                         </div>
                         <div className="flex flex-wrap gap-2">
                           {currentOption.accommodations.map((acc, idx) => (
@@ -649,9 +631,7 @@ Differentiated assessment provides multiple ways for students to demonstrate lea
                         onClick={handleAddOption}
                         className="w-full px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
                       >
-                        <Plus className="h-5 w-5" />
-                        Add Assessment Option
-                      </button>
+                        <Plus className="h-5 w-5" />{t('assessmentDifferentiationModule.addAssessmentOption')}</button>
                     </div>
                   </div>
 
@@ -676,7 +656,7 @@ Differentiated assessment provides multiple ways for students to demonstrate lea
                             <p className="text-sm text-gray-600 mb-2">{opt.description}</p>
                             {opt.accommodations.length > 0 && (
                               <div className="mt-2">
-                                <p className="text-xs font-semibold text-gray-700 mb-1">Accommodations:</p>
+                                <p className="text-xs font-semibold text-gray-700 mb-1">{t('assessmentDifferentiationModule.accommodations')}</p>
                                 <div className="flex flex-wrap gap-1">
                                   {opt.accommodations.map((acc, accIdx) => (
                                     <span key={accIdx} className="px-2 py-1 bg-green-50 text-green-700 rounded text-xs">
@@ -695,9 +675,7 @@ Differentiated assessment provides multiple ways for students to demonstrate lea
                         }}
                         className="mt-4 w-full px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
                       >
-                        <ClipboardCheck className="h-5 w-5" />
-                        Save Assessment Design
-                      </button>
+                        <ClipboardCheck className="h-5 w-5" />{t('assessmentDifferentiationModule.saveAssessmentDesign')}</button>
                     </div>
                   )}
                 </div>
@@ -709,14 +687,10 @@ Differentiated assessment provides multiple ways for students to demonstrate lea
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('assessmentDifferentiationModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('assessmentDifferentiationModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -729,7 +703,7 @@ Differentiated assessment provides multiple ways for students to demonstrate lea
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <FileText className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Template</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('assessmentDifferentiationModule.template')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                     <p className="mt-2 text-gray-600">{currentLessonData.content.description}</p>
@@ -740,7 +714,7 @@ Differentiated assessment provides multiple ways for students to demonstrate lea
                 </div>
 
                 <div className="bg-white rounded-lg p-6 border border-gray-200">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-4">Template Sections</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('assessmentDifferentiationModule.templateSections')}</h3>
                   <div className="space-y-3">
                     {currentLessonData.content.sections?.map((section: string, idx: number) => (
                       <div key={idx} className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
@@ -756,18 +730,18 @@ Differentiated assessment provides multiple ways for students to demonstrate lea
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <button className="p-4 bg-green-50 border-2 border-green-200 rounded-lg hover:bg-green-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-green-600" />
-                    <span className="text-sm font-semibold text-gray-900">Elementary Template</span>
-                    <span className="text-xs text-gray-600">Grades K-5</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('assessmentDifferentiationModule.elementaryTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('assessmentDifferentiationModule.gradesK5')}</span>
                   </button>
                   <button className="p-4 bg-green-50 border-2 border-green-200 rounded-lg hover:bg-green-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-green-600" />
-                    <span className="text-sm font-semibold text-gray-900">Middle School Template</span>
-                    <span className="text-xs text-gray-600">Grades 6-8</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('assessmentDifferentiationModule.middleSchoolTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('assessmentDifferentiationModule.grades68')}</span>
                   </button>
                   <button className="p-4 bg-green-50 border-2 border-green-200 rounded-lg hover:bg-green-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-green-600" />
-                    <span className="text-sm font-semibold text-gray-900">High School Template</span>
-                    <span className="text-xs text-gray-600">Grades 9-12</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('assessmentDifferentiationModule.highSchoolTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('assessmentDifferentiationModule.grades912')}</span>
                   </button>
                 </div>
 
@@ -778,14 +752,10 @@ Differentiated assessment provides multiple ways for students to demonstrate lea
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('assessmentDifferentiationModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('assessmentDifferentiationModule.markAsComplete')}</>
                   )}
                 </button>
               </div>

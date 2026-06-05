@@ -2,6 +2,7 @@
  * Exam Step 1 — catalog + topic strands + scope refinement (quiz-equivalent UI).
  * Omits the quiz “Scope preview” metrics card; ends with a worksheet-style generation scope line.
  */
+import { useTranslation } from 'react-i18next'
 import {
   AlertCircle,
   BookMarked,
@@ -19,15 +20,20 @@ type Props = {
   rag: QuizRagScopeModel
   subject: string
   grade: string
+  panelStep: 'sources' | 'scope'
 }
 
-export function ExamSourcesRagPanel({ rag, subject, grade }: Props) {
+export function ExamSourcesRagPanel({ rag, subject, grade, panelStep }: Props) {
+  const { t } = useTranslation()
+
   const selectedBooks = rag.selectedBookIds
     .map((id) => getBookById(id, rag.catalog as never))
     .filter(Boolean)
 
   return (
-    <div className="space-y-5 border-t border-gray-100 pt-6">
+    <div className="space-y-5">
+      {panelStep === 'sources' && (
+        <>
       <label className="inline-flex items-start gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800">
         <input
           type="checkbox"
@@ -36,9 +42,9 @@ export function ExamSourcesRagPanel({ rag, subject, grade }: Props) {
           className="mt-0.5 rounded border-gray-300"
         />
         <span>
-          <span className="block font-semibold text-gray-900">Generate without source materials</span>
+          <span className="block font-semibold text-gray-900">{t('teacherTools.generateWithoutSources')}</span>
           <span className="mt-0.5 block text-xs text-gray-600">
-            Use topic-only generation. Catalog retrieval is skipped and source selection is hidden.
+            {t('quiz.rag.generateWithoutSourcesHint')}
           </span>
         </span>
       </label>
@@ -50,13 +56,13 @@ export function ExamSourcesRagPanel({ rag, subject, grade }: Props) {
             <input
               value={rag.catalogQuery}
               onChange={(e) => rag.setCatalogQuery(e.target.value)}
-              placeholder="Search title, author, ISBN, or topic strand…"
+              placeholder={t('teacherTools.catalogSearchPlaceholder')}
               className="w-full rounded-xl border border-gray-200 bg-gray-50/80 py-2.5 pl-10 pr-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
-              aria-label="Search catalog"
+              aria-label={t('teacherTools.ariaSearch')}
             />
             {rag.catalogBusy && (
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-emerald-700">
-                Updating…
+                {t('history.updating')}
               </span>
             )}
           </div>
@@ -65,14 +71,14 @@ export function ExamSourcesRagPanel({ rag, subject, grade }: Props) {
             <div className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-950">
               <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" aria-hidden />
               <div className="min-w-0 flex-1">
-                <p className="font-semibold">Could not load catalog</p>
+                <p className="font-semibold">{t('quiz.rag.catalogLoadFailed')}</p>
                 <p className="mt-0.5 text-xs text-red-900/80">{rag.catalogError}</p>
                 <button
                   type="button"
                   onClick={rag.retryCatalog}
                   className="mt-2 rounded-full bg-red-600 px-3 py-1 text-xs font-semibold text-white hover:bg-red-700"
                 >
-                  Retry
+                  {t('teacherTools.retry')}
                 </button>
               </div>
             </div>
@@ -116,7 +122,7 @@ export function ExamSourcesRagPanel({ rag, subject, grade }: Props) {
                   <p className="mt-2 line-clamp-2 text-xs text-gray-600">{b.authors}</p>
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     <span className="rounded-md bg-white/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gray-500 ring-1 ring-gray-200">
-                      {b.indexedSections} sections indexed
+                      {t('teacherTools.sectionsIndexed', { count: b.indexedSections })}
                     </span>
                     {b.grades.slice(0, 2).map((g) => (
                       <span
@@ -137,27 +143,23 @@ export function ExamSourcesRagPanel({ rag, subject, grade }: Props) {
               <Search className="h-8 w-8 text-gray-300" aria-hidden />
               {rag.catalogQuery.trim() ? (
                 <>
-                  <p className="mt-2 text-sm font-medium text-gray-800">No catalog titles match this search</p>
+                  <p className="mt-2 text-sm font-medium text-gray-800">{t('quiz.rag.noSearchMatch')}</p>
                   <p className="mt-1 max-w-sm text-xs text-gray-600">
-                    Try a shorter query, adjust subject or grade above, or clear the search field.
+                    {t('quiz.rag.noSearchMatchHint')}
                   </p>
                   <button
                     type="button"
                     onClick={() => rag.setCatalogQuery('')}
                     className="mt-4 rounded-full bg-gray-900 px-4 py-2 text-xs font-semibold text-white hover:bg-gray-800"
                   >
-                    Clear search
+                    {t('teacherTools.clearSearch')}
                   </button>
                 </>
               ) : (
                 <>
-                  <p className="mt-2 text-sm font-medium text-gray-800">No catalog titles for this subject and grade</p>
+                  <p className="mt-2 text-sm font-medium text-gray-800">{t('quiz.rag.noCatalogForGrade')}</p>
                   <p className="mt-1 max-w-sm text-xs text-gray-600">
-                    The list only shows <span className="font-medium">active content packs</span> that include at least one{' '}
-                    <span className="font-medium">published</span> document whose pack metadata matches{' '}
-                    <span className="font-medium">{subject}</span> and <span className="font-medium">{grade}</span>. Choose a
-                    matching subject/grade, publish your material from the library, or use &quot;Generate without source
-                    materials&quot; above.
+                    {t('quiz.rag.noCatalogHint', { subject, grade })}
                   </p>
                 </>
               )}
@@ -167,11 +169,11 @@ export function ExamSourcesRagPanel({ rag, subject, grade }: Props) {
           <div className="rounded-2xl border border-gray-100 bg-slate-50/60 p-4">
             <p className="flex items-center gap-2 text-sm font-semibold text-gray-900">
               <BookMarked className="h-4 w-4 text-indigo-600" aria-hidden />
-              Selected for retrieval ({selectedBooks.length})
+              {t('quiz.rag.selectedForRetrieval', { count: selectedBooks.length })}
             </p>
             {selectedBooks.length === 0 ? (
               <p className="mt-3 text-sm text-gray-600">
-                No materials selected yet. Pick at least one title above to enable topic strands and retrieval scope.
+                {t('quiz.rag.noMaterialsSelected')}
               </p>
             ) : (
               <ul className="mt-3 space-y-2">
@@ -191,7 +193,7 @@ export function ExamSourcesRagPanel({ rag, subject, grade }: Props) {
                         type="button"
                         onClick={() => rag.removeBook(b.id)}
                         className="shrink-0 rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-700"
-                        aria-label={`Remove ${b.title}`}
+                        aria-label={`${t('teacherTools.remove')} ${b.title}`}
                       >
                         <X className="h-4 w-4" />
                       </button>
@@ -204,17 +206,21 @@ export function ExamSourcesRagPanel({ rag, subject, grade }: Props) {
         </>
       ) : (
         <div className="rounded-2xl border border-dashed border-emerald-200 bg-emerald-50/70 p-4 text-sm text-emerald-900">
-          Source selection is disabled for this run. Generation will rely on your scope prompt and exam settings only.
+          {t('quiz.rag.topicOnlySourcesDisabled')}
         </div>
       )}
+        </>
+      )}
 
+      {panelStep === 'scope' && (
+        <>
       {!rag.generateWithoutSources && rag.selectedBookIds.length === 0 ? (
         <div className="flex gap-3 rounded-2xl border border-amber-200 bg-amber-50/80 px-4 py-4 text-sm text-amber-950">
           <AlertCircle className="h-5 w-5 shrink-0 text-amber-600" aria-hidden />
           <div>
-            <p className="font-semibold">Select one or more materials to browse available topics</p>
+            <p className="font-semibold">{t('quiz.rag.selectMaterialsForTopics')}</p>
             <p className="mt-1 text-amber-900/90">
-              Topic strands are derived from the catalog metadata attached to each approved title.
+              {t('quiz.rag.topicsFromCatalog')}
             </p>
           </div>
         </div>
@@ -222,16 +228,17 @@ export function ExamSourcesRagPanel({ rag, subject, grade }: Props) {
         <>
           {!rag.generateWithoutSources ? (
             <div>
-              <label className="block text-sm font-medium text-gray-800">Search & select topic strands</label>
+              <label className="block text-sm font-medium text-gray-800">{t('teacherTools.topicStrandsHeading')}</label>
               <p className="mt-1 text-xs text-gray-500">
-                Topics update when your material selection changes.{rag.topicsIndexing ? ' Refreshing index…' : ''}
+                {t('quiz.rag.topicsRefreshHint')}
+                {rag.topicsIndexing ? ` ${t('quiz.rag.topicsRefreshing')}` : ''}
               </p>
               <div className="relative mt-2">
                 <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                 <input
                   value={rag.topicQuery}
                   onChange={(e) => rag.setTopicQuery(e.target.value)}
-                  placeholder="Type to filter (e.g. fraction, word problem…)"
+                  placeholder={t('teacherTools.topicFilterPlaceholder')}
                   className="w-full rounded-xl border border-gray-200 py-2.5 pl-10 pr-3 text-sm focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
                 />
               </div>
@@ -239,7 +246,7 @@ export function ExamSourcesRagPanel({ rag, subject, grade }: Props) {
               {rag.topicsError && !rag.topicsIndexing && (
                 <div className="mt-2 flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs text-amber-900">
                   <AlertCircle className="h-4 w-4 shrink-0 text-amber-600" aria-hidden />
-                  <span>Topics unavailable — {rag.topicsError}</span>
+                  <span>{t('quiz.rag.topicsUnavailable')} {rag.topicsError}</span>
                 </div>
               )}
 
@@ -250,20 +257,20 @@ export function ExamSourcesRagPanel({ rag, subject, grade }: Props) {
                   {rag.topicOptionsFiltered.length === 0 ? (
                     <p className="px-2 py-6 text-center text-xs text-gray-600">
                       {rag.topicQuery.trim()
-                        ? `No topics match "${rag.topicQuery.trim()}".`
+                        ? t('quiz.rag.noTopicsMatch', { query: rag.topicQuery.trim() })
                         : rag.availableTopics.length === 0
-                          ? 'No topic strands returned for this selection. Try refreshing the page, or use Scope refinement below to steer generation.'
-                          : 'No topics match your filter.'}
+                          ? t('quiz.rag.noTopicsReturned')
+                          : t('quiz.rag.noTopicsFilter')}
                     </p>
                   ) : (
                     <div className="flex flex-wrap gap-2">
-                      {rag.topicOptionsFiltered.map((t) => {
-                        const active = rag.selectedTopics.includes(t)
+                      {rag.topicOptionsFiltered.map((topic) => {
+                        const active = rag.selectedTopics.includes(topic)
                         return (
                           <button
-                            key={t}
+                            key={topic}
                             type="button"
-                            onClick={() => rag.toggleTopic(t)}
+                            onClick={() => rag.toggleTopic(topic)}
                             className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
                               active
                                 ? 'border-violet-500 bg-violet-600 text-white shadow-sm'
@@ -271,7 +278,7 @@ export function ExamSourcesRagPanel({ rag, subject, grade }: Props) {
                             }`}
                           >
                             {active ? <Check className="h-3 w-3" /> : <ChevronRight className="h-3 w-3 opacity-40" />}
-                            {t}
+                            {topic}
                           </button>
                         )
                       })}
@@ -283,27 +290,29 @@ export function ExamSourcesRagPanel({ rag, subject, grade }: Props) {
               {rag.selectedTopics.length > 0 && (
                 <div className="mt-3">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-xs font-semibold text-gray-600">Selected ({rag.selectedTopics.length})</span>
+                    <span className="text-xs font-semibold text-gray-600">
+                      {t('quiz.rag.selectedTopics', { count: rag.selectedTopics.length })}
+                    </span>
                     <button
                       type="button"
                       onClick={() => rag.clearAllTopics()}
                       className="text-xs font-semibold text-violet-700 hover:text-violet-600"
                     >
-                      Clear all topics
+                      {t('quiz.rag.clearAllTopics')}
                     </button>
                   </div>
                   <div className="mt-2 flex flex-wrap gap-2">
-                    {rag.selectedTopics.map((t) => (
+                    {rag.selectedTopics.map((topic) => (
                       <span
-                        key={t}
+                        key={topic}
                         className="inline-flex items-center gap-1 rounded-full bg-violet-50 px-3 py-1 text-xs font-medium text-violet-900 ring-1 ring-violet-200"
                       >
-                        {t}
+                        {topic}
                         <button
                           type="button"
-                          onClick={() => rag.toggleTopic(t)}
+                          onClick={() => rag.toggleTopic(topic)}
                           className="rounded-full p-0.5 hover:bg-violet-100"
-                          aria-label={`Remove ${t}`}
+                          aria-label={`${t('teacherTools.remove')} ${topic}`}
                         >
                           <X className="h-3.5 w-3.5" />
                         </button>
@@ -315,35 +324,44 @@ export function ExamSourcesRagPanel({ rag, subject, grade }: Props) {
             </div>
           ) : (
             <div className="rounded-xl border border-gray-200 bg-gray-50/70 px-4 py-3 text-sm text-gray-700">
-              Topic strands are hidden in no-source mode. Use the scope refinement prompt below to define what to generate.
+              {t('quiz.rag.topicOnlyStrandsHidden')}
             </div>
           )}
 
           <label className="block text-sm font-medium text-gray-800">
-            Scope refinement {rag.generateWithoutSources ? <span className="text-red-500">*</span> : '(optional)'}
+            {rag.generateWithoutSources ? (
+              <>
+                {t('teacherTools.scopeRefinement')} <span className="text-red-500">*</span>
+              </>
+            ) : (
+              t('teacherTools.scopeRefinementOptional')
+            )}
             <textarea
               rows={2}
               value={rag.scopeRefinement}
               onChange={(e) => rag.setScopeRefinement(e.target.value)}
               placeholder={
                 rag.generateWithoutSources
-                  ? 'e.g. Focus on Grade 5 fraction and decimal word problems with exam-style reasoning'
-                  : 'Focus on word problems, exam-style reasoning, and common misconceptions'
+                  ? t('quiz.rag.scopePlaceholderNoSource')
+                  : t('teacherTools.scopeRefinementPlaceholder')
               }
               className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-100"
             />
             <span className="mt-1 block text-xs text-gray-500">
               {rag.generateWithoutSources
-                ? 'Required in no-source mode so the generator still has clear scope.'
-                : 'Acts as a retrieval hint paired with the strands above.'}
+                ? t('quiz.rag.scopeRequiredNoSource')
+                : t('quiz.rag.scopeHintWithSource')}
             </span>
           </label>
         </>
       )}
 
       <p className="border-t border-gray-100 pt-4 text-xs leading-relaxed text-gray-600">
-        <span className="font-semibold text-gray-800">Generation scope:</span> {formatSourceSummary(rag.getGenerationContext())}
+        <span className="font-semibold text-gray-800">{t('teacherTools.generationScope')}</span>{' '}
+        {formatSourceSummary(rag.getGenerationContext())}
       </p>
+        </>
+      )}
     </div>
   )
 }

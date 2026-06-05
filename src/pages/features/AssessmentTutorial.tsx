@@ -32,7 +32,9 @@ import {
 } from 'lucide-react'
 import { youtubeWatchUrlToEmbedUrl, type LearningHubMediaVideo } from '../../features/learningHub/contentModel'
 
+import { useTranslation } from 'react-i18next'
 export function AssessmentTutorialView({ item }: { item: LearningHubSectionItem }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const [showTranscript, setShowTranscript] = useState(false)
@@ -107,7 +109,7 @@ export function AssessmentTutorialView({ item }: { item: LearningHubSectionItem 
         {/* Sidebar - Step Navigation */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Tutorial Steps</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('assessmentTutorial.tutorialSteps')}</h3>
             <div className="space-y-2">
               {tutorialSteps.map((step, idx) => {
                 const isActive = idx === currentStep
@@ -233,14 +235,14 @@ export function AssessmentTutorialView({ item }: { item: LearningHubSectionItem 
 
                 {currentStepData.content.data.description && (
                   <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">About This Video</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('assessmentTutorial.aboutThisVideo')}</h3>
                     <p className="text-sm text-gray-700">{currentStepData.content.data.description}</p>
                   </div>
                 )}
 
                 {currentStepData.content.data.keyPoints && (
                   <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Points</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('assessmentTutorial.keyPoints')}</h3>
                     <ul className="space-y-2">
                       {currentStepData.content.data.keyPoints.map((point: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -265,22 +267,22 @@ export function AssessmentTutorialView({ item }: { item: LearningHubSectionItem 
                 <div className="space-y-6">
                   {classroom ? (
                     <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Classroom Context</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('assessmentTutorial.classroomContext')}</h3>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Grade</p>
+                          <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">{t('assessmentTutorial.grade')}</p>
                           <p className="text-sm font-semibold text-gray-900">{String(classroom.grade ?? '—')}</p>
                         </div>
                         <div>
-                          <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Subject</p>
+                          <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">{t('assessmentTutorial.subject')}</p>
                           <p className="text-sm font-semibold text-gray-900">{String(classroom.subject ?? '—')}</p>
                         </div>
                         <div>
-                          <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Students</p>
+                          <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">{t('assessmentTutorial.students')}</p>
                           <p className="text-sm font-semibold text-gray-900">{String(classroom.students ?? '—')}</p>
                         </div>
                         <div>
-                          <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Diversity</p>
+                          <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">{t('assessmentTutorial.diversity')}</p>
                           <p className="text-sm font-semibold text-gray-900">{String(classroom.diversity ?? '—')}</p>
                         </div>
                       </div>
@@ -297,19 +299,19 @@ export function AssessmentTutorialView({ item }: { item: LearningHubSectionItem 
                           <div className="space-y-2 text-sm text-gray-700">
                             {ex.task ? (
                               <p>
-                                <span className="font-semibold text-gray-900">Task: </span>
+                                <span className="font-semibold text-gray-900">{t('assessmentTutorial.task')}</span>
                                 {String(ex.task)}
                               </p>
                             ) : null}
                             {ex.output ? (
                               <p>
-                                <span className="font-semibold text-gray-900">Output: </span>
+                                <span className="font-semibold text-gray-900">{t('assessmentTutorial.output')}</span>
                                 {String(ex.output)}
                               </p>
                             ) : null}
                             {ex.result ? (
                               <p>
-                                <span className="font-semibold text-gray-900">Result: </span>
+                                <span className="font-semibold text-gray-900">{t('assessmentTutorial.result')}</span>
                                 {String(ex.result)}
                               </p>
                             ) : null}
@@ -321,14 +323,14 @@ export function AssessmentTutorialView({ item }: { item: LearningHubSectionItem 
 
                   {d.challenge ? (
                     <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Challenge</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('assessmentTutorial.challenge')}</h3>
                       <p className="text-gray-700">{String(d.challenge)}</p>
                     </div>
                   ) : null}
 
                   {d.approach ? (
                     <div className="bg-green-50 rounded-xl p-6 border border-green-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Approach</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('assessmentTutorial.approach')}</h3>
                       <p className="text-gray-700">{String(d.approach)}</p>
                     </div>
                   ) : null}
@@ -355,7 +357,7 @@ export function AssessmentTutorialView({ item }: { item: LearningHubSectionItem 
                           <div className="space-y-3">
                             {example.assessments && (
                               <div>
-                                <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">Examples</p>
+                                <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">{t('assessmentTutorial.examples')}</p>
                                 <ul className="space-y-1">
                                   {example.assessments.map((assessment: string, assIdx: number) => (
                                     <li key={assIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -368,19 +370,19 @@ export function AssessmentTutorialView({ item }: { item: LearningHubSectionItem 
                             )}
                             {example.purpose && (
                               <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                                <p className="text-xs font-semibold text-blue-800 mb-1">Purpose</p>
+                                <p className="text-xs font-semibold text-blue-800 mb-1">{t('assessmentTutorial.purpose')}</p>
                                 <p className="text-sm text-blue-700">{example.purpose}</p>
                               </div>
                             )}
                             {example.good && (
                               <div>
-                                <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">Good Example</p>
+                                <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">{t('assessmentTutorial.goodExample')}</p>
                                 <div className="p-3 bg-green-50 rounded-lg border border-green-200 mb-2">
                                   <p className="text-sm text-gray-700">{example.good}</p>
                                 </div>
                                 {example.bad && (
                                   <>
-                                    <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2 mt-3">Poor Example</p>
+                                    <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2 mt-3">{t('assessmentTutorial.poorExample')}</p>
                                     <div className="p-3 bg-red-50 rounded-lg border border-red-200">
                                       <p className="text-sm text-gray-700">{example.bad}</p>
                                     </div>
@@ -388,7 +390,7 @@ export function AssessmentTutorialView({ item }: { item: LearningHubSectionItem 
                                 )}
                                 {example.tip && (
                                   <div className="mt-3 p-3 bg-amber-50 rounded-lg border border-amber-200">
-                                    <p className="text-xs font-semibold text-amber-800 mb-1">💡 Tip</p>
+                                    <p className="text-xs font-semibold text-amber-800 mb-1">{t('assessmentTutorial.tip')}</p>
                                     <p className="text-sm text-amber-700">{example.tip}</p>
                                   </div>
                                 )}
@@ -396,7 +398,7 @@ export function AssessmentTutorialView({ item }: { item: LearningHubSectionItem 
                             )}
                             {example.strategies && (
                               <div>
-                                <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">Strategies</p>
+                                <p className="text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">{t('assessmentTutorial.strategies')}</p>
                                 <ul className="space-y-1">
                                   {example.strategies.map((strategy: string, stratIdx: number) => (
                                     <li key={stratIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -415,7 +417,7 @@ export function AssessmentTutorialView({ item }: { item: LearningHubSectionItem 
 
                   {currentStepData.content.data.implementation && (
                     <div className="mb-6">
-                      <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">Implementation Steps</h4>
+                      <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">{t('assessmentTutorial.implementationSteps')}</h4>
                       <ul className="space-y-2">
                         {currentStepData.content.data.implementation.map((step: string, stepIdx: number) => (
                           <li key={stepIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -429,7 +431,7 @@ export function AssessmentTutorialView({ item }: { item: LearningHubSectionItem 
 
                   {currentStepData.content.data.steps && (
                     <div className="mb-6">
-                      <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">Action Steps</h4>
+                      <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">{t('assessmentTutorial.actionSteps')}</h4>
                       <ol className="space-y-2">
                         {currentStepData.content.data.steps.map((step: string, stepIdx: number) => (
                           <li key={stepIdx} className="flex items-start gap-3 text-sm text-gray-700">
@@ -445,7 +447,7 @@ export function AssessmentTutorialView({ item }: { item: LearningHubSectionItem 
 
                   {currentStepData.content.data.resources && (
                     <div className="bg-white rounded-lg p-4 border border-blue-200">
-                      <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">Resources</h4>
+                      <h4 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">{t('assessmentTutorial.resources')}</h4>
                       <ul className="space-y-2">
                         {currentStepData.content.data.resources.map((resource: string, resIdx: number) => (
                           <li key={resIdx} className="flex items-center gap-2 text-sm text-gray-700">
@@ -464,7 +466,7 @@ export function AssessmentTutorialView({ item }: { item: LearningHubSectionItem 
               <div className="space-y-6">
                 {currentStepData.content.data.strategies && (
                   <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Strategies</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('assessmentTutorial.strategies')}</h3>
                     <ul className="space-y-3">
                       {currentStepData.content.data.strategies.map((strategy: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
@@ -478,7 +480,7 @@ export function AssessmentTutorialView({ item }: { item: LearningHubSectionItem 
 
                 {currentStepData.content.data.tools && (
                   <div className="bg-indigo-50 rounded-xl p-6 border border-indigo-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Tools & Examples</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('assessmentTutorial.toolsExamples')}</h3>
                     <div className="space-y-2 text-sm text-gray-700 whitespace-pre-line">
                       {currentStepData.content.data.tools.map((tool: string, idx: number) => (
                         <p key={idx}>{tool}</p>
@@ -493,9 +495,7 @@ export function AssessmentTutorialView({ item }: { item: LearningHubSectionItem 
             <div className="mt-8 pt-6 border-t border-gray-200">
               <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Lightbulb className="w-5 h-5 text-purple-600" />
-                  Key Takeaways
-                </h3>
+                  <Lightbulb className="w-5 h-5 text-purple-600" />{t('assessmentTutorial.keyTakeaways')}</h3>
                 <ul className="space-y-2">
                   {currentStepData.keyTakeaways.map((takeaway, idx) => (
                     <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -511,9 +511,7 @@ export function AssessmentTutorialView({ item }: { item: LearningHubSectionItem 
             <div className="mt-6 pt-6 border-t border-gray-200">
               <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
                 <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <MessageSquare className="w-5 h-5 text-green-600" />
-                  Reflection
-                </h3>
+                  <MessageSquare className="w-5 h-5 text-green-600" />{t('assessmentTutorial.reflection')}</h3>
                 <p className="text-sm text-gray-700">{currentStepData.reflection}</p>
               </div>
             </div>
@@ -525,9 +523,7 @@ export function AssessmentTutorialView({ item }: { item: LearningHubSectionItem 
                 disabled={currentStep === 0}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
-                <ArrowLeft className="w-4 h-4" />
-                Previous
-              </button>
+                <ArrowLeft className="w-4 h-4" />{t('assessmentTutorial.previous')}</button>
 
               <button
                 onClick={handleNext}

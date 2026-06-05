@@ -1,5 +1,6 @@
 // Library imports
 import Modal from '@mui/material/Modal';
+import { useTranslation } from 'react-i18next';
 
 // Icons Import
 import CloseIcon from '@mui/icons-material/Close';
@@ -34,8 +35,9 @@ export const CustomModal = ({
   disableBackdropClick = false,
   disableEscapeKeyDown = false,
 }) => {
+  const { t } = useTranslation();
   const resolvedSecondaryText =
-    secondaryButtonText !== undefined ? secondaryButtonText : 'Cancel';
+    secondaryButtonText !== undefined ? secondaryButtonText : t('modal.cancel');
 
   const {
     className: primaryButtonClassName,
@@ -111,7 +113,11 @@ export const CustomModal = ({
           >
             <p className='min-w-0 flex-1 text-[18px] text-gray-600'>{title}</p>
             {!hideCloseIcon && (
-              <div className='shrink-0 cursor-pointer' onClick={() => close?.()}>
+              <div
+                className='shrink-0 cursor-pointer'
+                onClick={() => close?.()}
+                aria-label={t('modal.close')}
+              >
                 <CloseIcon />
               </div>
             )}
@@ -165,10 +171,10 @@ export const CustomModal = ({
                     {isDelete
                       ? primaryButtonText
                         ? primaryButtonText
-                        : 'Delete'
+                        : t('modal.delete')
                       : primaryButtonText
                       ? primaryButtonText
-                      : 'Save'}
+                      : t('modal.confirm')}
                   </p>
                 </CustomButton>
               )}

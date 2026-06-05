@@ -1,0 +1,314 @@
+{
+  "common": {
+    "loading": "लोड हो रहा है…",
+    "cancel": "रद्द करें",
+    "search": "खोजें",
+    "addNew": "नया जोड़ें",
+    "save": "सहेजें",
+    "upload": "अपलोड",
+    "delete": "हटाएँ",
+    "export": "निर्यात",
+    "all": "सभी",
+    "back": "वापस",
+    "comingSoon": "जल्द आ रहा है",
+    "comingSoonHint": "यह सुविधा अभी उपलब्ध नहीं है।",
+    "noDataFound": "कोई डेटा नहीं मिला",
+    "noDataFoundHint": "अपने फ़िल्टर या खोज को समायोजित करें।",
+    "retry": "पुनः प्रयास करें",
+    "showLess": "कम दिखाएँ",
+    "showMore": "और दिखाएँ"
+  },
+  "app": {
+    "name": "शिक्षक सहायक",
+    "studentName": "छात्र सहायक"
+  },
+  "languageDropdown": {
+    "loading": "भाषाएँ लोड हो रही हैं…",
+    "placeholder": "भाषा चुनें",
+    "searchPlaceholder": "भाषाएँ खोजें…",
+    "listLabel": "भाषाएँ",
+    "noMatch": "\"{{query}}\" से कोई भाषा मेल नहीं खाती",
+    "count": "{{count}} भाषाएँ",
+    "count_one": "{{count}} भाषा",
+    "count_other": "{{count}} भाषाएँ",
+    "countAvailable": " उपलब्ध",
+    "countMatch": " \"{{query}}\" से मेल"
+  },
+  "layout": {
+    "activateCredits": "क्रेडिट सक्रिय करें",
+    "credits": "क्रेडिट",
+    "messages": "संदेश",
+    "notifications": "सूचनाएँ",
+    "newCount": "{{count}} नए",
+    "noMessages": "कोई संदेश नहीं",
+    "noMessagesHint": "जब आपको संदेश मिलेंगे, वे यहाँ दिखाई देंगे।",
+    "noNotifications": "कोई सूचना नहीं",
+    "noNotificationsHint": "जब आपके पास अपडेट होंगे, वे यहाँ दिखाई देंगे।",
+    "viewAllMessages": "सभी संदेश देखें",
+    "viewAllNotifications": "सभी सूचनाएँ देखें",
+    "signOut": "साइन आउट",
+    "signingOut": "साइन आउट हो रहा है…",
+    "allCaughtUp": "आप पूरी तरह अपडेट हैं",
+    "noNewNotifications": "कोई नई सूचना नहीं",
+    "noNotificationsYet": "अभी कोई सूचना नहीं",
+    "notificationsEmptyHint": "जब आपके पास अपडेट होंगे, वे यहाँ दिखाई देंगे।"
+  },
+  "settings": {
+    "tabs": {
+      "general": "सामान्य",
+      "notifications": "सूचनाएँ",
+      "plan": "योजना और क्रेडिट",
+      "integrations": "एकीकरण",
+      "developer": "डेवलपर",
+      "export": "निर्यात"
+    },
+    "general": {
+      "title": "सामान्य प्राथमिकताएँ",
+      "language": {
+        "label": "भाषा",
+        "change": "बदलें",
+        "uiFallback": "कुछ हिस्से अभी भी अंग्रेज़ी में हैं। आपकी प्राथमिकता ({{language}}) सहेजी गई है।"
+      },
+      "timezone": {
+        "label": "समय क्षेत्र",
+        "adjust": "समायोजित करें",
+        "currentTime": "वर्तमान समय",
+        "noMatch": "आपकी खोज से कोई समय क्षेत्र मेल नहीं खाता"
+      },
+      "theme": {
+        "label": "इंटरफ़ेस थीम",
+        "light": "लाइट",
+        "dark": "डार्क",
+        "system": "सिस्टम",
+        "followsDevice": " (डिवाइस के अनुसार)"
+      },
+      "syncSaving": "सहेजा जा रहा है…",
+      "syncSaved": "सहेजा गया",
+      "syncError": "सहेजना विफल"
+    },
+    "notifications": {
+      "title": "सूचनाएँ",
+      "productUpdates": "उत्पाद अपडेट",
+      "lessonReminders": "पाठ अनुस्मारक",
+      "weeklyInsights": "साप्ताहिक अंतर्दृष्टि",
+      "channels": {
+        "emailAndApp": "ईमेल और ऐप",
+        "emailOnly": "केवल ईमेल",
+        "appOnly": "केवल ऐप"
+      },
+      "currentChannel": "वर्तमान चैनल: {{channel}}",
+      "edit": "संपादित करें",
+      "manageDefaults": "सूचना डिफ़ॉल्ट प्रबंधित करें"
+    },
+    "integrations": {
+      "title": "एकीकरण",
+      "addNew": "नया एकीकरण जोड़ें",
+      "status": {
+        "connected": "कनेक्टेड",
+        "available": "उपलब्ध",
+        "comingSoon": "जल्द आ रहा है"
+      },
+      "googleClassroom": {
+        "name": "Google Classroom",
+        "description": "असाइनमेंट और रोस्टर स्वचालित रूप से सिंक करें।"
+      },
+      "microsoftTeams": {
+        "name": "Microsoft Teams",
+        "description": "Teams मीटिंग और असाइनमेंट सिंक सक्षम करें।"
+      },
+      "canvasLms": {
+        "name": "Canvas LMS",
+        "description": "Canvas उपयोगकर्ताओं के लिए ग्रेडबुक एकीकरण।"
+      }
+    },
+    "developer": {
+      "title": "API और डेवलपर एक्सेस",
+      "connectedApps": "कनेक्टेड ऐप",
+      "connectedAppsDesc": "3 ऐप को आपके teaching workspace तक पहुँच है।",
+      "manageTokens": "API टोकन प्रबंधित करें"
+    },
+    "export": {
+      "title": "निर्यात और बैकअप",
+      "downloadData": "workspace डेटा डाउनलोड करें",
+      "downloadDataDesc": "टेम्पलेट, assessments, और chat history",
+      "scheduleBackups": "साप्ताहिक बैकअप शेड्यूल करें"
+    },
+    "plan": {
+      "yourCredits": "आपके क्रेडिट",
+      "memberSince": "{{date}} से सदस्य",
+      "activateCode": "+ कोड सक्रिय करें",
+      "creditsRemaining": "/ {{total}} क्रेडिट",
+      "remainingPct": "{{pct}}% शेष",
+      "expires": "{{date}} को समाप्त",
+      "autoRenewing": "स्वतः नवीनीकरण",
+      "noActiveCredits": "कोई सक्रिय क्रेडिट नहीं। शुरू करने के लिए कोड सक्रिय करें।",
+      "activateCreditsLink": "क्रेडिट सक्रिय करें ←",
+      "usageBreakdown": "उपयोग विवरण",
+      "last30Days": "पिछले 30 दिन",
+      "activity": "गतिविधि",
+      "activityFallback": "गतिविधि",
+      "left": "{{count}} शेष"
+    }
+  },
+  "nav": {
+    "dashboard": "डैशबोर्ड",
+    "teacherTools": "शिक्षक उपकरण",
+    "teacherToolsOverview": "अवलोकन",
+    "teacherToolsAnalytics": "विश्लेषण",
+    "quiz": "क्विज़",
+    "assignment": "असाइनमेंट",
+    "worksheet": "वर्कशीट",
+    "exams": "परीक्षाएँ",
+    "templates": "टेम्पलेट लाइब्रेरी",
+    "chatbots": "विशेष chatbots",
+    "youtubeQuiz": "YouTube क्विज़ जनरेटर",
+    "pixgen": "PixGen (AI Media Studio)",
+    "learningHub": "व्यावसायिक learning hub",
+    "personalization": "वैयक्तिकरण",
+    "administration": "प्रशासन",
+    "reporting": "रिपोर्टिंग",
+    "assessment": "मूल्यांकन",
+    "contentManagement": "सामग्री प्रबंधन",
+    "history": "इतिहास",
+    "analytics": "विश्लेषण",
+    "useCases": "उपयोग के cases खोजें",
+    "profile": "प्रोफ़ाइल",
+    "settings": "सेटिंग्स",
+    "accessCodes": "एक्सेस कोड",
+    "contentPacks": "सामग्री packs",
+    "documents": "दस्तावेज़",
+    "learningHubContent": "Learning Hub सामग्री",
+    "organization": "संगठन",
+    "parent": "अभिभावक",
+    "school": "स्कूल",
+    "uploadDocument": "दस्तावेज़ अपलोड करें"
+  },
+  "workspace": {
+    "fallbackName": "Workspace",
+    "scopeType": {
+      "institution": "संस्था",
+      "organization": "संगठन",
+      "personal": "व्यक्तिगत"
+    },
+    "switcher": {
+      "title": "Workspace बदलें",
+      "active": "सक्रिय"
+    }
+  },
+  "login": {
+    "subtitle": "अपने खाते में साइन इन करें",
+    "emailLabel": "ईमेल पता",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "पासवर्ड",
+    "rememberMe": "मुझे याद रखें",
+    "forgotPassword": "पासवर्ड भूल गए?",
+    "signIn": "साइन इन",
+    "signingIn": "साइन इन हो रहा है…",
+    "noAccount": "खाता नहीं है?",
+    "signUpLink": "साइन अप",
+    "error": "साइन इन विफल। अपनी credentials जाँचें।"
+  },
+  "teacherTools": {
+    "breadcrumbTeacherTools": "शिक्षक उपकरण",
+    "breadcrumbTemplates": "टेम्पलेट",
+    "edit": "संपादित करें",
+    "duplicate": "डुप्लिकेट",
+    "archive": "संग्रह",
+    "delete": "हटाएँ",
+    "toolAssign": "असाइनमेंट",
+    "toolSheet": "वर्कशीट",
+    "toolExam": "परीक्षा",
+    "range7d": "7 दिन",
+    "range30d": "30 दिन",
+    "rangeAll": "सभी",
+    "previewData": "Preview डेटा",
+    "previewDataHint": "यह demo analytics हैं।",
+    "statContentCreated": "बनाई गई सामग्री",
+    "overview": {
+      "kpiTotalActive": "कुल सक्रिय",
+      "kpiScheduledWeek": "इस सप्ताह शेड्यूल",
+      "kpiPendingDrafts": "लंबित drafts",
+      "kpiPublished": "प्रकाशित",
+      "kpiAvgQuizScore": "औसत क्विज़ स्कोर",
+      "kpiQuizzesTaken": "ली गई क्विज़"
+    }
+  },
+  "quiz": { "breadcrumb": "क्विज़" },
+  "assignment": { "breadcrumb": "असाइनमेंट" },
+  "worksheet": { "breadcrumb": "वर्कशीट" },
+  "exam": {
+    "breadcrumb": "परीक्षाएँ",
+    "detail": {
+      "tabs": {
+        "analytics": "विश्लेषण",
+        "results": "परिणाम",
+        "candidates": "उम्मीदवार"
+      }
+    },
+    "statMarks": "marks"
+  },
+  "status": {
+    "draft": "ड्राफ्ट",
+    "published": "प्रकाशित",
+    "active": "सक्रिय",
+    "closed": "बंद",
+    "graded": "ग्रेड किया",
+    "submitted": "जमा",
+    "pending": "लंबित",
+    "archived": "संग्रहीत",
+    "completed": "पूर्ण",
+    "upcoming": "आगामी",
+    "ongoing": "चल रहा",
+    "cancelled": "रद्द",
+    "late": "देर से",
+    "onTime": "समय पर"
+  },
+  "dashboard": {
+    "welcome": "स्वागत है, {{name}}!",
+    "quickActions": "त्वरित कार्य",
+    "recentActivity": "हाल की गतिविधि",
+    "viewAll": "सभी देखें",
+    "teacherToolsOverview": "शिक्षक उपकरण अवलोकन",
+    "greetingMorning": "सुप्रभात, {{name}}",
+    "greetingAfternoon": "नमस्कार, {{name}}",
+    "greetingEvening": "शुभ संध्या, {{name}}",
+    "defaultName": "शिक्षक",
+    "workspaceReady": "आपका वर्कस्पेस तैयार है।",
+    "activeContent": "आपके वर्कस्पेस में {{count}} सक्रिय आइटम",
+    "createFirstQuiz": "शुरू करने के लिए अपनी पहली क्विज़ बनाएं।",
+    "createFirstQuizCta": "क्विज़ बनाएं",
+    "totalContent": "कुल सामग्री",
+    "thisWeek": "इस सप्ताह",
+    "draftBacklog": "लंबित ड्राफ्ट",
+    "published": "प्रकाशित",
+    "dayStreak": "दिन की लकीर",
+    "upcomingDeadlines": "आगामी समय सीमा",
+    "noDeadlines": "कोई आगामी समय सीमा नहीं",
+    "noActivity": "कोई हाल की गतिविधि नहीं",
+    "draftsToFinish": "पूरा करने के लिए ड्राफ्ट",
+    "all": "सभी",
+    "noDrafts": "कोई ड्राफ्ट नहीं",
+    "coreWorkflows": "मुख्य वर्कफ़्लो",
+    "dueToday": "आज देय",
+    "dueInDays": "{{count}} दिनों में देय",
+    "dueSoon": "जल्द देय: {{title}}",
+    "continueDraft": "ड्राफ्ट जारी रखें: {{title}}",
+    "tools": {
+      "quiz": "क्विज़",
+      "assignment": "असाइनमेंट",
+      "worksheet": "वर्कशीट",
+      "exam": "परीक्षा"
+    }
+  },
+  "tenantSelection": {
+    "title": "Workspace चुनें",
+    "subtitle": "जारी रखने के लिए workspace चुनें",
+    "workspace": "Workspace",
+    "signingIn": "साइन इन हो रहा है…",
+    "scope": {
+      "institution": "संस्था",
+      "organization": "संगठन",
+      "personalWorkspace": "व्यक्तिगत Workspace"
+    }
+  }
+}

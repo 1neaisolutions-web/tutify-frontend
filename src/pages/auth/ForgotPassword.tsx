@@ -1,17 +1,26 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { GraduationCap, ArrowLeft } from 'lucide-react'
+import { loadPendingLanguage } from '../../utils/pendingLanguage'
+import i18n, { resolveTranslationLocale } from '../../i18n'
 
 const ForgotPassword = () => {
+  const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
+  useEffect(() => {
+    const pending = loadPendingLanguage()
+    if (pending) {
+      i18n.changeLanguage(resolveTranslationLocale(pending))
+    }
+  }, [])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-
-    // TODO: Replace with actual API call
     setTimeout(() => {
       setIsSubmitted(true)
       setIsLoading(false)
@@ -38,18 +47,13 @@ const ForgotPassword = () => {
                 />
               </svg>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Check your email</h1>
-            <p className="text-gray-600">
-              We've sent a password reset link to <strong>{email}</strong>
-            </p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('forgotPassword.successTitle')}</h1>
+            <p className="text-gray-600">{t('forgotPassword.successMessage', { email })}</p>
           </div>
 
           <div className="card text-center">
-            <p className="text-gray-600 mb-6">
-              Please check your email and follow the instructions to reset your password.
-            </p>
             <Link to="/login" className="btn-primary inline-block">
-              Back to Sign in
+              {t('forgotPassword.backToLogin')}
             </Link>
           </div>
         </div>
@@ -64,15 +68,15 @@ const ForgotPassword = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-full mb-4">
             <GraduationCap className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Forgot Password?</h1>
-          <p className="text-gray-600">No worries, we'll send you reset instructions.</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('forgotPassword.title')}</h1>
+          <p className="text-gray-600">{t('forgotPassword.subtitle')}</p>
         </div>
 
         <div className="card">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
+                {t('forgotPassword.emailLabel')}
               </label>
               <input
                 id="email"
@@ -80,7 +84,7 @@ const ForgotPassword = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="input-field"
-                placeholder="you@example.com"
+                placeholder={t('forgotPassword.emailPlaceholder')}
                 required
               />
             </div>
@@ -90,7 +94,7 @@ const ForgotPassword = () => {
               disabled={isLoading}
               className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Sending...' : 'Reset Password'}
+              {isLoading ? t('forgotPassword.submitting') : t('forgotPassword.submit')}
             </button>
           </form>
 
@@ -100,7 +104,7 @@ const ForgotPassword = () => {
               className="inline-flex items-center text-sm text-primary-600 hover:text-primary-700 font-medium"
             >
               <ArrowLeft className="w-4 h-4 mr-1" />
-              Back to Sign in
+              {t('forgotPassword.backToLogin')}
             </Link>
           </div>
         </div>
@@ -110,6 +114,3 @@ const ForgotPassword = () => {
 }
 
 export default ForgotPassword
-
-
-

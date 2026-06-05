@@ -1,6 +1,7 @@
 import { TemplateListParams } from './types'
 import { API_URL } from '../config/api'
 import { showSnackbar } from '../redux/features/snackbarSlice/snackbarSlice'
+import i18n from '../i18n'
 
 // Use centralized API configuration — API_URL includes `/api` (e.g., http://127.0.0.1:8000/api)
 // For building API URLs, we use API_URL which already includes /api
@@ -40,15 +41,22 @@ const toQueryString = (query?: Record<string, string | number | boolean | undefi
   return params
 }
 
-const SOURCE_TYPE_LABELS: Record<string, string> = {
-  quiz: 'Quiz',
-  assignment: 'Assignment',
-  worksheet: 'Worksheet',
-  exam: 'Exam',
-  chatbot_conversation: 'Chatbot conversation',
-  pixgen_generation: 'PixGen image',
-  youtube_quiz: 'YouTube quiz',
-  template_execution: 'Template',
+const SOURCE_TYPE_I18N: Record<string, string> = {
+  quiz: 'dashboard.tools.quiz',
+  assignment: 'dashboard.tools.assignment',
+  worksheet: 'dashboard.tools.worksheet',
+  exam: 'dashboard.tools.exam',
+  history: 'history.title',
+}
+
+const sourceTypeLabel = (type: string) => {
+  const key = SOURCE_TYPE_I18N[type]
+  return key ? i18n.t(key) : type
+}
+
+const historySlotLabel = (type: string | null | undefined) => {
+  if (!type) return i18n.t('history.title')
+  return sourceTypeLabel(type)
 }
 
 // Store reference for accessing auth token from Redux (same as http.js)
@@ -305,7 +313,10 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
         storeRef.dispatch(
           showSnackbar({
             variant: 'info',
-            message: `Your oldest ${SOURCE_TYPE_LABELS[evictedType] ?? evictedType} "${evictedTitle}" was removed to keep your history under the limit.`,
+            message: i18n.t('api.snackbar.historyEvicted', {
+              type: historySlotLabel(evictedType),
+              title: evictedTitle,
+            }),
           }),
         )
       }
@@ -314,7 +325,11 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
         storeRef.dispatch(
           showSnackbar({
             variant: 'warning',
-            message: `You've used ${historyCount} of your ${historyLimit} ${SOURCE_TYPE_LABELS[evictedType ?? ''] ?? 'history'} slots. Upgrade for more storage.`,
+            message: i18n.t('api.snackbar.historyWarning', {
+              count: historyCount,
+              limit: historyLimit,
+              type: historySlotLabel(evictedType ?? ''),
+            }),
           }),
         )
       }
@@ -348,11 +363,11 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
 
         // Short UI-safe message; full URL + hints stay in the console above.
         const shortMessage =
-          errorDetail && errorDetail !== 'Not Found'
+          errorDetail && errorDetail !== i18n.t('api.error.notFoundDetail')
             ? errorDetail.length > 180
               ? `${errorDetail.slice(0, 177)}…`
               : errorDetail
-            : 'This endpoint was not found (404). Restart the API with the latest code if you just added new routes.'
+            : i18n.t('api.error.notFound')
 
         throw new ApiError(response.status, shortMessage, payload)
       }
@@ -400,7 +415,11 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
               return retryPayload as T
             } else {
               // Retry failed, use the retry response as the error
-              const error = new ApiError(retryResponse.status, `Request failed after token refresh: ${(retryPayload as any)?.detail || retryResponse.statusText}`, retryPayload)
+              const error = new ApiError(
+                retryResponse.status,
+                `${i18n.t('api.error.requestFailedAfterRefresh')}: ${(retryPayload as any)?.detail || retryResponse.statusText}`,
+                retryPayload,
+              )
               throw error
             }
           }
@@ -445,7 +464,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
 
       if (response.status === 402) {
         const raw = (payload as Record<string, unknown> | null)?.detail
-        let msg = 'Insufficient credits'
+        let msg = i18n.t('api.error.insufficientCredits')
         if (typeof raw === 'object' && raw !== null && 'message' in raw) {
           msg = String((raw as Record<string, unknown>).message)
         } else if (typeof raw === 'string') {
@@ -463,11 +482,17 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
                 variant: 'error',
                 message:
                   detail?.message ||
-                  `You've reached the limit for ${detail?.source_type ?? 'history'} items and all are pinned. Unpin some to make room.`,
+                  i18n.t('api.snackbar.historyLimitPinned', {
+                    type: historySlotLabel(detail?.source_type ?? 'history'),
+                  }),
               }),
             )
           }
-          throw new ApiError(response.status, detail?.message || 'History limit reached', payload)
+          throw new ApiError(
+            response.status,
+            detail?.message || i18n.t('api.error.historyLimitReached'),
+            payload,
+          )
         }
       }
 
@@ -478,14 +503,14 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
             ? String((payload as Record<string, unknown>).detail)
             : response.statusText || 'Bad Gateway'
         const devHint = import.meta.env.DEV
-          ? ' Start FastAPI on the host/port in VITE_PROXY_TARGET (see vite.config.ts; default http://127.0.0.1:8000), or set VITE_PROXY_TARGET in .env to match uvicorn. Then restart `yarn dev`.'
-          : ' Check that the API server behind the gateway is running.'
+          ? i18n.t('api.error.badGatewayDevHint')
+          : i18n.t('api.error.badGatewayProdHint')
         throw new ApiError(response.status, `${base}.${devHint}`, payload)
       }
 
       const message = typeof payload === 'object' && payload !== null && 'detail' in (payload as Record<string, unknown>)
         ? String((payload as Record<string, unknown>).detail)
-        : response.statusText || 'Request failed'
+        : response.statusText || i18n.t('api.error.requestFailed')
       throw new ApiError(response.status, message, payload)
     }
 
@@ -502,18 +527,18 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
     // Handle abort/timeout errors
     if (error instanceof Error && error.name === 'AbortError') {
       if (abortController.signal.aborted && !providedSignal?.aborted) {
-        throw new Error(`Request timeout: The request took longer than ${timeout}ms to complete. The server may be slow or unreachable.`)
+        throw new Error(i18n.t('api.error.timeout', { ms: timeout }))
       }
-      throw new Error('Request was cancelled')
+      throw new Error(i18n.t('api.error.cancelled'))
     }
     
     // Handle network errors
     if (error instanceof TypeError) {
       if (error.message.includes('fetch') || error.message.includes('Failed to fetch')) {
-        throw new Error(`Network error: Unable to reach server at ${url}. Please check if the backend is running and accessible.`)
+        throw new Error(i18n.t('api.error.network'))
       }
       if (error.message.includes('network') || error.message.includes('connection')) {
-        throw new Error(`Connection error: Cannot connect to server. Please verify the backend is running and accessible.`)
+        throw new Error(i18n.t('api.error.connection'))
       }
     }
     

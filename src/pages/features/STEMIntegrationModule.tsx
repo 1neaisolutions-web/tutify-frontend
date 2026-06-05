@@ -26,6 +26,7 @@ import {
   Calculator,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template' | 'project'
@@ -44,6 +45,7 @@ interface IntegrationModel {
 }
 
 const STEMIntegrationModule = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -276,14 +278,10 @@ STEM integration helps students see connections between disciplines and understa
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 7
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('sTEMIntegrationModule.module7')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    90 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('sTEMIntegrationModule.k0Min')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
                     <Star className="h-3 w-3" />
@@ -293,16 +291,14 @@ STEM integration helps students see connections between disciplines and understa
                     }, 0)} / {lessons.reduce((sum, l) => sum + l.points, 0)} points
                   </span>
                 </div>
-                <h1 className="text-3xl font-bold">STEM Integration Strategies</h1>
-                <p className="mt-2 text-indigo-100">
-                  Learn to seamlessly integrate Science, Technology, Engineering, and Mathematics
-                </p>
+                <h1 className="text-3xl font-bold">{t('sTEMIntegrationModule.stemIntegrationStrategies')}</h1>
+                <p className="mt-2 text-indigo-100">{t('sTEMIntegrationModule.learnToSeamlesslyIntegrateScienceTechnologyEngineeringA')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm mb-4">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4" />
-                <span>High Impact</span>
+                <span>{t('sTEMIntegrationModule.highImpact')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Trophy className="w-4 h-4" />
@@ -327,7 +323,7 @@ STEM integration helps students see connections between disciplines and understa
         {/* Sidebar */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('sTEMIntegrationModule.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isActive = idx === currentLesson
@@ -387,9 +383,7 @@ STEM integration helps students see connections between disciplines and understa
                 </div>
                 {completedLessons.includes(currentLessonData.id) && (
                   <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-semibold flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4" />
-                    Completed
-                  </span>
+                    <CheckCircle2 className="h-4 w-4" />{t('sTEMIntegrationModule.completed')}</span>
                 )}
               </div>
             </div>
@@ -409,7 +403,7 @@ STEM integration helps students see connections between disciplines and understa
                 </div>
                 {currentLessonData.content.keyPoints && (
                   <div className="bg-indigo-50 rounded-xl p-6 border border-indigo-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Points</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('sTEMIntegrationModule.keyPoints')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyPoints.map((point: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -424,7 +418,7 @@ STEM integration helps students see connections between disciplines and understa
                 {/* Integration Models */}
                 {currentLessonData.id === 'integration-models' && (
                   <div className="bg-white rounded-xl p-6 border-2 border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">STEM Integration Models</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('sTEMIntegrationModule.stemIntegrationModels')}</h3>
                     <div className="space-y-4">
                       {integrationModels.map((model, idx) => (
                         <div key={idx} className="bg-indigo-50 rounded-lg p-5 border border-indigo-200">
@@ -434,11 +428,11 @@ STEM integration helps students see connections between disciplines and understa
                           </div>
                           <p className="text-sm text-gray-700 mb-3">{model.description}</p>
                           <div className="bg-white rounded p-3 border border-indigo-100 mb-3">
-                            <p className="text-xs font-semibold text-gray-600 mb-1">Approach:</p>
+                            <p className="text-xs font-semibold text-gray-600 mb-1">{t('sTEMIntegrationModule.approach')}</p>
                             <p className="text-xs text-gray-700">{model.approach}</p>
                           </div>
                           <div className="bg-white rounded p-3 border border-indigo-100">
-                            <p className="text-xs font-semibold text-gray-600 mb-1">Example:</p>
+                            <p className="text-xs font-semibold text-gray-600 mb-1">{t('sTEMIntegrationModule.example')}</p>
                             <p className="text-xs text-gray-700">{model.example}</p>
                           </div>
                         </div>
@@ -457,7 +451,7 @@ STEM integration helps students see connections between disciplines and understa
                 </div>
                 {currentLessonData.content.keyTakeaways && (
                   <div className="bg-purple-50 rounded-xl p-6 border border-purple-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Takeaways</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('sTEMIntegrationModule.keyTakeaways')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyTakeaways.map((takeaway: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -482,15 +476,13 @@ STEM integration helps students see connections between disciplines and understa
                       onClick={() => setShowIntegrationPlanner(true)}
                       className="w-full px-6 py-4 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition flex items-center justify-center gap-2"
                     >
-                      <Zap className="h-5 w-5" />
-                      Launch Integration Planner
-                    </button>
+                      <Zap className="h-5 w-5" />{t('sTEMIntegrationModule.launchIntegrationPlanner')}</button>
                   ) : (
                     <div className="bg-white rounded-xl p-6 border-2 border-indigo-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">STEM Integration Planner</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('sTEMIntegrationModule.stemIntegrationPlanner')}</h3>
                       <div className="space-y-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Select Subjects to Integrate</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('sTEMIntegrationModule.selectSubjectsToIntegrate')}</label>
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                             {['Science', 'Technology', 'Engineering', 'Mathematics'].map((subject) => {
                               const Icon = subject === 'Science' ? FlaskConical : subject === 'Technology' ? Code : subject === 'Engineering' ? Puzzle : Calculator
@@ -513,25 +505,23 @@ STEM integration helps students see connections between disciplines and understa
                           </div>
                         </div>
                         <div className="bg-indigo-50 rounded-lg p-4 border border-indigo-200">
-                          <p className="text-sm font-semibold text-gray-900 mb-2">Integration Model</p>
+                          <p className="text-sm font-semibold text-gray-900 mb-2">{t('sTEMIntegrationModule.integrationModel')}</p>
                           <select className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100">
-                            <option>Content Integration</option>
-                            <option>Context Integration</option>
-                            <option>Project-Based Integration</option>
+                            <option>{t('sTEMIntegrationModule.contentIntegration')}</option>
+                            <option>{t('sTEMIntegrationModule.contextIntegration')}</option>
+                            <option>{t('sTEMIntegrationModule.projectBasedIntegration')}</option>
                           </select>
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Learning Goals</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('sTEMIntegrationModule.learningGoals')}</label>
                           <textarea
                             rows={4}
-                            placeholder="Describe learning goals for each integrated subject..."
+                            placeholder={t('sTEMIntegrationModule.describeLearningGoalsForEachIntegratedSubject')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                           />
                         </div>
                         <div className="flex gap-3">
-                          <button className="flex-1 px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition">
-                            Save Integration Plan
-                          </button>
+                          <button className="flex-1 px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition">{t('sTEMIntegrationModule.saveIntegrationPlan')}</button>
                           <button
                             onClick={() => setShowIntegrationPlanner(false)}
                             className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition"
@@ -557,32 +547,30 @@ STEM integration helps students see connections between disciplines and understa
                       onClick={() => setShowProjectDesigner(true)}
                       className="w-full px-6 py-4 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
                     >
-                      <Rocket className="h-5 w-5" />
-                      Launch Project Designer
-                    </button>
+                      <Rocket className="h-5 w-5" />{t('sTEMIntegrationModule.launchProjectDesigner')}</button>
                   ) : (
                     <div className="bg-white rounded-xl p-6 border-2 border-green-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Integrated STEM Project Designer</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('sTEMIntegrationModule.integratedStemProjectDesigner')}</h3>
                       <div className="space-y-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Project Title</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('sTEMIntegrationModule.projectTitle')}</label>
                           <input
                             type="text"
                             value={projectData.title}
                             onChange={(e) => setProjectData({ ...projectData, title: e.target.value })}
-                            placeholder="e.g., Sustainable Garden System"
+                            placeholder={t('sTEMIntegrationModule.eGSustainableGardenSystem')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('sTEMIntegrationModule.gradeLevel')}</label>
                             <select
                               value={projectData.gradeLevel}
                               onChange={(e) => setProjectData({ ...projectData, gradeLevel: e.target.value })}
                               className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                             >
-                              <option value="">Select grade</option>
+                              <option value="">{t('sTEMIntegrationModule.selectGrade')}</option>
                               {['K', '1', '2', '3', '4', '5', 'MS', 'HS'].map((grade) => (
                                 <option key={grade} value={grade}>
                                   {grade === 'MS' ? 'Middle School' : grade === 'HS' ? 'High School' : `Grade ${grade}`}
@@ -591,43 +579,43 @@ STEM integration helps students see connections between disciplines and understa
                             </select>
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('sTEMIntegrationModule.duration')}</label>
                             <input
                               type="text"
                               value={projectData.duration}
                               onChange={(e) => setProjectData({ ...projectData, duration: e.target.value })}
-                              placeholder="e.g., 4 weeks"
+                              placeholder={t('sTEMIntegrationModule.eG4Weeks')}
                               className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                             />
                           </div>
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Driving Question</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('sTEMIntegrationModule.drivingQuestion')}</label>
                           <textarea
                             value={projectData.drivingQuestion}
                             onChange={(e) => setProjectData({ ...projectData, drivingQuestion: e.target.value })}
                             rows={2}
-                            placeholder="What is the central question that drives this project?"
+                            placeholder={t('sTEMIntegrationModule.whatIsTheCentralQuestionThatDrivesThisProject')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Project Activities</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('sTEMIntegrationModule.projectActivities')}</label>
                           <textarea
                             value={projectData.activities}
                             onChange={(e) => setProjectData({ ...projectData, activities: e.target.value })}
                             rows={5}
-                            placeholder="Describe activities that integrate all STEM subjects..."
+                            placeholder={t('sTEMIntegrationModule.describeActivitiesThatIntegrateAllStemSubjects')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Assessments</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('sTEMIntegrationModule.assessments')}</label>
                           <textarea
                             value={projectData.assessments}
                             onChange={(e) => setProjectData({ ...projectData, assessments: e.target.value })}
                             rows={4}
-                            placeholder="Describe how you will assess learning in each integrated subject..."
+                            placeholder={t('sTEMIntegrationModule.describeHowYouWillAssessLearningInEachIntegratedSubject')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
@@ -635,9 +623,7 @@ STEM integration helps students see connections between disciplines and understa
                           <button
                             onClick={handleProjectSubmit}
                             className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition"
-                          >
-                            Save Project Plan
-                          </button>
+                          >{t('sTEMIntegrationModule.saveProjectPlan')}</button>
                           <button
                             onClick={() => setShowProjectDesigner(false)}
                             className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition"
@@ -651,7 +637,7 @@ STEM integration helps students see connections between disciplines and understa
                 </div>
 
                 <div className="bg-white rounded-xl p-6 border-2 border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Project Requirements</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('sTEMIntegrationModule.projectRequirements')}</h3>
                   <ol className="space-y-3">
                     {currentLessonData.content.requirements.map((req: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
@@ -673,9 +659,7 @@ STEM integration helps students see connections between disciplines and understa
                 disabled={currentLesson === 0}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
-                <ArrowLeft className="h-4 w-4" />
-                Previous
-              </button>
+                <ArrowLeft className="h-4 w-4" />{t('sTEMIntegrationModule.previous')}</button>
 
               <button
                 onClick={() => {
@@ -688,18 +672,12 @@ STEM integration helps students see connections between disciplines and understa
               >
                 {completedLessons.includes(currentLessonData.id) ? (
                   <>
-                    <CheckCircle2 className="h-4 w-4" />
-                    Marked Complete
-                  </>
+                    <CheckCircle2 className="h-4 w-4" />{t('sTEMIntegrationModule.markedComplete')}</>
                 ) : currentLesson === lessons.length - 1 ? (
                   <>
-                    <Trophy className="h-4 w-4" />
-                    Complete Module
-                  </>
+                    <Trophy className="h-4 w-4" />{t('sTEMIntegrationModule.completeModule')}</>
                 ) : (
-                  <>
-                    Complete & Next
-                    <ArrowRight className="h-4 w-4" />
+                  <>{t('sTEMIntegrationModule.completeNext')}<ArrowRight className="h-4 w-4" />
                   </>
                 )}
               </button>
@@ -712,7 +690,7 @@ STEM integration helps students see connections between disciplines and understa
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-600 mb-4">
                 <Trophy className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Module Complete!</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('sTEMIntegrationModule.moduleComplete')}</h3>
               <p className="text-gray-700 mb-6">
                 You've earned {lessons.reduce((sum, l) => sum + l.points, 0)} points. Excellent work!
               </p>
@@ -723,9 +701,7 @@ STEM integration helps students see connections between disciplines and understa
                 >
                   Continue to Next Module
                 </button>
-                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                  Download Certificate
-                </button>
+                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">{t('sTEMIntegrationModule.downloadCertificate')}</button>
               </div>
             </div>
           )}

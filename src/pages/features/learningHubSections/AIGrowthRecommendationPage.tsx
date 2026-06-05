@@ -1,12 +1,14 @@
 // @ts-nocheck
 import { Navigate, useLocation, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { getSectionItemBySlug } from '../../../features/learningHub'
 import { useLearningHubRouteScrollToTop } from '../../../features/learningHub/useLearningHubScrollToTop'
 import AIGrowthRecommendationRenderer from './AIGrowthRecommendationRenderer'
 import axiosInstance from '../../../redux/http'
 
 const AIGrowthRecommendationPage = () => {
+  const { t } = useTranslation()
   useLearningHubRouteScrollToTop()
   const { slug } = useParams()
   const location = useLocation()
@@ -53,7 +55,7 @@ const AIGrowthRecommendationPage = () => {
   const item = contentId ? backendItem : getSectionItemBySlug('ai-growth-recommendations', slug)
 
   if (loading) {
-    return <div className='p-6 text-sm text-gray-500'>Loading personalized growth path...</div>
+    return <div className='p-6 text-sm text-gray-500'>{t('learningHubSections.loadingGrowthPath')}</div>
   }
   if (!item || !item.aiGrowthRecommendationContent) {
     return <Navigate to='/learning-hub' replace />

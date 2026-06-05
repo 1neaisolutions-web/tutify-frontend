@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Calculator, Sparkles, RefreshCw, Download } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 type MathDomain =
   | 'algebra'
   | 'geometry'
@@ -92,6 +93,7 @@ const sampleProblemSet: ProblemSetOutput = {
 }
 
 const RealWorldMathProblemGenerator = () => {
+  const { t } = useTranslation()
   const [inputs, setInputs] = useState<ProblemGeneratorInputs>({
     grade: 7,
     math_domain: 'algebra',
@@ -178,10 +180,8 @@ const RealWorldMathProblemGenerator = () => {
             <Calculator className="w-6 h-6 text-primary-600" />
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold text-gray-900">Real-World Math Problem Generator</h1>
-            <p className="text-sm text-gray-600 mt-0.5">
-              Generate contextualized math problems with realistic data and optional solution steps
-            </p>
+            <h1 className="text-xl font-bold text-gray-900">{t('realWorldMathProblemGenerator.realWorldMathProblemGenerator')}</h1>
+            <p className="text-sm text-gray-600 mt-0.5">{t('realWorldMathProblemGenerator.generateContextualizedMathProblemsWithRealisticDataAndO')}</p>
           </div>
         </div>
       </div>
@@ -191,13 +191,12 @@ const RealWorldMathProblemGenerator = () => {
           <div className="card">
             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
               <Sparkles className="w-5 h-5 text-primary-600" />
-              <span>Problem Inputs</span>
+              <span>{t('realWorldMathProblemGenerator.problemInputs')}</span>
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Grade <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('realWorldMathProblemGenerator.grade2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -206,14 +205,13 @@ const RealWorldMathProblemGenerator = () => {
                   value={inputs.grade}
                   onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
                   className="input-field"
-                  placeholder="Enter grade (1-12)"
+                  placeholder={t('common.gradePlaceholder')}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Math Domain <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('realWorldMathProblemGenerator.mathDomain')}<span className="text-red-500">*</span>
                 </label>
                 <select
                   value={inputs.math_domain}
@@ -223,19 +221,18 @@ const RealWorldMathProblemGenerator = () => {
                   className="input-field"
                   required
                 >
-                  <option value="">Select domain</option>
-                  <option value="algebra">Algebra</option>
-                  <option value="geometry">Geometry</option>
-                  <option value="measurement">Measurement</option>
-                  <option value="statistics">Statistics</option>
-                  <option value="number_operations">Number Operations</option>
-                  <option value="percentages">Percentages</option>
+                  <option value="">{t('realWorldMathProblemGenerator.selectDomain')}</option>
+                  <option value="algebra">{t('realWorldMathProblemGenerator.algebra')}</option>
+                  <option value="geometry">{t('realWorldMathProblemGenerator.geometry')}</option>
+                  <option value="measurement">{t('realWorldMathProblemGenerator.measurement')}</option>
+                  <option value="statistics">{t('realWorldMathProblemGenerator.statistics')}</option>
+                  <option value="number_operations">{t('realWorldMathProblemGenerator.numberOperations')}</option>
+                  <option value="percentages">{t('realWorldMathProblemGenerator.percentages')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Topic <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('realWorldMathProblemGenerator.topic2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -248,23 +245,23 @@ const RealWorldMathProblemGenerator = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Context</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('realWorldMathProblemGenerator.context2')}</label>
                 <select
                   value={inputs.context}
                   onChange={(e) => handleInputChange('context', e.target.value)}
                   className="input-field"
                 >
                   <option value="">Select context (optional)</option>
-                  <option value="travel">Travel</option>
-                  <option value="shopping">Shopping</option>
-                  <option value="sports">Sports</option>
-                  <option value="environment">Environment</option>
-                  <option value="construction">Construction</option>
+                  <option value="travel">{t('realWorldMathProblemGenerator.travel')}</option>
+                  <option value="shopping">{t('realWorldMathProblemGenerator.shopping')}</option>
+                  <option value="sports">{t('realWorldMathProblemGenerator.sports')}</option>
+                  <option value="environment">{t('realWorldMathProblemGenerator.environment')}</option>
+                  <option value="construction">{t('realWorldMathProblemGenerator.construction')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Difficulty</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('realWorldMathProblemGenerator.difficulty2')}</label>
                 <select
                   value={inputs.difficulty}
                   onChange={(e) =>
@@ -273,16 +270,14 @@ const RealWorldMathProblemGenerator = () => {
                   className="input-field"
                 >
                   <option value="">Select difficulty (optional)</option>
-                  <option value="easy">Easy</option>
-                  <option value="moderate">Moderate</option>
-                  <option value="challenging">Challenging</option>
+                  <option value="easy">{t('realWorldMathProblemGenerator.easy')}</option>
+                  <option value="moderate">{t('realWorldMathProblemGenerator.moderate')}</option>
+                  <option value="challenging">{t('realWorldMathProblemGenerator.challenging')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Problem Count
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('realWorldMathProblemGenerator.problemCount')}</label>
                 <input
                   type="number"
                   min="1"
@@ -290,7 +285,7 @@ const RealWorldMathProblemGenerator = () => {
                   value={inputs.problem_count}
                   onChange={(e) => handleInputChange('problem_count', parseInt(e.target.value) || '')}
                   className="input-field"
-                  placeholder="Default is 5"
+                  placeholder={t('realWorldMathProblemGenerator.defaultIs5')}
                 />
               </div>
 
@@ -302,9 +297,7 @@ const RealWorldMathProblemGenerator = () => {
                   onChange={(e) => handleInputChange('include_solution_steps', e.target.checked)}
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />
-                <label htmlFor="solution-steps" className="ml-2 text-sm text-gray-700">
-                  Include solution steps
-                </label>
+                <label htmlFor="solution-steps" className="ml-2 text-sm text-gray-700">{t('realWorldMathProblemGenerator.includeSolutionSteps')}</label>
               </div>
 
               <div className="flex items-center">
@@ -315,24 +308,22 @@ const RealWorldMathProblemGenerator = () => {
                   onChange={(e) => handleInputChange('real_world_alignment', e.target.checked)}
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />
-                <label htmlFor="real-world-alignment" className="ml-2 text-sm text-gray-700">
-                  Ensure real-world authenticity
-                </label>
+                <label htmlFor="real-world-alignment" className="ml-2 text-sm text-gray-700">{t('realWorldMathProblemGenerator.ensureRealWorldAuthenticity')}</label>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('realWorldMathProblemGenerator.language2')}</label>
                 <input
                   type="text"
                   value={inputs.language}
                   onChange={(e) => handleInputChange('language', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., en-US"
+                  placeholder={t('realWorldMathProblemGenerator.eGEnUs')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Output Format</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('realWorldMathProblemGenerator.outputFormat')}</label>
                 <select
                   value={inputs.output_format}
                   onChange={(e) =>
@@ -344,8 +335,8 @@ const RealWorldMathProblemGenerator = () => {
                   className="input-field"
                 >
                   <option value="">Select output format (optional)</option>
-                  <option value="teacher_text">Teacher Text</option>
-                  <option value="structured_json">Structured JSON</option>
+                  <option value="teacher_text">{t('realWorldMathProblemGenerator.teacherText')}</option>
+                  <option value="structured_json">{t('realWorldMathProblemGenerator.structuredJson')}</option>
                 </select>
               </div>
 
@@ -357,12 +348,12 @@ const RealWorldMathProblemGenerator = () => {
                 {isGenerating ? (
                   <>
                     <RefreshCw className="w-5 h-5 animate-spin" />
-                    <span>Generating...</span>
+                    <span>{t('realWorldMathProblemGenerator.generating')}</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-5 h-5" />
-                    <span>Generate Problem Set</span>
+                    <span>{t('realWorldMathProblemGenerator.generateProblemSet')}</span>
                   </>
                 )}
               </button>
@@ -374,18 +365,18 @@ const RealWorldMathProblemGenerator = () => {
           {output ? (
             <div className="card">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Generated Problem Set</h2>
+                <h2 className="text-lg font-semibold text-gray-900">{t('realWorldMathProblemGenerator.generatedProblemSet')}</h2>
                 <div className="flex gap-2">
                   <button className="btn-secondary flex items-center space-x-2">
                     <Download className="w-4 h-4" />
-                    <span>Download</span>
+                    <span>{t('realWorldMathProblemGenerator.download')}</span>
                   </button>
                   <button
                     onClick={() => setOutput(null)}
                     className="btn-secondary flex items-center space-x-2"
                   >
                     <RefreshCw className="w-4 h-4" />
-                    <span>Reset</span>
+                    <span>{t('realWorldMathProblemGenerator.reset')}</span>
                   </button>
                 </div>
               </div>
@@ -394,27 +385,27 @@ const RealWorldMathProblemGenerator = () => {
                 <div className="border-b border-gray-200 pb-4">
                   <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                     <span>
-                      <strong>Grade:</strong> {output.grade}
+                      <strong>{t('realWorldMathProblemGenerator.grade')}</strong> {output.grade}
                     </span>
                     <span>
-                      <strong>Domain:</strong> {output.math_domain.replace(/_/g, ' ')}
+                      <strong>{t('realWorldMathProblemGenerator.domain')}</strong> {output.math_domain.replace(/_/g, ' ')}
                     </span>
                     <span>
-                      <strong>Topic:</strong> {output.topic}
+                      <strong>{t('realWorldMathProblemGenerator.topic')}</strong> {output.topic}
                     </span>
                     {output.context && (
                       <span>
-                        <strong>Context:</strong> {output.context}
+                        <strong>{t('realWorldMathProblemGenerator.context')}</strong> {output.context}
                       </span>
                     )}
                     {output.difficulty && (
                       <span>
-                        <strong>Difficulty:</strong> {output.difficulty}
+                        <strong>{t('realWorldMathProblemGenerator.difficulty')}</strong> {output.difficulty}
                       </span>
                     )}
                     {output.language && (
                       <span>
-                        <strong>Language:</strong> {output.language}
+                        <strong>{t('realWorldMathProblemGenerator.language')}</strong> {output.language}
                       </span>
                     )}
                   </div>
@@ -422,7 +413,7 @@ const RealWorldMathProblemGenerator = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Problems</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('realWorldMathProblemGenerator.problems')}</h4>
                   <div className="space-y-4">
                     {output.problems.map((problem, index) => (
                       <div key={index} className="bg-gray-50 rounded-lg p-4">
@@ -431,13 +422,11 @@ const RealWorldMathProblemGenerator = () => {
                         </h5>
                         <p className="text-sm text-gray-800">{problem.prompt}</p>
                         <p className="mt-2 text-sm text-gray-700">
-                          <strong>Answer:</strong> {problem.answer}
+                          <strong>{t('realWorldMathProblemGenerator.answer')}</strong> {problem.answer}
                         </p>
                         {problem.solution_steps && (
                           <div className="mt-3">
-                            <h6 className="text-xs font-semibold text-gray-600 uppercase">
-                              Solution Steps
-                            </h6>
+                            <h6 className="text-xs font-semibold text-gray-600 uppercase">{t('realWorldMathProblemGenerator.solutionSteps')}</h6>
                             <ul className="list-disc list-inside text-sm text-gray-700 space-y-1 mt-1">
                               {problem.solution_steps.map((step, stepIndex) => (
                                 <li key={stepIndex}>{step}</li>
@@ -447,7 +436,7 @@ const RealWorldMathProblemGenerator = () => {
                         )}
                         {problem.alignment_notes && (
                           <p className="mt-2 text-xs text-gray-500">
-                            <strong>Alignment:</strong> {problem.alignment_notes}
+                            <strong>{t('realWorldMathProblemGenerator.alignment')}</strong> {problem.alignment_notes}
                           </p>
                         )}
                       </div>
@@ -456,7 +445,7 @@ const RealWorldMathProblemGenerator = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Tips for Instruction</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('realWorldMathProblemGenerator.tipsForInstruction')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.tips_for_instruction.map((tip, index) => (
                       <li key={index}>{tip}</li>
@@ -465,7 +454,7 @@ const RealWorldMathProblemGenerator = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Extension Ideas</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('realWorldMathProblemGenerator.extensionIdeas')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.extension_ideas.map((idea, index) => (
                       <li key={index}>{idea}</li>
@@ -478,12 +467,8 @@ const RealWorldMathProblemGenerator = () => {
             <div className="card">
               <div className="text-center py-12">
                 <Calculator className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Your problem set will appear here
-                </h3>
-                <p className="text-gray-600">
-                  Fill in the inputs and click "Generate Problem Set" to review contextualized questions.
-                </p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('realWorldMathProblemGenerator.yourProblemSetWillAppearHere')}</h3>
+                <p className="text-gray-600">{t('realWorldMathProblemGenerator.fillInTheInputsAndClickGenerateProblemSetTo')}</p>
               </div>
             </div>
           )}
