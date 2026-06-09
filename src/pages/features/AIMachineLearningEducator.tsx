@@ -328,7 +328,7 @@ const AIMachineLearningEducator = () => {
                 <select
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--purple"
                 >
                   {gradeLevels.map(level => (
                     <option key={level} value={level}>{level}</option>
@@ -340,7 +340,7 @@ const AIMachineLearningEducator = () => {
                 <select
                   value={difficulty}
                   onChange={(e) => setDifficulty(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--purple"
                 >
                   {difficultyLevels.map(level => (
                     <option key={level} value={level}>{level}</option>

@@ -433,7 +433,7 @@ const LabSafetyProtocolAdvisor = () => {
                 <select
                   value={labType}
                   onChange={(e) => setLabType(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--red"
                 >
                   {labTypes.map(type => (
                     <option key={type} value={type}>{type}</option>
@@ -445,7 +445,7 @@ const LabSafetyProtocolAdvisor = () => {
                 <select
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--red"
                 >
                   {gradeLevels.map(level => (
                     <option key={level} value={level}>{level}</option>
@@ -567,7 +567,7 @@ const LabSafetyProtocolAdvisor = () => {
                     <select
                       value={protocolCategory}
                       onChange={(e) => setProtocolCategory(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                      className="chatbot-content-select chatbot-content-select--orange"
                     >
                       {protocolCategories.map(cat => (
                         <option key={cat} value={cat}>{cat}</option>
@@ -696,7 +696,7 @@ const LabSafetyProtocolAdvisor = () => {
                       value={experimentName}
                       onChange={(e) => setExperimentName(e.target.value)}
                       placeholder={t('labSafetyProtocolAdvisor.eGAcidBaseTitration')}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500"
+                      className="chatbot-content-select chatbot-content-select--yellow"
                     />
                   </div>
                   <div className="flex items-end">
@@ -799,7 +799,7 @@ const LabSafetyProtocolAdvisor = () => {
                       value={chemicalName}
                       onChange={(e) => setChemicalName(e.target.value)}
                       placeholder={t('labSafetyProtocolAdvisor.eGHydrochloricAcid')}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="chatbot-content-select chatbot-content-select--blue"
                     />
                   </div>
                   <div className="flex items-end">
@@ -908,7 +908,7 @@ const LabSafetyProtocolAdvisor = () => {
                       value={equipmentName}
                       onChange={(e) => setEquipmentName(e.target.value)}
                       placeholder={t('labSafetyProtocolAdvisor.eGBunsenBurner')}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                      className="chatbot-content-select chatbot-content-select--purple"
                     />
                   </div>
                   <div className="flex items-end">
@@ -1011,7 +1011,7 @@ const LabSafetyProtocolAdvisor = () => {
                     <select
                       value={emergencyType}
                       onChange={(e) => setEmergencyType(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                      className="chatbot-content-select chatbot-content-select--red"
                     >
                       <option value="chemical-spill">{t('labSafetyProtocolAdvisor.chemicalSpill')}</option>
                       <option value="fire">{t('labSafetyProtocolAdvisor.fire')}</option>
@@ -1110,7 +1110,7 @@ const LabSafetyProtocolAdvisor = () => {
                       value={experimentTitle}
                       onChange={(e) => setExperimentTitle(e.target.value)}
                       placeholder={t('labSafetyProtocolAdvisor.eGPhotosynthesisRateMeasurement')}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      className="chatbot-content-select chatbot-content-select--green"
                     />
                   </div>
                   <div>
@@ -1120,7 +1120,7 @@ const LabSafetyProtocolAdvisor = () => {
                       onChange={(e) => setExperimentObjective(e.target.value)}
                       placeholder={t('labSafetyProtocolAdvisor.describeWhatStudentsWillLearn')}
                       rows={3}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      className="chatbot-content-select chatbot-content-select--green"
                     />
                   </div>
                   <button

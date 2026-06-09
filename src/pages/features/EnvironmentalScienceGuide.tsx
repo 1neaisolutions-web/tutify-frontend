@@ -421,7 +421,7 @@ const EnvironmentalScienceGuide = () => {
                 <select
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--green"
                 >
                   {gradeLevels.map(level => (
                     <option key={level} value={level}>{level}</option>
@@ -433,7 +433,7 @@ const EnvironmentalScienceGuide = () => {
                 <select
                   value={selectedRegion}
                   onChange={(e) => setSelectedRegion(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--green"
                 >
                   {regions.map(region => (
                     <option key={region} value={region}>{region}</option>
@@ -482,7 +482,7 @@ const EnvironmentalScienceGuide = () => {
                     <select
                       value={climateRegion}
                       onChange={(e) => setClimateRegion(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500"
+                      className="chatbot-content-select chatbot-content-select--yellow"
                     >
                       {regions.map(region => (
                         <option key={region} value={region}>{region}</option>
@@ -616,7 +616,7 @@ const EnvironmentalScienceGuide = () => {
                     <select
                       value={projectCategory}
                       onChange={(e) => setProjectCategory(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      className="chatbot-content-select chatbot-content-select--green"
                     >
                       {projectCategories.map(cat => (
                         <option key={cat.toLowerCase()} value={cat.toLowerCase()}>{cat}</option>
@@ -731,7 +731,7 @@ const EnvironmentalScienceGuide = () => {
                     <select
                       value={ecosystemType}
                       onChange={(e) => setEcosystemType(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500"
+                      className="chatbot-content-select chatbot-content-select--teal"
                     >
                       {ecosystemTypes.map(type => (
                         <option key={type} value={type}>{type}</option>
@@ -856,7 +856,7 @@ const EnvironmentalScienceGuide = () => {
                     <select
                       value={selectedRegion}
                       onChange={(e) => setSelectedRegion(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="chatbot-content-select chatbot-content-select--blue"
                     >
                       {regions.map(region => (
                         <option key={region} value={region}>{region}</option>
@@ -1002,7 +1002,7 @@ const EnvironmentalScienceGuide = () => {
                     <select
                       value={assessmentCategory}
                       onChange={(e) => setAssessmentCategory(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500"
+                      className="chatbot-content-select chatbot-content-select--cyan"
                     >
                       <option>{t('environmentalScienceGuide.carbonFootprint')}</option>
                       <option>{t('environmentalScienceGuide.waterFootprint')}</option>
@@ -1069,7 +1069,7 @@ const EnvironmentalScienceGuide = () => {
                       value={actionGoal}
                       onChange={(e) => setActionGoal(e.target.value)}
                       placeholder={t('environmentalScienceGuide.eGReduceSchoolCarbonFootprintBy20')}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                      className="chatbot-content-select chatbot-content-select--indigo"
                     />
                   </div>
                   <div>
@@ -1077,7 +1077,7 @@ const EnvironmentalScienceGuide = () => {
                     <select
                       value={actionTimeframe}
                       onChange={(e) => setActionTimeframe(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                      className="chatbot-content-select chatbot-content-select--indigo"
                     >
                       <option>{t('environmentalScienceGuide.kMonth')}</option>
                       <option>{t('environmentalScienceGuide.kMonths')}</option>

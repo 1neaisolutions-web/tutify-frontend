@@ -376,7 +376,7 @@ const DigitalLiteracyAdvisor = () => {
                 <select
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--indigo"
                 >
                   {gradeLevels.map(level => (
                     <option key={level} value={level}>{level}</option>
@@ -425,7 +425,7 @@ const DigitalLiteracyAdvisor = () => {
                     <select
                       value={lessonTopic}
                       onChange={(e) => setLessonTopic(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="chatbot-content-select chatbot-content-select--blue"
                     >
                       {citizenshipTopics.map(topic => (
                         <option key={topic} value={topic}>{topic}</option>
@@ -439,7 +439,7 @@ const DigitalLiteracyAdvisor = () => {
                       value={lessonDuration}
                       onChange={(e) => setLessonDuration(e.target.value)}
                       placeholder={t('digitalLiteracyAdvisor.eG45Minutes')}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="chatbot-content-select chatbot-content-select--blue"
                     />
                   </div>
                 </div>
@@ -621,7 +621,7 @@ const DigitalLiteracyAdvisor = () => {
                   <select
                     value={safetyTopic}
                     onChange={(e) => setSafetyTopic(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                    className="chatbot-content-select chatbot-content-select--red"
                   >
                     {safetyTopics.map(topic => (
                       <option key={topic} value={topic}>{topic}</option>

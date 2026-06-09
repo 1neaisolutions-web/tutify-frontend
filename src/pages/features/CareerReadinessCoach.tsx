@@ -382,7 +382,7 @@ const CareerReadinessCoach = () => {
                 <select
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--emerald"
                 >
                   <option value="9-12">9-12</option>
                   <option value="11-12">11-12</option>
@@ -394,7 +394,7 @@ const CareerReadinessCoach = () => {
                 <select
                   value={selectedRegion}
                   onChange={(e) => setSelectedRegion(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--emerald"
                 >
                   {regions.map(region => (
                     <option key={region} value={region}>{region}</option>
@@ -406,7 +406,7 @@ const CareerReadinessCoach = () => {
                 <select
                   value={selectedIndustry}
                   onChange={(e) => setSelectedIndustry(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--emerald"
                 >
                   {industries.map(industry => (
                     <option key={industry} value={industry}>{industry}</option>
@@ -418,7 +418,7 @@ const CareerReadinessCoach = () => {
                 <select
                   value={careerLevel}
                   onChange={(e) => setCareerLevel(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--emerald"
                 >
                   <option>{t('careerReadinessCoach.entry')}</option>
                   <option>{t('careerReadinessCoach.mid')}</option>
@@ -469,7 +469,7 @@ const CareerReadinessCoach = () => {
                     <select
                       value={selectedResumeFormat}
                       onChange={(e) => setSelectedResumeFormat(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="chatbot-content-select chatbot-content-select--blue"
                     >
                       <option>{t('careerReadinessCoach.usResume')}</option>
                       <option>{t('careerReadinessCoach.ukCv')}</option>
@@ -611,7 +611,7 @@ const CareerReadinessCoach = () => {
                     <select
                       value={interviewCategory}
                       onChange={(e) => setInterviewCategory(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                      className="chatbot-content-select chatbot-content-select--purple"
                     >
                       {interviewCategories.map(cat => (
                         <option key={cat} value={cat}>{cat}</option>
@@ -842,7 +842,7 @@ const CareerReadinessCoach = () => {
                     <select
                       value={selectedIndustry}
                       onChange={(e) => setSelectedIndustry(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500"
+                      className="chatbot-content-select chatbot-content-select--amber"
                     >
                       {industries.map(industry => (
                         <option key={industry} value={industry}>{industry}</option>
@@ -1007,7 +1007,7 @@ const CareerReadinessCoach = () => {
                       value={targetCareer}
                       onChange={(e) => setTargetCareer(e.target.value)}
                       placeholder={t('careerReadinessCoach.eGSoftwareEngineer')}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                      className="chatbot-content-select chatbot-content-select--indigo"
                     />
                   </div>
                   <div className="flex items-end">
@@ -1265,7 +1265,7 @@ const CareerReadinessCoach = () => {
                     <select
                       value={assessmentCompetency}
                       onChange={(e) => setAssessmentCompetency(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500"
+                      className="chatbot-content-select chatbot-content-select--teal"
                     >
                       <option>{t('careerReadinessCoach.criticalThinkingProblemSolving')}</option>
                       <option>{t('careerReadinessCoach.oralWrittenCommunications')}</option>
@@ -1282,7 +1282,7 @@ const CareerReadinessCoach = () => {
                     <select
                       value={currentLevel}
                       onChange={(e) => setCurrentLevel(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500"
+                      className="chatbot-content-select chatbot-content-select--teal"
                     >
                       <option value="A1">{t('careerReadinessCoach.a1Basic')}</option>
                       <option value="A2">{t('careerReadinessCoach.a2Elementary')}</option>
@@ -1297,7 +1297,7 @@ const CareerReadinessCoach = () => {
                     <select
                       value={targetLevel}
                       onChange={(e) => setTargetLevel(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500"
+                      className="chatbot-content-select chatbot-content-select--teal"
                     >
                       <option value="A2">{t('careerReadinessCoach.a2Elementary')}</option>
                       <option value="B1">{t('careerReadinessCoach.b1Intermediate')}</option>

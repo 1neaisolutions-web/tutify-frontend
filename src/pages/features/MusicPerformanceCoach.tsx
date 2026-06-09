@@ -420,7 +420,7 @@ const MusicPerformanceCoach = () => {
                 <select
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--purple"
                 >
                   <option>Elementary (K-5)</option>
                   <option>Middle School (6-8)</option>
@@ -433,7 +433,7 @@ const MusicPerformanceCoach = () => {
                 <select
                   value={selectedInstrument}
                   onChange={(e) => setSelectedInstrument(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--purple"
                 >
                   {instruments.map(instrument => (
                     <option key={instrument} value={instrument}>{instrument}</option>
@@ -445,7 +445,7 @@ const MusicPerformanceCoach = () => {
                 <select
                   value={selectedStyle}
                   onChange={(e) => setSelectedStyle(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--purple"
                 >
                   {styles.map(style => (
                     <option key={style} value={style}>{style}</option>
@@ -494,7 +494,7 @@ const MusicPerformanceCoach = () => {
                     <select
                       value={theoryConcept}
                       onChange={(e) => setTheoryConcept(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                      className="chatbot-content-select chatbot-content-select--purple"
                     >
                       {theoryCategories.map(concept => (
                         <option key={concept} value={concept}>{concept}</option>
@@ -608,7 +608,7 @@ const MusicPerformanceCoach = () => {
                     <select
                       value={compositionType}
                       onChange={(e) => setCompositionType(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500"
+                      className="chatbot-content-select chatbot-content-select--pink"
                     >
                       <option value="melody">{t('musicPerformanceCoach.melodyWriting')}</option>
                       <option value="harmony">{t('musicPerformanceCoach.harmonyWriting')}</option>
@@ -700,7 +700,7 @@ const MusicPerformanceCoach = () => {
                     <select
                       value={performanceTechnique}
                       onChange={(e) => setPerformanceTechnique(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500"
+                      className="chatbot-content-select chatbot-content-select--rose"
                     >
                       <option value="posture">{t('musicPerformanceCoach.posturePositioning')}</option>
                       <option value="breathing">{t('musicPerformanceCoach.breathingTechnique')}</option>
@@ -822,7 +822,7 @@ const MusicPerformanceCoach = () => {
                     <select
                       value={ensembleType}
                       onChange={(e) => setEnsembleType(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="chatbot-content-select chatbot-content-select--blue"
                     >
                       {ensembleTypes.map(type => (
                         <option key={type} value={type}>{type}</option>
@@ -1038,7 +1038,7 @@ const MusicPerformanceCoach = () => {
                     <select
                       value={gameCategory}
                       onChange={(e) => setGameCategory(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500"
+                      className="chatbot-content-select chatbot-content-select--yellow"
                     >
                       {gameCategories.map(cat => (
                         <option key={cat.toLowerCase()} value={cat.toLowerCase()}>{cat}</option>

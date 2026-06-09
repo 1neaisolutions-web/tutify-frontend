@@ -454,7 +454,7 @@ const DramaTheaterDirector = () => {
                 <select
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--rose"
                 >
                   <option>Elementary (K-5)</option>
                   <option>Middle School (6-8)</option>
@@ -467,7 +467,7 @@ const DramaTheaterDirector = () => {
                 <select
                   value={playGenre}
                   onChange={(e) => setPlayGenre(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--rose"
                 >
                   {genres.map(genre => (
                     <option key={genre} value={genre}>{genre}</option>
@@ -479,7 +479,7 @@ const DramaTheaterDirector = () => {
                 <select
                   value={stageType}
                   onChange={(e) => setStageType(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--rose"
                 >
                   {stageTypes.map(type => (
                     <option key={type} value={type}>{type}</option>
@@ -530,7 +530,7 @@ const DramaTheaterDirector = () => {
                       value={playTitle}
                       onChange={(e) => setPlayTitle(e.target.value)}
                       placeholder={t('dramaTheaterDirector.eGRomeoAndJuliet')}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                      className="chatbot-content-select chatbot-content-select--red"
                     />
                   </div>
                   <div>
@@ -540,7 +540,7 @@ const DramaTheaterDirector = () => {
                       value={playwright}
                       onChange={(e) => setPlaywright(e.target.value)}
                       placeholder={t('dramaTheaterDirector.eGWilliamShakespeare')}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                      className="chatbot-content-select chatbot-content-select--red"
                     />
                   </div>
                 </div>
@@ -647,7 +647,7 @@ const DramaTheaterDirector = () => {
                       value={characterName}
                       onChange={(e) => setCharacterName(e.target.value)}
                       placeholder={t('dramaTheaterDirector.eGHamlet')}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500"
+                      className="chatbot-content-select chatbot-content-select--rose"
                     />
                   </div>
                   <div>
@@ -655,7 +655,7 @@ const DramaTheaterDirector = () => {
                     <select
                       value={characterRole}
                       onChange={(e) => setCharacterRole(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500"
+                      className="chatbot-content-select chatbot-content-select--rose"
                     >
                       <option>{t('dramaTheaterDirector.protagonist')}</option>
                       <option>{t('dramaTheaterDirector.antagonist')}</option>
@@ -764,7 +764,7 @@ const DramaTheaterDirector = () => {
                       value={sceneName}
                       onChange={(e) => setSceneName(e.target.value)}
                       placeholder={t('dramaTheaterDirector.eGAct1Scene1')}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500"
+                      className="chatbot-content-select chatbot-content-select--pink"
                     />
                   </div>
                   <div className="flex items-end">
@@ -875,7 +875,7 @@ const DramaTheaterDirector = () => {
                       value={productionTitle}
                       onChange={(e) => setProductionTitle(e.target.value)}
                       placeholder={t('dramaTheaterDirector.eGOurTown')}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                      className="chatbot-content-select chatbot-content-select--red"
                     />
                   </div>
                   <div>
@@ -883,7 +883,7 @@ const DramaTheaterDirector = () => {
                     <select
                       value={productionDuration}
                       onChange={(e) => setProductionDuration(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                      className="chatbot-content-select chatbot-content-select--red"
                     >
                       <option>{t('dramaTheaterDirector.kWeeks')}</option>
                       <option>{t('dramaTheaterDirector.k0Weeks')}</option>

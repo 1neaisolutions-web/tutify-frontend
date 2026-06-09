@@ -437,7 +437,7 @@ const CodingProgrammingTutor = () => {
                   id="coding-tutor-grade"
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
-                  className="chatbot-header-select"
+                  className="chatbot-header-select chatbot-header-select--indigo"
                 >
                   <option value="K-5">{t('codingProgrammingTutor.k5')}</option>
                   <option value="6-8">6-8</option>
@@ -450,7 +450,7 @@ const CodingProgrammingTutor = () => {
                   id="coding-tutor-language"
                   value={programmingLanguage}
                   onChange={(e) => setProgrammingLanguage(e.target.value)}
-                  className="chatbot-header-select min-w-[8.5rem]"
+                  className="chatbot-header-select chatbot-header-select--indigo min-w-[8.5rem]"
                 >
                   {languages.map(lang => (
                     <option key={lang.id} value={lang.id}>
@@ -465,7 +465,7 @@ const CodingProgrammingTutor = () => {
                   id="coding-tutor-competition"
                   value={selectedCompetition}
                   onChange={(e) => setSelectedCompetition(e.target.value)}
-                  className="chatbot-header-select min-w-[9.5rem]"
+                  className="chatbot-header-select chatbot-header-select--indigo min-w-[9.5rem]"
                 >
                   {competitions.map(comp => (
                     <option key={comp.id} value={comp.id}>
@@ -644,7 +644,7 @@ const CodingProgrammingTutor = () => {
                     <select
                       value={selectedAlgorithm}
                       onChange={(e) => setSelectedAlgorithm(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="chatbot-content-select chatbot-content-select--blue"
                     >
                       <option>{t('codingProgrammingTutor.binarySearch')}</option>
                       <option>{t('codingProgrammingTutor.quickSort')}</option>
@@ -755,7 +755,7 @@ const CodingProgrammingTutor = () => {
                     <select
                       value={errorType}
                       onChange={(e) => setErrorType(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                      className="chatbot-content-select chatbot-content-select--red"
                     >
                       <option>{t('codingProgrammingTutor.indexOutOfBounds')}</option>
                       <option>{t('codingProgrammingTutor.nullPointerException')}</option>
@@ -874,7 +874,7 @@ const CodingProgrammingTutor = () => {
                     <select
                       value={projectType}
                       onChange={(e) => setProjectType(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      className="chatbot-content-select chatbot-content-select--green"
                     >
                       <option>{t('codingProgrammingTutor.webApplication')}</option>
                       <option>{t('codingProgrammingTutor.gameDevelopment')}</option>
@@ -888,7 +888,7 @@ const CodingProgrammingTutor = () => {
                     <select
                       value={projectDuration}
                       onChange={(e) => setProjectDuration(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      className="chatbot-content-select chatbot-content-select--green"
                     >
                       <option>{t('codingProgrammingTutor.kWeeks')}</option>
                       <option>{t('codingProgrammingTutor.kWeeks2')}</option>
@@ -1095,7 +1095,7 @@ const CodingProgrammingTutor = () => {
                     <select
                       value={currentLevel}
                       onChange={(e) => setCurrentLevel(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500"
+                      className="chatbot-content-select chatbot-content-select--amber"
                     >
                       <option value="beginner">{t('codingProgrammingTutor.beginner')}</option>
                       <option value="intermediate">{t('codingProgrammingTutor.intermediate')}</option>
@@ -1107,7 +1107,7 @@ const CodingProgrammingTutor = () => {
                     <select
                       value={targetLevel}
                       onChange={(e) => setTargetLevel(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500"
+                      className="chatbot-content-select chatbot-content-select--amber"
                     >
                       <option value="intermediate">{t('codingProgrammingTutor.intermediate')}</option>
                       <option value="advanced">{t('codingProgrammingTutor.advanced')}</option>
@@ -1216,7 +1216,7 @@ const CodingProgrammingTutor = () => {
                     <select
                       value={standardsFramework}
                       onChange={(e) => setStandardsFramework(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                      className="chatbot-content-select chatbot-content-select--indigo"
                     >
                       <option value="CSTA">CSTA (Computer Science Teachers Association)</option>
                       <option value="ISTE">ISTE (International Society for Technology in Education)</option>

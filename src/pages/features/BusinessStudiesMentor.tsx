@@ -375,7 +375,7 @@ const BusinessStudiesMentor = () => {
                 <select
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--blue"
                 >
                   <option value="9-12">9-12</option>
                   <option value="11-12">11-12</option>
@@ -387,7 +387,7 @@ const BusinessStudiesMentor = () => {
                 <select
                   value={selectedRegion}
                   onChange={(e) => setSelectedRegion(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--blue"
                 >
                   {regions.map(region => (
                     <option key={region} value={region}>{region}</option>
@@ -399,7 +399,7 @@ const BusinessStudiesMentor = () => {
                 <select
                   value={selectedIndustry}
                   onChange={(e) => setSelectedIndustry(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--blue"
                 >
                   {industries.map(industry => (
                     <option key={industry} value={industry}>{industry}</option>
@@ -449,7 +449,7 @@ const BusinessStudiesMentor = () => {
                     <select
                       value={selectedStandard}
                       onChange={(e) => setSelectedStandard(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="chatbot-content-select chatbot-content-select--blue"
                     >
                       <option>{t('businessStudiesMentor.iso9001')}</option>
                       <option>{t('businessStudiesMentor.ifrs')}</option>
@@ -659,7 +659,7 @@ const BusinessStudiesMentor = () => {
                     <select
                       value={selectedConcept}
                       onChange={(e) => setSelectedConcept(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      className="chatbot-content-select chatbot-content-select--green"
                     >
                       <option>{t('businessStudiesMentor.supplyAndDemand')}</option>
                       <option>{t('businessStudiesMentor.comparativeAdvantage')}</option>
@@ -770,7 +770,7 @@ const BusinessStudiesMentor = () => {
                     <select
                       value={financialTopic}
                       onChange={(e) => setFinancialTopic(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500"
+                      className="chatbot-content-select chatbot-content-select--amber"
                     >
                       <option>{t('businessStudiesMentor.personalBudgeting')}</option>
                       <option>{t('businessStudiesMentor.investmentBasics')}</option>
@@ -866,7 +866,7 @@ const BusinessStudiesMentor = () => {
                     <select
                       value={scenarioType}
                       onChange={(e) => setScenarioType(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                      className="chatbot-content-select chatbot-content-select--indigo"
                     >
                       <option>{t('businessStudiesMentor.exportExpansion')}</option>
                       <option>{t('businessStudiesMentor.startupPitch')}</option>
@@ -1094,7 +1094,7 @@ const BusinessStudiesMentor = () => {
                     <select
                       value={culturalRegion}
                       onChange={(e) => setCulturalRegion(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500"
+                      className="chatbot-content-select chatbot-content-select--pink"
                     >
                       <option>{t('businessStudiesMentor.asiaPacific')}</option>
                       <option>{t('businessStudiesMentor.middleEast')}</option>

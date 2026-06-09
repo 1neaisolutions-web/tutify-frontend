@@ -432,7 +432,7 @@ const VisualArtsStudioAssistant = () => {
                 <select
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--pink"
                 >
                   <option value="K-5">{t('visualArtsStudioAssistant.k5')}</option>
                   <option value="6-8">6-8</option>
@@ -444,7 +444,7 @@ const VisualArtsStudioAssistant = () => {
                 <select
                   value={mediaType}
                   onChange={(e) => setMediaType(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--pink"
                 >
                   {mediaTypes.map(type => (
                     <option key={type} value={type}>{type}</option>
@@ -456,7 +456,7 @@ const VisualArtsStudioAssistant = () => {
                 <select
                   value={culturalRegion}
                   onChange={(e) => setCulturalRegion(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="chatbot-header-select chatbot-header-select--pink"
                 >
                   {culturalRegions.map(region => (
                     <option key={region} value={region}>{region}</option>
@@ -508,7 +508,7 @@ const VisualArtsStudioAssistant = () => {
                     <select
                       value={selectedMovement}
                       onChange={(e) => setSelectedMovement(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                      className="chatbot-content-select chatbot-content-select--purple"
                     >
                       {artMovements.map(movement => (
                         <option key={movement} value={movement}>{movement}</option>
@@ -625,7 +625,7 @@ const VisualArtsStudioAssistant = () => {
                     <select
                       value={selectedTechnique}
                       onChange={(e) => setSelectedTechnique(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="chatbot-content-select chatbot-content-select--blue"
                     >
                       <option>{t('visualArtsStudioAssistant.watercolorPainting')}</option>
                       <option>{t('visualArtsStudioAssistant.charcoalDrawing')}</option>
@@ -767,7 +767,7 @@ const VisualArtsStudioAssistant = () => {
                     <select
                       value={portfolioType}
                       onChange={(e) => setPortfolioType(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500"
+                      className="chatbot-content-select chatbot-content-select--amber"
                     >
                       <option>{t('visualArtsStudioAssistant.generalPortfolio')}</option>
                       <option>{t('visualArtsStudioAssistant.apStudioArtPortfolio')}</option>
@@ -863,7 +863,7 @@ const VisualArtsStudioAssistant = () => {
                     <select
                       value={projectTheme}
                       onChange={(e) => setProjectTheme(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      className="chatbot-content-select chatbot-content-select--green"
                     >
                       <option>{t('visualArtsStudioAssistant.identityCollage')}</option>
                       <option>{t('visualArtsStudioAssistant.naturePrintmaking')}</option>
@@ -876,7 +876,7 @@ const VisualArtsStudioAssistant = () => {
                     <select
                       value={projectDuration}
                       onChange={(e) => setProjectDuration(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      className="chatbot-content-select chatbot-content-select--green"
                     >
                       <option>{t('visualArtsStudioAssistant.k3Weeks')}</option>
                       <option>{t('visualArtsStudioAssistant.k4Weeks')}</option>
@@ -1043,7 +1043,7 @@ const VisualArtsStudioAssistant = () => {
                       value={artworkTitle}
                       onChange={(e) => setArtworkTitle(e.target.value)}
                       placeholder={t('visualArtsStudioAssistant.enterArtworkTitle')}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                      className="chatbot-content-select chatbot-content-select--indigo"
                     />
                   </div>
                   <div>
@@ -1053,7 +1053,7 @@ const VisualArtsStudioAssistant = () => {
                       value={artistName}
                       onChange={(e) => setArtistName(e.target.value)}
                       placeholder={t('visualArtsStudioAssistant.enterArtistName')}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                      className="chatbot-content-select chatbot-content-select--indigo"
                     />
                   </div>
                 </div>
@@ -1155,7 +1155,7 @@ const VisualArtsStudioAssistant = () => {
                       value={connectionArtwork}
                       onChange={(e) => setConnectionArtwork(e.target.value)}
                       placeholder={t('visualArtsStudioAssistant.enterArtworkOrTheme')}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500"
+                      className="chatbot-content-select chatbot-content-select--pink"
                     />
                   </div>
                   <div>
@@ -1163,7 +1163,7 @@ const VisualArtsStudioAssistant = () => {
                     <select
                       value={connectionTheme}
                       onChange={(e) => setConnectionTheme(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500"
+                      className="chatbot-content-select chatbot-content-select--pink"
                     >
                       <option>{t('visualArtsStudioAssistant.identity')}</option>
                       <option>{t('visualArtsStudioAssistant.heritage')}</option>
@@ -1266,7 +1266,7 @@ const VisualArtsStudioAssistant = () => {
                     <select
                       value={assessmentProjectType}
                       onChange={(e) => setAssessmentProjectType(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500"
+                      className="chatbot-content-select chatbot-content-select--teal"
                     >
                       <option>{t('visualArtsStudioAssistant.mixedMediaProject')}</option>
                       <option>{t('visualArtsStudioAssistant.portfolioAssessment')}</option>
