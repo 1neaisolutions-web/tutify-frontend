@@ -152,6 +152,7 @@ export default function QuizCreate() {
     grade,
     initialSelectedBookIds: isEdit ? loadedQuiz?.sourceBookIds : undefined,
     initialScopeTopics: isEdit ? loadedQuiz?.scopeTopics : undefined,
+    initialScopeTopicIds: isEdit ? loadedQuiz?.scopeTopicIds : undefined,
     initialScopeRefinement: isEdit ? loadedQuiz?.scopeRefinement : templateScopeHint,
   })
 
@@ -575,7 +576,8 @@ export default function QuizCreate() {
         teacherNotes: teacherNotes.trim() || undefined,
         status: 'draft',
         sourceBookIds: payload.sourceBookIds,
-        scopeTopics: payload.scopeTopics,
+        scopeTopics: rag.selectedTopics,
+        scopeTopicIds: rag.allSelectedTopicIds,
         scopeRefinement: payload.scopeRefinement,
         generateWithoutSources: rag.generateWithoutSources,
         difficulty: difficulty as any,
@@ -598,6 +600,12 @@ export default function QuizCreate() {
       if (credit) {
         setCreditGate(credit)
         setGenerationError(null)
+        return
+      }
+      const detail = (e as { detail?: { code?: string; message?: string } })?.detail
+      if (detail?.code === 'RETRIEVAL_SCOPE_ERROR') {
+        setGenerationError(detail.message || t('quiz.rag.noSegmentsForScope'))
+        toast.error(detail.message || t('quiz.rag.noSegmentsForScope'))
         return
       }
       setGenerationError(t('quiz.generationFailed'))

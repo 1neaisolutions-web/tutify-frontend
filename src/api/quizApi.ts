@@ -35,6 +35,7 @@ export interface QuizApiItem {
   topic: string
   sourceBookIds: string[]
   scopeTopics: string[]
+  scopeTopicIds?: string[]
   scopeRefinement?: string | null
   sourceSummary?: string | null
   questionStubs: QuizQuestionStub[]
@@ -76,6 +77,7 @@ export interface QuizCreatePayload {
   status?: QuizStatus
   sourceBookIds: string[]
   scopeTopics: string[]
+  scopeTopicIds?: string[]
   scopeRefinement?: string
   generateWithoutSources: boolean
   difficulty?: DifficultyId
@@ -98,6 +100,7 @@ export interface QuizPatchPayload {
   dueAt?: string | null
   sourceBookIds?: string[]
   scopeTopics?: string[]
+  scopeTopicIds?: string[]
   scopeRefinement?: string
   generateWithoutSources?: boolean
   difficulty?: DifficultyId

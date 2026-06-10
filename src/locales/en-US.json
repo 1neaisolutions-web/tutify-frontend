@@ -11407,7 +11407,12 @@
       "timeLimitMinutes": "Time limit (minutes)",
       "shuffleQuestions": "Shuffle question order for each student",
       "shuffleMcq": "Shuffle MCQ options",
-      "negativeMarking": "Negative marking"
+      "negativeMarking": "Negative marking",
+      "scopeSummaryTitle": "Scope summary",
+      "approximateChapterMap": "This book's chapter map is approximate. Contact admin to re-process.",
+      "selectAllDocument": "Select all",
+      "clearDocument": "Clear all",
+      "noSegmentsForScope": "No content found for selected chapters. Try different chapters or contact admin."
     },
     "review": {
       "printPreview": "Print preview",

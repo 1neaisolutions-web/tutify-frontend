@@ -5,13 +5,13 @@ import {
   BookMarked,
   Check,
   ChevronRight,
-  Layers,
   Library,
   Search,
-  Sparkles,
   X,
 } from 'lucide-react'
 import type { QuizRagScopeModel } from '../hooks/useQuizRagScope'
+import { BookScopePanel } from '../../../../../features/quiz/components/BookScopePanel'
+import { ScopeSummaryBar } from '../../../../../features/quiz/components/ScopeSummaryBar'
 import { TeacherToolsPanelHeader } from '../../components/TeacherToolsPanelHeader'
 import { getBookById, type DemoBook } from '../../demo/demoContentLibrary'
 import { DIFFICULTY_OPTIONS, QUESTION_COUNT } from '../config/quizCreationConfig'
@@ -415,102 +415,60 @@ export function QuizRagBuildSection({
           ) : (
             <>
               {!rag.generateWithoutSources ? (
-                <div>
-                  <label className="block text-sm font-medium text-gray-800">{t('teacherTools.topicStrandsHeading')}</label>
-                  <p className="mt-1 text-xs text-gray-500">
-                    {t('quiz.rag.topicsRefreshHint')}
-                    {rag.topicsIndexing ? ` ${t('quiz.rag.topicsRefreshing')}` : ''}
-                  </p>
-                  <div className="relative mt-2">
-                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                    <input
-                      value={rag.topicQuery}
-                      onChange={(e) => rag.setTopicQuery(e.target.value)}
-                      placeholder={t('teacherTools.topicFilterPlaceholder')}
-                      className="w-full rounded-xl border border-gray-200 py-2.5 pl-10 pr-3 text-sm focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
-                      aria-label={t('teacherTools.topicStrandsHeading')}
-                    />
-                  </div>
-
-                {rag.topicsError && !rag.topicsIndexing && (
-                  <div className="mt-2 flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs text-amber-900">
-                    <AlertCircle className="h-4 w-4 shrink-0 text-amber-600" aria-hidden />
-                    <span>{t('quiz.rag.topicsUnavailable')} {rag.topicsError}</span>
-                  </div>
-                )}
-
-                {rag.topicsIndexing ? (
-                  <div className="mt-3 h-24 animate-pulse rounded-xl bg-gray-100" aria-hidden />
-                ) : (
-                  <div className="mt-3 max-h-44 overflow-y-auto rounded-xl border border-gray-200 bg-gray-50/50 p-2">
-                    {rag.topicOptionsFiltered.length === 0 ? (
-                      <p className="px-2 py-6 text-center text-xs text-gray-600">
-                        {rag.topicQuery.trim()
-                          ? t('quiz.rag.noTopicsMatch', { query: rag.topicQuery.trim() })
-                          : rag.availableTopics.length === 0
-                            ? t('quiz.rag.noTopicsReturned')
-                            : t('quiz.rag.noTopicsFilter')}
-                      </p>
-                    ) : (
-                      <div className="flex flex-wrap gap-2">
-                        {rag.topicOptionsFiltered.map((topicLabel) => {
-                          const active = rag.selectedTopics.includes(topicLabel)
-                          return (
-                            <button
-                              key={topicLabel}
-                              type="button"
-                              onClick={() => rag.toggleTopic(topicLabel)}
-                              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
-                                active
-                                  ? 'border-violet-500 bg-violet-600 text-white shadow-sm'
-                                  : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
-                              }`}
-                            >
-                              {active ? <Check className="h-3 w-3" /> : <ChevronRight className="h-3 w-3 opacity-40" />}
-                              {topicLabel}
-                            </button>
-                          )
-                        })}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {rag.selectedTopics.length > 0 && (
-                  <div className="mt-3">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-xs font-semibold text-gray-600">
-                        {t('quiz.rag.selectedTopics', { count: rag.selectedTopics.length })}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => rag.clearAllTopics()}
-                        className="text-xs font-semibold text-violet-700 hover:text-violet-600"
-                      >
-                        {t('quiz.rag.clearAllTopics')}
-                      </button>
-                    </div>
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {rag.selectedTopics.map((topicLabel) => (
-                        <span
-                          key={topicLabel}
-                          className="inline-flex items-center gap-1 rounded-full bg-violet-50 px-3 py-1 text-xs font-medium text-violet-900 ring-1 ring-violet-200"
-                        >
-                          {topicLabel}
-                          <button
-                            type="button"
-                            onClick={() => rag.toggleTopic(topicLabel)}
-                            className="rounded-full p-0.5 hover:bg-violet-100"
-                            aria-label={`${t('teacherTools.remove')} ${topicLabel}`}
-                          >
-                            <X className="h-3.5 w-3.5" />
-                          </button>
-                        </span>
+                <>
+                  {rag.structureLoading ? (
+                    <div className="h-32 animate-pulse rounded-xl bg-gray-100" aria-hidden />
+                  ) : rag.selectedPackStructures.length > 0 ? (
+                    <div className="space-y-4">
+                      {rag.selectedPackStructures.map((pack) => (
+                        <BookScopePanel
+                          key={pack.pack_id}
+                          packStructure={pack}
+                          selectedTopicIds={rag.selectedTopicIds}
+                          onToggleTopic={(topicId, includeChildren) =>
+                            rag.toggleTopicId(topicId, includeChildren)
+                          }
+                          onToggleDocument={(_docId, topicIds) => rag.toggleDocumentTopics(topicIds)}
+                          onRemoveBook={() => {
+                            rag.removeBook(pack.pack_id)
+                            rag.clearBookScope(pack.pack_id)
+                          }}
+                        />
                       ))}
                     </div>
-                  </div>
-                )}
-                </div>
+                  ) : (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-800">{t('teacherTools.topicStrandsHeading')}</label>
+                      <p className="mt-1 text-xs text-gray-500">{t('quiz.rag.topicsRefreshHint')}</p>
+                      <div className="mt-3 max-h-44 overflow-y-auto rounded-xl border border-gray-200 bg-gray-50/50 p-2">
+                        {rag.topicOptionsFiltered.length === 0 ? (
+                          <p className="px-2 py-6 text-center text-xs text-gray-600">{t('quiz.rag.noTopicsReturned')}</p>
+                        ) : (
+                          <div className="flex flex-wrap gap-2">
+                            {rag.topicOptionsFiltered.map((topicLabel) => {
+                              const active = rag.selectedTopics.includes(topicLabel)
+                              return (
+                                <button
+                                  key={topicLabel}
+                                  type="button"
+                                  onClick={() => rag.toggleTopic(topicLabel)}
+                                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
+                                    active
+                                      ? 'border-violet-500 bg-violet-600 text-white shadow-sm'
+                                      : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
+                                  }`}
+                                >
+                                  {active ? <Check className="h-3 w-3" /> : <ChevronRight className="h-3 w-3 opacity-40" />}
+                                  {topicLabel}
+                                </button>
+                              )
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </>
               ) : (
                 <div className="rounded-xl border border-gray-200 bg-gray-50/70 px-4 py-3 text-sm text-gray-700">
                   {t('quiz.rag.topicOnlyStrandsHidden')}
@@ -536,51 +494,17 @@ export function QuizRagBuildSection({
                   }
                   className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-100"
                 />
-                <span className="mt-1 block text-xs text-gray-500">
-                  {rag.generateWithoutSources
-                    ? t('quiz.rag.scopeRequiredNoSource')
-                    : t('quiz.rag.scopeHintWithSource')}
-                </span>
               </label>
 
-              {/* Scope preview */}
-              <div className="rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/90 via-white to-white p-5 shadow-sm ring-1 ring-indigo-100/60">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-indigo-700">
-                      <Layers className="h-4 w-4" aria-hidden />
-                      {t('quiz.rag.scopePreview')}
-                    </p>
-                    <p className="mt-2 text-sm font-semibold text-gray-900">
-                      {rag.generateWithoutSources ? t('quiz.rag.topicOnlyScopePreview') : t('quiz.rag.retrievalWindow')}
-                    </p>
-                  </div>
-                  <Sparkles className="h-5 w-5 text-indigo-400" aria-hidden />
-                </div>
-                <dl className="mt-4 grid gap-3 sm:grid-cols-3">
-                  <div className="rounded-xl bg-white/90 px-3 py-3 ring-1 ring-gray-100">
-                    <dt className="text-[11px] font-semibold uppercase text-gray-500">{t('quiz.rag.sources')}</dt>
-                    <dd className="mt-1 text-2xl font-bold text-gray-900">{rag.selectedBookIds.length}</dd>
-                  </div>
-                  <div className="rounded-xl bg-white/90 px-3 py-3 ring-1 ring-gray-100">
-                    <dt className="text-[11px] font-semibold uppercase text-gray-500">{t('quiz.rag.topicStrands')}</dt>
-                    <dd className="mt-1 text-2xl font-bold text-gray-900">{rag.selectedTopics.length}</dd>
-                  </div>
-                  <div className="rounded-xl bg-white/90 px-3 py-3 ring-1 ring-gray-100">
-                    <dt className="text-[11px] font-semibold uppercase text-gray-500">
-                      {rag.generateWithoutSources ? t('quiz.rag.segmentsNa') : t('quiz.rag.segmentsMatched')}
-                    </dt>
-                    <dd className="mt-1 text-2xl font-bold text-indigo-700">
-                      {rag.generateWithoutSources ? '—' : rag.estimatedSegments}
-                    </dd>
-                  </div>
-                </dl>
-                <p className="mt-4 text-xs leading-relaxed text-gray-600">
-                  {rag.generateWithoutSources
-                    ? t('quiz.rag.scopePreviewNoSource')
-                    : t('quiz.rag.scopePreviewWithSource')}
-                </p>
-              </div>
+              <ScopeSummaryBar
+                bookCount={rag.selectedBookIds.length}
+                topicCount={rag.allSelectedTopicIds.length || rag.selectedTopics.length}
+                estimatedSegments={rag.estimatedSegments}
+                generateWithoutSources={rag.generateWithoutSources}
+                scopeError={rag.scopeError}
+                perDocument={rag.perDocumentPreview}
+                scopeSummaryLabel={rag.scopeSummaryLabel}
+              />
             </>
           )}
         </div>

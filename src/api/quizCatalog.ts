@@ -43,6 +43,43 @@ export interface ScopePreviewResponse {
   topics_count: number
   estimated_segments: number
   matched_pack_ids: string[]
+  per_document?: Array<{
+    document_id: string
+    document_title: string
+    chunk_count: number
+    topics_matched: number
+  }>
+}
+
+export interface TopicNode {
+  id: string
+  topic_key: string
+  display_title: string
+  level: number
+  chunk_count: number
+  start_page?: number | null
+  end_page?: number | null
+  children: TopicNode[]
+}
+
+export interface DocumentStructure {
+  document_id: string
+  document_title: string
+  total_chunks: number
+  topic_tree: TopicNode[]
+  has_page_bin_fallbacks: boolean
+}
+
+export interface PackStructure {
+  pack_id: string
+  pack_name: string
+  subject: string | null
+  grade: string | null
+  documents: DocumentStructure[]
+}
+
+export interface CatalogStructureResponse {
+  packs: PackStructure[]
 }
 
 // ---------------------------------------------------------------------------
@@ -100,8 +137,20 @@ export async function fetchCatalog(
   return apiRequest<CatalogListResponse>('/v1/quiz/catalog', { query, signal })
 }
 
+export async function fetchCatalogStructure(
+  packIds: string[],
+  signal?: AbortSignal,
+): Promise<CatalogStructureResponse> {
+  return apiRequest<CatalogStructureResponse>('/v1/quiz/catalog/structure', {
+    method: 'POST',
+    body: { pack_ids: packIds },
+    signal,
+  })
+}
+
 /**
  * Fetch aggregated topic labels for the given content-pack IDs.
+ * @deprecated Prefer fetchCatalogStructure for hierarchical topic trees.
  */
 export async function fetchTopicsForPacks(
   packIds: string[],
@@ -120,6 +169,7 @@ export async function fetchTopicsForPacks(
  */
 export async function fetchScopePreview(
   packIds: string[],
+  topicIds: string[],
   topics: string[],
   refinement: string | undefined,
   signal?: AbortSignal,
@@ -128,8 +178,10 @@ export async function fetchScopePreview(
     method: 'POST',
     body: {
       pack_ids: packIds,
+      topic_ids: topicIds,
       topics,
       ...(refinement ? { refinement } : {}),
+      include_sub_topics: true,
     },
     signal,
   })
