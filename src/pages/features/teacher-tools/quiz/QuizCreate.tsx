@@ -167,6 +167,8 @@ export default function QuizCreate() {
       generateWithoutSources: rag.generateWithoutSources,
       selectedBookIds: rag.selectedBookIds,
       selectedTopics: rag.selectedTopics,
+      selectedTopicIds: rag.allSelectedTopicIds,
+      estimatedSegments: rag.estimatedSegments,
       scopeRefinement: rag.scopeRefinement,
       mixMode,
       includeMcq,
@@ -181,6 +183,8 @@ export default function QuizCreate() {
       rag.generateWithoutSources,
       rag.selectedBookIds,
       rag.selectedTopics,
+      rag.allSelectedTopicIds,
+      rag.estimatedSegments,
       rag.scopeRefinement,
       mixMode,
       includeMcq,
@@ -484,19 +488,7 @@ export default function QuizCreate() {
   )
 
   const runGeneration = useCallback(async () => {
-    const v = validateRagQuizBuild({
-      title,
-      generateWithoutSources: rag.generateWithoutSources,
-      selectedBookIds: rag.selectedBookIds,
-      selectedTopics: rag.selectedTopics,
-      scopeRefinement: rag.scopeRefinement,
-      mixMode,
-      includeMcq,
-      includeTf,
-      includeShort,
-      questionCount,
-      countsByType: { mcq: countMcq, tf: countTf, short: countShort },
-    })
+    const v = fullBuildValidation
     if (!v.ok) {
       setBuildErrors(v.errors)
       toast.error(t('teacherTools.toastFixFields'))
@@ -629,11 +621,27 @@ export default function QuizCreate() {
     toast,
     resolveQuizIdForGen,
     buildCriteria,
+    fullBuildValidation,
+    quizBuildInput,
     rag.generateWithoutSources,
     rag.selectedBookIds,
+    rag.allSelectedTopicIds,
     rag.selectedTopics,
     rag.scopeRefinement,
     refreshCredits,
+    liveQuizId,
+    title,
+    subject,
+    grade,
+    studentInstructions,
+    handoutLayoutRef,
+    difficulty,
+    shuffleQuestions,
+    shuffleAnswers,
+    negativeMarking,
+    teacherNotes,
+    mixMode,
+    t,
   ])
 
   const regenerateAll = useCallback(() => {

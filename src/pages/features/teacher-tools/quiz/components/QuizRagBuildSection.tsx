@@ -425,8 +425,8 @@ export function QuizRagBuildSection({
                           key={pack.pack_id}
                           packStructure={pack}
                           selectedTopicIds={rag.selectedTopicIds}
-                          onToggleTopic={(topicId, includeChildren) =>
-                            rag.toggleTopicId(topicId, includeChildren)
+                          onToggleTopic={(topicId, includeChildren, leafOnly) =>
+                            rag.toggleTopicId(topicId, includeChildren, leafOnly)
                           }
                           onToggleDocument={(_docId, topicIds) => rag.toggleDocumentTopics(topicIds)}
                           onRemoveBook={() => {

@@ -172,6 +172,7 @@ export async function fetchScopePreview(
   topicIds: string[],
   topics: string[],
   refinement: string | undefined,
+  includeSubTopics: boolean,
   signal?: AbortSignal,
 ): Promise<ScopePreviewResponse> {
   return apiRequest<ScopePreviewResponse>('/v1/quiz/catalog/scope-preview', {
@@ -181,7 +182,7 @@ export async function fetchScopePreview(
       topic_ids: topicIds,
       topics,
       ...(refinement ? { refinement } : {}),
-      include_sub_topics: true,
+      include_sub_topics: includeSubTopics,
     },
     signal,
   })

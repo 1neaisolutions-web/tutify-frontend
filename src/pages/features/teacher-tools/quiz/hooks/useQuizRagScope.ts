@@ -91,6 +91,7 @@ export function useQuizRagScope({
   const [selectedTopicIds, setSelectedTopicIds] = useState<Set<string>>(
     () => new Set(initialScopeTopicIds ?? []),
   )
+  const [scopeIncludeSubTopics, setScopeIncludeSubTopics] = useState(true)
 
   const [availableTopics, setAvailableTopics] = useState<string[]>([])
   const [selectedTopics, setSelectedTopics] = useState<string[]>(() => initialScopeTopics ?? [])
@@ -267,6 +268,7 @@ export function useQuizRagScope({
         allSelectedTopicIds,
         selectedTopics,
         scopeRefinement || undefined,
+        scopeIncludeSubTopics,
         controller.signal,
       )
         .then((res) => {
@@ -291,7 +293,7 @@ export function useQuizRagScope({
       window.clearTimeout(timer)
       controller.abort()
     }
-  }, [selectedBookIds, allSelectedTopicIds, selectedTopics, scopeRefinement])
+  }, [selectedBookIds, allSelectedTopicIds, selectedTopics, scopeRefinement, scopeIncludeSubTopics])
 
   const pool = catalog
 
@@ -350,7 +352,12 @@ export function useQuizRagScope({
   }, [catalogStructure])
 
   const toggleTopicId = useCallback(
-    (topicId: string, includeChildren = true) => {
+    (topicId: string, includeChildren = true, leafOnly = false) => {
+      if (leafOnly) {
+        setScopeIncludeSubTopics(false)
+      } else if (includeChildren) {
+        setScopeIncludeSubTopics(true)
+      }
       const pack = catalogStructure?.packs.find((p) =>
         p.documents.some((d) => {
           const walk = (nodes: TopicNode[]): boolean =>
@@ -359,7 +366,7 @@ export function useQuizRagScope({
         }),
       )
       let ids = [topicId]
-      if (pack && includeChildren) {
+      if (pack && includeChildren && !leafOnly) {
         for (const doc of pack.documents) {
           const walk = (nodes: TopicNode[]): TopicNode | null => {
             for (const n of nodes) {
@@ -511,6 +518,7 @@ export function useQuizRagScope({
     selectedPackStructures,
     selectedTopicIds,
     allSelectedTopicIds,
+    scopeIncludeSubTopics,
     toggleTopicId,
     toggleDocumentTopics,
     clearBookScope,

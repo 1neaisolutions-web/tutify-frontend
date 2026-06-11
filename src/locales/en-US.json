@@ -11412,7 +11412,13 @@
       "approximateChapterMap": "This book's chapter map is approximate. Contact admin to re-process.",
       "selectAllDocument": "Select all",
       "clearDocument": "Clear all",
-      "noSegmentsForScope": "No content found for selected chapters. Try different chapters or contact admin."
+      "selectTopic": "Select",
+      "clearTopic": "Clear",
+      "selectWholeChapter": "Select chapter",
+      "clearChapter": "Clear chapter",
+      "chapterScopeOnlyHint": "This book is indexed by chapter. Click a chapter row to select it. Section-level topics appear when the book includes section entries in its table of contents.",
+      "noSegmentsForScope": "No content found for selected chapters. Try different chapters or contact admin.",
+      "unmappedContentWarning": "Some pages in this book are not mapped to chapters. Contact your admin if content seems missing."
     },
     "review": {
       "printPreview": "Print preview",
@@ -11427,6 +11433,7 @@
       "badgeShort": "Short",
       "questionMarks": "Q{{num}} · {{pts}} pts",
       "lines": "lines",
+      "scopeWarning": "Scope unverified",
       "modalAddQuestion": "Add question"
     },
     "generating": {
