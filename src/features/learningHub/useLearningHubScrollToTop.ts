@@ -1,25 +1,26 @@
 import { RefObject, useLayoutEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigationType } from 'react-router-dom'
+import { useDashboardScroll } from '../../contexts/DashboardScrollContext'
+import { isLearningHubCatalogRoute } from './learningHubScrollState'
 
 const LEARNING_HUB_ROOT = '/learning-hub'
 
-function scrollWindowToTop() {
-  if (typeof window === 'undefined') return
-  window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
-}
-
 /**
- * Resets scroll on Learning Hub route transitions.
- * Covers `/learning-hub` and any `/learning-hub/*` detail route.
+ * Resets scroll on Learning Hub detail route transitions.
  */
-export function useLearningHubRouteScrollToTop() {
+export function useLearningHubRouteScrollToTop(ready = true) {
   const { pathname } = useLocation()
+  const navigationType = useNavigationType()
+  const { scrollToTop } = useDashboardScroll()
 
   useLayoutEffect(() => {
+    if (!ready) return
     if (!pathname.startsWith(LEARNING_HUB_ROOT)) return
-    const id = window.requestAnimationFrame(scrollWindowToTop)
-    return () => window.cancelAnimationFrame(id)
-  }, [pathname])
+    if (isLearningHubCatalogRoute(pathname)) return
+    if (navigationType === 'POP') return
+
+    scrollToTop()
+  }, [pathname, navigationType, ready, scrollToTop])
 }
 
 /**
@@ -28,15 +29,20 @@ export function useLearningHubRouteScrollToTop() {
  */
 export function useLearningHubContentScrollToTop(
   anchorRef: RefObject<HTMLElement | null>,
-  contentKey: string
+  contentKey: string,
 ) {
+  const { getScrollContainer } = useDashboardScroll()
+
   useLayoutEffect(() => {
     const id = window.requestAnimationFrame(() => {
       const el = anchorRef.current
-      if (!el) return
-      el.scrollIntoView({ block: 'start', inline: 'nearest', behavior: 'auto' })
+      const container = getScrollContainer()
+      if (!el || !container) return
+
+      const containerRect = container.getBoundingClientRect()
+      const elRect = el.getBoundingClientRect()
+      container.scrollTop += elRect.top - containerRect.top
     })
     return () => window.cancelAnimationFrame(id)
-  }, [anchorRef, contentKey])
+  }, [anchorRef, contentKey, getScrollContainer])
 }
-

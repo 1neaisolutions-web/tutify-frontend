@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLearningHubBackNavigation } from '../../../features/learningHub/useLearningHubBackNavigation'
 import { useTranslation } from 'react-i18next'
 import { ArrowLeft, ArrowRight, Award, BookOpen, CheckCircle2, ChevronRight, Clock, FileText, Lightbulb, Target, X } from 'lucide-react'
 import { LearningHubSectionItem, resolvePersonalizedMicroCourseTheme } from '../../../features/learningHub'
@@ -12,7 +12,7 @@ interface PersonalizedMicroCourseRendererProps {
 
 const PersonalizedMicroCourseRenderer = ({ item }: PersonalizedMicroCourseRendererProps) => {
   const { t: tr } = useTranslation()
-  const navigate = useNavigate()
+  const goBackToCatalog = useLearningHubBackNavigation()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [currentContentIndex, setCurrentContentIndex] = useState(0)
   const [completedLessons, setCompletedLessons] = useState<number[]>([])
@@ -131,7 +131,7 @@ const PersonalizedMicroCourseRenderer = ({ item }: PersonalizedMicroCourseRender
                 <FileText className='w-4 h-4' /> {tr('learningHubSections.downloadCertificate')}
               </button>
               <button
-                onClick={() => navigate('/learning-hub')}
+                onClick={() => goBackToCatalog()}
                 className='flex-1 rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50'
               >
                 {tr('learningHubSections.backToLearningHub')}
@@ -152,7 +152,7 @@ const PersonalizedMicroCourseRenderer = ({ item }: PersonalizedMicroCourseRender
               <h2 className='text-2xl font-bold text-gray-900'>{tr('learningHubSections.courseAssessment')}</h2>
               <p className='text-sm text-gray-600 mt-1'>{localizedContent.quizSubtitle}</p>
             </div>
-            <button onClick={() => navigate('/learning-hub')} className='p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100'>
+            <button onClick={() => goBackToCatalog()} className='p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100'>
               <X className='w-5 h-5' />
             </button>
           </div>
@@ -302,7 +302,7 @@ const PersonalizedMicroCourseRenderer = ({ item }: PersonalizedMicroCourseRender
               <div className='h-full bg-white rounded-full transition-all duration-300' style={{ width: `${progress}%` }} />
             </div>
           </div>
-          <button onClick={() => navigate('/learning-hub')} className='p-2 text-white/80 hover:text-white hover:bg-white/20 rounded-lg transition'><X className='w-5 h-5' /></button>
+          <button onClick={() => goBackToCatalog()} className='p-2 text-white/80 hover:text-white hover:bg-white/20 rounded-lg transition'><X className='w-5 h-5' /></button>
         </div>
       </div>
 

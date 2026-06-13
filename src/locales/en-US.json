@@ -4708,6 +4708,18 @@
       "reasoning": "Reasoning Framework",
       "practice": "Practice Generator",
       "assessment": "Assessment Tools"
+    },
+    "couldNotRestoreSavedOutputFromHistory": "Could not restore saved output from History.",
+    "upgradeToPremiumToUseThisFeature": "Upgrade to Premium to use this feature",
+    "wordProblemGenerated": "Word problem analysis ready",
+    "realWorldApplicationGenerated": "Real-world application generated",
+    "strategiesLoaded": "Problem-solving strategies loaded",
+    "reasoningFrameworkLoaded": "Reasoning framework loaded",
+    "errors": {
+      "wordProblemFailed": "Failed to analyze word problem",
+      "realWorldFailed": "Failed to generate real-world application",
+      "strategiesFailed": "Failed to load strategies",
+      "reasoningFailed": "Failed to load reasoning framework"
     }
   },
   "processDifferentiationModule": {

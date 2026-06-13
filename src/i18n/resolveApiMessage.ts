@@ -22,6 +22,10 @@ const API_MESSAGE_KEYS: Record<string, string> = {
   'Failed to generate learning path': 'adaptiveMathStrategist.errors.learningPathFailed',
   'Failed to analyze concept': 'adaptiveMathStrategist.errors.conceptAnalysisFailed',
   'Failed to generate intervention strategies': 'adaptiveMathStrategist.errors.interventionFailed',
+  'Failed to analyze word problem': 'problemSolvingCoach.errors.wordProblemFailed',
+  'Failed to generate real-world application': 'problemSolvingCoach.errors.realWorldFailed',
+  'Failed to load strategies': 'problemSolvingCoach.errors.strategiesFailed',
+  'Failed to load reasoning framework': 'problemSolvingCoach.errors.reasoningFailed',
   'Network error': 'common.errorGeneric',
   'Failed to fetch': 'common.errorGeneric',
 }

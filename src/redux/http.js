@@ -246,6 +246,11 @@ axiosInstance.interceptors.response.use(
           const dispatch = store.dispatch;
           dispatch(logoutUser());
           persistor.purge();
+          try {
+            localStorage.removeItem('access_token');
+          } catch {
+            // ignore
+          }
         } catch (importError) {
           console.error('Failed to import store in error handler:', importError);
         }
@@ -278,6 +283,11 @@ axiosInstance.interceptors.response.use(
         const dispatch = store.dispatch;
         dispatch(logoutUser());
         persistor.purge();
+        try {
+          localStorage.removeItem('access_token');
+        } catch {
+          // ignore
+        }
       } catch (importError) {
         console.error('Failed to import store in error handler:', importError);
       }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { navigateBackToLearningHubCatalog } from '../../features/learningHub/useLearningHubBackNavigation'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   BookOpen,
@@ -837,7 +838,7 @@ const DifferentiationCourse = () => {
         dispatch(fetchLearningHubHome())
       }
     }
-    navigate('/learning-hub')
+    navigateBackToLearningHubCatalog(navigate)
   }
 
   if (courseDataLoading && !showCertificate && !showQuiz) {
@@ -938,7 +939,7 @@ const DifferentiationCourse = () => {
               <p className="text-sm text-gray-600 mt-1">{t('differentiationCourse.testYourUnderstandingOfDifferentiationStrategies')}</p>
             </div>
             <button
-              onClick={() => navigate('/learning-hub')}
+              onClick={() => navigateBackToLearningHubCatalog(navigate)}
               className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
             >
               <X className="w-5 h-5" />
@@ -1134,7 +1135,7 @@ const DifferentiationCourse = () => {
             </div>
           </div>
           <button
-            onClick={() => navigate('/learning-hub')}
+            onClick={() => navigateBackToLearningHubCatalog(navigate)}
             className="p-2 text-white/80 hover:text-white hover:bg-white/20 rounded-lg transition"
           >
             <X className="w-5 h-5" />

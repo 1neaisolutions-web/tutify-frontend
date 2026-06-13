@@ -59,6 +59,7 @@ import { creditBalanceUiPercents } from '../utils/creditBalanceUi'
 import { formatDate, formatNumber } from '../lib/i18n/format'
 import { useTranslation } from 'react-i18next'
 import { tText } from '../i18n/tText'
+import { DashboardScrollContainer, DashboardScrollProvider } from '../contexts/DashboardScrollContext'
 
 type MenuItem = {
   path: string
@@ -368,6 +369,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const isChatPage = location.pathname === '/chatbots/general-teaching-assistant'
 
   return (
+    <DashboardScrollProvider isChatPage={isChatPage}>
     <div className="h-screen overflow-hidden bg-gray-50">
       {/* Mobile menu button */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
@@ -1119,7 +1121,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         </div>
 
         <main className="pt-20 lg:pt-24 px-6 lg:px-8 flex-1 min-h-0 overflow-hidden flex flex-col">
-          <div className={`flex-1 min-h-0 ${isChatPage ? 'overflow-hidden' : 'overflow-auto'}`}>
+          <DashboardScrollContainer
+            className={`flex-1 min-h-0 ${isChatPage ? 'overflow-hidden' : 'overflow-auto'}`}
+          >
             {location.pathname.startsWith('/teacher-tools') ||
             location.pathname.startsWith('/dashboard') ||
             location.pathname.startsWith('/analytics') ||
@@ -1128,7 +1132,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             ) : (
               children
             )}
-          </div>
+          </DashboardScrollContainer>
         </main>
       </div>
 
@@ -1145,6 +1149,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         onClose={() => setActivateModalOpen(false)}
       />
     </div>
+    </DashboardScrollProvider>
   )
 }
 

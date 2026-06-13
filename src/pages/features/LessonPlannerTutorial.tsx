@@ -33,6 +33,7 @@ import {
 } from 'lucide-react'
 import { youtubeWatchUrlToEmbedUrl, type LearningHubMediaVideo } from '../../features/learningHub/contentModel'
 import { useTutorialProgress } from '../../hooks/useTutorialProgress'
+import { navigateBackToLearningHubCatalog } from '../../features/learningHub/useLearningHubBackNavigation'
 
 import { useTranslation } from 'react-i18next'
 export function LessonPlannerTutorialView({ item }: { item: LearningHubSectionItem }) {
@@ -67,7 +68,7 @@ export function LessonPlannerTutorialView({ item }: { item: LearningHubSectionIt
 
   const handleNext = () => {
     if (currentStep >= tutorialSteps.length - 1) {
-      void finishTutorial().then(() => navigate('/learning-hub'))
+      void finishTutorial().then(() => navigateBackToLearningHubCatalog(navigate))
       return
     }
     goNext()
@@ -95,7 +96,7 @@ export function LessonPlannerTutorialView({ item }: { item: LearningHubSectionIt
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-4">
               <button
-                onClick={() => navigate('/learning-hub')}
+                onClick={() => navigateBackToLearningHubCatalog(navigate)}
                 className="p-2 text-white/80 hover:text-white hover:bg-white/20 rounded-lg transition"
               >
                 <ArrowLeft className="h-5 w-5" />

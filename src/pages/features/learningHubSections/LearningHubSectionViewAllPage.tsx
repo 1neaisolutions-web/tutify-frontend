@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import axiosInstance from '../../../redux/http'
+import { useLearningHubBackNavigation } from '../../../features/learningHub/useLearningHubBackNavigation'
+import { useLearningHubCatalogNavigation } from '../../../features/learningHub/useLearningHubCatalogNavigation'
+import { useRestoreCatalogScroll } from '../../../features/learningHub/useRestoreCatalogScroll'
 
 type SectionItem = {
   assignment_id: string
@@ -23,11 +26,14 @@ type SectionItem = {
 
 export default function LearningHubSectionViewAllPage() {
   const { t } = useTranslation()
-  const navigate = useNavigate()
+  const goBackToCatalog = useLearningHubBackNavigation()
+  const { navigateToDetail } = useLearningHubCatalogNavigation()
   const { section } = useParams()
   const [items, setItems] = useState<SectionItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  useRestoreCatalogScroll(!loading)
 
   const sectionTitle = (sectionKey: string) => {
     const key = `learningHubSections.sections.${sectionKey}` as const
@@ -70,14 +76,16 @@ export default function LearningHubSectionViewAllPage() {
 
   const openItem = (item: SectionItem) => {
     if (!item.route || item.locked) return
-    navigate(item.route, {
-      state: {
+    navigateToDetail(
+      item.route,
+      {
         content_id: item.content_id,
         content_type: item.content_type,
         assignment_id: item.assignment_id,
         source_section: section,
       },
-    })
+      { contentId: item.content_id, assignmentId: item.assignment_id },
+    )
   }
 
   return (
@@ -85,7 +93,7 @@ export default function LearningHubSectionViewAllPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-gray-900">{sectionTitle(section || '')}</h1>
         <button
-          onClick={() => navigate('/learning-hub')}
+          onClick={() => goBackToCatalog('/learning-hub')}
           className="rounded-full border border-gray-300 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-gray-700 hover:bg-gray-50"
         >
           {t('learningHubSections.backToHub')}
@@ -103,6 +111,7 @@ export default function LearningHubSectionViewAllPage() {
               {grouped.visible.map((item) => (
                 <button
                   key={item.assignment_id}
+                  data-content-id={item.content_id}
                   onClick={() => openItem(item)}
                   className="w-full rounded-xl border border-gray-100 bg-gray-50 p-4 text-left hover:border-amber-200"
                 >

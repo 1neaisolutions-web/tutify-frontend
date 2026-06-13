@@ -49,49 +49,26 @@ import {
 } from 'lucide-react'
 import * as chatbotApi from '../../api/chatbots'
 import { useSnackbar } from '../../hooks/useSnackbar'
+import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
+import NoCreditsCard from '../../components/NoCreditsCard'
+import { resolveApiMessage } from '../../i18n/resolveApiMessage'
+import {
+  type VisualExplanationUI as VisualExplanation,
+  type ProofStrategyUI as ProofStrategy,
+  type ScaffoldedPracticeUI as ScaffoldedPractice,
+  mapVisualExplanationResult,
+  mapProofStrategyResult,
+  mapScaffoldedPracticeResult,
+  restoreVisualPayload,
+  restoreProofPayload,
+  restorePracticePayload,
+  isUiVisualPayload,
+  isUiProofPayload,
+  isUiPracticePayload,
+} from '../../utils/algebraGeometryAdapters'
 
 import { useTranslation } from 'react-i18next'
-interface VisualExplanation {
-  concept: string
-  explanation: string
-  visualType: 'graph' | 'diagram' | 'animation' | 'interactive'
-  steps: {
-    step: number
-    description: string
-    visual: string
-  }[]
-  interactiveElements: string[]
-}
-
-interface ProofStrategy {
-  theorem: string
-  proofType: 'direct' | 'indirect' | 'contradiction' | 'induction' | 'construction'
-  strategy: string
-  steps: {
-    step: number
-    statement: string
-    justification: string
-    visual?: string
-  }[]
-  hints: string[]
-  commonMistakes: string[]
-}
-
-interface ScaffoldedPractice {
-  topic: string
-  levels: {
-    level: number
-    name: string
-    problems: {
-      id: number
-      question: string
-      hints: string[]
-      solution: string
-      explanation: string
-    }[]
-  }[]
-}
 
 interface GeometryVisual {
   type: string
@@ -103,20 +80,30 @@ interface GeometryVisual {
 type TutorTab = 'visual' | 'proof' | 'practice' | 'interactive' | 'assessment' | 'resources'
 
 function inferTabFromPayload(parsed: Record<string, unknown>): TutorTab | null {
-  if ('visualType' in parsed && typeof (parsed as VisualExplanation).visualType === 'string') return 'visual'
-  if ('proofType' in parsed && typeof (parsed as ProofStrategy).proofType === 'string') return 'proof'
-  if ('levels' in parsed && Array.isArray((parsed as ScaffoldedPractice).levels)) return 'practice'
+  if (isUiVisualPayload(parsed) || 'visuals' in parsed || 'workedExample' in parsed) return 'visual'
+  if (isUiProofPayload(parsed) || 'outlineSteps' in parsed || 'strategyOverview' in parsed) return 'proof'
+  if (isUiPracticePayload(parsed) || (Array.isArray(parsed.problems) && parsed.problems.length > 0)) return 'practice'
   return null
 }
+
+const ALGEBRA_GEOMETRY_CAP_TABS: Record<string, TutorTab> = {
+  visual_explanation: 'visual',
+  proof_strategies: 'proof',
+  scaffolded_practice: 'practice',
+}
+
+type ProofTypeOption = ProofStrategy['proofType']
 
 const AlgebraGeometryTutor = () => {
   const { t } = useTranslation()
   const { toast } = useSnackbar()
+  const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const CHATBOT_SLUG = 'algebra-geometry-tutor'
   const [activeTab, setActiveTab] = useState<TutorTab>('visual')
   const [gradeLevel, setGradeLevel] = useState('9')
   const [topic, setTopic] = useState('')
   const [subject, setSubject] = useState<'algebra' | 'geometry'>('algebra')
+  const [proofType, setProofType] = useState<ProofTypeOption>('direct')
   const [isGenerating, setIsGenerating] = useState(false)
   const [visualExplanation, setVisualExplanation] = useState<VisualExplanation | null>(null)
   const [proofStrategy, setProofStrategy] = useState<ProofStrategy | null>(null)
@@ -125,9 +112,10 @@ const AlgebraGeometryTutor = () => {
   const { conversationIdForActiveTab, pinFromResponse } = useChatbotHistorySession({
     slug: CHATBOT_SLUG,
     activeTab,
+    capabilityKeyToTab: ALGEBRA_GEOMETRY_CAP_TABS,
     detectTabFromMetadata: (m) => {
-      const t = (m?.tab ?? m?.Tab) as string | undefined
-      if (t === 'visual' || t === 'proof' || t === 'practice') return t
+      const tab = (m?.tab ?? m?.Tab) as string | undefined
+      if (tab === 'visual' || tab === 'proof' || tab === 'practice') return tab
       return null
     },
     onRestore: async ({ tabKey, userContent, assistantContent, assistantMetadata }) => {
@@ -137,19 +125,37 @@ const AlgebraGeometryTutor = () => {
           return
         }
         const meta = assistantMetadata || {}
+        const cap = meta.capability_key as string | undefined
         let tab: TutorTab =
-          tabKey === 'visual' || tabKey === 'proof' || tabKey === 'practice' ? (tabKey as TutorTab) : 'visual'
+          tabKey === 'visual' || tabKey === 'proof' || tabKey === 'practice'
+            ? (tabKey as TutorTab)
+            : cap && ALGEBRA_GEOMETRY_CAP_TABS[cap]
+              ? ALGEBRA_GEOMETRY_CAP_TABS[cap]
+              : 'visual'
 
-        const tabRaw = (meta.tab ?? meta.Tab) as string | undefined
-        const subj = meta.subject as string | undefined
+        const params = (meta.parameters as Record<string, unknown> | undefined) ?? {}
+        const subj = (params.subject ?? meta.subject) as string | undefined
         if (subj === 'algebra' || subj === 'geometry') {
           setSubject(subj)
+        } else if (typeof subj === 'string' && subj.toLowerCase().startsWith('geom')) {
+          setSubject('geometry')
+        } else if (typeof subj === 'string' && subj.toLowerCase().startsWith('alg')) {
+          setSubject('algebra')
         }
 
-        const gl = meta.grade_level ?? meta.gradeLevel
+        const gl = params.grade_level ?? params.gradeLevel ?? meta.grade_level ?? meta.gradeLevel
         if (typeof gl === 'string' || typeof gl === 'number') {
           const g = String(gl).replace(/\D/g, '')
           if (g) setGradeLevel(g)
+        }
+
+        const pt = params.proof_type ?? params.proofType
+        if (typeof pt === 'string' && pt.trim()) {
+          setProofType(pt.toLowerCase().includes('contradiction') ? 'contradiction'
+            : pt.toLowerCase().includes('induction') ? 'induction'
+            : pt.toLowerCase().includes('construction') ? 'construction'
+            : pt.toLowerCase().includes('indirect') ? 'indirect'
+            : 'direct')
         }
 
         if (userContent) {
@@ -160,12 +166,13 @@ const AlgebraGeometryTutor = () => {
         try {
           parsed = JSON.parse(assistantContent) as Record<string, unknown>
         } catch {
-          toast.info('Could not restore this generation (unexpected format).')
+          toast.info(t('algebraGeometryTutor.couldNotLoadThisConversationFromHistory'))
           return
         }
 
+        const tabRaw = (meta.tab ?? meta.Tab) as string | undefined
         const inferred = inferTabFromPayload(parsed)
-        if (!tabRaw && inferred) {
+        if (!tabRaw && !cap && inferred) {
           tab = inferred
         }
         setActiveTab(tab)
@@ -175,11 +182,11 @@ const AlgebraGeometryTutor = () => {
         setScaffoldedPractice(null)
 
         if (tab === 'visual') {
-          setVisualExplanation(parsed as unknown as VisualExplanation)
+          setVisualExplanation(restoreVisualPayload(parsed))
         } else if (tab === 'proof') {
-          setProofStrategy(parsed as unknown as ProofStrategy)
+          setProofStrategy(restoreProofPayload(parsed))
         } else if (tab === 'practice') {
-          setScaffoldedPractice(parsed as unknown as ScaffoldedPractice)
+          setScaffoldedPractice(restorePracticePayload(parsed))
         }
       } catch {
         toast.info(t('algebraGeometryTutor.couldNotLoadThisConversationFromHistory'))
@@ -187,266 +194,120 @@ const AlgebraGeometryTutor = () => {
     },
   })
 
+  const subjectLabel = subject === 'algebra' ? 'Algebra' : 'Geometry'
+
   const handleVisualExplanation = async () => {
     if (!topic.trim()) return
     setIsGenerating(true)
-    
-    setTimeout(() => {
-      const mockVisual: VisualExplanation = {
-        concept: topic || 'Linear Equations',
-        explanation: subject === 'algebra' 
-          ? 'Linear equations represent relationships where one variable depends on another in a straight-line pattern. The general form is y = mx + b, where m is the slope and b is the y-intercept.'
-          : 'The Pythagorean Theorem states that in a right triangle, the square of the hypotenuse equals the sum of squares of the other two sides: a² + b² = c².',
-        visualType: subject === 'algebra' ? 'graph' : 'diagram',
-        steps: subject === 'algebra' ? [
-          {
-            step: 1,
-            description: 'Identify the slope (m) and y-intercept (b) from the equation',
-            visual: 'Graph showing y = 2x + 3 with slope of 2 and y-intercept at (0, 3)',
+    clearCreditError()
+
+    try {
+      const topicConcept = topic.trim()
+      const response = await runWithCredits(chatbotApi.executeCapability(
+        CHATBOT_SLUG,
+        'visual_explanation',
+        {
+          input: topicConcept,
+          input_type: 'text',
+          parameters: {
+            subject: subjectLabel,
+            topic_concept: topicConcept,
+            grade_level: gradeLevel,
           },
-          {
-            step: 2,
-            description: 'Plot the y-intercept on the coordinate plane',
-            visual: 'Point marked at (0, 3)',
-          },
-          {
-            step: 3,
-            description: 'Use the slope to find another point (rise over run)',
-            visual: 'Arrow showing rise of 2 and run of 1 from the y-intercept',
-          },
-          {
-            step: 4,
-            description: 'Draw the line through both points',
-            visual: 'Complete line graph extending through both points',
-          },
-        ] : [
-          {
-            step: 1,
-            description: 'Identify the right triangle and label the sides',
-            visual: 'Right triangle with sides labeled a, b, and hypotenuse c',
-          },
-          {
-            step: 2,
-            description: 'Visualize the squares on each side',
-            visual: 'Squares constructed on each side of the triangle',
-          },
-          {
-            step: 3,
-            description: 'Demonstrate that a² + b² = c²',
-            visual: 'Visual proof showing the area relationship',
-          },
-        ],
-        interactiveElements: [
-          'Drag points to change the equation',
-          'Adjust sliders for slope and intercept',
-          'Zoom in/out on the graph',
-          'Toggle grid and axes',
-        ],
-      }
-      setVisualExplanation(mockVisual)
-      setIsGenerating(false)
-      void chatbotApi
-        .logChatbotHistory(CHATBOT_SLUG, {
-          title: `Visual explanation · ${mockVisual.concept}`,
-          user_content: topic,
-          assistant_content: JSON.stringify(mockVisual, null, 2),
-          metadata: { tab: 'visual', subject, grade_level: gradeLevel },
           conversation_id: conversationIdForActiveTab ?? undefined,
-        })
-        .then((r) => pinFromResponse(r.conversation_id))
-        .catch(() => toast.info(t('algebraGeometryTutor.generatedButCouldNotSaveToHistory')))
-    }, 2000)
+        },
+      ))
+      if (response == null) return
+
+      setVisualExplanation(mapVisualExplanationResult(response.result as Record<string, unknown>))
+      pinFromResponse(response.conversation_id)
+    } catch (error: unknown) {
+      if (captureApiError(error)) return
+      const err = error as { detail?: string; message?: string; status?: number }
+      const msg = resolveApiMessage(t, err?.detail || err?.message || 'Failed to generate visual explanation')
+      toast.error(msg)
+      if (err?.status === 403 || String(msg).includes('Premium')) {
+        toast.info(t('algebraGeometryTutor.premium'), { duration: 5000 })
+      }
+    } finally {
+      setIsGenerating(false)
+    }
   }
 
   const handleProofStrategy = async () => {
     if (!topic.trim()) return
     setIsGenerating(true)
-    
-    setTimeout(() => {
-      const mockProof: ProofStrategy = {
-        theorem: topic || 'Pythagorean Theorem',
-        proofType: 'direct',
-        strategy: 'We will use a direct proof by constructing squares on each side of a right triangle and showing the area relationship.',
-        steps: [
-          {
-            step: 1,
-            statement: 'Given: Right triangle with sides a, b, and hypotenuse c',
-            justification: 'Given',
-            visual: 'Right triangle diagram',
+    clearCreditError()
+
+    try {
+      const statement = topic.trim()
+      const response = await runWithCredits(chatbotApi.executeCapability(
+        CHATBOT_SLUG,
+        'proof_strategies',
+        {
+          input: statement,
+          input_type: 'text',
+          parameters: {
+            subject: subjectLabel,
+            theorem_statement: statement,
+            proof_type: proofType,
           },
-          {
-            step: 2,
-            statement: 'Construct squares on each side with areas a², b², and c²',
-            justification: 'Definition of square area',
-            visual: 'Three squares constructed on triangle sides',
-          },
-          {
-            step: 3,
-            statement: 'Arrange four copies of the triangle to form a larger square',
-            justification: 'Geometric construction',
-            visual: 'Four triangles arranged in a square pattern',
-          },
-          {
-            step: 4,
-            statement: 'The area of the large square equals (a + b)²',
-            justification: 'Area formula for square',
-            visual: 'Large square with side length (a + b)',
-          },
-          {
-            step: 5,
-            statement: 'The area also equals c² + 4(½ab) = c² + 2ab',
-            justification: 'Sum of areas of inner square and four triangles',
-            visual: 'Decomposition showing inner square and triangles',
-          },
-          {
-            step: 6,
-            statement: 'Therefore, (a + b)² = c² + 2ab',
-            justification: 'Equality of expressions',
-            visual: 'Algebraic manipulation',
-          },
-          {
-            step: 7,
-            statement: 'Expanding: a² + 2ab + b² = c² + 2ab',
-            justification: 'Algebraic expansion',
-            visual: 'Step-by-step algebraic work',
-          },
-          {
-            step: 8,
-            statement: 'Subtracting 2ab from both sides: a² + b² = c²',
-            justification: 'Subtraction property of equality',
-            visual: 'Final equation',
-          },
-        ],
-        hints: [
-          'Start by drawing a clear diagram',
-          'Label all given information',
-          'Consider what you need to prove',
-          'Think about geometric constructions that might help',
-          'Look for relationships between areas',
-        ],
-        commonMistakes: [
-          'Assuming the theorem without proving it',
-          'Using the theorem to prove itself (circular reasoning)',
-          'Not clearly labeling the right angle',
-          'Confusing which side is the hypotenuse',
-        ],
-      }
-      setProofStrategy(mockProof)
-      setIsGenerating(false)
-      void chatbotApi
-        .logChatbotHistory(CHATBOT_SLUG, {
-          title: `Proof strategy · ${mockProof.theorem}`,
-          user_content: topic,
-          assistant_content: JSON.stringify(mockProof, null, 2),
-          metadata: { tab: 'proof', subject, grade_level: gradeLevel },
           conversation_id: conversationIdForActiveTab ?? undefined,
-        })
-        .then((r) => pinFromResponse(r.conversation_id))
-        .catch(() => toast.info(t('algebraGeometryTutor.generatedButCouldNotSaveToHistory')))
-    }, 2000)
+        },
+      ))
+      if (response == null) return
+
+      setProofStrategy(mapProofStrategyResult(response.result as Record<string, unknown>))
+      pinFromResponse(response.conversation_id)
+    } catch (error: unknown) {
+      if (captureApiError(error)) return
+      const err = error as { detail?: string; message?: string; status?: number }
+      const msg = resolveApiMessage(t, err?.detail || err?.message || 'Failed to generate proof strategy')
+      toast.error(msg)
+      if (err?.status === 403 || String(msg).includes('Premium')) {
+        toast.info(t('algebraGeometryTutor.premium'), { duration: 5000 })
+      }
+    } finally {
+      setIsGenerating(false)
+    }
   }
 
   const handleScaffoldedPractice = async () => {
     if (!topic.trim()) return
     setIsGenerating(true)
-    
-    setTimeout(() => {
-      const mockPractice: ScaffoldedPractice = {
-        topic: topic || 'Solving Quadratic Equations',
-        levels: [
-          {
-            level: 1,
-            name: 'Foundation',
-            problems: [
-              {
-                id: 1,
-                question: 'Solve: x² = 16',
-                hints: [
-                  'What number squared equals 16?',
-                  'Remember: both positive and negative numbers can be solutions',
-                ],
-                solution: 'x = 4 or x = -4',
-                explanation: 'Since 4² = 16 and (-4)² = 16, there are two solutions.',
-              },
-              {
-                id: 2,
-                question: 'Solve: (x - 3)² = 25',
-                hints: [
-                  'Take the square root of both sides',
-                  'Don\'t forget to solve for x after taking the square root',
-                ],
-                solution: 'x = 8 or x = -2',
-                explanation: 'Taking square root: x - 3 = ±5, so x = 3 + 5 = 8 or x = 3 - 5 = -2',
-              },
-            ],
+    clearCreditError()
+
+    try {
+      const practiceTopic = topic.trim()
+      const response = await runWithCredits(chatbotApi.executeCapability(
+        CHATBOT_SLUG,
+        'scaffolded_practice',
+        {
+          input: practiceTopic,
+          input_type: 'text',
+          parameters: {
+            subject: subjectLabel,
+            topic: practiceTopic,
+            grade_level: gradeLevel,
           },
-          {
-            level: 2,
-            name: 'Intermediate',
-            problems: [
-              {
-                id: 3,
-                question: 'Solve: x² - 5x + 6 = 0',
-                hints: [
-                  'Try factoring the quadratic',
-                  'Look for two numbers that multiply to 6 and add to -5',
-                ],
-                solution: 'x = 2 or x = 3',
-                explanation: 'Factoring: (x - 2)(x - 3) = 0, so x = 2 or x = 3',
-              },
-              {
-                id: 4,
-                question: 'Solve: 2x² - 8x = 0',
-                hints: [
-                  'Factor out the common term',
-                  'Use the zero product property',
-                ],
-                solution: 'x = 0 or x = 4',
-                explanation: 'Factoring: 2x(x - 4) = 0, so 2x = 0 or x - 4 = 0',
-              },
-            ],
-          },
-          {
-            level: 3,
-            name: 'Advanced',
-            problems: [
-              {
-                id: 5,
-                question: 'Solve: x² - 4x - 5 = 0 using the quadratic formula',
-                hints: [
-                  'Identify a = 1, b = -4, c = -5',
-                  'Substitute into the quadratic formula: x = (-b ± √(b² - 4ac)) / 2a',
-                ],
-                solution: 'x = 5 or x = -1',
-                explanation: 'Using quadratic formula: x = (4 ± √(16 + 20)) / 2 = (4 ± 6) / 2',
-              },
-              {
-                id: 6,
-                question: 'Solve: 3x² + 7x - 6 = 0',
-                hints: [
-                  'This doesn\'t factor easily, so use the quadratic formula',
-                  'Calculate the discriminant first: b² - 4ac',
-                ],
-                solution: 'x = 2/3 or x = -3',
-                explanation: 'Discriminant = 49 + 72 = 121, so x = (-7 ± 11) / 6',
-              },
-            ],
-          },
-        ],
-      }
-      setScaffoldedPractice(mockPractice)
-      setIsGenerating(false)
-      void chatbotApi
-        .logChatbotHistory(CHATBOT_SLUG, {
-          title: `Practice · ${mockPractice.topic}`,
-          user_content: topic,
-          assistant_content: JSON.stringify(mockPractice, null, 2),
-          metadata: { tab: 'practice', subject, grade_level: gradeLevel },
           conversation_id: conversationIdForActiveTab ?? undefined,
-        })
-        .then((r) => pinFromResponse(r.conversation_id))
-        .catch(() => toast.info(t('algebraGeometryTutor.generatedButCouldNotSaveToHistory')))
-    }, 2000)
+        },
+      ))
+      if (response == null) return
+
+      setScaffoldedPractice(mapScaffoldedPracticeResult(response.result as Record<string, unknown>))
+      pinFromResponse(response.conversation_id)
+    } catch (error: unknown) {
+      if (captureApiError(error)) return
+      const err = error as { detail?: string; message?: string; status?: number }
+      const msg = resolveApiMessage(t, err?.detail || err?.message || 'Failed to generate practice problems')
+      toast.error(msg)
+      if (err?.status === 403 || String(msg).includes('Premium')) {
+        toast.info(t('algebraGeometryTutor.premium'), { duration: 5000 })
+      }
+    } finally {
+      setIsGenerating(false)
+    }
   }
 
   const tabs = [
@@ -460,6 +321,15 @@ const AlgebraGeometryTutor = () => {
 
   return (
     <div className="space-y-6">
+      {creditError && (
+        <NoCreditsCard
+          reason={creditError.reason}
+          balance={creditError.balance}
+          required={creditError.required}
+          onActivated={clearCreditError}
+        />
+      )}
+
       {/* Header */}
       <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-3xl p-8 text-white shadow-xl">
         <div className="flex items-start justify-between">
@@ -729,12 +599,16 @@ const AlgebraGeometryTutor = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('algebraGeometryTutor.proofType')}</label>
-                    <select className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100">
-                      <option>{t('algebraGeometryTutor.directProof')}</option>
-                      <option>{t('algebraGeometryTutor.indirectProof')}</option>
-                      <option>{t('algebraGeometryTutor.proofByContradiction')}</option>
-                      <option>{t('algebraGeometryTutor.proofByInduction')}</option>
-                      <option>{t('algebraGeometryTutor.proofByConstruction')}</option>
+                    <select
+                      value={proofType}
+                      onChange={(e) => setProofType(e.target.value as ProofTypeOption)}
+                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                    >
+                      <option value="direct">{t('algebraGeometryTutor.directProof')}</option>
+                      <option value="indirect">{t('algebraGeometryTutor.indirectProof')}</option>
+                      <option value="contradiction">{t('algebraGeometryTutor.proofByContradiction')}</option>
+                      <option value="induction">{t('algebraGeometryTutor.proofByInduction')}</option>
+                      <option value="construction">{t('algebraGeometryTutor.proofByConstruction')}</option>
                     </select>
                   </div>
                   <button

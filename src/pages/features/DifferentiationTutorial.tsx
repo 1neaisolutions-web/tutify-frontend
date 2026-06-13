@@ -33,6 +33,7 @@ import {
 } from 'lucide-react'
 import { youtubeWatchUrlToEmbedUrl, type LearningHubMediaVideo } from '../../features/learningHub/contentModel'
 import { useTutorialProgress } from '../../hooks/useTutorialProgress'
+import { navigateBackToLearningHubCatalog } from '../../features/learningHub/useLearningHubBackNavigation'
 
 import { useTranslation } from 'react-i18next'
 interface ClassroomExample {
@@ -79,7 +80,7 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
 
   const handleNext = () => {
     if (currentStep >= tutorialSteps.length - 1) {
-      void finishTutorial().then(() => navigate('/learning-hub'))
+      void finishTutorial().then(() => navigateBackToLearningHubCatalog(navigate))
       return
     }
     goNext()
@@ -107,7 +108,7 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-4">
               <button
-                onClick={() => navigate('/learning-hub')}
+                onClick={() => navigateBackToLearningHubCatalog(navigate)}
                 className="p-2 text-white/80 hover:text-white hover:bg-white/20 rounded-lg transition"
               >
                 <ArrowLeft className="h-5 w-5" />
@@ -788,7 +789,7 @@ export function DifferentiationTutorialView({ item }: { item: LearningHubSection
               </p>
               <div className="flex gap-3 justify-center">
                 <button
-                  onClick={() => navigate('/learning-hub')}
+                  onClick={() => navigateBackToLearningHubCatalog(navigate)}
                   className="rounded-full bg-green-600 px-6 py-3 text-sm font-semibold text-white hover:bg-green-700"
                 >
                   Back to Learning Hub

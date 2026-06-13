@@ -5,6 +5,7 @@ import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App.tsx'
+import { DashboardScrollRestoration } from './contexts/DashboardScrollRestoration.tsx'
 import { store, persistor } from './redux/store'
 import './i18n'
 import './index.css'
@@ -36,6 +37,7 @@ ReactDOM.createRoot(rootElement).render(
       <PersistGate loading={<PersistGateLoading />} persistor={persistor}>
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <App />
+          <DashboardScrollRestoration />
         </BrowserRouter>
       </PersistGate>
     </Provider>

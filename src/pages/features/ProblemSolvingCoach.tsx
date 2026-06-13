@@ -43,286 +43,196 @@ import {
   HelpCircle,
   ArrowRight,
   ArrowLeft,
+  ClipboardCheck,
 } from 'lucide-react'
 
+import * as chatbotApi from '../../api/chatbots'
+import { useSnackbar } from '../../hooks/useSnackbar'
+import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
+import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
+import NoCreditsCard from '../../components/NoCreditsCard'
+import { resolveApiMessage } from '../../i18n/resolveApiMessage'
+import {
+  mapWordProblemsResult,
+  mapRealWorldApplicationResult,
+  mapProblemStrategiesResult,
+  mapReasoningFrameworkResult,
+  type WordProblemUI,
+  type RealWorldApplicationUI,
+  type ProblemSolvingStrategyUI,
+  type ReasoningFrameworkUI,
+} from '../../utils/problemSolvingAdapters'
+
 import { useTranslation } from 'react-i18next'
-interface WordProblem {
-  problem: string
-  context: string
-  gradeLevel: string
-  mathTopic: string
-  solution: {
-    steps: {
-      step: number
-      action: string
-      calculation: string
-      explanation: string
-    }[]
-    finalAnswer: string
-    check: string
-  }
-  strategies: string[]
-  similarProblems: string[]
-}
 
-interface RealWorldApplication {
-  scenario: string
-  mathConcepts: string[]
-  problem: string
-  solution: string
-  extensions: string[]
-  connections: string[]
-}
+const CHATBOT_SLUG = 'problem-solving-coach'
 
-interface ProblemSolvingStrategy {
-  strategy: string
-  description: string
-  whenToUse: string
-  steps: string[]
-  example: {
-    problem: string
-    application: string
-  }
-}
+type TabId = 'word-problems' | 'real-world' | 'strategies' | 'reasoning' | 'practice' | 'assessment'
 
-interface ReasoningFramework {
-  framework: string
-  steps: {
-    step: number
-    question: string
-    guidance: string
-  }[]
-  examples: string[]
+const PSC_CAP_TABS: Record<string, TabId> = {
+  word_problems: 'word-problems',
+  real_world_application: 'real-world',
+  problem_strategies: 'strategies',
+  reasoning_framework: 'reasoning',
 }
 
 const ProblemSolvingCoach = () => {
   const { t } = useTranslation()
-  const [activeTab, setActiveTab] = useState<'word-problems' | 'real-world' | 'strategies' | 'reasoning' | 'practice' | 'assessment'>('word-problems')
+  const { toast } = useSnackbar()
+  const { creditError, clearCreditError, runWithCredits } = useCapabilityCreditGate()
+  const [activeTab, setActiveTab] = useState<TabId>('word-problems')
   const [gradeLevel, setGradeLevel] = useState('5')
   const [topic, setTopic] = useState('')
   const [problemInput, setProblemInput] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
-  const [wordProblem, setWordProblem] = useState<WordProblem | null>(null)
-  const [realWorldApp, setRealWorldApp] = useState<RealWorldApplication | null>(null)
-  const [strategies, setStrategies] = useState<ProblemSolvingStrategy[] | null>(null)
-  const [reasoningFramework, setReasoningFramework] = useState<ReasoningFramework | null>(null)
+  const [wordProblem, setWordProblem] = useState<WordProblemUI | null>(null)
+  const [realWorldApp, setRealWorldApp] = useState<RealWorldApplicationUI | null>(null)
+  const [strategies, setStrategies] = useState<ProblemSolvingStrategyUI[] | null>(null)
+  const [reasoningFramework, setReasoningFramework] = useState<ReasoningFrameworkUI | null>(null)
+
+  const { conversationIdForActiveTab, pinFromResponse } = useChatbotHistorySession({
+    slug: CHATBOT_SLUG,
+    activeTab,
+    capabilityKeyToTab: PSC_CAP_TABS,
+    onRestore: async ({ tabKey, userContent, assistantContent, assistantMetadata }) => {
+      const cap = assistantMetadata?.capability_key as string | undefined
+      const tab: TabId =
+        tabKey === 'word-problems' || tabKey === 'real-world' || tabKey === 'strategies' || tabKey === 'reasoning'
+          ? tabKey
+          : cap && PSC_CAP_TABS[cap]
+            ? PSC_CAP_TABS[cap]
+            : 'word-problems'
+      setActiveTab(tab)
+      if (userContent?.trim()) {
+        if (tab === 'word-problems' && userContent.length > 80) {
+          setProblemInput(userContent.trim())
+        } else {
+          setTopic(userContent.trim())
+        }
+      }
+      try {
+        const raw = JSON.parse(assistantContent) as Record<string, unknown>
+        setWordProblem(null)
+        setRealWorldApp(null)
+        setStrategies(null)
+        setReasoningFramework(null)
+        if (tab === 'word-problems') setWordProblem(mapWordProblemsResult(raw))
+        else if (tab === 'real-world') setRealWorldApp(mapRealWorldApplicationResult(raw))
+        else if (tab === 'strategies') setStrategies(mapProblemStrategiesResult(raw))
+        else setReasoningFramework(mapReasoningFrameworkResult(raw))
+      } catch {
+        toast.error(t('problemSolvingCoach.couldNotRestoreSavedOutputFromHistory'))
+      }
+    },
+  })
+
+  const handleApiError = (error: unknown, fallbackKey: string) => {
+    const err = error as { detail?: string; message?: string; status?: number }
+    const msg = resolveApiMessage(t, err?.detail || err?.message || t(fallbackKey))
+    toast.error(msg)
+    if (err?.status === 403 || String(msg).includes('Premium')) {
+      toast.info(t('problemSolvingCoach.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
+    }
+  }
 
   const handleWordProblem = async () => {
     if (!topic.trim() && !problemInput.trim()) return
     setIsGenerating(true)
-    
-    setTimeout(() => {
-      const mockProblem: WordProblem = {
-        problem: problemInput || `Sarah is planning a party. She needs to buy decorations, food, and drinks. Decorations cost $45, food costs $120, and drinks cost $35. If she has a budget of $200, how much money will she have left after buying everything?`,
-        context: 'Party Planning',
-        gradeLevel: gradeLevel,
-        mathTopic: topic || 'Addition and Subtraction',
-        solution: {
-          steps: [
-            {
-              step: 1,
-              action: 'Identify what we know',
-              calculation: 'Decorations: $45\nFood: $120\nDrinks: $35\nBudget: $200',
-              explanation: 'List all the given information clearly.',
-            },
-            {
-              step: 2,
-              action: 'Find the total cost',
-              calculation: '$45 + $120 + $35 = $200',
-              explanation: 'Add all the expenses together.',
-            },
-            {
-              step: 3,
-              action: 'Calculate remaining money',
-              calculation: '$200 - $200 = $0',
-              explanation: 'Subtract total cost from the budget.',
-            },
-          ],
-          finalAnswer: 'Sarah will have $0 left. She spent exactly her budget.',
-          check: 'Verify: $45 + $120 + $35 = $200 ✓',
-        },
-        strategies: [
-          'Read the problem carefully and identify key information',
-          'Underline or highlight important numbers and words',
-          'Determine what operation(s) are needed',
-          'Set up the problem step by step',
-          'Check if the answer makes sense in context',
-        ],
-        similarProblems: [
-          'If Sarah had $250 instead, how much would she have left?',
-          'If decorations cost $50 instead of $45, would she stay within budget?',
-          'What is the total cost if she buys 2 sets of decorations?',
-        ],
-      }
-      setWordProblem(mockProblem)
+    try {
+      const pasted = problemInput.trim()
+      const mathTopic = topic.trim()
+      const response = await runWithCredits(
+        chatbotApi.executeCapability(CHATBOT_SLUG, 'word_problems', {
+          input: pasted || mathTopic || ' ',
+          input_type: 'text',
+          parameters: {
+            grade_level: String(gradeLevel),
+            ...(mathTopic ? { math_topic: mathTopic } : {}),
+            ...(pasted ? { word_problem: pasted } : {}),
+          },
+          conversation_id: conversationIdForActiveTab ?? undefined,
+        }),
+      )
+      if (response == null) return
+      setWordProblem(mapWordProblemsResult(response.result))
+      pinFromResponse(response.conversation_id)
+      toast.success(t('problemSolvingCoach.wordProblemGenerated'))
+    } catch (error: unknown) {
+      handleApiError(error, 'problemSolvingCoach.errors.wordProblemFailed')
+    } finally {
       setIsGenerating(false)
-    }, 2000)
+    }
   }
 
   const handleRealWorldApplication = async () => {
     if (!topic.trim()) return
     setIsGenerating(true)
-    
-    setTimeout(() => {
-      const mockApp: RealWorldApplication = {
-        scenario: 'Designing a Community Garden',
-        mathConcepts: ['Area', 'Perimeter', 'Multiplication', 'Division', 'Fractions'],
-        problem: 'A community wants to create a rectangular garden that is 24 feet long and 18 feet wide. They want to divide it into equal square plots for different families. Each plot should be 6 feet by 6 feet. How many plots can they create? What fraction of the garden does each plot represent?',
-        solution: 'Step 1: Calculate total garden area = 24 × 18 = 432 square feet\nStep 2: Calculate area of each plot = 6 × 6 = 36 square feet\nStep 3: Number of plots = 432 ÷ 36 = 12 plots\nStep 4: Fraction per plot = 1/12 of the total garden',
-        extensions: [
-          'If each family can grow 8 plants per plot, how many total plants can be grown?',
-          'If the garden needs a 2-foot path around the perimeter, what is the new area?',
-          'Calculate the cost if fencing costs $5 per foot and soil costs $2 per square foot.',
-        ],
-        connections: [
-          'Connects to geometry and spatial reasoning',
-          'Real-world application of multiplication and division',
-          'Relevant to urban planning and community development',
-          'Teaches practical problem-solving skills',
-        ],
-      }
-      setRealWorldApp(mockApp)
+    try {
+      const scenarioTopic = topic.trim()
+      const response = await runWithCredits(
+        chatbotApi.executeCapability(CHATBOT_SLUG, 'real_world_application', {
+          input: scenarioTopic,
+          input_type: 'text',
+          parameters: {
+            grade_level: String(gradeLevel),
+            scenario_topic: scenarioTopic,
+          },
+          conversation_id: conversationIdForActiveTab ?? undefined,
+        }),
+      )
+      if (response == null) return
+      setRealWorldApp(mapRealWorldApplicationResult(response.result))
+      pinFromResponse(response.conversation_id)
+      toast.success(t('problemSolvingCoach.realWorldApplicationGenerated'))
+    } catch (error: unknown) {
+      handleApiError(error, 'problemSolvingCoach.errors.realWorldFailed')
+    } finally {
       setIsGenerating(false)
-    }, 2000)
+    }
   }
 
   const handleStrategies = async () => {
     setIsGenerating(true)
-    
-    setTimeout(() => {
-      const mockStrategies: ProblemSolvingStrategy[] = [
-        {
-          strategy: 'Draw a Picture or Diagram',
-          description: 'Visualize the problem by creating a drawing, diagram, or model.',
-          whenToUse: 'Use when the problem involves spatial relationships, geometry, or when visualizing helps understand the situation.',
-          steps: [
-            'Read the problem carefully',
-            'Identify what needs to be visualized',
-            'Draw or sketch the situation',
-            'Label all given information',
-            'Use the diagram to solve the problem',
-          ],
-          example: {
-            problem: 'A rectangular field is 30 meters long and 20 meters wide. What is the perimeter?',
-            application: 'Draw a rectangle, label the length (30m) and width (20m), then add all sides: 30 + 20 + 30 + 20 = 100 meters',
-          },
-        },
-        {
-          strategy: 'Make a Table or Chart',
-          description: 'Organize information in a systematic way to identify patterns.',
-          whenToUse: 'Use when dealing with multiple pieces of data, patterns, or when you need to compare different scenarios.',
-          steps: [
-            'Identify what information to organize',
-            'Create columns for different categories',
-            'Fill in the table with given information',
-            'Look for patterns or relationships',
-            'Use the pattern to solve the problem',
-          ],
-          example: {
-            problem: 'How many hours does a student study if they study 2 hours each day for 5 days?',
-            application: 'Create a table: Day 1: 2 hours, Day 2: 2 hours, Day 3: 2 hours, Day 4: 2 hours, Day 5: 2 hours. Total: 2 × 5 = 10 hours',
-          },
-        },
-        {
-          strategy: 'Work Backwards',
-          description: 'Start with the answer and work backwards to find the starting point.',
-          whenToUse: 'Use when you know the end result and need to find what led to it, or when forward solving is difficult.',
-          steps: [
-            'Identify the final result or answer',
-            'Determine what operation led to this result',
-            'Work backwards step by step',
-            'Reverse each operation',
-            'Verify by working forward',
-          ],
-          example: {
-            problem: 'A number is multiplied by 3, then 5 is added, resulting in 17. What is the original number?',
-            application: 'Start with 17, subtract 5: 17 - 5 = 12, then divide by 3: 12 ÷ 3 = 4. Check: 4 × 3 + 5 = 17 ✓',
-          },
-        },
-        {
-          strategy: 'Guess and Check',
-          description: 'Make educated guesses and check if they work, adjusting as needed.',
-          whenToUse: 'Use when other strategies are difficult to apply or when you need to find a specific value through trial.',
-          steps: [
-            'Make a reasonable guess based on the problem',
-            'Check if the guess satisfies all conditions',
-            'If not, adjust your guess',
-            'Continue until you find the correct answer',
-            'Reflect on what made your guesses better',
-          ],
-          example: {
-            problem: 'Find two numbers that add to 15 and multiply to 56.',
-            application: 'Try 7 and 8: 7 + 8 = 15 ✓, 7 × 8 = 56 ✓. Found it!',
-          },
-        },
-        {
-          strategy: 'Look for a Pattern',
-          description: 'Identify patterns in numbers, shapes, or sequences to solve the problem.',
-          whenToUse: 'Use when dealing with sequences, repeated operations, or when you notice regularities in the problem.',
-          steps: [
-            'List out several examples or cases',
-            'Look for what stays the same and what changes',
-            'Identify the pattern or rule',
-            'Apply the pattern to find the answer',
-            'Verify the pattern works',
-          ],
-          example: {
-            problem: 'What is the 10th number in the sequence: 3, 6, 9, 12, ...?',
-            application: 'Pattern: Add 3 each time. 10th number = 3 + (9 × 3) = 3 + 27 = 30',
-          },
-        },
-      ]
-      setStrategies(mockStrategies)
+    try {
+      const response = await runWithCredits(
+        chatbotApi.executeCapability(CHATBOT_SLUG, 'problem_strategies', {
+          input: ' ',
+          input_type: 'text',
+          parameters: {},
+          conversation_id: conversationIdForActiveTab ?? undefined,
+        }),
+      )
+      if (response == null) return
+      setStrategies(mapProblemStrategiesResult(response.result))
+      pinFromResponse(response.conversation_id)
+      toast.success(t('problemSolvingCoach.strategiesLoaded'))
+    } catch (error: unknown) {
+      handleApiError(error, 'problemSolvingCoach.errors.strategiesFailed')
+    } finally {
       setIsGenerating(false)
-    }, 2000)
+    }
   }
 
   const handleReasoningFramework = async () => {
     setIsGenerating(true)
-    
-    setTimeout(() => {
-      const mockFramework: ReasoningFramework = {
-        framework: 'Mathematical Reasoning Process',
-        steps: [
-          {
-            step: 1,
-            question: 'What is the problem asking me to find?',
-            guidance: 'Read the problem carefully and identify the question. Underline or highlight key words like "how many," "what is," "find," etc.',
-          },
-          {
-            step: 2,
-            question: 'What information do I have?',
-            guidance: 'List all the numbers, facts, and conditions given in the problem. Organize this information clearly.',
-          },
-          {
-            step: 3,
-            question: 'What information do I need?',
-            guidance: 'Determine what additional information or calculations are needed to solve the problem.',
-          },
-          {
-            step: 4,
-            question: 'What strategy should I use?',
-            guidance: 'Consider different problem-solving strategies (draw a picture, make a table, work backwards, etc.) and choose the most appropriate one.',
-          },
-          {
-            step: 5,
-            question: 'How do I solve it step by step?',
-            guidance: 'Show your work clearly, showing each step of your solution process.',
-          },
-          {
-            step: 6,
-            question: 'Does my answer make sense?',
-            guidance: 'Check your answer by: (1) Re-reading the problem, (2) Checking calculations, (3) Verifying the answer is reasonable, (4) Using estimation to confirm.',
-          },
-        ],
-        examples: [
-          'Problem: A store has 48 apples. They sell 3 apples to each customer. How many customers can buy apples?\nReasoning: 48 ÷ 3 = 16 customers. Check: 16 × 3 = 48 ✓',
-          'Problem: Maria has $50. She spends $23 on groceries and $15 on gas. How much does she have left?\nReasoning: $50 - $23 - $15 = $12. Check: $12 + $23 + $15 = $50 ✓',
-        ],
-      }
-      setReasoningFramework(mockFramework)
+    try {
+      const response = await runWithCredits(
+        chatbotApi.executeCapability(CHATBOT_SLUG, 'reasoning_framework', {
+          input: ' ',
+          input_type: 'text',
+          parameters: {},
+          conversation_id: conversationIdForActiveTab ?? undefined,
+        }),
+      )
+      if (response == null) return
+      setReasoningFramework(mapReasoningFrameworkResult(response.result))
+      pinFromResponse(response.conversation_id)
+      toast.success(t('problemSolvingCoach.reasoningFrameworkLoaded'))
+    } catch (error: unknown) {
+      handleApiError(error, 'problemSolvingCoach.errors.reasoningFailed')
+    } finally {
       setIsGenerating(false)
-    }, 2000)
+    }
   }
 
   const tabs = [
@@ -336,6 +246,15 @@ const ProblemSolvingCoach = () => {
 
   return (
     <div className="space-y-6">
+      {creditError && (
+        <NoCreditsCard
+          reason={creditError.reason}
+          balance={creditError.balance}
+          required={creditError.required}
+          onActivated={clearCreditError}
+        />
+      )}
+
       {/* Header */}
       <div className="bg-gradient-to-r from-orange-600 via-amber-600 to-yellow-600 rounded-3xl p-8 text-white shadow-xl">
         <div className="flex items-start justify-between">

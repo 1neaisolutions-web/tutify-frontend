@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { navigateBackToLearningHubCatalog } from '../../features/learningHub/useLearningHubBackNavigation'
+import { useDashboardScroll } from '../../contexts/DashboardScrollContext'
 import {
   ArrowLeft,
   Target,
@@ -87,6 +89,7 @@ const StudentEngagementPath = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
+  const { scrollToTop } = useDashboardScroll()
   const [activeModule, setActiveModule] = useState<string | null>(null)
   const [completedModules, setCompletedModules] = useState<string[]>([])
   const [currentLevel, setCurrentLevel] = useState<'Beginner' | 'Intermediate' | 'Advanced'>('Beginner')
@@ -556,7 +559,7 @@ const StudentEngagementPath = () => {
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-4">
               <button
-                onClick={() => navigate('/learning-hub')}
+                onClick={() => navigateBackToLearningHubCatalog(navigate)}
                 className="p-2 text-white/80 hover:text-white hover:bg-white/20 rounded-lg transition"
               >
                 <ArrowLeft className="h-5 w-5" />
@@ -991,14 +994,14 @@ const StudentEngagementPath = () => {
                 const firstModule = learningModules.find(m => !m.locked)
                 if (firstModule) {
                   setActiveModule(firstModule.id)
-                  window.scrollTo({ top: 0, behavior: 'smooth' })
+                  scrollToTop()
                 }
               }}
               className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-amber-600 hover:bg-amber-50 transition flex items-center gap-2"
             >
               <Rocket className="h-4 w-4" />{t('studentEngagementPath.startLearningPath')}</button>
             <button
-              onClick={() => navigate('/learning-hub')}
+              onClick={() => navigateBackToLearningHubCatalog(navigate)}
               className="rounded-full border-2 border-white px-6 py-3 text-sm font-semibold text-white hover:bg-white/20 transition"
             >
               Explore More Paths

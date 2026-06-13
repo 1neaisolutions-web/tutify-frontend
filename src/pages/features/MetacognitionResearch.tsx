@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
+import { navigateBackToLearningHubCatalog } from '../../features/learningHub/useLearningHubBackNavigation'
 import { getSectionItemBySlug } from '../../features/learningHub'
 import type { LearningHubSectionItem } from '../../features/learningHub/types'
 import {
@@ -166,7 +167,7 @@ function MetacognitionResearchInner() {
         {/* Header */}
         <div className="mb-8">
           <button
-            onClick={() => navigate('/learning-hub')}
+            onClick={() => navigateBackToLearningHubCatalog(navigate)}
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition"
           >
             <ArrowLeft className="h-5 w-5" />

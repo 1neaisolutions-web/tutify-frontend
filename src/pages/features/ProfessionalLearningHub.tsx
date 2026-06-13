@@ -19,7 +19,9 @@ import {
 } from 'lucide-react'
 import { buildLearningHubSectionPath, learningHubData } from '../../features/learningHub'
 import { ProfileCompletionGate } from '../../features/learningHub/ProfileCompletionGate'
-import { useLearningHubRouteScrollToTop } from '../../features/learningHub/useLearningHubScrollToTop'
+import { persistHubRouteState } from '../../features/learningHub/learningHubScrollState'
+import { useLearningHubCatalogNavigation } from '../../features/learningHub/useLearningHubCatalogNavigation'
+import { useRestoreCatalogScroll } from '../../features/learningHub/useRestoreCatalogScroll'
 import { usePersonalizationStatus } from '../../hooks/usePersonalizationStatus'
 import { useActivityTracker } from '../../hooks/useActivityTracker'
 import { useLearningHubHomeData } from '../../hooks/useLearningHubHomeData'
@@ -367,10 +369,6 @@ function HubBootstrappingScreen({
     </section>
   )
 }
-function persistHubRouteState(_target: string, _contentId?: string, _contentType?: string) {
-  // API/slice integration intentionally disabled: keep frontend in dummy/local-data mode for now.
-}
-
 function impactLabel(impact: string, t: (key: string) => string): string {
   switch (impact) {
     case 'High':
@@ -520,8 +518,8 @@ function LockedPreviewCard({
 
 const ProfessionalLearningHub = () => {
   const { t } = useTranslation()
-  useLearningHubRouteScrollToTop()
   const navigate = useNavigate()
+  const { navigateToDetail, navigateToSection } = useLearningHubCatalogNavigation()
   const dispatch = useDispatch()
   const { mode: personalizationMode, sectionReadiness } = usePersonalizationStatus()
   const { trackCardClick, trackContentStart } = useActivityTracker()
@@ -894,43 +892,53 @@ const ProfessionalLearningHub = () => {
       trackCardClick(course.section || 'micro_courses', course.contentId, course.contentType || 'micro_course', course.assignmentId)
       trackContentStart(course.section || 'micro_courses', course.contentId, course.contentType || 'micro_course', course.assignmentId)
     }
-    navigate(target, {
-      state: {
+    navigateToDetail(
+      target,
+      {
         content_id: course.contentId,
         content_type: course.contentType,
         assignment_id: course.assignmentId,
         title: course.title,
         source_section: course.section || 'micro_courses',
       },
-    })
+      { contentId: course.contentId, assignmentId: course.assignmentId },
+    )
   }
 
   const handleTutorialWatch = (tutorial: any) => {
     const slug = typeof tutorial === 'string' ? tutorial : (tutorial.slug || tutorial.contentId)
     const route = typeof tutorial === 'string' ? buildLearningHubSectionPath('ai-guided-tutorials-demonstrations', slug) : (tutorial.route || buildLearningHubSectionPath('ai-guided-tutorials-demonstrations', slug))
-    navigate(route, {
-      state: typeof tutorial === 'string' ? undefined : {
-        content_id: tutorial.contentId,
-        content_type: tutorial.contentType,
-        assignment_id: tutorial.assignmentId,
-        title: tutorial.title,
-        source_section: 'tutorials',
-      },
-    })
+    navigateToDetail(
+      route,
+      typeof tutorial === 'string'
+        ? undefined
+        : {
+            content_id: tutorial.contentId,
+            content_type: tutorial.contentType,
+            assignment_id: tutorial.assignmentId,
+            title: tutorial.title,
+            source_section: 'tutorials',
+          },
+      typeof tutorial === 'string'
+        ? undefined
+        : { contentId: tutorial.contentId, assignmentId: tutorial.assignmentId },
+    )
   }
 
   const handleResearchReadMore = (insight: any) => {
     const slug = insight?.slug || insight?.contentId
     const target = insight?.route || buildLearningHubSectionPath('research-insights-library', slug)
-    navigate(target, {
-      state: {
+    navigateToDetail(
+      target,
+      {
         content_id: insight?.contentId,
         content_type: insight?.contentType,
         assignment_id: insight?.assignmentId,
         title: insight?.title,
         source_section: 'research_insights',
       },
-    })
+      { contentId: insight?.contentId, assignmentId: insight?.assignmentId },
+    )
   }
 
   /**
@@ -950,30 +958,34 @@ const ProfessionalLearningHub = () => {
     if (card.contentId) {
       trackCardClick('growth_recommendations', card.contentId, card.contentType || 'learning_path', card.assignmentId)
     }
-    navigate(target, {
-      state: {
+    navigateToDetail(
+      target,
+      {
         content_id: card.contentId,
         content_type: card.contentType || 'learning_path',
         assignment_id: card.assignmentId,
         title: card.title,
         source_section: 'growth_recommendations',
       },
-    })
+      { contentId: card.contentId, assignmentId: card.assignmentId },
+    )
   }
 
   const handleEnrollTrack = (track?: any) => {
     if (!track) return
     const slug = track.slug || track.contentId
     const target = track.route || buildLearningHubSectionPath('specialist-deep-dive-tracks', slug)
-    navigate(target, {
-      state: {
+    navigateToDetail(
+      target,
+      {
         content_id: track.contentId,
         content_type: track.contentType,
         assignment_id: track.assignmentId,
         title: track.title,
         source_section: 'specialist_tracks',
       },
-    })
+      { contentId: track.contentId, assignmentId: track.assignmentId },
+    )
   }
 
   // ─── Single-source-of-truth gate (no race condition) ────────────────────────
@@ -1001,6 +1013,7 @@ const ProfessionalLearningHub = () => {
     !hasReadyInventory &&
     (slateMode === 'initializing' || slateMode === 'partial_ready' || slateMode === 'personalized')
   const showMainSections = !isAIProcessing && !isAwaitingInitialSlate
+  useRestoreCatalogScroll(!isHubBootstrapping)
   const showStaticPanels = !PERSONALIZATION_ENABLED || showColdStart
   const preparingSections =
     hubData.usingSlate && Array.isArray(sectionReadiness)
@@ -1188,12 +1201,14 @@ const ProfessionalLearningHub = () => {
                       if (item.contentId) {
                         persistHubRouteState(target, item.contentId, item.contentType || 'micro_course')
                       }
-                      navigate(target, {
-                        state: {
+                      navigateToDetail(
+                        target,
+                        {
                           contentId: item.contentId,
                           contentType: item.contentType || 'micro_course',
                         },
-                      })
+                        { contentId: item.contentId },
+                      )
                     }}
                     className="rounded-full bg-amber-50 px-4 py-2 text-xs font-semibold text-amber-600 hover:bg-amber-100 transition"
                   >{t('professionalLearningHub.continue')}</button>
@@ -1226,7 +1241,7 @@ const ProfessionalLearningHub = () => {
               </div>
               {shouldShowMicroViewAll ? (
                 <button
-                  onClick={() => navigate('/learning-hub/sections/micro_courses')}
+                  onClick={() => navigateToSection('/learning-hub/sections/micro_courses')}
                   className="text-xs font-semibold uppercase tracking-wide text-amber-600 hover:text-amber-500"
                 >
                   {t('professionalLearningHub.viewAll')}
@@ -1336,7 +1351,7 @@ const ProfessionalLearningHub = () => {
               </div>
               {shouldShowTutorialsViewAll ? (
                 <button
-                  onClick={() => navigate('/learning-hub/sections/tutorials')}
+                  onClick={() => navigateToSection('/learning-hub/sections/tutorials')}
                   className="text-xs font-semibold uppercase tracking-wide text-blue-600 hover:text-blue-500"
                 >
                   {t('professionalLearningHub.viewAll')}
@@ -1388,7 +1403,7 @@ const ProfessionalLearningHub = () => {
                 <Target className="h-4 w-4 text-amber-500" />{t('professionalLearningHub.aiGrowthRecommendations')}</h3>
               {shouldShowGrowthViewAll ? (
                 <button
-                  onClick={() => navigate('/learning-hub/sections/growth_recommendations')}
+                  onClick={() => navigateToSection('/learning-hub/sections/growth_recommendations')}
                   className="text-xs font-semibold uppercase tracking-wide text-amber-600 hover:text-amber-500"
                 >
                   {t('professionalLearningHub.viewAll')}
@@ -1503,7 +1518,7 @@ const ProfessionalLearningHub = () => {
           </div>
           {shouldShowResearchViewAll ? (
             <button
-              onClick={() => navigate('/learning-hub/sections/research_insights')}
+              onClick={() => navigateToSection('/learning-hub/sections/research_insights')}
               className="text-xs font-semibold uppercase tracking-wide text-purple-600 hover:text-purple-500"
             >
               View all
@@ -1548,7 +1563,7 @@ const ProfessionalLearningHub = () => {
           </div>
           {shouldShowSpecialistViewAll ? (
             <button
-              onClick={() => navigate('/learning-hub/sections/specialist_tracks')}
+              onClick={() => navigateToSection('/learning-hub/sections/specialist_tracks')}
               className="text-xs font-semibold uppercase tracking-wide text-indigo-600 hover:text-indigo-500"
             >
               {t('professionalLearningHub.viewAll')}

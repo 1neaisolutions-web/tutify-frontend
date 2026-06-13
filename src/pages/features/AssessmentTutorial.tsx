@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { navigateBackToLearningHubCatalog } from '../../features/learningHub/useLearningHubBackNavigation'
 import { getSectionItemBySlug } from '../../features/learningHub'
 import type { LearningHubSectionItem } from '../../features/learningHub/types'
 import {
@@ -48,7 +49,7 @@ export function AssessmentTutorialView({ item }: { item: LearningHubSectionItem 
 
   const handleNext = () => {
     if (currentStep >= tutorialSteps.length - 1) {
-      void finishTutorial().then(() => navigate('/learning-hub'))
+      void finishTutorial().then(() => navigateBackToLearningHubCatalog(navigate))
       return
     }
     goNext()
@@ -70,7 +71,7 @@ export function AssessmentTutorialView({ item }: { item: LearningHubSectionItem 
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-4">
               <button
-                onClick={() => navigate('/learning-hub')}
+                onClick={() => navigateBackToLearningHubCatalog(navigate)}
                 className="p-2 text-white/80 hover:text-white hover:bg-white/20 rounded-lg transition"
               >
                 <ArrowLeft className="h-5 w-5" />

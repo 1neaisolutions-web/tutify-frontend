@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLearningHubBackNavigation } from '../../../features/learningHub/useLearningHubBackNavigation'
 import { useTranslation } from 'react-i18next'
 import {
   ArrowLeft,
@@ -69,7 +69,7 @@ interface SpecialistDeepDiveTrackRendererProps {
 
 export function SpecialistDeepDiveTrackRenderer({ item }: SpecialistDeepDiveTrackRendererProps) {
   const { t: tr } = useTranslation()
-  const navigate = useNavigate()
+  const goBackToCatalog = useLearningHubBackNavigation()
   const content = item.specialistDeepDiveContent
   if (!content || content.type !== 'track') {
     return null
@@ -274,7 +274,7 @@ export function SpecialistDeepDiveTrackRenderer({ item }: SpecialistDeepDiveTrac
           </p>
           <button
             type="button"
-            onClick={() => navigate('/learning-hub')}
+            onClick={() => goBackToCatalog()}
             className={`mt-6 rounded-full px-8 py-3 text-sm font-semibold text-white ${theme.primaryButton}`}
           >
             {tr('learningHubSections.backToLearningHub')}
@@ -325,7 +325,7 @@ export function SpecialistDeepDiveTrackRenderer({ item }: SpecialistDeepDiveTrac
           </div>
           <button
             type="button"
-            onClick={() => navigate('/learning-hub')}
+            onClick={() => goBackToCatalog()}
             className="rounded-lg p-2 text-white/80 transition hover:bg-white/20 hover:text-white"
           >
             <X className="h-5 w-5" />

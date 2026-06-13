@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLearningHubBackNavigation } from '../../../features/learningHub/useLearningHubBackNavigation'
 import { useTranslation } from 'react-i18next'
 import type { LucideIcon } from 'lucide-react'
 import type { LearningHubSectionItem } from '../../../features/learningHub/types'
@@ -45,7 +45,7 @@ type NavItem = { id: string; label: string; Icon: LucideIcon }
 
 export function ResearchInsightSectionsPayloadView({ item }: { item: LearningHubSectionItem }) {
   const { t } = useTranslation()
-  const navigate = useNavigate()
+  const goBackToCatalog = useLearningHubBackNavigation()
   const c = item.researchInsightContent
   const payload = c?.payload
   if (!c || !isResearchStructuredSectionsPayload(payload)) return null
@@ -249,7 +249,7 @@ export function ResearchInsightSectionsPayloadView({ item }: { item: LearningHub
             <div className="mb-4 flex items-center gap-3">
               <button
                 type="button"
-                onClick={() => navigate('/learning-hub')}
+                onClick={() => goBackToCatalog()}
                 className="rounded-lg p-2 text-white/80 transition hover:bg-white/20 hover:text-white"
               >
                 <ArrowLeft className="h-5 w-5" />

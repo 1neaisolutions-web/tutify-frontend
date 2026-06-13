@@ -9,11 +9,11 @@ import axiosInstance from '../../../redux/http'
 
 const AIGrowthRecommendationPage = () => {
   const { t } = useTranslation()
-  useLearningHubRouteScrollToTop()
   const { slug } = useParams()
   const location = useLocation()
   const [backendItem, setBackendItem] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  useLearningHubRouteScrollToTop(!loading)
   const contentId = location?.state?.content_id
   const assignmentId = location?.state?.assignment_id
 

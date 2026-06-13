@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useLearningHubBackNavigation } from '../../../features/learningHub/useLearningHubBackNavigation'
 import { useTranslation } from 'react-i18next'
 import {
   ArrowLeft,
@@ -73,6 +74,7 @@ const impactPill = (impact: string) => {
 const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRendererProps) => {
   const { t: tr } = useTranslation()
   const navigate = useNavigate()
+  const goBackToCatalog = useLearningHubBackNavigation()
   const content = item.aiGrowthRecommendationContent
   const [activeModule, setActiveModule] = useState<string | null>(null)
   const [completedModules, setCompletedModules] = useState<string[]>([])
@@ -882,7 +884,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
             <div className='flex items-center gap-3 mb-4'>
               <button
                 type='button'
-                onClick={() => navigate('/learning-hub')}
+                onClick={() => goBackToCatalog()}
                 className='p-2 text-white/80 hover:text-white hover:bg-white/20 rounded-lg transition shrink-0'
               >
                 <ArrowLeft className='h-5 w-5' />

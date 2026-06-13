@@ -1,4 +1,6 @@
 import type { NavigateFunction } from 'react-router-dom'
+import { navigateBackToLearningHubCatalog } from '../../../features/learningHub/useLearningHubBackNavigation'
+import { useDashboardScroll } from '../../../contexts/DashboardScrollContext'
 import { useTranslation } from 'react-i18next'
 import {
   ArrowLeft,
@@ -114,6 +116,7 @@ const AIGrowthStudentEngagementPathView = ({
   setLevelFilter,
 }: AIGrowthStudentEngagementPathViewProps) => {
   const { t: tr } = useTranslation()
+  const { scrollToTop } = useDashboardScroll()
   const t = content.pathTheme ?? resolveAIGrowthPathTheme(content.themeId)
   const levelLabel = (level: string) => {
     switch (level) {
@@ -148,7 +151,7 @@ const AIGrowthStudentEngagementPathView = ({
     const first = unlockedModules.find((m) => !m.locked)
     if (first) {
       setActiveModule(first.id)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      scrollToTop()
     }
   }
 
@@ -160,7 +163,7 @@ const AIGrowthStudentEngagementPathView = ({
             <div className='flex items-center gap-3 mb-4'>
               <button
                 type='button'
-                onClick={() => navigate('/learning-hub')}
+                onClick={() => navigateBackToLearningHubCatalog(navigate)}
                 className='p-2 text-white/80 hover:text-white hover:bg-white/20 rounded-lg transition shrink-0'
               >
                 <ArrowLeft className='h-5 w-5' />
@@ -555,7 +558,7 @@ const AIGrowthStudentEngagementPathView = ({
             </button>
             <button
               type='button'
-              onClick={() => navigate('/learning-hub')}
+              onClick={() => navigateBackToLearningHubCatalog(navigate)}
               className='rounded-full border-2 border-white px-6 py-3 text-sm font-semibold text-white hover:bg-white/20 transition'
             >
               {extras.bottomCta.secondaryLabel}

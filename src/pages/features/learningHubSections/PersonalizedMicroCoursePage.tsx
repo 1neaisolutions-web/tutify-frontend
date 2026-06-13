@@ -8,11 +8,11 @@ import axiosInstance from '../../../redux/http'
 
 const PersonalizedMicroCoursePage = () => {
   const { t } = useTranslation()
-  useLearningHubRouteScrollToTop()
   const { slug } = useParams()
   const location = useLocation()
   const [backendItem, setBackendItem] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  useLearningHubRouteScrollToTop(!loading)
   const contentId = (location?.state as any)?.content_id
   const assignmentId = (location?.state as any)?.assignment_id
 

@@ -95,6 +95,10 @@ export * from './examples/llmAuthoringExamples'
 export * from './sections'
 export * from './learningHubData'
 export * from './useLearningHubScrollToTop'
+export * from './useRestoreCatalogScroll'
+export * from './useLearningHubBackNavigation'
+export * from './useLearningHubCatalogNavigation'
+export * from './learningHubScrollState'
 
 /** Prefer filtering `learningHubData` by `section`; kept for existing imports. */
 export const personalizedMicroCoursesData = learningHubData
