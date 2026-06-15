@@ -17,9 +17,12 @@ import {
   Camera,
   CheckCircle2,
 } from 'lucide-react'
-import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { listChatbots, Chatbot } from '../../api/chatbots'
+import { listChatbots } from '../../api/chatbots'
+import {
+  useChatbotsCatalogNavigation,
+  useRestoreChatbotsCatalogScroll,
+} from '../../features/chatbots'
 
 const generalBot = {
   slug: 'general-teaching-assistant',
@@ -97,8 +100,11 @@ const generalFeatureKeys = [
 
 const SpecializedChatbots = () => {
   const { t } = useTranslation()
+  const { navigateToDetail } = useChatbotsCatalogNavigation()
   const [businessBotNames, setBusinessBotNames] = useState<Record<string, string>>({})
   const [chatbotAvailability, setChatbotAvailability] = useState<Record<string, boolean> | null>(null)
+
+  useRestoreChatbotsCatalogScroll()
 
   const formatRating = (value: string) => t('chatbotsPage.rating', { value })
 
@@ -150,13 +156,14 @@ const SpecializedChatbots = () => {
             <h1 className="text-3xl font-semibold lg:text-4xl">{t('chatbotsPage.hero.title')}</h1>
             <p className="text-white/80">{t('chatbotsPage.hero.description')}</p>
             <div className="flex flex-wrap gap-3">
-              <Link
-                to="/chatbots/general-teaching-assistant"
+              <button
+                type="button"
+                onClick={() => navigateToDetail('/chatbots/general-teaching-assistant')}
                 className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-primary-600 shadow-sm transition hover:bg-primary-50"
               >
                 <Plus className="h-4 w-4" />
                 {t('chatbotsPage.hero.startNewChat')}
-              </Link>
+              </button>
             </div>
           </div>
         </div>
@@ -214,12 +221,13 @@ const SpecializedChatbots = () => {
                   </div>
                 ))}
               </div>
-              <Link
-                to="/chatbots/general-teaching-assistant"
+              <button
+                type="button"
+                onClick={() => navigateToDetail('/chatbots/general-teaching-assistant')}
                 className="mt-6 inline-block rounded-full bg-primary-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-500"
               >
                 {t('chatbotsPage.general.startChatting')}
-              </Link>
+              </button>
             </div>
           </div>
         </div>
@@ -286,12 +294,13 @@ const SpecializedChatbots = () => {
                       </div>
                       <div className="mt-4 flex items-center justify-between gap-3">
                         {isAvailable ? (
-                          <Link
-                            to={`/chatbots/${bot.slug}`}
+                          <button
+                            type="button"
+                            onClick={() => navigateToDetail(`/chatbots/${bot.slug}`)}
                             className="inline-flex items-center gap-1 text-sm font-semibold text-primary-600 hover:text-primary-500"
                           >
                             {t('chatbotsPage.actions.startChat')}
-                          </Link>
+                          </button>
                         ) : (
                           <span className="text-xs font-medium text-gray-500">
                             {t('chatbotsPage.actions.temporarilyUnavailable')}

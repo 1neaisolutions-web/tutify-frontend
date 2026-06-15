@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useChatbotsBackNavigation } from '../../features/chatbots'
 import {
   ArrowLeft,
   Send,
@@ -45,7 +45,7 @@ interface Conversation {
 
 const GeminiEducationSuiteChat = () => {
   const { t } = useTranslation()
-  const navigate = useNavigate()
+  const navigateBackToChatbots = useChatbotsBackNavigation()
   const [messages, setMessages] = useState<Message[]>([])
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -266,7 +266,7 @@ const GeminiEducationSuiteChat = () => {
       <div className="border-b border-gray-200 bg-white px-6 py-4 shadow-sm z-10">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate('/chatbots')} className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition">
+            <button onClick={() => navigateBackToChatbots()} className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition">
               <ArrowLeft className="h-5 w-5" />
             </button>
             <div className="relative">

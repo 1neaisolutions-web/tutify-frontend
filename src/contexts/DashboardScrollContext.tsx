@@ -22,6 +22,8 @@ import { registerDashboardScrollContainer } from './dashboardScrollRegistry'
 
 import { useDashboardRouteScroll } from './useDashboardRouteScroll'
 
+import { isChatbotCatalogRoute } from '../features/chatbots/chatbotsScrollState'
+import { useChatbotRouteScrollToTop } from '../features/chatbots/useChatbotRouteScrollToTop'
 import { isLearningHubCatalogRoute } from '../features/learningHub/learningHubScrollState'
 
 
@@ -55,6 +57,8 @@ function isManagedScrollRoute(pathname: string) {
   if (pathname === CHAT_PAGE_PATH) return false
 
   if (isLearningHubCatalogRoute(pathname)) return false
+
+  if (isChatbotCatalogRoute(pathname)) return false
 
   return true
 
@@ -203,6 +207,10 @@ export function DashboardScrollContainer({
     enabled: managed,
 
   })
+
+
+
+  useChatbotRouteScrollToTop()
 
 
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { flushSync } from 'react-dom'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
+import { useChatbotsBackNavigation } from '../../features/chatbots'
 import * as chatbotApi from '../../api/chatbots'
 import * as subscriptionApi from '../../api/subscriptions'
 // @ts-ignore - useSnackbar is a JS file
@@ -80,7 +80,7 @@ interface Conversation {
 
 const GeneralTeachingAssistantChat = () => {
   const { t } = useTranslation()
-  const navigate = useNavigate()
+  const navigateBackToChatbots = useChatbotsBackNavigation()
   const [messages, setMessages] = useState<Message[]>([])
   /** Pagination for loading older messages (scroll-up). */
   const [olderLoading, setOlderLoading] = useState(false)
@@ -1798,7 +1798,7 @@ What would you like help with today? Feel free to ask me anything about teaching
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate('/chatbots')}
+              onClick={() => navigateBackToChatbots()}
               className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition"
             >
               <ArrowLeft className="h-5 w-5" />

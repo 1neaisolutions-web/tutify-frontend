@@ -47,6 +47,14 @@ export function getSavedRouteScroll(historyKey: string, pathname: string): numbe
   return null
 }
 
+export function clearRouteScrollForPathname(pathname: string) {
+  if (!pathname) return
+  const byPath = readMap(SCROLL_BY_PATH)
+  if (!(pathname in byPath)) return
+  delete byPath[pathname]
+  writeMap(SCROLL_BY_PATH, byPath)
+}
+
 function clampScrollTop(container: HTMLElement, scrollTop: number) {
   const maxScroll = Math.max(0, container.scrollHeight - container.clientHeight)
   container.scrollTop = Math.min(scrollTop, maxScroll)
