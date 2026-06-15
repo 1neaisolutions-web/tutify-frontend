@@ -1,4 +1,6 @@
 import { useTranslation } from 'react-i18next';
+import { GradeSelect } from '@/components/shared/GradeSelect';
+import { gradeValueForSelect } from '@/catalog/adapters/gradeAdapters';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -92,15 +94,14 @@ const StudentOnboarding = () => {
               placeholder={t('studentPanel.onboarding.placeholders.name')}
             />
           </label>
-          <label className="block">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{t('studentPanel.onboarding.fields.gradeLevel')}</span>
-            <input
-              value={profile.gradeLevel}
-              onChange={(e) => setProfile((p) => ({ ...p, gradeLevel: e.target.value }))}
-              className="mt-1 w-full rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 px-3 py-2 text-sm text-gray-900 dark:text-gray-100"
-              placeholder={t('studentPanel.onboarding.placeholders.grade')}
+          <div className="block">
+            <GradeSelect
+              variant="native"
+              value={gradeValueForSelect(profile.gradeLevel)}
+              onChange={(v) => setProfile((p) => ({ ...p, gradeLevel: v }))}
+              label={t('studentPanel.onboarding.fields.gradeLevel')}
             />
-          </label>
+          </div>
           <label className="block sm:col-span-2">
             <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{t('studentPanel.onboarding.fields.timezone')}</span>
             <input

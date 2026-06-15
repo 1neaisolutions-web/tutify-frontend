@@ -16,7 +16,8 @@ import type { QuizRagScopeModel } from '../../quiz/hooks/useQuizRagScope'
 import { getBookById, type DemoBook } from '../../demo/demoContentLibrary'
 import { DIFFICULTY_OPTIONS } from '../../quiz/config/quizCreationConfig'
 import type { QuizDifficultyId } from '../../demo/generationFromSources'
-import { SUBJECTS, GRADES } from '../../types'
+import { SubjectSelect } from '@/components/shared/SubjectSelect'
+import { GradeSelect } from '@/components/shared/GradeSelect'
 import { ASSIGNMENT_TOPIC_COUNT } from '../config/assignmentCreationConfig'
 import type { AssignmentBuildSubStepId } from '../config/assignmentWizardSteps'
 
@@ -204,34 +205,20 @@ export function AssignmentRagBuildSection({
               className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
             />
           </label>
-          <label className="block text-sm font-medium text-gray-800">
-            {t('teacherTools.subject')}
-            <select
-              value={subject}
-              onChange={(e) => onSubjectChange(e.target.value)}
-              className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-            >
-              {SUBJECTS.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="block text-sm font-medium text-gray-800">
-            {t('teacherTools.gradeCohort')}
-            <select
-              value={grade}
-              onChange={(e) => onGradeChange(e.target.value)}
-              className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-            >
-              {GRADES.map((g) => (
-                <option key={g} value={g}>
-                  {g}
-                </option>
-              ))}
-            </select>
-          </label>
+          <SubjectSelect
+            value={subject}
+            onChange={onSubjectChange}
+            label={t('teacherTools.subject')}
+            variant="native"
+            context="teacherTools"
+            selectClassName="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+          />
+          <GradeSelect
+            value={grade}
+            onChange={onGradeChange}
+            label={t('teacherTools.gradeCohort')}
+            variant="native"
+          />
         </div>
         <div className="space-y-4 px-6 pb-6">
           <label className="block text-sm font-medium text-gray-800">

@@ -1,4 +1,5 @@
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState, useRef } from 'react'
+import { useSelector } from 'react-redux'
 import { ArrowLeft, Loader2, Copy, Check, RefreshCw, FileText, Send, ChevronDown, ChevronUp, Download, Printer, Edit, Languages, Volume2, Bookmark, ThumbsUp, ThumbsDown } from 'lucide-react'
 import { Document, Packer, Paragraph, TextRun, HeadingLevel } from 'docx'
 import { saveAs } from 'file-saver'
@@ -19,20 +20,33 @@ import NoCreditsCard from '../../components/NoCreditsCard'
 
 import { useTranslation } from 'react-i18next'
 import { catalogLabel, catalogTemplateFieldOption, localizeTemplateFields } from '../../i18n/catalogLabel'
-type TemplateField = {
-  name: string
-  type: string
-  label?: string
-  placeholder?: string
-  options?: string[]
-  required?: boolean
-  min?: number
-  max?: number
-  default?: string
-}
+import { GradeSelect } from '@/components/shared/GradeSelect'
+import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
+import { SubjectSelect } from '@/components/shared/SubjectSelect'
+import { gradeValueForSelect } from '@/catalog/adapters/gradeAdapters'
+import { gradeBandValueForSelect } from '@/catalog/adapters/gradeBandAdapters'
+import {
+  templateSubjectValueForSelect,
+  type SubjectOption,
+} from '@/catalog/adapters/subjectAdapters'
+import {
+  gradeOptionsForTemplateEnum,
+  isTemplateGradeLevelField,
+  templateGradeLevelValueForSelect,
+} from '@/catalog/adapters/templateGradeLevelAdapters'
+import {
+  applyTemplateFieldDefault,
+  buildTemplatePayload,
+  normalizeTemplateFieldValue,
+  type TemplateField,
+} from './templateRunnerCatalog'
 
 const TemplateRunner = () => {
   const { t } = useTranslation()
+  const gradesFromStore = useSelector(
+    (state: { profileContext?: { grades?: { value: string; label: string }[] } }) =>
+      state.profileContext?.grades,
+  )
   const { slug } = useParams<{ slug: string }>()
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -252,8 +266,7 @@ const TemplateRunner = () => {
     if (schemaFields.length === 0) return {}
     const initial: Record<string, string> = {}
     schemaFields.forEach((field) => {
-      // Use default value from schema if available, otherwise empty string
-      initial[field.name] = field.default || ''
+      initial[field.name] = applyTemplateFieldDefault(field)
     })
     return initial
   }, [schemaFields])
@@ -305,15 +318,7 @@ const TemplateRunner = () => {
           if (raw === null || raw === undefined) {
             return
           }
-          if (typeof raw === 'string') {
-            nextValues[field.name] = raw
-          } else if (typeof raw === 'number' || typeof raw === 'boolean') {
-            nextValues[field.name] = String(raw)
-          } else if (Array.isArray(raw)) {
-            nextValues[field.name] = raw.map((x) => String(x)).join('\n')
-          } else {
-            nextValues[field.name] = JSON.stringify(raw)
-          }
+          nextValues[field.name] = normalizeTemplateFieldValue(field, raw)
         })
         setFormValues(nextValues)
 
@@ -559,17 +564,7 @@ const TemplateRunner = () => {
     const nextValues: Record<string, string> = {}
     schemaFields.forEach((field) => {
       const raw = (template.exemplarInput as Record<string, unknown>)[field.name]
-      if (raw === null || raw === undefined) {
-        nextValues[field.name] = ''
-      } else if (typeof raw === 'string') {
-        nextValues[field.name] = raw
-      } else if (typeof raw === 'number' || typeof raw === 'boolean') {
-        nextValues[field.name] = String(raw)
-      } else if (Array.isArray(raw)) {
-        nextValues[field.name] = raw.map((x) => String(x)).join('\n')
-      } else {
-        nextValues[field.name] = JSON.stringify(raw)
-      }
+      nextValues[field.name] = raw === null || raw === undefined ? '' : normalizeTemplateFieldValue(field, raw)
     })
     setFormValues(nextValues)
 
@@ -627,64 +622,7 @@ const TemplateRunner = () => {
     setShowPromptEditor(false)
     setShowOutput(true)
 
-    // Build payload from form values
-    const payload: Record<string, unknown> = {}
-    schemaFields.forEach((field) => {
-      const raw = formValues[field.name]
-      if (!raw || raw.trim() === '') {
-        return
-      }
-      
-      // Convert based on field type
-      if (field.type === 'number') {
-        const numericValue = Number(raw)
-        payload[field.name] = Number.isNaN(numericValue) ? raw : numericValue
-      } else if (field.type === 'select' && field.options) {
-        // For select fields, use the value as-is
-        // For boolean fields, convert string to boolean
-        if (field.options.length === 2 && field.options.includes('true') && field.options.includes('false')) {
-          payload[field.name] = raw === 'true'
-        } else {
-          payload[field.name] = raw
-        }
-      } else if (field.type === 'array') {
-        // Array of strings: split by newline or comma
-        payload[field.name] = raw.split(/[\n,]+/).map((s) => s.trim()).filter(Boolean)
-      } else {
-        // Text, textarea, etc.
-        payload[field.name] = raw.trim()
-      }
-    })
-
-    // Normalize assessment-specific fields for backend schema
-    if (payload.question_types) {
-      const raw = String(payload.question_types)
-      const tokens = raw
-        .split(/[,;/]|and|\n/gi)
-        .map((t) => t.trim().toLowerCase())
-        .filter(Boolean)
-      const mapped = tokens.map((t) => {
-        if (t.includes('mcq') || t.includes('multiple')) return 'MCQ'
-        if (t.includes('short')) return 'short_answer'
-        if (t.includes('essay')) return 'essay'
-        if (t.includes('diagram') || t.includes('label')) return 'diagram'
-        if (t.includes('match')) return 'matching'
-        return ''
-      }).filter(Boolean)
-      if (mapped.length > 0) {
-        payload.question_types = mapped
-      } else {
-        delete payload.question_types
-      }
-    }
-
-    if (payload.difficulty) {
-      payload.difficulty = String(payload.difficulty).toLowerCase()
-    }
-
-    if (payload.bloom_level) {
-      payload.bloom_level = String(payload.bloom_level).toLowerCase()
-    }
+    const payload = buildTemplatePayload(formValues, schemaFields)
 
     // Start streaming (pass exemplar for provider-failure fallback)
     startStream(slug, payload, {
@@ -707,61 +645,8 @@ const TemplateRunner = () => {
       return
     }
     
-    // Build payload from form values (same logic as handleSubmit)
-    const payload: Record<string, unknown> = {}
-    schemaFields.forEach((field) => {
-      const raw = formValues[field.name]
-      if (!raw || raw.trim() === '') {
-        return
-      }
-      
-      // Convert based on field type
-      if (field.type === 'number') {
-        const numericValue = Number(raw)
-        payload[field.name] = Number.isNaN(numericValue) ? raw : numericValue
-      } else if (field.type === 'select' && field.options) {
-        if (field.options.length === 2 && field.options.includes('true') && field.options.includes('false')) {
-          payload[field.name] = raw === 'true'
-        } else {
-          payload[field.name] = raw
-        }
-      } else if (field.type === 'array') {
-        payload[field.name] = raw.split(/[\n,]+/).map((s) => s.trim()).filter(Boolean)
-      } else {
-        payload[field.name] = raw.trim()
-      }
-    })
+    const payload = buildTemplatePayload(formValues, schemaFields)
 
-    // Normalize assessment-specific fields for backend schema
-    if (payload.question_types) {
-      const raw = String(payload.question_types)
-      const tokens = raw
-        .split(/[,;/]|and|\n/gi)
-        .map((t) => t.trim().toLowerCase())
-        .filter(Boolean)
-      const mapped = tokens.map((t) => {
-        if (t.includes('mcq') || t.includes('multiple')) return 'MCQ'
-        if (t.includes('short')) return 'short_answer'
-        if (t.includes('essay')) return 'essay'
-        if (t.includes('diagram') || t.includes('label')) return 'diagram'
-        if (t.includes('match')) return 'matching'
-        return ''
-      }).filter(Boolean)
-      if (mapped.length > 0) {
-        payload.question_types = mapped
-      } else {
-        delete payload.question_types
-      }
-    }
-
-    if (payload.difficulty) {
-      payload.difficulty = String(payload.difficulty).toLowerCase()
-    }
-
-    if (payload.bloom_level) {
-      payload.bloom_level = String(payload.bloom_level).toLowerCase()
-    }
-    
     // Reset and start new stream
     resetStream()
     setParsedOutput(null)
@@ -1242,6 +1127,71 @@ const TemplateRunner = () => {
         'w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 placeholder:text-gray-500',
     }
 
+    if (field.name === 'grade') {
+      return (
+        <GradeSelect
+          variant="native"
+          name={field.name}
+          value={gradeValueForSelect(fieldValue)}
+          onChange={(v) => handleInputChange(field.name, v)}
+          label=""
+          required={field.required}
+          selectClassName={commonProps.className}
+        />
+      )
+    }
+
+    if (isTemplateGradeLevelField(field)) {
+      const gradeOptions = gradeOptionsForTemplateEnum(field.options!, gradesFromStore)
+      return (
+        <GradeSelect
+          variant="native"
+          name={field.name}
+          options={gradeOptions}
+          value={templateGradeLevelValueForSelect(fieldValue, field.options)}
+          onChange={(v) => handleInputChange(field.name, v)}
+          label=""
+          required={field.required}
+          selectClassName={commonProps.className}
+        />
+      )
+    }
+
+    if (field.name === 'grade_band') {
+      return (
+        <GradeBandSelect
+          variant="native"
+          context="default"
+          name={field.name}
+          value={gradeBandValueForSelect(fieldValue)}
+          onChange={(v) => handleInputChange(field.name, v)}
+          label=""
+          required={field.required}
+          allowEmpty={!field.required}
+          className={commonProps.className}
+        />
+      )
+    }
+
+    if (field.name === 'subject' && field.options?.length) {
+      const subjectOptions: SubjectOption[] = field.options.map((opt) => ({
+        value: templateSubjectValueForSelect(opt),
+        label: catalogTemplateFieldOption(t, slug, field.name, opt),
+      }))
+      return (
+        <SubjectSelect
+          variant="native"
+          name={field.name}
+          options={subjectOptions}
+          value={templateSubjectValueForSelect(fieldValue)}
+          onChange={(v) => handleInputChange(field.name, v)}
+          label=""
+          required={field.required}
+          selectClassName={commonProps.className}
+        />
+      )
+    }
+
     if (field.type === 'textarea' || field.type === 'array') {
       return (
         <textarea 
@@ -1279,7 +1229,7 @@ const TemplateRunner = () => {
       )
     }
 
-    if (field.type === 'number') {
+    if (field.type === 'number' && field.name !== 'grade') {
       return <input {...commonProps} type="number" min={field.min} max={field.max} placeholder={field.placeholder} />
     }
 

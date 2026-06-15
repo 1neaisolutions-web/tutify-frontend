@@ -18,6 +18,8 @@ import NoCreditsCard from '../../components/NoCreditsCard'
 import { useRefreshCreditBalance } from '../../hooks/useRefreshCreditBalance'
 
 import { useTranslation } from 'react-i18next'
+import { GradeSelect } from '@/components/shared/GradeSelect'
+import { gradeToLabel, gradeValueForSelect } from '@/catalog/adapters/gradeAdapters'
 export const WorksheetGenerator = () => {
   const { t } = useTranslation()
   const [packs, setPacks] = useState<ContentPack[]>([])
@@ -112,7 +114,7 @@ export const WorksheetGenerator = () => {
         pack_id: selectedPack,
         topic_text: topicText.trim() || undefined,
         topic_id: topicId.trim() || undefined,
-        grade: grade.trim() || undefined,
+        grade: grade ? gradeToLabel(grade) : undefined,
         subject: subject.trim() || undefined,
         num_questions: numQuestions,
         question_types: questionTypes.length > 0 ? questionTypes : ['mcq', 'short_answer'],
@@ -286,15 +288,13 @@ export const WorksheetGenerator = () => {
             
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Grade (optional)
-                </label>
-                <input
-                  type="text"
-                  value={grade}
-                  onChange={(e) => setGrade(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder={t('worksheetGeneratorPage.eGGrade5')}
+                <GradeSelect
+                  variant="native"
+                  value={gradeValueForSelect(grade)}
+                  onChange={setGrade}
+                  label={t('worksheetGeneratorPage.gradeOptional', { defaultValue: 'Grade (optional)' })}
+                  allowEmpty
+                  emptyLabel={t('worksheetGeneratorPage.eGGrade5', { defaultValue: 'Select grade' })}
                 />
               </div>
               <div>

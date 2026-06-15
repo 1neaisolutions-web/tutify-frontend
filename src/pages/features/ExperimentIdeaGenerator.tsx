@@ -2,12 +2,14 @@ import { useState } from 'react'
 import { FlaskConical, Sparkles, RefreshCw, Download } from 'lucide-react'
 
 import { useTranslation } from 'react-i18next'
+import { GradeSelect } from '@/components/shared/GradeSelect'
+import { gradeToNumeric } from '@/catalog/adapters/gradeAdapters'
 type LabAccess = 'none' | 'basic' | 'full'
 type Difficulty = 'easy' | 'moderate' | 'challenging'
 type OutputFormat = 'structured_json' | 'teacher_text'
 
 interface ExperimentInputs {
-  grade: number | ''
+  grade: string
   topic: string
   subtopic: string
   available_materials: string[]
@@ -91,7 +93,7 @@ const sampleExperiment: ExperimentIdeaOutput = {
 const ExperimentIdeaGenerator = () => {
   const { t } = useTranslation()
   const [inputs, setInputs] = useState<ExperimentInputs>({
-    grade: 6,
+    grade: '6',
     topic: 'photosynthesis',
     subtopic: 'light intensity',
     available_materials: ['plants', 'foil', 'thermometer', 'beaker'],
@@ -145,7 +147,7 @@ const ExperimentIdeaGenerator = () => {
 
       const mockOutput: ExperimentIdeaOutput = {
         title: `${inputs.topic} Exploration`,
-        grade: inputs.grade as number,
+        grade: gradeToNumeric(inputs.grade) ?? 1,
         topic: inputs.topic,
         subtopic: inputs.subtopic || undefined,
         duration: inputs.duration || undefined,
@@ -220,14 +222,11 @@ const ExperimentIdeaGenerator = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">{t('experimentIdeaGenerator.grade2')}<span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="12"
-                  value={inputs.grade}
-                  onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
-                  className="input-field"
-                  placeholder={t('common.gradePlaceholder')}
+                <GradeSelect
+                  variant="native"
+                  value={String(inputs.grade ?? '')}
+                  onChange={(v) => handleInputChange('grade', v)}
+                  label=""
                   required
                 />
               </div>

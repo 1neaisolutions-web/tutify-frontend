@@ -30,7 +30,6 @@ import {
   Gamepad2,
 } from 'lucide-react'
 import {
-  getGradeLevels,
   getDigitalCitizenshipTopics,
   getOnlineSafetyTopics,
   DigitalCitizenshipStandard,
@@ -55,6 +54,8 @@ import {
 } from '../../utils/digitalLiteracyAdapters'
 
 import { useTranslation } from 'react-i18next'
+import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
+import { chatbotBandToApi } from '@/catalog/adapters/chatbotAdapters'
 const CHATBOT_SLUG = 'digital-literacy-advisor'
 
 type TabType = 'digital-citizenship' | 'online-safety' | 'media-literacy' | 'technology-integration' | 'standards' | 'resources'
@@ -64,7 +65,7 @@ const DigitalLiteracyAdvisor = () => {
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const [activeTab, setActiveTab] = useState<TabType>('digital-citizenship')
-  const [gradeLevel, setGradeLevel] = useState('High School (9-12)')
+  const [gradeLevel, setGradeLevel] = useState('9-12')
   const [isGenerating, setIsGenerating] = useState(false)
 
   // Digital Citizenship State
@@ -147,7 +148,6 @@ const DigitalLiteracyAdvisor = () => {
     },
   })
 
-  const gradeLevels = getGradeLevels()
   const citizenshipTopics = getDigitalCitizenshipTopics()
   const safetyTopics = getOnlineSafetyTopics()
 
@@ -159,7 +159,7 @@ const DigitalLiteracyAdvisor = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
         },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
@@ -188,7 +188,7 @@ const DigitalLiteracyAdvisor = () => {
         input: lessonTopic.trim(),
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           lesson_topic: lessonTopic.trim(),
           duration: lessonDuration,
         },
@@ -218,7 +218,7 @@ const DigitalLiteracyAdvisor = () => {
         input: 'General online safety overview',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           safety_topic: 'General online safety overview',
         },
         conversation_id: conversationIdForActiveTab ?? undefined,
@@ -249,7 +249,7 @@ const DigitalLiteracyAdvisor = () => {
         input: topic,
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           safety_topic: topic,
         },
         conversation_id: conversationIdForActiveTab ?? undefined,
@@ -278,7 +278,7 @@ const DigitalLiteracyAdvisor = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
         },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
@@ -306,7 +306,7 @@ const DigitalLiteracyAdvisor = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
         },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
@@ -373,15 +373,14 @@ const DigitalLiteracyAdvisor = () => {
             <div className="flex flex-wrap gap-4 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
                 <label className="text-sm font-medium">{t('digitalLiteracyAdvisor.gradeLevel')}</label>
-                <select
+                <GradeBandSelect
+                  variant="native"
                   value={gradeLevel}
-                  onChange={(e) => setGradeLevel(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                >
-                  {gradeLevels.map(level => (
-                    <option key={level} value={level}>{level}</option>
-                  ))}
-                </select>
+                  onChange={setGradeLevel}
+                  label=""
+                  context="chatbotBand"
+                  selectClassName="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                />
               </div>
             </div>
           </div>

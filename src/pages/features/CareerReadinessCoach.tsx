@@ -55,6 +55,8 @@ import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
 
 import { useTranslation } from 'react-i18next'
+import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
+import { careerBusinessBandToApi } from '@/catalog/adapters/gradeBandAdapters'
 const CAREER_COACH_SLUG = 'career-readiness-coach'
 
 type TabType = 'resume' | 'interview' | 'skills' | 'industry' | 'pathway' | 'linkedin' | 'assessment' | 'standards'
@@ -176,7 +178,7 @@ const CareerReadinessCoach = () => {
       const response = await runWithCredits(chatbotApi.executeCapability(CAREER_COACH_SLUG, 'international_resume_builder', {
         input: selectedResumeFormat,
         input_type: 'text',
-        parameters: { grade_level: gradeLevel, region: selectedRegion, industry: selectedIndustry },
+        parameters: { grade_level: careerBusinessBandToApi(gradeLevel), region: selectedRegion, industry: selectedIndustry },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
       if (response == null) return
@@ -199,7 +201,7 @@ const CareerReadinessCoach = () => {
       const response = await runWithCredits(chatbotApi.executeCapability(CAREER_COACH_SLUG, 'interview_prep', {
         input: interviewCategory,
         input_type: 'text',
-        parameters: { grade_level: gradeLevel, region: selectedRegion, industry: selectedIndustry },
+        parameters: { grade_level: careerBusinessBandToApi(gradeLevel), region: selectedRegion, industry: selectedIndustry },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
       if (response == null) return
@@ -222,7 +224,7 @@ const CareerReadinessCoach = () => {
       const response = await runWithCredits(chatbotApi.executeCapability(CAREER_COACH_SLUG, 'professional_skills_competencies', {
         input: '',
         input_type: 'text',
-        parameters: { grade_level: gradeLevel, region: selectedRegion, industry: selectedIndustry },
+        parameters: { grade_level: careerBusinessBandToApi(gradeLevel), region: selectedRegion, industry: selectedIndustry },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
       if (response == null) return
@@ -245,7 +247,7 @@ const CareerReadinessCoach = () => {
       const response = await runWithCredits(chatbotApi.executeCapability(CAREER_COACH_SLUG, 'industry_insights', {
         input: selectedIndustry,
         input_type: 'text',
-        parameters: { grade_level: gradeLevel, region: selectedRegion, industry: selectedIndustry },
+        parameters: { grade_level: careerBusinessBandToApi(gradeLevel), region: selectedRegion, industry: selectedIndustry },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
       if (response == null) return
@@ -268,7 +270,7 @@ const CareerReadinessCoach = () => {
       const response = await runWithCredits(chatbotApi.executeCapability(CAREER_COACH_SLUG, 'career_pathway_planning', {
         input: targetCareer,
         input_type: 'text',
-        parameters: { grade_level: gradeLevel, region: selectedRegion, industry: selectedIndustry, career_level: careerLevel },
+        parameters: { grade_level: careerBusinessBandToApi(gradeLevel), region: selectedRegion, industry: selectedIndustry, career_level: careerLevel },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
       if (response == null) return
@@ -291,7 +293,7 @@ const CareerReadinessCoach = () => {
       const response = await runWithCredits(chatbotApi.executeCapability(CAREER_COACH_SLUG, 'linkedin_guide', {
         input: '',
         input_type: 'text',
-        parameters: { grade_level: gradeLevel, region: selectedRegion, industry: selectedIndustry },
+        parameters: { grade_level: careerBusinessBandToApi(gradeLevel), region: selectedRegion, industry: selectedIndustry },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
       if (response == null) return
@@ -314,7 +316,7 @@ const CareerReadinessCoach = () => {
       const response = await runWithCredits(chatbotApi.executeCapability(CAREER_COACH_SLUG, 'skills_assessment_gap_analysis', {
         input: assessmentCompetency,
         input_type: 'text',
-        parameters: { grade_level: gradeLevel, current_level: currentLevel, target_level: targetLevel },
+        parameters: { grade_level: careerBusinessBandToApi(gradeLevel), current_level: currentLevel, target_level: targetLevel },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
       if (response == null) return
@@ -379,15 +381,14 @@ const CareerReadinessCoach = () => {
             <div className="flex flex-wrap gap-4 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
                 <label className="text-sm font-medium">{t('careerReadinessCoach.gradeLevel')}</label>
-                <select
+                <GradeBandSelect
+                  variant="native"
                   value={gradeLevel}
-                  onChange={(e) => setGradeLevel(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                >
-                  <option value="9-12">9-12</option>
-                  <option value="11-12">11-12</option>
-                  <option value="College">{t('careerReadinessCoach.college')}</option>
-                </select>
+                  onChange={setGradeLevel}
+                  label=""
+                  context="careerBusiness"
+                  selectClassName="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                />
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
                 <label className="text-sm font-medium">{t('careerReadinessCoach.region')}</label>

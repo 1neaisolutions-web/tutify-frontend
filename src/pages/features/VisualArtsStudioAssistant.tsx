@@ -56,6 +56,8 @@ import {
 } from '../../utils/visualArtsAdapters'
 
 import { useTranslation } from 'react-i18next'
+import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
+import { bandToApi } from '@/catalog/adapters/gradeBandAdapters'
 const CHATBOT_SLUG = 'visual-arts-studio-assistant'
 
 type TabType = 'history' | 'technique' | 'portfolio' | 'projects' | 'literacy' | 'cultural' | 'assessment' | 'differentiation'
@@ -65,7 +67,7 @@ const VisualArtsStudioAssistant = () => {
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const [activeTab, setActiveTab] = useState<TabType>('history')
-  const [gradeLevel, setGradeLevel] = useState('6-12')
+  const [gradeLevel, setGradeLevel] = useState('6-8')
   const [mediaType, setMediaType] = useState('Mixed Media')
   const [culturalRegion, setCulturalRegion] = useState('Global')
   const [isGenerating, setIsGenerating] = useState(false)
@@ -164,7 +166,7 @@ const VisualArtsStudioAssistant = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: bandToApi(gradeLevel, 'visualArts'),
           media: mediaType,
           cultural_region: culturalRegion,
           select_art_movement: selectedMovement,
@@ -195,7 +197,7 @@ const VisualArtsStudioAssistant = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: bandToApi(gradeLevel, 'visualArts'),
           media: mediaType,
           cultural_region: culturalRegion,
           select_technique: selectedTechnique,
@@ -226,7 +228,7 @@ const VisualArtsStudioAssistant = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: bandToApi(gradeLevel, 'visualArts'),
           media: mediaType,
           cultural_region: culturalRegion,
           portfolio_type: portfolioType,
@@ -257,7 +259,7 @@ const VisualArtsStudioAssistant = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: bandToApi(gradeLevel, 'visualArts'),
           media: mediaType,
           cultural_region: culturalRegion,
           project_theme: projectTheme,
@@ -291,7 +293,7 @@ const VisualArtsStudioAssistant = () => {
         input: title,
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: bandToApi(gradeLevel, 'visualArts'),
           media: mediaType,
           cultural_region: culturalRegion,
           artwork_title: title,
@@ -325,7 +327,7 @@ const VisualArtsStudioAssistant = () => {
         input: artwork,
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: bandToApi(gradeLevel, 'visualArts'),
           media: mediaType,
           cultural_region: culturalRegion,
           artwork_or_theme: artwork,
@@ -357,7 +359,7 @@ const VisualArtsStudioAssistant = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: bandToApi(gradeLevel, 'visualArts'),
           media: mediaType,
           cultural_region: culturalRegion,
           project_type: assessmentProjectType,
@@ -428,16 +430,15 @@ const VisualArtsStudioAssistant = () => {
             {/* Quick Settings */}
             <div className="flex flex-wrap gap-4 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">{t('visualArtsStudioAssistant.gradeLevel')}</label>
-                <select
+                <GradeBandSelect
+                  variant="native"
                   value={gradeLevel}
-                  onChange={(e) => setGradeLevel(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                >
-                  <option value="K-5">{t('visualArtsStudioAssistant.k5')}</option>
-                  <option value="6-8">6-8</option>
-                  <option value="9-12">9-12</option>
-                </select>
+                  onChange={setGradeLevel}
+                  label={t('visualArtsStudioAssistant.gradeLevel')}
+                  context="visualArts"
+                  selectClassName="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="flex items-center gap-2 [&_span]:text-sm [&_span]:font-medium [&_span]:text-white"
+                />
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
                 <label className="text-sm font-medium">{t('visualArtsStudioAssistant.media')}</label>

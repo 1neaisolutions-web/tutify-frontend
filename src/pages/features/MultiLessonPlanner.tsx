@@ -2,12 +2,14 @@ import { useState } from 'react'
 import { BookOpen, Sparkles, RefreshCw, Download } from 'lucide-react'
 
 import { useTranslation } from 'react-i18next'
+import { GradeSelect } from '@/components/shared/GradeSelect'
+import { gradeToNumeric } from '@/catalog/adapters/gradeAdapters'
 type FocusArea = 'reading' | 'writing' | 'literature' | 'language' | 'integrated'
 type AssessmentType = 'essay' | 'presentation' | 'creative_writing' | 'portfolio'
 type OutputFormat = 'structured_json' | 'teacher_text'
 
 interface UnitPlanInputs {
-  grade: number | ''
+  grade: string
   unit_title: string
   duration_weeks: number | ''
   focus_area: FocusArea | ''
@@ -123,7 +125,7 @@ const sampleUnitPlan: UnitPlanOutput = {
 const MultiLessonPlanner = () => {
   const { t } = useTranslation()
   const [inputs, setInputs] = useState<UnitPlanInputs>({
-    grade: 8,
+    grade: '8',
     unit_title: 'Narrative Writing: Building Characters and Conflict',
     duration_weeks: 3,
     focus_area: 'writing',
@@ -188,7 +190,7 @@ const MultiLessonPlanner = () => {
 
       const mockOutput: UnitPlanOutput = {
         unit_title: inputs.unit_title,
-        grade: inputs.grade as number,
+        grade: gradeToNumeric(inputs.grade) ?? 1,
         focus_area: inputs.focus_area as string,
         duration_weeks: totalWeeks,
         overview: `This ${inputs.focus_area} unit guides grade ${inputs.grade} learners through sequenced lessons that build towards a culminating assessment.`,
@@ -269,14 +271,11 @@ const MultiLessonPlanner = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">{t('multiLessonPlanner.grade2')}<span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="12"
-                  value={inputs.grade}
-                  onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
-                  className="input-field"
-                  placeholder={t('common.gradePlaceholder')}
+                <GradeSelect
+                  variant="native"
+                  value={String(inputs.grade ?? '')}
+                  onChange={(v) => handleInputChange('grade', v)}
+                  label=""
                   required
                 />
               </div>

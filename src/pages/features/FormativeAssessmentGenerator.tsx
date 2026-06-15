@@ -2,21 +2,16 @@ import { useState } from 'react'
 import { ClipboardList, Sparkles, RefreshCw, Download } from 'lucide-react'
 
 import { useTranslation } from 'react-i18next'
-type FormativeSubject =
-  | 'Math'
-  | 'Science'
-  | 'English'
-  | 'Social Studies'
-  | 'Arts'
-  | 'Technology'
-  | 'Physical Education'
-  | 'Other'
+import { GradeSelect } from '@/components/shared/GradeSelect'
+import { SubjectSelect } from '@/components/shared/SubjectSelect'
+import { subjectToTemplateLabel } from '@/catalog/adapters/subjectAdapters'
+import { gradeToNumeric } from '@/catalog/adapters/gradeAdapters'
 
 type FormativeActivityType = 'exit_ticket' | 'quiz' | 'group_discussion' | 'reflection'
 
 interface FormativeAssessmentInputs {
-  grade: number | ''
-  subject: FormativeSubject | ''
+  grade: string
+  subject: string
   learning_objective: string
   context: string
   time_available: string
@@ -89,8 +84,8 @@ const sampleFormativePlan: FormativeAssessmentOutput = {
 const FormativeAssessmentGenerator = () => {
   const { t } = useTranslation()
   const [inputs, setInputs] = useState<FormativeAssessmentInputs>({
-    grade: 5,
-    subject: 'Science',
+    grade: '5',
+    subject: 'science',
     learning_objective: 'Identify key features of the water cycle.',
     context: 'After watching a video',
     time_available: 'PT10M',
@@ -119,8 +114,8 @@ const FormativeAssessmentGenerator = () => {
     setTimeout(() => {
       const mockOutput: FormativeAssessmentOutput = {
         title: `${inputs.learning_objective} Check-in`,
-        grade: inputs.grade as number,
-        subject: inputs.subject as string,
+        grade: gradeToNumeric(inputs.grade) ?? 1,
+        subject: subjectToTemplateLabel(inputs.subject),
         learning_objective: inputs.learning_objective,
         activity_type: inputs.activity_type || undefined,
         context: inputs.context || undefined,
@@ -129,7 +124,7 @@ const FormativeAssessmentGenerator = () => {
           inputs.activity_type || 'activity'
         } captures quick evidence of learning connected to "${inputs.learning_objective}" for grade ${
           inputs.grade
-        } ${inputs.subject?.toLowerCase()} students.`,
+        } ${subjectToTemplateLabel(inputs.subject).toLowerCase()} students.`,
         activity_steps: [
           inputs.context
             ? `Remind students of the context (${inputs.context}) and restate the learning objective.`
@@ -202,14 +197,11 @@ const FormativeAssessmentGenerator = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">{t('formativeAssessmentGenerator.grade2')}<span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="12"
-                  value={inputs.grade}
-                  onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
-                  className="input-field"
-                  placeholder={t('common.gradePlaceholder')}
+                <GradeSelect
+                  variant="native"
+                  value={String(inputs.grade ?? '')}
+                  onChange={(v) => handleInputChange('grade', v)}
+                  label=""
                   required
                 />
               </div>
@@ -217,24 +209,17 @@ const FormativeAssessmentGenerator = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">{t('formativeAssessmentGenerator.subject2')}<span className="text-red-500">*</span>
                 </label>
-                <select
+                <SubjectSelect
+                  variant="native"
+                  context="template"
+                  allowEmpty
+                  emptyLabel={t('formativeAssessmentGenerator.selectSubject')}
                   value={inputs.subject}
-                  onChange={(e) =>
-                    handleInputChange('subject', e.target.value as FormativeAssessmentInputs['subject'])
-                  }
-                  className="input-field"
+                  onChange={(v) => handleInputChange('subject', v)}
+                  label=""
+                  selectClassName="input-field"
                   required
-                >
-                  <option value="">{t('formativeAssessmentGenerator.selectSubject')}</option>
-                  <option value="Math">{t('formativeAssessmentGenerator.math')}</option>
-                  <option value="Science">{t('formativeAssessmentGenerator.science')}</option>
-                  <option value="English">{t('formativeAssessmentGenerator.english')}</option>
-                  <option value="Social Studies">{t('formativeAssessmentGenerator.socialStudies')}</option>
-                  <option value="Arts">{t('formativeAssessmentGenerator.arts')}</option>
-                  <option value="Technology">{t('formativeAssessmentGenerator.technology')}</option>
-                  <option value="Physical Education">{t('formativeAssessmentGenerator.physicalEducation')}</option>
-                  <option value="Other">{t('formativeAssessmentGenerator.other')}</option>
-                </select>
+                />
               </div>
 
               <div>

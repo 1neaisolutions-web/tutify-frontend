@@ -56,6 +56,7 @@ import NoCreditsCard from '../../components/NoCreditsCard'
 import { resolveApiMessage } from '../../i18n/resolveApiMessage'
 
 import { useTranslation } from 'react-i18next'
+import { GradeSelect } from '@/components/shared/GradeSelect'
 interface NGSSInvestigation {
   phenomenon: string
   performanceExpectation: string
@@ -453,17 +454,12 @@ const STEMInquiryMentor = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('sTEMInquiryMentor.gradeLevel')}</label>
-                    <select
+                    <GradeSelect
+                      variant="native"
                       value={gradeLevel}
-                      onChange={(e) => setGradeLevel(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-                    >
-                      {[6, 7, 8, 9, 10, 11, 12].map((grade) => (
-                        <option key={grade} value={grade}>
-                          {t('common.gradeOption', { grade })}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setGradeLevel}
+                      label=""
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('sTEMInquiryMentor.phenomenonOrTopic')}</label>
@@ -636,17 +632,12 @@ const STEMInquiryMentor = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('sTEMInquiryMentor.gradeLevel')}</label>
-                    <select
+                    <GradeSelect
+                      variant="native"
                       value={gradeLevel}
-                      onChange={(e) => setGradeLevel(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-                    >
-                      {[6, 7, 8, 9, 10, 11, 12].map((grade) => (
-                        <option key={grade} value={grade}>
-                          {t('common.gradeOption', { grade })}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setGradeLevel}
+                      label=""
+                    />
                   </div>
                   <button
                     onClick={handleEngineeringChallenge}
@@ -774,17 +765,12 @@ const STEMInquiryMentor = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('sTEMInquiryMentor.gradeLevel')}</label>
-                    <select
+                    <GradeSelect
+                      variant="native"
                       value={gradeLevel}
-                      onChange={(e) => setGradeLevel(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-                    >
-                      {[6, 7, 8, 9, 10, 11, 12].map((grade) => (
-                        <option key={grade} value={grade}>
-                          {t('common.gradeOption', { grade })}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setGradeLevel}
+                      label=""
+                    />
                   </div>
                   <button
                     onClick={handleInquiryGuidance}

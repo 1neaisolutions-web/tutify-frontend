@@ -35,7 +35,7 @@ export const fetchProfileMetadata = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const base = '/api/v1/metadata';
-      const [countriesRes, subjectsRes, curriculumsRes, gradeBandsRes, schoolTypesRes, languagesRes, yearsRes] =
+      const [countriesRes, subjectsRes, curriculumsRes, gradeBandsRes, schoolTypesRes, languagesRes, yearsRes, gradesRes] =
         await Promise.all([
           axiosInstance.get(`${base}/countries`),
           axiosInstance.get(`${base}/subjects`),
@@ -44,6 +44,7 @@ export const fetchProfileMetadata = createAsyncThunk(
           axiosInstance.get(`${base}/school-types`),
           axiosInstance.get(`${base}/languages`),
           axiosInstance.get(`${base}/years-experience`),
+          axiosInstance.get(`${base}/grades`),
         ]);
       return {
         countries: toOptions(countriesRes.data),
@@ -53,6 +54,7 @@ export const fetchProfileMetadata = createAsyncThunk(
         schoolTypes: toOptions(schoolTypesRes.data),
         languages: toOptions(languagesRes.data),
         yearsExperience: toOptions(yearsRes.data),
+        grades: toOptions(gradesRes.data),
       };
     } catch (error) {
       console.error('[profileContextSlice] fetchProfileMetadata error:', error);
@@ -102,6 +104,7 @@ const initialState = {
   subjects: [],
   curriculums: [],
   gradeBands: [],
+  grades: [],
   schoolTypes: [],
   languages: [],
   yearsExperience: [],
@@ -137,6 +140,7 @@ const profileContextSlice = createSlice({
         state.subjects = action.payload.subjects || [];
         state.curriculums = action.payload.curriculums || [];
         state.gradeBands = action.payload.gradeBands || [];
+        state.grades = action.payload.grades || [];
         state.schoolTypes = action.payload.schoolTypes || [];
         state.languages = action.payload.languages || [];
         state.yearsExperience = action.payload.yearsExperience || [];

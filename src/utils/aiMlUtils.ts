@@ -1048,6 +1048,7 @@ export const getAIEthicsFrameworks = (): AIEthicsFramework[] => [
 ]
 
 // Get grade levels
+/** @deprecated Use GradeBandSelect + chatbotBand context from @/catalog instead */
 export const getGradeLevels = () => [
   'Elementary (K-5)',
   'Middle School (6-8)',

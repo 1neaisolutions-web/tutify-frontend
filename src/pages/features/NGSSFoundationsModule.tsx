@@ -40,6 +40,7 @@ import {
 } from 'lucide-react'
 
 import { useTranslation } from 'react-i18next'
+import { GradeSelect } from '@/components/shared/GradeSelect'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template' | 'project'
@@ -599,18 +600,14 @@ CCCs are concepts that apply across all domains of science:
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">{t('nGSSFoundationsModule.gradeLevel')}</label>
-                            <select
+                            <GradeSelect
+                              variant="native"
                               value={mappingData.gradeLevel}
-                              onChange={(e) => setMappingData({ ...mappingData, gradeLevel: e.target.value })}
-                              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-                            >
-                              <option value="">{t('nGSSFoundationsModule.selectGrade')}</option>
-                              {['K', '1', '2', '3', '4', '5', 'MS', 'HS'].map((grade) => (
-                                <option key={grade} value={grade}>
-                                  {grade === 'MS' ? 'Middle School' : grade === 'HS' ? 'High School' : `Grade ${grade}`}
-                                </option>
-                              ))}
-                            </select>
+                              onChange={(gradeLevel) => setMappingData({ ...mappingData, gradeLevel })}
+                              label=""
+                              allowEmpty
+                              emptyLabel={t('nGSSFoundationsModule.selectGrade')}
+                            />
                           </div>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">{t('nGSSFoundationsModule.topicOrConcept')}</label>
@@ -758,18 +755,14 @@ CCCs are concepts that apply across all domains of science:
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">{t('nGSSFoundationsModule.gradeLevel')}</label>
-                            <select
+                            <GradeSelect
+                              variant="native"
                               value={lessonDesign.gradeLevel}
-                              onChange={(e) => setLessonDesign({ ...lessonDesign, gradeLevel: e.target.value })}
-                              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
-                            >
-                              <option value="">{t('nGSSFoundationsModule.selectGrade')}</option>
-                              {['K', '1', '2', '3', '4', '5', 'MS', 'HS'].map((grade) => (
-                                <option key={grade} value={grade}>
-                                  {grade === 'MS' ? 'Middle School' : grade === 'HS' ? 'High School' : `Grade ${grade}`}
-                                </option>
-                              ))}
-                            </select>
+                              onChange={(gradeLevel) => setLessonDesign({ ...lessonDesign, gradeLevel })}
+                              label=""
+                              allowEmpty
+                              emptyLabel={t('nGSSFoundationsModule.selectGrade')}
+                            />
                           </div>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">{t('nGSSFoundationsModule.performanceExpectation')}</label>

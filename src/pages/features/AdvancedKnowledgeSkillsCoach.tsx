@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   BookOpen,
   FileText,
@@ -47,6 +47,31 @@ import {
 } from 'lucide-react';
 
 import { useTranslation } from 'react-i18next'
+import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
+import { gradeBandValueForSelect } from '@/catalog/adapters/gradeBandAdapters'
+
+/** Map mock content grade labels to canonical band slugs for client-side filtering. */
+const CONTENT_GRADE_LEVEL_BANDS: Record<string, string[]> = {
+  elementary: ['K-2', '3-5'],
+  'middle school': ['6-8'],
+  'high school': ['9-12'],
+  'higher education': ['higher_ed'],
+  'all levels': ['K-2', '3-5', '6-8', '9-12', 'higher_ed', 'other'],
+}
+
+function contentGradeLevelsMatch(filterBand: string, contentLevels: string[]): boolean {
+  if (!filterBand) return true
+  const filterCanonical = gradeBandValueForSelect(filterBand)
+  if (!filterCanonical) return true
+  return contentLevels.some((level) => {
+    const key = level.trim().toLowerCase()
+    if (key === 'all levels') return true
+    const bands = CONTENT_GRADE_LEVEL_BANDS[key]
+    if (bands) return bands.includes(filterCanonical)
+    return gradeBandValueForSelect(level) === filterCanonical
+  })
+}
+
 interface InternationalFramework {
   name: string;
   alignment: string;
@@ -637,7 +662,7 @@ export  const AdvancedKnowledgeSkillsCoach = () => {
   >('methods');
   const [selectedMethod, setSelectedMethod] = useState('');
   const [pedagogicalType, setPedagogicalType] = useState('');
-  const [gradeLevel, setGradeLevel] = useState('5-8');
+  const [gradeLevel, setGradeLevel] = useState('6-8');
   const [isGenerating, setIsGenerating] = useState(false);
   const [methodDetails, setMethodDetails] = useState<PedagogicalMethod | null>(
     null
@@ -6478,6 +6503,16 @@ The Socratic Method, while universal in principle, requires cultural adaptation 
     };
   };
 
+  const filteredResearchArticles = useMemo(
+    () => researchArticlesDatabase.filter((a) => contentGradeLevelsMatch(gradeLevel, a.gradeLevels)),
+    [gradeLevel],
+  );
+
+  const filteredYoutubeVideos = useMemo(
+    () => youtubeVideosDatabase.filter((v) => contentGradeLevelsMatch(gradeLevel, v.gradeLevels)),
+    [gradeLevel],
+  );
+
   const tabs = [
     { id: 'methods' as const, label: t('advancedKnowledgeSkillsCoach.tabs.methods'), icon: BookOpen },
     { id: 'skills' as const, label: t('advancedKnowledgeSkillsCoach.tabs.skills'), icon: Brain },
@@ -6503,6 +6538,19 @@ The Socratic Method, while universal in principle, requires cultural adaptation 
           </span>
         </div>
         <p className="text-sm text-white/90 mt-4">{t('advancedKnowledgeSkillsCoach.heroHint')}</p>
+        <div className="mt-6 flex flex-wrap gap-4">
+          <div className="flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2 backdrop-blur-sm">
+            <GradeBandSelect
+              variant="native"
+              value={gradeLevel}
+              onChange={setGradeLevel}
+              label={t('advancedKnowledgeSkillsCoach.gradeLevel', { defaultValue: 'Grade band' })}
+              context="default"
+              selectClassName="rounded border border-white/30 bg-white/20 px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+              className="flex items-center gap-2 [&_span]:text-sm [&_span]:font-medium [&_span]:text-white"
+            />
+          </div>
+        </div>
       </div>
 
       <div className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
@@ -6581,13 +6629,59 @@ The Socratic Method, while universal in principle, requires cultural adaptation 
               {methodDetails && (
                 <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-800">
                   <p className="font-semibold text-gray-900">{methodDetails.name || selectedMethod}</p>
+                  {!contentGradeLevelsMatch(gradeLevel, methodDetails.gradeLevels ?? []) && (
+                    <p className="mt-2 text-xs text-amber-700">
+                      {t('advancedKnowledgeSkillsCoach.gradeBandMismatch', {
+                        defaultValue:
+                          'This method overview spans multiple grade bands; adjust the header filter to explore resources aligned to your band.',
+                      })}
+                    </p>
+                  )}
                   {methodDetails.description && <p className="mt-2">{methodDetails.description}</p>}
                 </div>
               )}
             </div>
           )}
 
-          {(activeTab === 'skills' || activeTab === 'compare' || activeTab === 'resources' || activeTab === 'chat') && (
+          {activeTab === 'resources' && (
+            <div className="space-y-6">
+              <p className="text-sm text-gray-600">
+                {t('advancedKnowledgeSkillsCoach.resourcesFiltered', {
+                  defaultValue: '{{articles}} research articles and {{videos}} videos match the selected grade band.',
+                  articles: filteredResearchArticles.length,
+                  videos: filteredYoutubeVideos.length,
+                })}
+              </p>
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                  {t('advancedKnowledgeSkillsCoach.researchArticles', { defaultValue: 'Research articles' })}
+                </h3>
+                <ul className="space-y-2 max-h-80 overflow-y-auto">
+                  {filteredResearchArticles.slice(0, 12).map((article) => (
+                    <li key={article.id} className="rounded-lg border border-gray-200 p-3 text-sm">
+                      <p className="font-medium text-gray-900">{article.title}</p>
+                      <p className="text-xs text-gray-500 mt-1">{article.gradeLevels.join(' · ')}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                  {t('advancedKnowledgeSkillsCoach.youtubeVideos', { defaultValue: 'Videos' })}
+                </h3>
+                <ul className="space-y-2 max-h-80 overflow-y-auto">
+                  {filteredYoutubeVideos.slice(0, 12).map((video) => (
+                    <li key={video.id} className="rounded-lg border border-gray-200 p-3 text-sm">
+                      <p className="font-medium text-gray-900">{video.title}</p>
+                      <p className="text-xs text-gray-500 mt-1">{video.gradeLevels.join(' · ')}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+
+          {(activeTab === 'skills' || activeTab === 'compare' || activeTab === 'chat') && (
             <p className="text-gray-600">{t('advancedKnowledgeSkillsCoach.panelComingSoon')}</p>
           )}
         </div>

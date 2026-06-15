@@ -27,6 +27,8 @@ import {
 } from 'lucide-react'
 
 import { useTranslation } from 'react-i18next'
+import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
+import { gradeBandValueForSelect } from '@/catalog/adapters/gradeBandAdapters'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template' | 'project'
@@ -564,19 +566,14 @@ STEM integration helps students see connections between disciplines and understa
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('sTEMIntegrationModule.gradeLevel')}</label>
-                            <select
-                              value={projectData.gradeLevel}
-                              onChange={(e) => setProjectData({ ...projectData, gradeLevel: e.target.value })}
-                              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
-                            >
-                              <option value="">{t('sTEMIntegrationModule.selectGrade')}</option>
-                              {['K', '1', '2', '3', '4', '5', 'MS', 'HS'].map((grade) => (
-                                <option key={grade} value={grade}>
-                                  {grade === 'MS' ? 'Middle School' : grade === 'HS' ? 'High School' : `Grade ${grade}`}
-                                </option>
-                              ))}
-                            </select>
+                            <GradeBandSelect
+                              variant="native"
+                              value={gradeBandValueForSelect(projectData.gradeLevel)}
+                              onChange={(v) => setProjectData({ ...projectData, gradeLevel: v })}
+                              label={t('sTEMIntegrationModule.gradeLevel')}
+                              allowEmpty
+                              emptyLabel={t('sTEMIntegrationModule.selectGrade')}
+                            />
                           </div>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">{t('sTEMIntegrationModule.duration')}</label>

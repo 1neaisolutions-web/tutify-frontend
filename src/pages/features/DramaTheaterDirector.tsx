@@ -59,6 +59,8 @@ import {
 } from '../../utils/dramaAdapters'
 
 import { useTranslation } from 'react-i18next'
+import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
+import { chatbotBandToApi } from '@/catalog/adapters/chatbotAdapters'
 const CHATBOT_SLUG = 'drama-theater-director'
 
 type TabType = 'script-analysis' | 'character' | 'stage-direction' | 'production' | 'acting-methods' | 'theater-styles' | 'standards' | 'resources'
@@ -68,7 +70,7 @@ const DramaTheaterDirector = () => {
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const [activeTab, setActiveTab] = useState<TabType>('script-analysis')
-  const [gradeLevel, setGradeLevel] = useState('High School (9-12)')
+  const [gradeLevel, setGradeLevel] = useState('9-12')
   const [playGenre, setPlayGenre] = useState('Drama')
   const [stageType, setStageType] = useState('Proscenium')
   const [isGenerating, setIsGenerating] = useState(false)
@@ -164,7 +166,7 @@ const DramaTheaterDirector = () => {
         } else if (tab === 'theater-styles') {
           setTheaterStyles(mapTheaterStylesList(raw))
         } else if (tab === 'standards') {
-          setTheaterStandards(mapTheaterStandardsList(raw, gradeLevel))
+          setTheaterStandards(mapTheaterStandardsList(raw, chatbotBandToApi(gradeLevel)))
         }
       } catch {
         toast.error(t('dramaTheaterDirector.couldNotRestoreSavedOutputFromHistory'))
@@ -187,7 +189,7 @@ const DramaTheaterDirector = () => {
         input: title,
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           genre: playGenre,
           stage_type: stageType,
           play_title: title,
@@ -221,7 +223,7 @@ const DramaTheaterDirector = () => {
         input: name,
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           genre: playGenre,
           stage_type: stageType,
           character_name: name,
@@ -255,7 +257,7 @@ const DramaTheaterDirector = () => {
         input: scene,
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           genre: playGenre,
           stage_type: stageType,
           scene_name: scene,
@@ -288,7 +290,7 @@ const DramaTheaterDirector = () => {
         input: title,
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           genre: playGenre,
           stage_type: stageType,
           production_title: title,
@@ -320,7 +322,7 @@ const DramaTheaterDirector = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           genre: playGenre,
           stage_type: stageType,
         },
@@ -350,7 +352,7 @@ const DramaTheaterDirector = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           genre: playGenre,
           stage_type: stageType,
         },
@@ -380,14 +382,14 @@ const DramaTheaterDirector = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           genre: playGenre,
           stage_type: stageType,
         },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
       if (response == null) return
-      setTheaterStandards(mapTheaterStandardsList(response.result, gradeLevel))
+      setTheaterStandards(mapTheaterStandardsList(response.result, chatbotBandToApi(gradeLevel)))
       pinFromResponse(response.conversation_id)
       toast.success(t('dramaTheaterDirector.theaterStandardsLoaded'))
     } catch (error: unknown) {
@@ -450,17 +452,15 @@ const DramaTheaterDirector = () => {
             {/* Quick Settings */}
             <div className="flex flex-wrap gap-4 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">{t('dramaTheaterDirector.gradeLevel')}</label>
-                <select
+                <GradeBandSelect
+                  variant="native"
                   value={gradeLevel}
-                  onChange={(e) => setGradeLevel(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                >
-                  <option>Elementary (K-5)</option>
-                  <option>Middle School (6-8)</option>
-                  <option>High School (9-12)</option>
-                  <option>{t('dramaTheaterDirector.college')}</option>
-                </select>
+                  onChange={setGradeLevel}
+                  label={t('dramaTheaterDirector.gradeLevel')}
+                  context="chatbotBand"
+                  selectClassName="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="flex items-center gap-2 [&_span]:text-sm [&_span]:font-medium [&_span]:text-white"
+                />
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
                 <label className="text-sm font-medium">{t('dramaTheaterDirector.genre')}</label>

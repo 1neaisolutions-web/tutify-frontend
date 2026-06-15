@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Gamepad2, Sparkles, RefreshCw, Download } from 'lucide-react'
 
 import { useTranslation } from 'react-i18next'
+import { GradeSelect } from '@/components/shared/GradeSelect'
+import { gradeToNumeric } from '@/catalog/adapters/gradeAdapters'
 type MathDomain =
   | 'fractions'
   | 'geometry'
@@ -15,7 +17,7 @@ type GameType = 'competitive' | 'cooperative' | 'puzzle' | 'quiz' | 'movement'
 type OutputFormat = 'structured_json' | 'teacher_text'
 
 interface MathGameInputs {
-  grade: number | ''
+  grade: string
   math_domain: MathDomain | ''
   topic: string
   players: number | ''
@@ -100,7 +102,7 @@ const sampleGame: MathGameOutput = {
 const MathGameBuilder = () => {
   const { t } = useTranslation()
   const [inputs, setInputs] = useState<MathGameInputs>({
-    grade: 5,
+    grade: '5',
     math_domain: 'fractions',
     topic: 'equivalent fractions',
     players: 4,
@@ -150,7 +152,7 @@ const MathGameBuilder = () => {
       const players = inputs.players && inputs.players > 0 ? inputs.players : 4
       const mockOutput: MathGameOutput = {
         title: `${inputs.topic} ${inputs.game_type ? inputs.game_type.replace(/_/g, ' ') : 'math'} game`,
-        grade: inputs.grade as number,
+        grade: gradeToNumeric(inputs.grade) ?? 1,
         math_domain: inputs.math_domain,
         topic: inputs.topic,
         players,
@@ -230,14 +232,11 @@ const MathGameBuilder = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">{t('mathGameBuilder.grade2')}<span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="12"
-                  value={inputs.grade}
-                  onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
-                  className="input-field"
-                  placeholder={t('common.gradePlaceholder')}
+                <GradeSelect
+                  variant="native"
+                  value={String(inputs.grade ?? '')}
+                  onChange={(v) => handleInputChange('grade', v)}
+                  label=""
                   required
                 />
               </div>

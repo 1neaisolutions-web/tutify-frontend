@@ -2,12 +2,14 @@ import { useState } from 'react'
 import { Calculator, Sparkles, RefreshCw, Download } from 'lucide-react'
 
 import { useTranslation } from 'react-i18next'
+import { GradeSelect } from '@/components/shared/GradeSelect'
+import { gradeToNumeric } from '@/catalog/adapters/gradeAdapters'
 type ScenarioType = 'event' | 'business' | 'personal_finance' | 'trip' | 'school_project'
 type BudgetDifficulty = 'easy' | 'moderate' | 'advanced'
 type OutputFormat = 'structured_json' | 'teacher_text'
 
 interface BudgetChallengeInputs {
-  grade: number | ''
+  grade: string
   scenario_type: ScenarioType | ''
   budget_limit: number | ''
   currency: string
@@ -92,7 +94,7 @@ const sampleBudgetChallenge: BudgetChallengeOutput = {
 const BudgetMasterChallenge = () => {
   const { t } = useTranslation()
   const [inputs, setInputs] = useState<BudgetChallengeInputs>({
-    grade: 8,
+    grade: '8',
     scenario_type: 'school_project',
     budget_limit: 150,
     currency: 'USD',
@@ -140,7 +142,7 @@ const BudgetMasterChallenge = () => {
       const budgetFormatted = formatCurrency(inputs.budget_limit as number, currency)
       const mockOutput: BudgetChallengeOutput = {
         title: `Budget Master Challenge: ${inputs.scenario_type.replace(/_/g, ' ')}`,
-        grade: inputs.grade as number,
+        grade: gradeToNumeric(inputs.grade) ?? 1,
         scenario_type: inputs.scenario_type,
         budget_limit: budgetFormatted,
         difficulty: inputs.difficulty || undefined,
@@ -222,14 +224,11 @@ const BudgetMasterChallenge = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">{t('budgetMasterChallenge.grade2')}<span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="12"
-                  value={inputs.grade}
-                  onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
-                  className="input-field"
-                  placeholder={t('common.gradePlaceholder')}
+                <GradeSelect
+                  variant="native"
+                  value={String(inputs.grade ?? '')}
+                  onChange={(v) => handleInputChange('grade', v)}
+                  label=""
                   required
                 />
               </div>

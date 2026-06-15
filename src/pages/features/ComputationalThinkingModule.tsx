@@ -30,6 +30,7 @@ import {
 } from 'lucide-react'
 
 import { useTranslation } from 'react-i18next'
+import { GradeSelect } from '@/components/shared/GradeSelect'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template' | 'project'
@@ -65,6 +66,7 @@ const ComputationalThinkingModule = () => {
   const [progress, setProgress] = useState(0)
   const [showWorkshop, setShowWorkshop] = useState(false)
   const [showLessonDesigner, setShowLessonDesigner] = useState(false)
+  const [lessonDesignerGrade, setLessonDesignerGrade] = useState('')
 
   const lessons: LessonContent[] = [
     {
@@ -613,14 +615,14 @@ Coding teaches students to think logically, solve problems systematically, and e
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">{t('computationalThinkingModule.gradeLevel')}</label>
-                            <select className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100">
-                              <option>{t('computationalThinkingModule.selectGrade')}</option>
-                              {['K', '1', '2', '3', '4', '5', 'MS', 'HS'].map((grade) => (
-                                <option key={grade} value={grade}>
-                                  {grade === 'MS' ? 'Middle School' : grade === 'HS' ? 'High School' : `Grade ${grade}`}
-                                </option>
-                              ))}
-                            </select>
+                            <GradeSelect
+                              variant="native"
+                              value={lessonDesignerGrade}
+                              onChange={setLessonDesignerGrade}
+                              label=""
+                              allowEmpty
+                              emptyLabel={t('computationalThinkingModule.selectGrade')}
+                            />
                           </div>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">{t('computationalThinkingModule.computationalThinkingPillar')}</label>

@@ -2,12 +2,14 @@ import { useState } from 'react'
 import { ListChecks, Sparkles, RefreshCw, Download } from 'lucide-react'
 
 import { useTranslation } from 'react-i18next'
+import { GradeSelect } from '@/components/shared/GradeSelect'
+import { gradeToNumeric } from '@/catalog/adapters/gradeAdapters'
 type LearningFocus = 'knowledge' | 'skills' | 'application' | 'investigation'
 type Difficulty = 'easy' | 'moderate' | 'advanced'
 type OutputFormat = 'structured_json' | 'teacher_text'
 
 interface LearningIntentionInputs {
-  grade: number | ''
+  grade: string
   topic: string
   curriculum_standard: string
   learning_focus: LearningFocus | ''
@@ -73,7 +75,7 @@ const sampleBreakdown: LearningIntentionOutput = {
 const LearningIntentionBreakdown = () => {
   const { t } = useTranslation()
   const [inputs, setInputs] = useState<LearningIntentionInputs>({
-    grade: 8,
+    grade: '8',
     topic: 'Forces and Motion',
     curriculum_standard:
       'Describe the relationship between force, mass, and acceleration (Newton’s Second Law).',
@@ -109,7 +111,7 @@ const LearningIntentionBreakdown = () => {
 
       const mockOutput: LearningIntentionOutput = {
         title: `Learning Intention Breakdown: ${inputs.topic}`,
-        grade: inputs.grade as number,
+        grade: gradeToNumeric(inputs.grade) ?? 1,
         topic: inputs.topic,
         curriculum_standard: inputs.curriculum_standard || undefined,
         learning_focus: inputs.learning_focus || undefined,
@@ -173,14 +175,11 @@ const LearningIntentionBreakdown = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">{t('learningIntentionBreakdown.grade2')}<span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="12"
-                  value={inputs.grade}
-                  onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
-                  className="input-field"
-                  placeholder={t('common.gradePlaceholder')}
+                <GradeSelect
+                  variant="native"
+                  value={String(inputs.grade ?? '')}
+                  onChange={(v) => handleInputChange('grade', v)}
+                  label=""
                   required
                 />
               </div>

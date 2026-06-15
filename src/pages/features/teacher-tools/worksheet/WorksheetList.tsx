@@ -13,7 +13,9 @@ import {
 } from '../components'
 import { WORKSHEET_STATUS_FILTER_OPTIONS } from '../components/teacherToolsStatusFilterOptions'
 import { demoClasses } from '../demo/teacherToolsDemoData'
-import { SUBJECTS, GRADES } from '../types'
+import { SubjectSelect } from '@/components/shared/SubjectSelect'
+import { subjectsMatch } from '@/catalog/adapters/subjectAdapters'
+import { formatGradeDisplay, gradesMatch } from '@/catalog/adapters/gradeAdapters'
 import { formatListLoadError } from '../utils/listLoadError'
 import {
   useDeleteWorksheetMutation,
@@ -89,8 +91,8 @@ export default function WorksheetList() {
   const filtered = useMemo(() => {
     return allWorksheets.filter((w) => {
       if (filters.q && !w.title.toLowerCase().includes(filters.q.toLowerCase())) return false
-      if (filters.subject && w.subject !== filters.subject) return false
-      if (filters.grade && w.grade !== filters.grade) return false
+      if (!subjectsMatch(filters.subject, w.subject)) return false
+      if (filters.grade && !gradesMatch(w.grade, filters.grade)) return false
       if (filters.classKey && !w.classes?.includes(filters.classKey)) return false
       if (tab === 'All' && filters.status && w.status !== filters.status) return false
       const f = w.outputFormat
@@ -183,8 +185,6 @@ export default function WorksheetList() {
       <TeacherToolsFilterBar
         value={filters}
         onChange={setFilters}
-        subjects={[...SUBJECTS]}
-        grades={[...GRADES]}
         classOptions={demoClasses.map((c) => ({ key: c.key, label: c.label, grade: c.grade }))}
         statusOptions={WORKSHEET_STATUS_FILTER_OPTIONS}
       />

@@ -39,6 +39,8 @@ import NoCreditsCard from '../../components/NoCreditsCard'
 import { resolveApiMessage } from '../../i18n/resolveApiMessage'
 
 import { useTranslation } from 'react-i18next'
+import { GradeSelect } from '@/components/shared/GradeSelect'
+import { gradeLevelToChatbotApi } from '@/catalog/adapters/chatbotAdapters'
 interface ThemeAnalysis {
   themes: {
     theme: string
@@ -153,7 +155,7 @@ const LiteratureAnalysisExpert = () => {
           input: inputText,
           input_type: 'text',
           parameters: {
-            grade_level: gradeLevel,
+            grade_level: gradeLevelToChatbotApi(gradeLevel),
             title: title || undefined,
             author: author || undefined,
           },
@@ -201,7 +203,7 @@ const LiteratureAnalysisExpert = () => {
           input: inputText,
           input_type: 'text',
           parameters: {
-            grade_level: gradeLevel,
+            grade_level: gradeLevelToChatbotApi(gradeLevel),
             title: title || undefined,
             author: author || undefined,
           },
@@ -249,7 +251,7 @@ const LiteratureAnalysisExpert = () => {
           input: inputText,
           input_type: 'text',
           parameters: {
-            grade_level: gradeLevel,
+            grade_level: gradeLevelToChatbotApi(gradeLevel),
             title: title || undefined,
             author: author || undefined,
           },
@@ -297,7 +299,7 @@ const LiteratureAnalysisExpert = () => {
           input: inputText,
           input_type: 'text',
           parameters: {
-            grade_level: gradeLevel,
+            grade_level: gradeLevelToChatbotApi(gradeLevel),
             title: title || undefined,
             author: author || undefined,
           },
@@ -492,17 +494,12 @@ const LiteratureAnalysisExpert = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('literatureAnalysisExpert.gradeLevel')}</label>
-                    <select
+                    <GradeSelect
+                      variant="native"
                       value={gradeLevel}
-                      onChange={(e) => setGradeLevel(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100"
-                    >
-                      {[6, 7, 8, 9, 10, 11, 12].map((grade) => (
-                        <option key={grade} value={grade}>
-                          {t('common.gradeOption', { grade })}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setGradeLevel}
+                      label=""
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('literatureAnalysisExpert.pasteTextOrEnterContext')}</label>
@@ -831,17 +828,12 @@ const LiteratureAnalysisExpert = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('literatureAnalysisExpert.gradeLevel')}</label>
-                    <select
+                    <GradeSelect
+                      variant="native"
                       value={gradeLevel}
-                      onChange={(e) => setGradeLevel(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100"
-                    >
-                      {[6, 7, 8, 9, 10, 11, 12].map((grade) => (
-                        <option key={grade} value={grade}>
-                          {t('common.gradeOption', { grade })}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setGradeLevel}
+                      label=""
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('literatureAnalysisExpert.textContextOrExcerpt')}</label>

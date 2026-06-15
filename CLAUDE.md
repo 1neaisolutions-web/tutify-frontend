@@ -76,6 +76,27 @@ const data = await apiRequest<MyType>('/api/v1/some-endpoint', {
 
 Domain-specific API modules in `src/api/`: `templates.ts`, `chatbots.ts`, `subscriptions.ts`, `quizApi.ts`, `assignmentApi.ts`, `worksheetApi.ts`, `historyApi.ts`, `examApi.ts`, `contentIngestion.ts`, `pixgen.ts`, `youtubeQuiz.ts`. Add a new file per distinct domain.
 
+### Catalog (grades, bands, subjects)
+
+Canonical lists live in backend `metadata_data.py` and are fetched via `/api/v1/metadata/*` into `profileContextSlice`.
+
+- **`src/catalog/`** — adapters (`gradeAdapters`, `gradeBandAdapters`, `chatbotAdapters`, `subjectAdapters`), `contexts.ts` (band overlays), `fallbacks.ts`
+- **UI:** `GradeSelect`, `GradeBandSelect` (`context` prop), `SubjectSelect` (`context`: `teacherTools` | `template` | `default`)
+- **Rule:** store canonical slugs in state; use adapters at submit/filter/display so legacy API strings stay unchanged. Do not add inline grade/band/subject arrays in `pages/features/`.
+
+**TemplateRunner** (`pages/features/TemplateRunner.tsx`) special-cases schema fields by name (not only `field.type`):
+
+| Field | Component | Form state | Submit adapter |
+|---|---|---|---|
+| `grade` | `GradeSelect` | slug `K` / `1`…`12` | `gradeToNumeric()` → `0` for K |
+| `grade_level` (ordinal enum) | `GradeSelect` (filtered by schema enum) | slug `K` / `1`…`12` | `templateGradeLevelToApi()` → `"7th grade"`, etc. |
+| `grade_band` | `GradeBandSelect` `context="default"` | metadata slug | slug as-is |
+| `subject` | `SubjectSelect` + schema `optionsOverride` | catalog slug (`ela`, …) | `templateSubjectToApi()` → `english`, etc. |
+
+Helpers live in `pages/features/templateRunnerCatalog.ts`; ordinal adapters in `catalog/adapters/templateGradeLevelAdapters.ts`. Free-text `grade_level` (no ordinal enum) stays a text input.
+
+Use `buildTemplatePayload()` for both submit and regenerate. Restore/history/exemplar use `normalizeTemplateFieldValue()` with `gradeValueForSelect`, `templateGradeLevelValueForSelect`, `gradeBandValueForSelect`, `templateSubjectValueForSelect`. Do **not** use `subjectToTemplateLabel()` on submit (that returns display labels for mock planners).
+
 ### State Management
 
 Redux Toolkit + redux-persist. Persisted slices (localStorage key `persist:root`): **`auth`** and **`preferences`**.

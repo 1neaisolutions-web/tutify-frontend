@@ -2,11 +2,13 @@ import { useState } from 'react'
 import { Users, Sparkles, RefreshCw, Download } from 'lucide-react'
 
 import { useTranslation } from 'react-i18next'
+import { GradeSelect } from '@/components/shared/GradeSelect'
+import { gradeToNumeric } from '@/catalog/adapters/gradeAdapters'
 type IcebreakerGoal = 'team_building' | 'focus_reset' | 'energy_boost' | 'get_to_know_each_other'
 type IcebreakerContext = 'start_of_term' | 'after_break' | 'before_exam'
 
 interface IcebreakerInputs {
-  grade: number | ''
+  grade: string
   group_size: number | ''
   time_available: string
   goal: IcebreakerGoal | ''
@@ -96,7 +98,7 @@ const sampleIcebreaker: IcebreakerOutput = {
 const IcebreakerIdeaGenerator = () => {
   const { t } = useTranslation()
   const [inputs, setInputs] = useState<IcebreakerInputs>({
-    grade: 6,
+    grade: '6',
     group_size: 25,
     time_available: 'PT10M',
     goal: 'team_building',
@@ -125,7 +127,7 @@ const IcebreakerIdeaGenerator = () => {
     setTimeout(() => {
       const mockOutput: IcebreakerOutput = {
         title: `${inputs.goal ? inputs.goal.replace(/_/g, ' ') : 'Class'} Icebreaker`,
-        grade: inputs.grade as number,
+        grade: gradeToNumeric(inputs.grade) ?? 1,
         group_size: inputs.group_size as number,
         goal: inputs.goal || undefined,
         context: inputs.context || undefined,
@@ -215,14 +217,11 @@ const IcebreakerIdeaGenerator = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">{t('icebreakerIdeaGenerator.grade2')}<span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="12"
-                  value={inputs.grade}
-                  onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
-                  className="input-field"
-                  placeholder={t('common.gradePlaceholder')}
+                <GradeSelect
+                  variant="native"
+                  value={String(inputs.grade ?? '')}
+                  onChange={(v) => handleInputChange('grade', v)}
+                  label=""
                   required
                 />
               </div>

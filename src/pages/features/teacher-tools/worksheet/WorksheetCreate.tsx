@@ -23,7 +23,12 @@ import { demoClasses } from '../demo/teacherToolsDemoData'
 import { SHORT_RESPONSE_LINES, clampResponseLines, formatSourceSummary } from '../demo/generationFromSources'
 import type { QuestionMixMode, QuizDifficultyId } from '../demo/generationFromSources'
 import type { WorksheetBlock } from '../demo/topicAwareGenerators'
-import { GRADES, SUBJECTS } from '../types'
+import { SubjectSelect } from '@/components/shared/SubjectSelect'
+import {
+  subjectToTeacherToolsLabel,
+  subjectValueForSelect,
+} from '@/catalog/adapters/subjectAdapters'
+import { gradeToLabel, gradeValueForSelect } from '@/catalog/adapters/gradeAdapters'
 import type { DemoQuiz } from '../demo/teacherToolsDemoData'
 import {
   useAddWorksheetBlockMutation,
@@ -114,7 +119,8 @@ function distinctBlockTypesInSessions(sessionList: LocalWorksheetSession[]): num
 }
 
 function classKeyForGrade(grade: string) {
-  return demoClasses.find((c) => c.grade === grade)?.key ?? demoClasses[0]?.key ?? 'g8c'
+  const label = gradeToLabel(grade)
+  return demoClasses.find((c) => c.grade === label)?.key ?? demoClasses[0]?.key ?? 'g8c'
 }
 
 type WorksheetBlockEditForm =
@@ -417,8 +423,8 @@ export default function WorksheetCreate() {
   const [draftLayout, setDraftLayout] = useState<HandoutLayoutOpts>(DEFAULT_HANDOUT_LAYOUT)
 
   const [title, setTitle] = useState(() => t('worksheet.defaultTitle'))
-  const [subject, setSubject] = useState<string>(SUBJECTS[3])
-  const [grade, setGrade] = useState<string>(GRADES[3])
+  const [subject, setSubject] = useState<string>('math')
+  const [grade, setGrade] = useState<string>('10')
   const [outputFormat, setOutputFormat] = useState<WorksheetOutputFormat>('interactive_digital')
   const [mixMode, setMixMode] = useState<QuestionMixMode>('balanced')
   const [questionCount, setQuestionCount] = useState(10)
@@ -626,8 +632,8 @@ export default function WorksheetCreate() {
     if (!isEdit) worksheetIdRef.current = null
     enterExemplarPreview()
     setTitle(ex.title)
-    setSubject(ex.subject)
-    setGrade(ex.grade)
+    setSubject(subjectValueForSelect(ex.subject))
+    setGrade(gradeValueForSelect(ex.grade))
     setOutputFormat(ex.outputFormat)
     setMixMode(ex.mixMode)
     setQuestionCount(ex.questionCount)
@@ -666,11 +672,13 @@ export default function WorksheetCreate() {
     const titleParam = searchParams.get('title')
     if (titleParam) setTitle(titleParam)
     const sub = searchParams.get('subject')
-    const subOk = SUBJECTS.find((s) => s === sub)
-    if (subOk) setSubject(subOk)
+    if (sub) {
+      const resolved = subjectValueForSelect(sub)
+      if (resolved) setSubject(resolved)
+    }
     const gr = searchParams.get('grade')
-    const grOk = GRADES.find((g) => g === gr)
-    if (grOk) setGrade(grOk)
+    const grResolved = gr ? gradeValueForSelect(gr) : ''
+    if (grResolved) setGrade(grResolved)
     const topic = searchParams.get('topic')
     if (topic) setLoadedTopic(topic)
     const fmt = searchParams.get('format')
@@ -696,8 +704,8 @@ export default function WorksheetCreate() {
         if (cancelled) return
         worksheetIdRef.current = w.id
         setTitle(w.title)
-        setSubject(w.subject)
-        setGrade(w.grade)
+        setSubject(subjectValueForSelect(w.subject))
+        setGrade(gradeValueForSelect(w.grade))
         setOutputFormat(w.outputFormat)
         setLoadedTopic(w.topic)
         setTeacherNotes(w.teacherNotes ?? '')
@@ -1014,8 +1022,8 @@ export default function WorksheetCreate() {
       if (!wsId) {
         const created = await createWorksheet({
           title: title.trim() || t('worksheet.untitled'),
-          subject,
-          grade,
+          subject: subjectToTeacherToolsLabel(subject),
+          grade: gradeToLabel(grade),
           outputFormat,
           classes: [classKeyForGrade(grade)],
           sourceBookIds: rag.selectedBookIds,
@@ -1034,8 +1042,8 @@ export default function WorksheetCreate() {
           id: wsId,
           patch: {
             title: title.trim() || t('worksheet.untitled'),
-            subject,
-            grade,
+            subject: subjectToTeacherToolsLabel(subject),
+            grade: gradeToLabel(grade),
             outputFormat,
             classes: [classKeyForGrade(grade)],
             sourceBookIds: rag.selectedBookIds,
@@ -1198,8 +1206,8 @@ export default function WorksheetCreate() {
         worksheetIdRef.current ??
         (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `ws-preview-${Date.now()}`),
       title: `${title || t('worksheet.fallbackTitle')} — ${t('teacherTools.handoutPreviewSuffix')}`,
-      subject,
-      grade,
+      subject: subjectToTeacherToolsLabel(subject),
+      grade: gradeToLabel(grade),
       classes: [classKeyForGrade(grade)],
       questions: stubs.length,
       totalMarks: stubs.length * 2,
@@ -1731,7 +1739,7 @@ export default function WorksheetCreate() {
             <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-inner">
               <p className="text-lg font-semibold tracking-tight text-gray-900">{title || t('worksheet.untitled')}</p>
               <p className="mt-1 text-xs text-gray-500">
-                {subject} · {grade} ·{' '}
+                {subjectToTeacherToolsLabel(subject)} · {gradeToLabel(grade)} ·{' '}
                 {outputFormat === 'printable_pdf'
                   ? t('worksheet.detail.formatPrintablePdf')
                   : outputFormat === 'both'

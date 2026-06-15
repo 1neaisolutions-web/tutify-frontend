@@ -38,6 +38,7 @@ import {
 } from 'lucide-react'
 
 import { useTranslation } from 'react-i18next'
+import { GradeSelect } from '@/components/shared/GradeSelect'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template'
@@ -611,18 +612,14 @@ These questions require analysis and judgment:
                           </div>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">{t('inquiryLearningHooks.gradeLevel')}</label>
-                            <select
+                            <GradeSelect
+                              variant="native"
                               value={hookInput.gradeLevel}
-                              onChange={(e) => setHookInput({ ...hookInput, gradeLevel: e.target.value })}
-                              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
-                            >
-                              <option value="">{t('inquiryLearningHooks.selectGrade')}</option>
-                              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
-                                <option key={grade} value={grade.toString()}>
-                                  {t('common.gradeOption', { grade })}
-                                </option>
-                              ))}
-                            </select>
+                              onChange={(value) => setHookInput({ ...hookInput, gradeLevel: value })}
+                              label=""
+                              allowEmpty
+                              emptyLabel={t('inquiryLearningHooks.selectGrade')}
+                            />
                           </div>
                         </div>
                         <div>

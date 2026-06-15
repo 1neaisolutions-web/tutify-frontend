@@ -35,25 +35,3 @@ export interface DemoClass {
   grade: string
   subject: string
 }
-
-export const SUBJECTS = [
-  'Mathematics',
-  'English',
-  'Science',
-  'Biology',
-  'Physics',
-  'Chemistry',
-  'History',
-  'Geography',
-  'Computer Science',
-] as const
-
-export const GRADES = [
-  'Grade 5',
-  'Grade 6',
-  'Grade 8',
-  'Grade 10',
-  'Year 7',
-  'Year 9',
-  'Year 11',
-] as const

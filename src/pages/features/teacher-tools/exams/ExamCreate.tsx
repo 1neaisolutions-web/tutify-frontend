@@ -22,7 +22,13 @@ import { useTeacherToolsLeaveGuard } from '../hooks/useTeacherToolsLeaveGuard'
 import { demoClasses } from '../demo/teacherToolsDemoData'
 import { formatSourceSummary, generateExamSectionStubs } from '../demo/generationFromSources'
 import type { ExamSectionStub } from '../demo/generationFromSources'
-import { GRADES, SUBJECTS } from '../types'
+import { SubjectSelect } from '@/components/shared/SubjectSelect'
+import {
+  subjectToTeacherToolsLabel,
+  subjectValueForSelect,
+} from '@/catalog/adapters/subjectAdapters'
+import { GradeSelect } from '@/components/shared/GradeSelect'
+import { gradeToLabel, gradeValueForSelect } from '@/catalog/adapters/gradeAdapters'
 import * as examApi from '../../../../api/examApi'
 import {
   hydrateFromApi,
@@ -97,7 +103,8 @@ const STANDARD_LABEL_KEYS: Record<(typeof INTERNATIONAL_STANDARDS)[number], stri
 }
 
 function classKeyForGrade(grade: string) {
-  return demoClasses.find((c) => c.grade === grade)?.key ?? demoClasses[0]?.key ?? 'g8c'
+  const label = gradeToLabel(grade)
+  return demoClasses.find((c) => c.grade === label)?.key ?? demoClasses[0]?.key ?? 'g8c'
 }
 
 function normExamText(s: string) {
@@ -155,8 +162,8 @@ export default function ExamCreate() {
   const [examType, setExamType] = useState<(typeof EXAM_TYPES)[number]>('Unit test')
   const [term, setTerm] = useState<(typeof TERMS)[number]>('Term 2')
   const [durationMinutes, setDurationMinutes] = useState(60)
-  const [subject, setSubject] = useState<string>(SUBJECTS[2])
-  const [grade, setGrade] = useState<string>(GRADES[2])
+  const [subject, setSubject] = useState<string>('math')
+  const [grade, setGrade] = useState<string>('8')
   const [internationalStandard, setInternationalStandard] = useState<(typeof INTERNATIONAL_STANDARDS)[number]>(
     'Cambridge-style',
   )
@@ -198,8 +205,8 @@ export default function ExamCreate() {
     setTitle(h.title)
     setExamType(h.examType)
     setTerm(h.term)
-    setSubject(h.subject)
-    setGrade(h.grade)
+    setSubject(subjectValueForSelect(h.subject))
+    setGrade(gradeValueForSelect(h.grade))
     setInternationalStandard(h.internationalStandard as (typeof INTERNATIONAL_STANDARDS)[number])
     setDurationMinutes(h.durationMinutes)
     setSectionTargetCount(h.sectionTargetCount)
@@ -431,8 +438,8 @@ export default function ExamCreate() {
     setExamType(ex.examType)
     setTerm(ex.term)
     setDurationMinutes(ex.durationMinutes)
-    setSubject(ex.subject)
-    setGrade(ex.grade)
+    setSubject(subjectValueForSelect(ex.subject))
+    setGrade(gradeValueForSelect(ex.grade))
     setInternationalStandard(ex.internationalStandard)
     setSectionTargetCount(ex.sectionTargetCount)
     setPaper(ex.paper)
@@ -457,11 +464,13 @@ export default function ExamCreate() {
     const titleParam = searchParams.get('title')
     if (titleParam) setTitle(titleParam)
     const sub = searchParams.get('subject')
-    const subOk = SUBJECTS.find((s) => s === sub)
-    if (subOk) setSubject(subOk)
+    if (sub) {
+      const resolved = subjectValueForSelect(sub)
+      if (resolved) setSubject(resolved)
+    }
     const gr = searchParams.get('grade')
-    const grOk = GRADES.find((g) => g === gr)
-    if (grOk) setGrade(grOk)
+    const grResolved = gr ? gradeValueForSelect(gr) : ''
+    if (grResolved) setGrade(grResolved)
     const topic = searchParams.get('topic')
     if (topic) setLoadedTopic(topic)
     if (searchParams.get('fromTemplate') && !templateToastRef.current) {
@@ -561,8 +570,8 @@ export default function ExamCreate() {
       if (!id) {
         const created = await examApi.createExam({
           title: title.trim() || t('exam.untitled'),
-          subject,
-          grade,
+          subject: subjectToTeacherToolsLabel(subject),
+          grade: gradeToLabel(grade),
           examType,
           term,
           internationalStandard,
@@ -888,8 +897,8 @@ export default function ExamCreate() {
     const classes = selectedClasses.length > 0 ? selectedClasses : [classKeyForGrade(grade)]
     return {
       title: title.trim() || t('exam.untitled'),
-      subject,
-      grade,
+      subject: subjectToTeacherToolsLabel(subject),
+      grade: gradeToLabel(grade),
       term,
       examType,
       internationalStandard,
@@ -973,8 +982,8 @@ export default function ExamCreate() {
     downloadExamHandoutPdf(
       {
         title: `${title || t('exam.fallbackTitle')} — ${t('exam.previewTitleSuffix')}`,
-        subject,
-        grade,
+        subject: subjectToTeacherToolsLabel(subject),
+        grade: gradeToLabel(grade),
         timeLimitMinutes: durationMinutes,
         topic: rag.combinedTopicLabel,
         sourceSummary: formatSourceSummary(rag.getGenerationContext()),
@@ -1197,34 +1206,20 @@ export default function ExamCreate() {
                   className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
                 />
               </label>
-              <label className="block text-sm font-medium text-gray-800">
-                {t('teacherTools.subject')}
-                <select
-                  value={subject}
-                  onChange={(e) => setSubject(e.target.value)}
-                  className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-                >
-                  {SUBJECTS.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="block text-sm font-medium text-gray-800">
-                {t('teacherTools.gradeCohort')}
-                <select
-                  value={grade}
-                  onChange={(e) => setGrade(e.target.value)}
-                  className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-                >
-                  {GRADES.map((g) => (
-                    <option key={g} value={g}>
-                      {g}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <SubjectSelect
+                value={subject}
+                onChange={setSubject}
+                label={t('teacherTools.subject')}
+                variant="native"
+                context="teacherTools"
+                selectClassName="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+              />
+              <GradeSelect
+                value={grade}
+                onChange={setGrade}
+                label={t('teacherTools.gradeCohort')}
+                variant="native"
+              />
               <label className="block text-sm font-medium text-gray-800">
                 {t('exam.create.internationalStandard')}
                 <select

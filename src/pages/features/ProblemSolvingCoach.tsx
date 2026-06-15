@@ -46,6 +46,8 @@ import {
 } from 'lucide-react'
 
 import { useTranslation } from 'react-i18next'
+import { GradeSelect } from '@/components/shared/GradeSelect'
+import { formatGradeDisplay } from '@/catalog/adapters/gradeAdapters'
 interface WordProblem {
   problem: string
   context: string
@@ -458,17 +460,12 @@ const ProblemSolvingCoach = () => {
                 <div className="lg:col-span-1 space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('problemSolvingCoach.gradeLevel')}</label>
-                    <select
+                    <GradeSelect
+                      variant="native"
                       value={gradeLevel}
-                      onChange={(e) => setGradeLevel(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
-                    >
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
-                        <option key={grade} value={grade}>
-                          {t('common.gradeOption', { grade })}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setGradeLevel}
+                      label=""
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -517,7 +514,7 @@ const ProblemSolvingCoach = () => {
                               {wordProblem.context}
                             </span>
                             <span className="ml-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">
-                              Grade {wordProblem.gradeLevel}
+                              {formatGradeDisplay(wordProblem.gradeLevel)}
                             </span>
                           </div>
                           <span className="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
@@ -604,17 +601,12 @@ const ProblemSolvingCoach = () => {
                 <div className="lg:col-span-1 space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('problemSolvingCoach.gradeLevel')}</label>
-                    <select
+                    <GradeSelect
+                      variant="native"
                       value={gradeLevel}
-                      onChange={(e) => setGradeLevel(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
-                    >
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
-                        <option key={grade} value={grade}>
-                          {t('common.gradeOption', { grade })}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setGradeLevel}
+                      label=""
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('problemSolvingCoach.realWorldScenarioOrTopic')}</label>
@@ -864,17 +856,12 @@ const ProblemSolvingCoach = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('problemSolvingCoach.gradeLevel')}</label>
-                    <select
+                    <GradeSelect
+                      variant="native"
                       value={gradeLevel}
-                      onChange={(e) => setGradeLevel(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
-                    >
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
-                        <option key={grade} value={grade}>
-                          {t('common.gradeOption', { grade })}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setGradeLevel}
+                      label=""
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('problemSolvingCoach.mathTopic')}</label>

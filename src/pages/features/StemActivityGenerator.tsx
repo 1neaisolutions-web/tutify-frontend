@@ -2,7 +2,10 @@ import { useState } from 'react'
 import { FlaskConical, Sparkles, RefreshCw, Download } from 'lucide-react'
 
 import { useTranslation } from 'react-i18next'
-type StemSubject = 'Science' | 'Technology' | 'Engineering' | 'Mathematics'
+import { GradeSelect } from '@/components/shared/GradeSelect'
+import { SubjectSelect } from '@/components/shared/SubjectSelect'
+import { subjectToTemplateLabel } from '@/catalog/adapters/subjectAdapters'
+import { gradeToNumeric } from '@/catalog/adapters/gradeAdapters'
 type ActivityType =
   | 'experiment'
   | 'engineering_challenge'
@@ -12,8 +15,8 @@ type LabAccess = 'none' | 'basic' | 'full'
 type OutputFormat = 'structured_json' | 'markdown' | 'teacher_text'
 
 interface StemActivityInputs {
-  grade: number | ''
-  subject: StemSubject | ''
+  grade: string
+  subject: string
   topic: string
   duration: string
   activity_type: ActivityType | ''
@@ -110,8 +113,8 @@ const sampleActivity: StemActivityOutput = {
 const StemActivityGenerator = () => {
   const { t } = useTranslation()
   const [inputs, setInputs] = useState<StemActivityInputs>({
-    grade: 7,
-    subject: 'Science',
+    grade: '7',
+    subject: 'science',
     topic: 'Forces and Motion',
     duration: 'PT60M',
     activity_type: 'engineering_challenge',
@@ -168,8 +171,8 @@ const StemActivityGenerator = () => {
     setTimeout(() => {
       const mockOutput: StemActivityOutput = {
         title: `${inputs.topic} STEM Challenge`,
-        grade: inputs.grade as number,
-        subject: inputs.subject as string,
+        grade: gradeToNumeric(inputs.grade) ?? 1,
+        subject: subjectToTemplateLabel(inputs.subject),
         duration: inputs.duration,
         summary: `Students engage in a ${
           inputs.activity_type || 'STEM'
@@ -215,7 +218,7 @@ const StemActivityGenerator = () => {
             }
           : undefined,
         real_world_connection: inputs.real_world_context
-          ? `Connect the activity to how ${inputs.subject?.toLowerCase()} professionals leverage ${inputs.topic.toLowerCase()} in authentic settings.`
+          ? `Connect the activity to how ${subjectToTemplateLabel(inputs.subject).toLowerCase()} professionals leverage ${inputs.topic.toLowerCase()} in authentic settings.`
           : undefined,
         assessment: {
           formative: [
@@ -263,14 +266,11 @@ const StemActivityGenerator = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">{t('stemActivityGenerator.grade2')}<span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="12"
-                  value={inputs.grade}
-                  onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
-                  className="input-field"
-                  placeholder={t('common.gradePlaceholder')}
+                <GradeSelect
+                  variant="native"
+                  value={String(inputs.grade ?? '')}
+                  onChange={(v) => handleInputChange('grade', v)}
+                  label=""
                   required
                 />
               </div>
@@ -278,20 +278,17 @@ const StemActivityGenerator = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">{t('stemActivityGenerator.subject2')}<span className="text-red-500">*</span>
                 </label>
-                <select
+                <SubjectSelect
+                  variant="native"
+                  context="template"
+                  allowEmpty
+                  emptyLabel={t('stemActivityGenerator.selectSubject')}
                   value={inputs.subject}
-                  onChange={(e) =>
-                    handleInputChange('subject', e.target.value as StemActivityInputs['subject'])
-                  }
-                  className="input-field"
+                  onChange={(v) => handleInputChange('subject', v)}
+                  label=""
+                  selectClassName="input-field"
                   required
-                >
-                  <option value="">{t('stemActivityGenerator.selectSubject')}</option>
-                  <option value="Science">{t('stemActivityGenerator.science')}</option>
-                  <option value="Technology">{t('stemActivityGenerator.technology')}</option>
-                  <option value="Engineering">{t('stemActivityGenerator.engineering')}</option>
-                  <option value="Mathematics">{t('stemActivityGenerator.mathematics')}</option>
-                </select>
+                />
               </div>
 
               <div>

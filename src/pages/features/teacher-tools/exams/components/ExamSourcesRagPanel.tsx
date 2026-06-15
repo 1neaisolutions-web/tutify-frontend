@@ -15,6 +15,7 @@ import {
 import type { QuizRagScopeModel } from '../../quiz/hooks/useQuizRagScope'
 import { getBookById } from '../../demo/demoContentLibrary'
 import { formatSourceSummary } from '../../demo/generationFromSources'
+import { subjectToTeacherToolsLabel } from '@/catalog/adapters/subjectAdapters'
 
 type Props = {
   rag: QuizRagScopeModel
@@ -159,7 +160,7 @@ export function ExamSourcesRagPanel({ rag, subject, grade, panelStep }: Props) {
                 <>
                   <p className="mt-2 text-sm font-medium text-gray-800">{t('quiz.rag.noCatalogForGrade')}</p>
                   <p className="mt-1 max-w-sm text-xs text-gray-600">
-                    {t('quiz.rag.noCatalogHint', { subject, grade })}
+                    {t('quiz.rag.noCatalogHint', { subject: subjectToTeacherToolsLabel(subject), grade })}
                   </p>
                 </>
               )}

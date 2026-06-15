@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Calculator, Sparkles, RefreshCw, Download } from 'lucide-react'
 
 import { useTranslation } from 'react-i18next'
+import { GradeSelect } from '@/components/shared/GradeSelect'
+import { gradeToNumeric } from '@/catalog/adapters/gradeAdapters'
 type MathDomain =
   | 'algebra'
   | 'geometry'
@@ -14,7 +16,7 @@ type Difficulty = 'easy' | 'moderate' | 'challenging'
 type OutputFormat = 'structured_json' | 'teacher_text'
 
 interface ProblemGeneratorInputs {
-  grade: number | ''
+  grade: string
   math_domain: MathDomain | ''
   topic: string
   context: string
@@ -95,7 +97,7 @@ const sampleProblemSet: ProblemSetOutput = {
 const RealWorldMathProblemGenerator = () => {
   const { t } = useTranslation()
   const [inputs, setInputs] = useState<ProblemGeneratorInputs>({
-    grade: 7,
+    grade: '7',
     math_domain: 'algebra',
     topic: 'Speed, distance, time',
     context: 'travel',
@@ -146,7 +148,7 @@ const RealWorldMathProblemGenerator = () => {
       }))
 
       const mockOutput: ProblemSetOutput = {
-        grade: inputs.grade as number,
+        grade: gradeToNumeric(inputs.grade) ?? 1,
         math_domain: inputs.math_domain,
         topic: inputs.topic,
         context: inputs.context || undefined,
@@ -198,14 +200,11 @@ const RealWorldMathProblemGenerator = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">{t('realWorldMathProblemGenerator.grade2')}<span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="12"
-                  value={inputs.grade}
-                  onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
-                  className="input-field"
-                  placeholder={t('common.gradePlaceholder')}
+                <GradeSelect
+                  variant="native"
+                  value={String(inputs.grade ?? '')}
+                  onChange={(v) => handleInputChange('grade', v)}
+                  label=""
                   required
                 />
               </div>

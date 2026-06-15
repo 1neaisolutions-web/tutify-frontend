@@ -2,8 +2,12 @@ import { useState } from 'react'
 import { FileText, Sparkles, Download, RefreshCw } from 'lucide-react'
 
 import { useTranslation } from 'react-i18next'
+import { GradeSelect } from '@/components/shared/GradeSelect'
+import { SubjectSelect } from '@/components/shared/SubjectSelect'
+import { subjectToTemplateLabel } from '@/catalog/adapters/subjectAdapters'
+import { gradeToNumeric } from '@/catalog/adapters/gradeAdapters'
 interface LessonPlanInputs {
-  grade: number | ''
+  grade: string
   subject: string
   topic: string
   duration: string
@@ -97,8 +101,8 @@ const sampleLessonPlan: LessonPlanOutput = {
 const GeneralLessonPlanner = () => {
   const { t } = useTranslation()
   const [inputs, setInputs] = useState<LessonPlanInputs>({
-    grade: 5,
-    subject: 'Science',
+    grade: '5',
+    subject: 'science',
     topic: 'Photosynthesis',
     duration: 'PT45M',
     curriculum_profile: 'US_COMMON_CORE',
@@ -173,8 +177,8 @@ const GeneralLessonPlanner = () => {
     setTimeout(() => {
       const mockOutput: LessonPlanOutput = {
         title: `Exploring ${inputs.topic}`,
-        grade: inputs.grade as number,
-        subject: inputs.subject,
+        grade: gradeToNumeric(inputs.grade) ?? 1,
+        subject: subjectToTemplateLabel(inputs.subject),
         duration: inputs.duration,
         cognitive_level: 'Analyze',
         framework: 'Bloom\'s Taxonomy',
@@ -257,14 +261,11 @@ const GeneralLessonPlanner = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">{t('generalLessonPlanner.grade2')}<span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="12"
-                  value={inputs.grade}
-                  onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
-                  className="input-field"
-                  placeholder={t('common.gradePlaceholder')}
+                <GradeSelect
+                  variant="native"
+                  value={String(inputs.grade ?? '')}
+                  onChange={(v) => handleInputChange('grade', v)}
+                  label=""
                   required
                 />
               </div>
@@ -273,21 +274,17 @@ const GeneralLessonPlanner = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">{t('generalLessonPlanner.subject2')}<span className="text-red-500">*</span>
                 </label>
-                <select
+                <SubjectSelect
+                  variant="native"
+                  context="template"
+                  allowEmpty
+                  emptyLabel={t('generalLessonPlanner.selectSubject')}
                   value={inputs.subject}
-                  onChange={(e) => handleInputChange('subject', e.target.value)}
-                  className="input-field"
+                  onChange={(v) => handleInputChange('subject', v)}
+                  label=""
+                  selectClassName="input-field"
                   required
-                >
-                  <option value="">{t('generalLessonPlanner.selectSubject')}</option>
-                  <option value="English">{t('generalLessonPlanner.english')}</option>
-                  <option value="Math">{t('generalLessonPlanner.math')}</option>
-                  <option value="Science">{t('generalLessonPlanner.science')}</option>
-                  <option value="Arts">{t('generalLessonPlanner.arts')}</option>
-                  <option value="Technology">{t('generalLessonPlanner.technology')}</option>
-                  <option value="Business">{t('generalLessonPlanner.business')}</option>
-                  <option value="General">{t('generalLessonPlanner.general')}</option>
-                </select>
+                />
               </div>
 
               {/* Topic */}

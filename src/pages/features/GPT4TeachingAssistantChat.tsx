@@ -67,6 +67,7 @@ import * as chatbotApi from '../../api/chatbots'
 import { useRestoreChatbotConversationFromUrl } from '../../hooks/useRestoreChatbotConversationFromUrl'
 
 import { useTranslation } from 'react-i18next'
+import { GradeSelect } from '@/components/shared/GradeSelect'
 interface Conversation {
   id: string
   title: string
@@ -755,18 +756,14 @@ const GPT4TeachingAssistantChat = () => {
                   <BookOpen className="h-4 w-4" />
                   Standards {selectedStandards.length > 0 && `(${selectedStandards.length})`}
                 </button>
-                <select
+                <GradeSelect
+                  variant="native"
                   value={gradeLevel}
-                  onChange={(e) => setGradeLevel(e.target.value)}
-                  className="px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
-                >
-                  <option value="">{t('gPT4TeachingAssistantChat.gradeLevel')}</option>
-                  {['K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'].map((g) => (
-                    <option key={g} value={g}>
-                      Grade {g}
-                    </option>
-                  ))}
-                </select>
+                  onChange={setGradeLevel}
+                  label=""
+                  allowEmpty
+                  emptyLabel={t('gPT4TeachingAssistantChat.gradeLevel')}
+                />
                 <select
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}

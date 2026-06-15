@@ -14,7 +14,9 @@ import {
 } from '../components'
 import { QUIZ_STATUS_FILTER_OPTIONS } from '../components/teacherToolsStatusFilterOptions'
 import { demoClasses, demoQuizzes, TEACHER_TOOLS_SEED_QUIZ_IDS } from '../demo/teacherToolsDemoData'
-import { SUBJECTS, GRADES } from '../types'
+import { SubjectSelect } from '@/components/shared/SubjectSelect'
+import { subjectsMatch } from '@/catalog/adapters/subjectAdapters'
+import { formatGradeDisplay, gradesMatch } from '@/catalog/adapters/gradeAdapters'
 import { useTeacherToolsDemo } from '../TeacherToolsDemoProvider'
 import { formatListLoadError } from '../utils/listLoadError'
 // @ts-expect-error — JS module
@@ -80,8 +82,8 @@ export default function QuizList() {
   const filtered = useMemo(() => {
     return allQuizzes.filter((q) => {
       if (filters.q && !q.title.toLowerCase().includes(filters.q.toLowerCase())) return false
-      if (filters.subject && q.subject !== filters.subject) return false
-      if (filters.grade && q.grade !== filters.grade) return false
+      if (!subjectsMatch(filters.subject, q.subject)) return false
+      if (filters.grade && !gradesMatch(q.grade, filters.grade)) return false
       if (filters.classKey && !q.classes?.includes(filters.classKey)) return false
       if (tab === 'All' && filters.status && q.status !== filters.status) return false
       if (tab === 'Draft' && q.status !== 'draft') return false
@@ -185,8 +187,6 @@ export default function QuizList() {
       <TeacherToolsFilterBar
         value={filters}
         onChange={setFilters}
-        subjects={[...SUBJECTS]}
-        grades={[...GRADES]}
         classOptions={demoClasses.map((c) => ({ key: c.key, label: c.label, grade: c.grade }))}
         statusOptions={QUIZ_STATUS_FILTER_OPTIONS}
       />
@@ -335,7 +335,7 @@ export default function QuizList() {
                     )}
                   </td>
                   <td className="px-3 py-3 text-gray-600">{q.subject}</td>
-                  <td className="px-3 py-3 text-gray-600">{q.grade}</td>
+                  <td className="px-3 py-3 text-gray-600">{formatGradeDisplay(q.grade)}</td>
                   <td className="px-3 py-3">{q.questions}</td>
                   <td className="px-3 py-3">{q.totalMarks}</td>
                   <td className="px-3 py-3">

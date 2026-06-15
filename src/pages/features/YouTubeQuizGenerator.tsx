@@ -29,7 +29,11 @@ import { QuickStartVideoSources } from './youtube-quiz/QuickStartVideoSources'
 import { AICapabilityPreview } from './youtube-quiz/AICapabilityPreview'
 
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { resolveApiMessage } from '../../i18n/resolveApiMessage'
+import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
+import { buildYoutubeBandOptions } from '@/catalog/contexts'
+import { bandToApi, youtubeGradeBandValueForSelect } from '@/catalog/adapters/gradeBandAdapters'
 
 interface QuizPreview {
   id?: string
@@ -100,6 +104,10 @@ const HERO_COLLAPSE_KEY = 'yt_quiz_hero_collapsed_v1'
 
 const YouTubeQuizGenerator = () => {
   const { t } = useTranslation()
+  const bandsFromStore = useSelector(
+    (state: { profileContext?: { gradeBands?: { value: string; label: string }[] } }) =>
+      state.profileContext?.gradeBands,
+  )
   const questionStyles = useMemo(
     () => [
       {
@@ -129,15 +137,16 @@ const YouTubeQuizGenerator = () => {
     ],
     [t]
   )
-  const gradeBandOptions = useMemo(
-    () => [
-      { value: 'Grades 3-5', label: t('youtubeQuizPage.gradeBands.grades35') },
-      { value: 'Grades 6-8', label: t('youtubeQuizPage.gradeBands.grades68') },
-      { value: 'Grades 9-10', label: t('youtubeQuizPage.gradeBands.grades910') },
-      { value: 'Grades 11-12', label: t('youtubeQuizPage.gradeBands.grades1112') },
-      { value: 'Higher Education', label: t('youtubeQuizPage.gradeBands.higherEd') },
-    ],
-    [t]
+  const youtubeBandOptions = useMemo(
+    () =>
+      buildYoutubeBandOptions(bandsFromStore, {
+        grades35: t('youtubeQuizPage.gradeBands.grades35'),
+        grades68: t('youtubeQuizPage.gradeBands.grades68'),
+        grades910: t('youtubeQuizPage.gradeBands.grades910'),
+        grades1112: t('youtubeQuizPage.gradeBands.grades1112'),
+        higherEd: t('youtubeQuizPage.gradeBands.higherEd'),
+      }),
+    [t, bandsFromStore],
   )
   const subjectOptions = useMemo(
     () => [
@@ -236,7 +245,7 @@ const YouTubeQuizGenerator = () => {
     }
   })
   const [videoUrl, setVideoUrl] = useState('')
-  const [gradeBand, setGradeBand] = useState('Grades 6-8')
+  const [gradeBand, setGradeBand] = useState('6-8')
   const [subjectArea, setSubjectArea] = useState('Science & STEM')
   const [learningFocus, setLearningFocus] = useState('Concept comprehension')
   const [language, setLanguage] = useState('English')
@@ -310,7 +319,7 @@ const YouTubeQuizGenerator = () => {
     scrollToBlueprint()
     setSelectedLibraryVideoId(null)
     setVideoUrl(video.url)
-    setGradeBand(video.gradeBand)
+    setGradeBand(youtubeGradeBandValueForSelect(video.gradeBand))
     setSubjectArea(video.subjectArea)
     setLearningFocus(video.learningFocus)
     setUrlError(null)
@@ -365,7 +374,9 @@ const YouTubeQuizGenerator = () => {
     try {
       const response = await generateYouTubeQuiz({
         video_url: videoData?.url || videoUrl,
-        grade_band: videoData?.gradeBand || gradeBand,
+        grade_band: videoData?.gradeBand
+          ? bandToApi(youtubeGradeBandValueForSelect(videoData.gradeBand), 'youtube')
+          : bandToApi(gradeBand, 'youtube'),
         subject_lens: videoData?.subjectArea || subjectArea,
         learning_focus: videoData?.learningFocus || learningFocus,
         quiz_language: language,
@@ -616,18 +627,14 @@ const YouTubeQuizGenerator = () => {
             <div className="mt-6 space-y-6">
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="text-sm font-semibold text-gray-700">{t('youtubeQuizPage.blueprint.gradeBand')}</label>
-                  <select
+                  <GradeBandSelect
+                    variant="native"
                     value={gradeBand}
-                    onChange={(event) => setGradeBand(event.target.value)}
-                    className="mt-2 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 focus:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-100"
-                  >
-                    {gradeBandOptions.map((opt) => (
-                      <option key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={setGradeBand}
+                    label={t('youtubeQuizPage.blueprint.gradeBand')}
+                    context="youtube"
+                    className="mt-2 [&_select]:mt-0 [&_select]:rounded-xl [&_select]:border-gray-200 [&_select]:px-4 [&_select]:py-3"
+                  />
                 </div>
                 <div>
                   <label className="text-sm font-semibold text-gray-700">{t('youtubeQuizPage.blueprint.subjectLens')}</label>
@@ -798,7 +805,9 @@ const YouTubeQuizGenerator = () => {
                       </h4>
                       <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-gray-500">
                         <span>
-                          {gradeBandOptions.find((o) => o.value === video.gradeBand)?.label ?? video.gradeBand}
+                          {youtubeBandOptions.find(
+                            (o) => o.value === youtubeGradeBandValueForSelect(video.gradeBand),
+                          )?.label ?? video.gradeBand}
                         </span>
                         <span>•</span>
                         <span>

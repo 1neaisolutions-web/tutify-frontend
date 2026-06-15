@@ -29,6 +29,10 @@ import { useSnackbar } from '../../hooks/useSnackbar'
 import { useNavigate } from 'react-router-dom'
 
 import { useTranslation } from 'react-i18next'
+import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
+import { SubjectSelect } from '@/components/shared/SubjectSelect'
+import { gradeBandValueForSelect } from '@/catalog/adapters/gradeBandAdapters'
+import { subjectValueForSelect } from '@/catalog/adapters/subjectAdapters'
 import type { TFunction } from 'i18next'
 // ---------------------------------------------------------------------------
 // Error helpers
@@ -110,6 +114,7 @@ const PackFormModal = ({ mode, initialValues, onClose, onSubmit }: PackFormModal
   const [values, setValues] = useState<PackFormValues>({
     ...EMPTY_FORM,
     ...initialValues,
+    subject: subjectValueForSelect(initialValues?.subject),
   })
   const [errors, setErrors] = useState<PackFormErrors>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -215,25 +220,27 @@ const PackFormModal = ({ mode, initialValues, onClose, onSubmit }: PackFormModal
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t('contentPacksPage.subject')}</label>
-                <input
-                  type="text"
+                <SubjectSelect
+                  variant="native"
+                  context="default"
+                  allowEmpty
+                  emptyLabel={t('contentPacksPage.eGBiology', { defaultValue: 'Select subject' })}
                   value={values.subject}
-                  onChange={set('subject')}
+                  onChange={(v) => setValues((prev) => ({ ...prev, subject: v }))}
+                  label={t('contentPacksPage.subject')}
                   disabled={isSubmitting}
-                  placeholder={t('contentPacksPage.eGBiology')}
-                  className={inputCls()}
+                  selectClassName={inputCls()}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t('contentPacksPage.gradeBand')}</label>
-                <input
-                  type="text"
-                  value={values.grade}
-                  onChange={set('grade')}
+                <GradeBandSelect
+                  variant="native"
+                  value={gradeBandValueForSelect(values.grade)}
+                  onChange={(v) => setValues((prev) => ({ ...prev, grade: v }))}
+                  label={t('contentPacksPage.gradeBand')}
                   disabled={isSubmitting}
-                  placeholder={t('contentPacksPage.eGGrade10')}
-                  className={inputCls()}
+                  allowEmpty
+                  emptyLabel={t('contentPacksPage.eGGrade10', { defaultValue: 'Select grade band' })}
                 />
               </div>
             </div>
@@ -590,7 +597,7 @@ export const ContentPacksManagement = () => {
           initialValues={{
             name: modal.pack.name,
             description: modal.pack.description ?? '',
-            subject: modal.pack.subject ?? '',
+            subject: subjectValueForSelect(modal.pack.subject ?? ''),
             grade: modal.pack.grade ?? '',
             curriculum: modal.pack.curriculum ?? '',
           }}
