@@ -7,8 +7,8 @@ import {
   TeacherToolsCreateLayout,
   TeacherToolsCreateReviewFooter,
   TeacherToolsExemplarReviewBanner,
+  TeacherToolsFieldBand,
   TeacherToolsFieldErrors,
-  TeacherToolsPageHeader,
   TeacherToolsPanelHeader,
   TeacherToolsReviewHeaderCompact,
   TeacherToolsWizardFooter,
@@ -1157,85 +1157,94 @@ export default function ExamCreate() {
               />
             }
           >
-            <div className="grid gap-4 p-5 md:grid-cols-2">
-              <label className="md:col-span-2 block text-sm font-medium text-gray-800">
-                {t('exam.create.examTitle')} <span className="text-red-500">*</span>
-                <input
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder={t('exam.examTitlePlaceholder')}
-                  className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-                />
-              </label>
-              <label className="block text-sm font-medium text-gray-800">
-                {t('exam.create.examType')}
-                <select
-                  value={examType}
-                  onChange={(e) => setExamType(e.target.value as (typeof EXAM_TYPES)[number])}
-                  className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-                >
-                  {EXAM_TYPES.map((typeValue) => (
-                    <option key={typeValue} value={typeValue}>
-                      {t(EXAM_TYPE_LABEL_KEYS[typeValue])}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="block text-sm font-medium text-gray-800">
-                {t('exam.create.term')}
-                <select
-                  value={term}
-                  onChange={(e) => setTerm(e.target.value as (typeof TERMS)[number])}
-                  className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-                >
-                  {TERMS.map((termValue) => (
-                    <option key={termValue} value={termValue}>
-                      {t(TERM_LABEL_KEYS[termValue])}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="block text-sm font-medium text-gray-800">
-                {t('exam.create.durationMinutes')}
-                <input
-                  type="number"
-                  value={durationMinutes}
-                  min={15}
-                  max={360}
-                  onChange={(e) => setDurationMinutes(Number(e.target.value) || 60)}
-                  className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-                />
-              </label>
-              <SubjectSelect
-                value={subject}
-                onChange={setSubject}
-                label={t('teacherTools.subject')}
-                variant="native"
-                context="teacherTools"
-                selectClassName="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-              />
-              <GradeSelect
-                value={grade}
-                onChange={setGrade}
-                label={t('teacherTools.gradeCohort')}
-                variant="native"
-              />
-              <label className="block text-sm font-medium text-gray-800">
-                {t('exam.create.internationalStandard')}
-                <select
-                  value={internationalStandard}
-                  onChange={(e) =>
-                    setInternationalStandard(e.target.value as (typeof INTERNATIONAL_STANDARDS)[number])
-                  }
-                  className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-                >
-                  {INTERNATIONAL_STANDARDS.map((standardValue) => (
-                    <option key={standardValue} value={standardValue}>
-                      {t(STANDARD_LABEL_KEYS[standardValue])}
-                    </option>
-                  ))}
-                </select>
-              </label>
+            <div className="space-y-4 p-5">
+              <TeacherToolsFieldBand variant="student">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <label className="md:col-span-2 block text-sm font-medium text-gray-800">
+                    {t('exam.create.examTitle')} <span className="text-red-500">*</span>
+                    <input
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder={t('exam.examTitlePlaceholder')}
+                      className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+                    />
+                  </label>
+                  <label className="block text-sm font-medium text-gray-800">
+                    {t('exam.create.examType')}
+                    <select
+                      value={examType}
+                      onChange={(e) => setExamType(e.target.value as (typeof EXAM_TYPES)[number])}
+                      className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+                    >
+                      {EXAM_TYPES.map((typeValue) => (
+                        <option key={typeValue} value={typeValue}>
+                          {t(EXAM_TYPE_LABEL_KEYS[typeValue])}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="block text-sm font-medium text-gray-800">
+                    {t('exam.create.term')}
+                    <select
+                      value={term}
+                      onChange={(e) => setTerm(e.target.value as (typeof TERMS)[number])}
+                      className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+                    >
+                      {TERMS.map((termValue) => (
+                        <option key={termValue} value={termValue}>
+                          {t(TERM_LABEL_KEYS[termValue])}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="block text-sm font-medium text-gray-800">
+                    {t('exam.create.durationMinutes')}
+                    <input
+                      type="number"
+                      value={durationMinutes}
+                      min={15}
+                      max={360}
+                      onChange={(e) => setDurationMinutes(Number(e.target.value) || 60)}
+                      className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+                    />
+                  </label>
+                </div>
+              </TeacherToolsFieldBand>
+              <TeacherToolsFieldBand variant="library">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <SubjectSelect
+                    value={subject}
+                    onChange={setSubject}
+                    label={t('teacherTools.subject')}
+                    variant="native"
+                    context="teacherTools"
+                    selectClassName="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+                  />
+                  <GradeSelect
+                    value={grade}
+                    onChange={setGrade}
+                    label={t('teacherTools.gradeCohort')}
+                    variant="native"
+                  />
+                  <label className="block text-sm font-medium text-gray-800">
+                    {t('exam.create.internationalStandard')}
+                    <select
+                      value={internationalStandard}
+                      onChange={(e) =>
+                        setInternationalStandard(e.target.value as (typeof INTERNATIONAL_STANDARDS)[number])
+                      }
+                      className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+                    >
+                      {INTERNATIONAL_STANDARDS.map((standardValue) => (
+                        <option key={standardValue} value={standardValue}>
+                          {t(STANDARD_LABEL_KEYS[standardValue])}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+                <p className="text-xs text-gray-500">{t('teacherTools.libraryMatchHint')}</p>
+              </TeacherToolsFieldBand>
             </div>
           </ExamSectionShell>
           )}
@@ -1287,6 +1296,7 @@ export default function ExamCreate() {
               tone="gray"
             />
             <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+            <TeacherToolsFieldBand variant="student">
             <label className="mb-4 block text-sm font-medium text-gray-800">
               {t('exam.create.targetSectionCount')}
               <input
@@ -1299,6 +1309,7 @@ export default function ExamCreate() {
               />
             </label>
             <ExamPaperStructureCard paper={paper} onChange={(patch) => setPaper((p) => ({ ...p, ...patch }))} />
+            </TeacherToolsFieldBand>
             </div>
           </div>
           )}

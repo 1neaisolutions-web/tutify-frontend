@@ -11068,6 +11068,37 @@
     "topicOnly": "Način samo za teme",
     "retry": "Poskusite znova",
     "sectionsIndexed": "{{count}} razdelkov indeksiranih",
+    "sectionsCount": "{{count}} sections",
+    "sectionsIndexedMeta": "{{documents}} documents · {{count}} sections indexed",
+    "scopeSearchPlaceholder": "Search chapters and topics (e.g. fractions, motion)",
+    "libraryMatchHint": "Used to match books in your library.",
+    "focusForAi": "Focus for AI (optional)",
+    "generationNotes": "Generation notes (optional)",
+    "generationNotesHint": "Students won't see this.",
+    "selectChapter": "Select chapter",
+    "clearChapter": "Clear chapter",
+    "expandChapter": "Expand",
+    "collapseChapter": "Collapse",
+    "expandBook": "Show topics",
+    "collapseBook": "Hide topics",
+    "fieldBands": {
+      "student": {
+        "title": "What students will see",
+        "description": "These appear on the assignment or assessment after you publish."
+      },
+      "library": {
+        "title": "Content library match",
+        "description": "Helps find the right books and materials in your catalog."
+      },
+      "ai": {
+        "title": "AI generation settings",
+        "description": "Guides question generation only — students never see these."
+      }
+    },
+    "scopeStep": {
+      "title": "Select content to use",
+      "subtitle": "Choose chapters and topics from your selected materials."
+    },
     "clearSearch": "Počisti iskanje",
     "scopeRefinement": "Izpopolnitev obsega",
     "scopeRefinementOptional": "Izpopolnitev obsega (neobvezno)",
@@ -11407,7 +11438,18 @@
       "timeLimitMinutes": "Časovna omejitev (minute)",
       "shuffleQuestions": "Premešaj vrstni red vprašanj za vsakega učenca",
       "shuffleMcq": "Shuffle MCQ možnosti",
-      "negativeMarking": "Negativna oznaka"
+      "negativeMarking": "Negativna oznaka",
+      "scopeSummaryTitle": "Scope summary",
+      "approximateChapterMap": "This book's chapter map is approximate. Contact admin to re-process.",
+      "selectAllDocument": "Select all",
+      "clearDocument": "Clear all",
+      "selectTopic": "Select",
+      "clearTopic": "Clear",
+      "selectWholeChapter": "Select chapter",
+      "clearChapter": "Clear chapter",
+      "chapterScopeOnlyHint": "This book is indexed by chapter. Click a chapter row to select it. Section-level topics appear when the book includes section entries in its table of contents.",
+      "noSegmentsForScope": "No content found for selected chapters. Try different chapters or contact admin.",
+      "unmappedContentWarning": "Some pages in this book are not mapped to chapters. Contact your admin if content seems missing."
     },
     "review": {
       "printPreview": "Predogled tiskanja",
@@ -11422,6 +11464,7 @@
       "badgeShort": "Kratek",
       "questionMarks": "Q{{num}} · {{pts}} točk",
       "lines": "vrstice",
+      "scopeWarning": "Scope unverified",
       "modalAddQuestion": "Dodaj vprašanje"
     },
     "generating": {

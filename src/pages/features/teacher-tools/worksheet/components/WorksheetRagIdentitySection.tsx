@@ -15,7 +15,7 @@ import { getBookById, type DemoBook } from '../../demo/demoContentLibrary'
 import { SubjectSelect } from '@/components/shared/SubjectSelect'
 import { GradeSelect } from '@/components/shared/GradeSelect'
 import type { WorksheetBuildSubStepId } from '../config/worksheetWizardSteps'
-import { TeacherToolsPanelHeader } from '../../components/TeacherToolsPanelHeader'
+import { TeacherToolsFieldBand, TeacherToolsPanelHeader, ScopeStepChrome } from '../../components'
 
 export type WorksheetOutputFormat = 'interactive_digital' | 'printable_pdf' | 'both'
 
@@ -101,16 +101,16 @@ export function WorksheetRagIdentitySection({
         <>
           <TeacherToolsPanelHeader {...stepMeta.basics} />
           <div className="space-y-4 p-5">
-            <label className="block text-sm font-medium text-gray-800">
-              {t('teacherTools.title')} <span className="text-red-500">*</span>
-              <input
-                value={title}
-                onChange={(e) => onTitleChange(e.target.value)}
-                placeholder={t('worksheet.rag.titlePlaceholder')}
-                className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm ring-primary-500/20 focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-              />
-            </label>
-            <div className="grid gap-4 md:grid-cols-2">
+            <TeacherToolsFieldBand variant="student">
+              <label className="block text-sm font-medium text-gray-800">
+                {t('teacherTools.title')} <span className="text-red-500">*</span>
+                <input
+                  value={title}
+                  onChange={(e) => onTitleChange(e.target.value)}
+                  placeholder={t('worksheet.rag.titlePlaceholder')}
+                  className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm ring-primary-500/20 focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+                />
+              </label>
               <label className="block text-sm font-medium text-gray-800">
                 {t('worksheet.rag.outputFormat')}
                 <select
@@ -123,21 +123,26 @@ export function WorksheetRagIdentitySection({
                   <option value="both">{t('worksheet.rag.outputBoth')}</option>
                 </select>
               </label>
-              <SubjectSelect
-                value={subject}
-                onChange={onSubjectChange}
-                label={t('teacherTools.subject')}
-                variant="native"
-                context="teacherTools"
-                selectClassName="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-              />
-              <GradeSelect
-                value={grade}
-                onChange={onGradeChange}
-                label={t('teacherTools.gradeCohort')}
-                variant="native"
-              />
-            </div>
+            </TeacherToolsFieldBand>
+            <TeacherToolsFieldBand variant="library">
+              <div className="grid gap-4 md:grid-cols-2">
+                <SubjectSelect
+                  value={subject}
+                  onChange={onSubjectChange}
+                  label={t('teacherTools.subject')}
+                  variant="native"
+                  context="teacherTools"
+                  selectClassName="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+                />
+                <GradeSelect
+                  value={grade}
+                  onChange={onGradeChange}
+                  label={t('teacherTools.gradeCohort')}
+                  variant="native"
+                />
+              </div>
+              <p className="text-xs text-gray-500">{t('teacherTools.libraryMatchHint')}</p>
+            </TeacherToolsFieldBand>
           </div>
         </>
       )}
@@ -311,20 +316,28 @@ export function WorksheetRagIdentitySection({
                   <p className="mt-1 text-amber-900/90">{t('worksheet.rag.selectMaterialsFirstHint')}</p>
                 </div>
               </div>
-            ) : null}
-
-            {!rag.generateWithoutSources && rag.selectedBookIds.length > 0 ? (
-              <div>
-                <label className="block text-sm font-medium text-gray-800">{t('teacherTools.topicStrandsHeading')}</label>
-                <div className="relative mt-2">
-                  <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                  <input
-                    value={rag.topicQuery}
-                    onChange={(e) => rag.setTopicQuery(e.target.value)}
-                    placeholder={t('teacherTools.topicFilterPlaceholder')}
-                    className="w-full rounded-xl border border-gray-200 py-2.5 pl-10 pr-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
-                  />
-                </div>
+            ) : (
+              <ScopeStepChrome
+                title={t('teacherTools.scopeStep.title')}
+                subtitle={t('teacherTools.scopeStep.subtitle')}
+                searchSlot={
+                  !rag.generateWithoutSources && rag.selectedBookIds.length > 0 ? (
+                    <div className="relative">
+                      <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                      <input
+                        value={rag.topicQuery}
+                        onChange={(e) => rag.setTopicQuery(e.target.value)}
+                        placeholder={t('teacherTools.scopeSearchPlaceholder')}
+                        className="w-full rounded-xl border border-gray-200 py-2.5 pl-10 pr-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+                      />
+                    </div>
+                  ) : undefined
+                }
+              >
+                {!rag.generateWithoutSources && rag.selectedBookIds.length > 0 ? (
+                  <TeacherToolsFieldBand variant="library">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-800">{t('teacherTools.topicStrandsHeading')}</label>
                 {rag.topicsIndexing ? (
                   <div className="mt-3 h-24 animate-pulse rounded-xl bg-gray-100" aria-hidden />
                 ) : (
@@ -355,29 +368,38 @@ export function WorksheetRagIdentitySection({
                     )}
                   </div>
                 )}
-              </div>
-            ) : null}
+                  </div>
+                  </TeacherToolsFieldBand>
+                ) : !rag.generateWithoutSources ? null : (
+                  <div className="rounded-xl border border-gray-200 bg-gray-50/70 px-4 py-3 text-sm text-gray-700">
+                    {t('worksheet.rag.topicOnlyCatalogHidden')}
+                  </div>
+                )}
 
-            <label className="block text-sm font-medium text-gray-800">
-              {rag.generateWithoutSources ? (
-                <>
-                  {t('teacherTools.scopeRefinement')} <span className="text-red-500">*</span>
-                </>
-              ) : (
-                t('teacherTools.scopeRefinementOptional')
-              )}
-              <textarea
-                rows={3}
-                value={rag.scopeRefinement}
-                onChange={(e) => rag.setScopeRefinement(e.target.value)}
-                placeholder={t('teacherTools.scopeRefinementPlaceholder')}
-                className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-100"
-              />
-            </label>
-            <p className="text-sm text-gray-700">
-              <span className="font-semibold text-gray-900">{t('teacherTools.generationScope')}</span>{' '}
-              <span className="text-gray-600">{generationScopeSummary(rag, t)}</span>
-            </p>
+                <TeacherToolsFieldBand variant="ai">
+                <label className="block text-sm font-medium text-gray-800">
+                  {rag.generateWithoutSources ? (
+                    <>
+                      {t('teacherTools.focusForAi')} <span className="text-red-500">*</span>
+                    </>
+                  ) : (
+                    t('teacherTools.focusForAi')
+                  )}
+                  <textarea
+                    rows={3}
+                    value={rag.scopeRefinement}
+                    onChange={(e) => rag.setScopeRefinement(e.target.value)}
+                    placeholder={t('teacherTools.scopeRefinementPlaceholder')}
+                    className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+                  />
+                </label>
+                <p className="text-sm text-gray-700">
+                  <span className="font-semibold text-gray-900">{t('teacherTools.generationScope')}</span>{' '}
+                  <span className="text-gray-600">{generationScopeSummary(rag, t)}</span>
+                </p>
+                </TeacherToolsFieldBand>
+              </ScopeStepChrome>
+            )}
           </div>
         </>
       )}

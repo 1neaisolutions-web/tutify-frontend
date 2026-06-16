@@ -2,6 +2,7 @@ import { AlertCircle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { DIFFICULTY_OPTIONS, QUESTION_COUNT } from '../../quiz/config/quizCreationConfig'
 import type { QuestionMixMode, QuizDifficultyId } from '../../demo/generationFromSources'
+import { TeacherToolsFieldBand } from '../../components'
 
 function StepHeader({
   step,
@@ -95,6 +96,7 @@ export function WorksheetGenerationParametersSection({
         />
       </div>
       <div className="space-y-5 p-6">
+        <TeacherToolsFieldBand variant="ai">
         <div className="rounded-2xl border border-gray-100 bg-gray-50/80 p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
@@ -263,7 +265,7 @@ export function WorksheetGenerationParametersSection({
         )}
 
         <label className="block text-sm font-medium text-gray-800">
-          {t('quiz.rag.generatorInstructions')}
+          {t('teacherTools.generationNotes')}
           <textarea
             rows={2}
             value={teacherNotes}
@@ -271,8 +273,9 @@ export function WorksheetGenerationParametersSection({
             placeholder={t('worksheet.generation.generatorPlaceholder')}
             className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-100"
           />
-          <span className="mt-1 block text-xs text-gray-500">{t('quiz.rag.generatorHint')}</span>
+          <span className="mt-1 block text-xs text-gray-500">{t('teacherTools.generationNotesHint')}</span>
         </label>
+        </TeacherToolsFieldBand>
       </div>
 
     </section>

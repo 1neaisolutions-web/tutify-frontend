@@ -11068,6 +11068,37 @@
     "topicOnly": "របៀបសម្រាប់តែប្រធានបទ",
     "retry": "ព្យាយាមម្តងទៀត",
     "sectionsIndexed": "{{count}} ផ្នែកដែលបានធ្វើលិបិក្រម",
+    "sectionsCount": "{{count}} sections",
+    "sectionsIndexedMeta": "{{documents}} documents · {{count}} sections indexed",
+    "scopeSearchPlaceholder": "Search chapters and topics (e.g. fractions, motion)",
+    "libraryMatchHint": "Used to match books in your library.",
+    "focusForAi": "Focus for AI (optional)",
+    "generationNotes": "Generation notes (optional)",
+    "generationNotesHint": "Students won't see this.",
+    "selectChapter": "Select chapter",
+    "clearChapter": "Clear chapter",
+    "expandChapter": "Expand",
+    "collapseChapter": "Collapse",
+    "expandBook": "Show topics",
+    "collapseBook": "Hide topics",
+    "fieldBands": {
+      "student": {
+        "title": "What students will see",
+        "description": "These appear on the assignment or assessment after you publish."
+      },
+      "library": {
+        "title": "Content library match",
+        "description": "Helps find the right books and materials in your catalog."
+      },
+      "ai": {
+        "title": "AI generation settings",
+        "description": "Guides question generation only — students never see these."
+      }
+    },
+    "scopeStep": {
+      "title": "Select content to use",
+      "subtitle": "Choose chapters and topics from your selected materials."
+    },
     "clearSearch": "ជម្រះការស្វែងរក",
     "scopeRefinement": "ការកែលម្អវិសាលភាព",
     "scopeRefinementOptional": "ការកែលម្អវិសាលភាព (ជាជម្រើស)",
@@ -11407,7 +11438,18 @@
       "timeLimitMinutes": "ពេលវេលាកំណត់ (នាទី)",
       "shuffleQuestions": "សាប់​លំដាប់​សំណួរ​សម្រាប់​សិស្ស​ម្នាក់ៗ",
       "shuffleMcq": "សាប់ជម្រើស MCQ",
-      "negativeMarking": "ការសម្គាល់អវិជ្ជមាន"
+      "negativeMarking": "ការសម្គាល់អវិជ្ជមាន",
+      "scopeSummaryTitle": "Scope summary",
+      "approximateChapterMap": "This book's chapter map is approximate. Contact admin to re-process.",
+      "selectAllDocument": "Select all",
+      "clearDocument": "Clear all",
+      "selectTopic": "Select",
+      "clearTopic": "Clear",
+      "selectWholeChapter": "Select chapter",
+      "clearChapter": "Clear chapter",
+      "chapterScopeOnlyHint": "This book is indexed by chapter. Click a chapter row to select it. Section-level topics appear when the book includes section entries in its table of contents.",
+      "noSegmentsForScope": "No content found for selected chapters. Try different chapters or contact admin.",
+      "unmappedContentWarning": "Some pages in this book are not mapped to chapters. Contact your admin if content seems missing."
     },
     "review": {
       "printPreview": "បោះពុម្ពជាមុន",
@@ -11422,6 +11464,7 @@
       "badgeShort": "ខ្លី",
       "questionMarks": "Q{{num}} · {{pts}} ពិន្ទុ",
       "lines": "បន្ទាត់",
+      "scopeWarning": "Scope unverified",
       "modalAddQuestion": "បន្ថែមសំណួរ"
     },
     "generating": {

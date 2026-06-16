@@ -11068,6 +11068,37 @@
     "topicOnly": "ርዕስ-ብቻ ሁነታ",
     "retry": "እንደገና ይሞክሩ",
     "sectionsIndexed": "{{count}} ክፍሎች ጠቋሚ",
+    "sectionsCount": "{{count}} sections",
+    "sectionsIndexedMeta": "{{documents}} documents · {{count}} sections indexed",
+    "scopeSearchPlaceholder": "Search chapters and topics (e.g. fractions, motion)",
+    "libraryMatchHint": "Used to match books in your library.",
+    "focusForAi": "Focus for AI (optional)",
+    "generationNotes": "Generation notes (optional)",
+    "generationNotesHint": "Students won't see this.",
+    "selectChapter": "Select chapter",
+    "clearChapter": "Clear chapter",
+    "expandChapter": "Expand",
+    "collapseChapter": "Collapse",
+    "expandBook": "Show topics",
+    "collapseBook": "Hide topics",
+    "fieldBands": {
+      "student": {
+        "title": "What students will see",
+        "description": "These appear on the assignment or assessment after you publish."
+      },
+      "library": {
+        "title": "Content library match",
+        "description": "Helps find the right books and materials in your catalog."
+      },
+      "ai": {
+        "title": "AI generation settings",
+        "description": "Guides question generation only — students never see these."
+      }
+    },
+    "scopeStep": {
+      "title": "Select content to use",
+      "subtitle": "Choose chapters and topics from your selected materials."
+    },
     "clearSearch": "ፍለጋን አጽዳ",
     "scopeRefinement": "ወሰን ማጣራት።",
     "scopeRefinementOptional": "ወሰን ማጣራት (አማራጭ)",
@@ -11407,7 +11438,18 @@
       "timeLimitMinutes": "የጊዜ ገደብ (ደቂቃዎች)",
       "shuffleQuestions": "ለእያንዳንዱ ተማሪ የጥያቄ ቅደም ተከተል ያዋህዱ",
       "shuffleMcq": "የMCQ አማራጮችን በውዝ",
-      "negativeMarking": "አሉታዊ ምልክት ማድረግ"
+      "negativeMarking": "አሉታዊ ምልክት ማድረግ",
+      "scopeSummaryTitle": "Scope summary",
+      "approximateChapterMap": "This book's chapter map is approximate. Contact admin to re-process.",
+      "selectAllDocument": "Select all",
+      "clearDocument": "Clear all",
+      "selectTopic": "Select",
+      "clearTopic": "Clear",
+      "selectWholeChapter": "Select chapter",
+      "clearChapter": "Clear chapter",
+      "chapterScopeOnlyHint": "This book is indexed by chapter. Click a chapter row to select it. Section-level topics appear when the book includes section entries in its table of contents.",
+      "noSegmentsForScope": "No content found for selected chapters. Try different chapters or contact admin.",
+      "unmappedContentWarning": "Some pages in this book are not mapped to chapters. Contact your admin if content seems missing."
     },
     "review": {
       "printPreview": "ቅድመ እይታን አትም",
@@ -11422,6 +11464,7 @@
       "badgeShort": "አጭር",
       "questionMarks": "Q{{num}} · {{pts}} ነጥቦች",
       "lines": "መስመሮች",
+      "scopeWarning": "Scope unverified",
       "modalAddQuestion": "ጥያቄ ጨምር"
     },
     "generating": {

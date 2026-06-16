@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState, type MouseEvent } from 'react'
+import { useMemo, useState, type MouseEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AlertTriangle, Check, ChevronDown, ChevronRight } from 'lucide-react'
+import { Check, ChevronDown, ChevronRight } from 'lucide-react'
 import type { PackStructure, TopicNode } from '../../../api/quizCatalog'
 
 type Props = {
@@ -9,6 +9,7 @@ type Props = {
   onToggleTopic: (topicId: string, includeChildren: boolean, leafOnly?: boolean) => void
   onToggleDocument: (documentId: string, topicIds: string[]) => void
   onRemoveBook: () => void
+  filterQuery?: string
 }
 
 function collectSelectableIds(node: TopicNode, includeChildren: boolean): string[] {
@@ -31,6 +32,35 @@ function hasAnySectionTopics(tree: TopicNode[]): boolean {
   return tree.some((n) => n.children.length > 0)
 }
 
+function nodeMatchesFilter(node: TopicNode, query: string): boolean {
+  const q = query.trim().toLowerCase()
+  if (!q) return true
+  if (node.display_title.toLowerCase().includes(q)) return true
+  return node.children.some((child) => nodeMatchesFilter(child, q))
+}
+
+function collectAncestorIdsForMatches(
+  nodes: TopicNode[],
+  query: string,
+  ancestors: string[] = [],
+): Set<string> {
+  const ids = new Set<string>()
+  const q = query.trim().toLowerCase()
+  if (!q) return ids
+
+  for (const node of nodes) {
+    const path = [...ancestors, node.id]
+    const selfMatch = node.display_title.toLowerCase().includes(q)
+    const childIds = collectAncestorIdsForMatches(node.children, query, path)
+    if (selfMatch || childIds.size > 0) {
+      for (const id of ancestors) ids.add(id)
+      if (node.children.length > 0) ids.add(node.id)
+      childIds.forEach((id) => ids.add(id))
+    }
+  }
+  return ids
+}
+
 function TopicTreeRow({
   node,
   depth,
@@ -38,6 +68,7 @@ function TopicTreeRow({
   onToggleTopic,
   expanded,
   onToggleExpand,
+  filterQuery,
 }: {
   node: TopicNode
   depth: number
@@ -45,13 +76,21 @@ function TopicTreeRow({
   onToggleTopic: (topicId: string, includeChildren: boolean, leafOnly?: boolean) => void
   expanded: Set<string>
   onToggleExpand: (id: string) => void
+  filterQuery: string
 }) {
+  const { t } = useTranslation()
   const hasChildren = node.children.length > 0
   const isExpanded = expanded.has(node.id)
   const disabled = node.chunk_count === 0
   const selected = hasChildren
     ? isNodeFullySelected(node, selectedTopicIds)
     : selectedTopicIds.has(node.id)
+
+  if (!nodeMatchesFilter(node, filterQuery)) return null
+
+  const visibleChildren = hasChildren
+    ? node.children.filter((child) => nodeMatchesFilter(child, filterQuery))
+    : []
 
   const handleRowClick = () => {
     if (disabled) return
@@ -91,7 +130,7 @@ function TopicTreeRow({
               onToggleExpand(node.id)
             }}
             className="shrink-0 rounded p-0.5 text-gray-500 hover:bg-gray-100"
-            aria-label={isExpanded ? 'Collapse' : 'Expand'}
+            aria-label={isExpanded ? t('teacherTools.collapseChapter') : t('teacherTools.expandChapter')}
           >
             {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
           </button>
@@ -106,7 +145,7 @@ function TopicTreeRow({
           <span className="truncate font-medium text-gray-900">{node.display_title}</span>
           <span className="flex shrink-0 items-center gap-2 text-xs text-gray-500">
             {selected ? <Check className="h-3.5 w-3.5 text-violet-600" /> : null}
-            {node.chunk_count} chunks
+            {t('teacherTools.sectionsCount', { count: node.chunk_count })}
             {hasChildren ? (
               <button
                 type="button"
@@ -114,14 +153,14 @@ function TopicTreeRow({
                 onClick={handleSelectChapter}
                 className="rounded-md bg-violet-100 px-2 py-0.5 font-semibold text-violet-800 hover:bg-violet-200 disabled:opacity-50"
               >
-                {selected ? 'Clear chapter' : 'Select chapter'}
+                {selected ? t('teacherTools.clearChapter') : t('teacherTools.selectChapter')}
               </button>
             ) : null}
           </span>
         </div>
       </div>
       {hasChildren && isExpanded
-        ? node.children.map((child) => (
+        ? visibleChildren.map((child) => (
             <TopicTreeRow
               key={child.id}
               node={child}
@@ -130,6 +169,7 @@ function TopicTreeRow({
               onToggleTopic={onToggleTopic}
               expanded={expanded}
               onToggleExpand={onToggleExpand}
+              filterQuery={filterQuery}
             />
           ))
         : null}
@@ -143,9 +183,12 @@ export function BookScopePanel({
   onToggleTopic,
   onToggleDocument,
   onRemoveBook,
+  filterQuery = '',
 }: Props) {
   const { t } = useTranslation()
-  const [expanded, setExpanded] = useState<Set<string>>(() => new Set())
+  const [userExpanded, setUserExpanded] = useState<Set<string>>(() => new Set())
+  const [bookExpanded, setBookExpanded] = useState(false)
+  const [expandedDocuments, setExpandedDocuments] = useState<Set<string>>(() => new Set())
 
   const totalChunks = useMemo(
     () => packStructure.documents.reduce((n, d) => n + d.total_chunks, 0),
@@ -157,22 +200,44 @@ export function BookScopePanel({
     [packStructure.documents],
   )
 
-  useEffect(() => {
-    const chapterIds = new Set<string>()
+  const searchExpanded = useMemo(() => {
+    const q = filterQuery.trim()
+    if (!q) return new Set<string>()
+    const ids = new Set<string>()
     for (const doc of packStructure.documents) {
-      for (const node of doc.topic_tree) {
-        if (node.children.length > 0) {
-          chapterIds.add(node.id)
-        }
+      const docMatch = doc.document_title.toLowerCase().includes(q.toLowerCase())
+      const treeIds = collectAncestorIdsForMatches(doc.topic_tree, q)
+      if (docMatch || treeIds.size > 0) {
+        ids.add(doc.document_id)
+        treeIds.forEach((id) => ids.add(id))
       }
     }
-    if (chapterIds.size > 0) {
-      setExpanded(chapterIds)
+    return ids
+  }, [filterQuery, packStructure.documents])
+
+  const expanded = useMemo(() => {
+    if (filterQuery.trim()) {
+      return new Set([...userExpanded, ...searchExpanded])
     }
-  }, [packStructure.documents])
+    return userExpanded
+  }, [filterQuery, userExpanded, searchExpanded])
+
+  const selectedInPack = useMemo(() => {
+    let count = 0
+    for (const doc of packStructure.documents) {
+      const walk = (nodes: TopicNode[]) => {
+        for (const node of nodes) {
+          if (selectedTopicIds.has(node.id) && node.chunk_count > 0) count += 1
+          walk(node.children)
+        }
+      }
+      walk(doc.topic_tree)
+    }
+    return count
+  }, [packStructure.documents, selectedTopicIds])
 
   const toggleExpand = (id: string) => {
-    setExpanded((prev) => {
+    setUserExpanded((prev) => {
       const next = new Set(prev)
       if (next.has(id)) next.delete(id)
       else next.add(id)
@@ -180,70 +245,141 @@ export function BookScopePanel({
     })
   }
 
+  const toggleDocument = (docId: string) => {
+    setExpandedDocuments((prev) => {
+      const next = new Set(prev)
+      if (next.has(docId)) next.delete(docId)
+      else next.add(docId)
+      return next
+    })
+  }
+
+  const isDocVisible = (doc: (typeof packStructure.documents)[number]) => {
+    const q = filterQuery.trim().toLowerCase()
+    if (!q) return true
+    if (doc.document_title.toLowerCase().includes(q)) return true
+    return doc.topic_tree.some((n) => nodeMatchesFilter(n, filterQuery))
+  }
+
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
       <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-sm font-semibold text-gray-900">{packStructure.pack_name}</p>
-          <p className="text-xs text-gray-500">
-            {packStructure.documents.length} documents · {totalChunks} chunks indexed
-          </p>
-        </div>
+        <button
+          type="button"
+          onClick={() => setBookExpanded((v) => !v)}
+          className="flex min-w-0 flex-1 items-start gap-2 text-left"
+          aria-expanded={bookExpanded}
+        >
+          {bookExpanded ? (
+            <ChevronDown className="mt-0.5 h-4 w-4 shrink-0 text-gray-500" />
+          ) : (
+            <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-gray-500" />
+          )}
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-gray-900">{packStructure.pack_name}</p>
+            <p className="text-xs text-gray-500">
+              {t('teacherTools.sectionsIndexedMeta', {
+                documents: packStructure.documents.length,
+                count: totalChunks,
+              })}
+              {selectedInPack > 0
+                ? ` · ${t('teacherTools.chapterCount', { count: selectedInPack })}`
+                : ''}
+            </p>
+          </div>
+        </button>
         <button
           type="button"
           onClick={onRemoveBook}
-          className="text-xs font-semibold text-red-600 hover:text-red-700"
+          className="shrink-0 text-xs font-semibold text-red-600 hover:text-red-700"
         >
           {t('teacherTools.remove')}
         </button>
       </div>
 
-      {showChapterOnlyHint && (
-        <p className="mt-3 text-xs text-gray-600">
-          {t('quiz.rag.chapterScopeOnlyHint')}
-        </p>
-      )}
+      {bookExpanded ? (
+        <>
+          {showChapterOnlyHint && (
+            <p className="mt-3 text-xs text-gray-600">{t('quiz.rag.chapterScopeOnlyHint')}</p>
+          )}
 
-      {packStructure.documents.some((d) => d.has_page_bin_fallbacks) && (
-        <div className="mt-3 flex gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
-          <AlertTriangle className="h-4 w-4 shrink-0" />
-          {t('quiz.rag.unmappedContentWarning')}
-        </div>
-      )}
-
-      <div className="mt-4 space-y-4">
-        {packStructure.documents.map((doc) => {
-          const allIds = doc.topic_tree.flatMap((n) => collectSelectableIds(n, true))
-          const allSelected = allIds.length > 0 && allIds.every((id) => selectedTopicIds.has(id))
-          return (
-            <div key={doc.document_id} className="rounded-xl border border-gray-100 bg-gray-50/60 p-3">
-              <div className="flex items-center justify-between gap-2">
-                <p className="truncate text-sm font-medium text-gray-900">{doc.document_title}</p>
-                <button
-                  type="button"
-                  onClick={() => onToggleDocument(doc.document_id, allIds)}
-                  className="shrink-0 text-xs font-semibold text-violet-700 hover:text-violet-600"
-                >
-                  {allSelected ? t('quiz.rag.clearDocument') : t('quiz.rag.selectAllDocument')}
-                </button>
-              </div>
-              <div className="mt-2">
-                {doc.topic_tree.map((node) => (
-                  <TopicTreeRow
-                    key={node.id}
-                    node={node}
-                    depth={0}
-                    selectedTopicIds={selectedTopicIds}
-                    onToggleTopic={onToggleTopic}
-                    expanded={expanded}
-                    onToggleExpand={toggleExpand}
-                  />
-                ))}
-              </div>
-            </div>
-          )
-        })}
-      </div>
+          <div className="mt-4 max-h-96 space-y-4 overflow-y-auto">
+            {packStructure.documents.filter(isDocVisible).map((doc) => {
+              const allIds = doc.topic_tree.flatMap((n) => collectSelectableIds(n, true))
+              const allSelected = allIds.length > 0 && allIds.every((id) => selectedTopicIds.has(id))
+              const docOpen = expandedDocuments.has(doc.document_id) || Boolean(filterQuery.trim())
+              return (
+                <div key={doc.document_id} className="rounded-xl border border-gray-100 bg-gray-50/60 p-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <button
+                      type="button"
+                      onClick={() => toggleDocument(doc.document_id)}
+                      className="flex min-w-0 flex-1 items-center gap-2 text-left"
+                      aria-expanded={docOpen}
+                    >
+                      {docOpen ? (
+                        <ChevronDown className="h-4 w-4 shrink-0 text-gray-500" />
+                      ) : (
+                        <ChevronRight className="h-4 w-4 shrink-0 text-gray-500" />
+                      )}
+                      <p className="truncate text-sm font-medium text-gray-900">{doc.document_title}</p>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onToggleDocument(doc.document_id, allIds)}
+                      className="shrink-0 text-xs font-semibold text-violet-700 hover:text-violet-600"
+                    >
+                      {allSelected ? t('quiz.rag.clearDocument') : t('quiz.rag.selectAllDocument')}
+                    </button>
+                  </div>
+                  {docOpen ? (
+                    <div className="mt-2">
+                      {doc.topic_tree.map((node) => (
+                        <TopicTreeRow
+                          key={node.id}
+                          node={node}
+                          depth={0}
+                          selectedTopicIds={selectedTopicIds}
+                          onToggleTopic={onToggleTopic}
+                          expanded={expanded}
+                          onToggleExpand={toggleExpand}
+                          filterQuery={filterQuery}
+                        />
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              )
+            })}
+          </div>
+        </>
+      ) : null}
     </div>
   )
+}
+
+/**
+ * Collect display titles for selected topic IDs from pack structures (display-only chips).
+ */
+export function collectSelectedTopicLabels(
+  packs: PackStructure[],
+  selectedTopicIds: Set<string>,
+): string[] {
+  const labels: string[] = []
+  const seen = new Set<string>()
+  const walk = (nodes: TopicNode[]) => {
+    for (const node of nodes) {
+      if (selectedTopicIds.has(node.id) && node.chunk_count > 0 && !seen.has(node.id)) {
+        seen.add(node.id)
+        labels.push(node.display_title)
+      }
+      walk(node.children)
+    }
+  }
+  for (const pack of packs) {
+    for (const doc of pack.documents) {
+      walk(doc.topic_tree)
+    }
+  }
+  return labels
 }

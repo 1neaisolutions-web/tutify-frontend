@@ -20,6 +20,7 @@ import { SubjectSelect } from '@/components/shared/SubjectSelect'
 import { GradeSelect } from '@/components/shared/GradeSelect'
 import { ASSIGNMENT_TOPIC_COUNT } from '../config/assignmentCreationConfig'
 import type { AssignmentBuildSubStepId } from '../config/assignmentWizardSteps'
+import { ScopeStepChrome, TeacherToolsFieldBand } from '../../components'
 
 type SectionTone = 'blue' | 'teal' | 'amber' | 'purple'
 
@@ -172,80 +173,87 @@ export function AssignmentRagBuildSection({
             subtitle={t('assignment.rag.basicsSubtitle')}
           />
         </div>
-        <div className="grid gap-4 p-6 md:grid-cols-3">
-          <label className="block text-sm font-medium text-gray-800">
-            {t('teacherTools.title')} <span className="text-red-500">*</span>
-            <input
-              value={title}
-              onChange={(e) => onTitleChange(e.target.value)}
-              placeholder={t('assignment.rag.titlePlaceholder')}
-              className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm ring-primary-500/20 focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-            />
-          </label>
-          <label className="block text-sm font-medium text-gray-800">
-            {t('assignment.rag.assignmentType')}
-            <select
-              value={assignmentType}
-              onChange={(e) => onAssignmentTypeChange(e.target.value)}
-              className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-            >
-              {ASSIGNMENT_TYPE_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {t(opt.labelKey)}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="block text-sm font-medium text-gray-800">
-            {t('assignment.rag.dueDate')}
-            <input
-              type="date"
-              value={dueAt.length >= 10 ? dueAt.slice(0, 10) : dueAt}
-              onChange={(e) => onDueAtChange(e.target.value)}
-              className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-            />
-          </label>
-          <SubjectSelect
-            value={subject}
-            onChange={onSubjectChange}
-            label={t('teacherTools.subject')}
-            variant="native"
-            context="teacherTools"
-            selectClassName="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-          />
-          <GradeSelect
-            value={grade}
-            onChange={onGradeChange}
-            label={t('teacherTools.gradeCohort')}
-            variant="native"
-          />
-        </div>
-        <div className="space-y-4 px-6 pb-6">
-          <label className="block text-sm font-medium text-gray-800">
-            {t('assignment.rag.rigorProfile')}
-            <select
-              value={rigorProfile}
-              onChange={(e) => onRigorProfileChange(e.target.value)}
-              className="mt-1.5 w-full max-w-xl rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-            >
-              {RIGOR_OPTION_KEYS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {t(opt.labelKey)}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="block text-sm font-medium text-gray-800">
-            {t('teacherTools.studentInstructions')}
-            <textarea
-              rows={3}
-              value={studentInstructions}
-              onChange={(e) => onStudentInstructionsChange(e.target.value)}
-              placeholder={t('assignment.rag.instructionsPlaceholder')}
-              className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-            />
-            <span className="mt-1 block text-xs text-gray-500">{t('assignment.rag.instructionsHint')}</span>
-          </label>
+        <div className="space-y-4 p-6">
+          <TeacherToolsFieldBand variant="student">
+            <div className="grid gap-4 md:grid-cols-3">
+              <label className="block text-sm font-medium text-gray-800">
+                {t('teacherTools.title')} <span className="text-red-500">*</span>
+                <input
+                  value={title}
+                  onChange={(e) => onTitleChange(e.target.value)}
+                  placeholder={t('assignment.rag.titlePlaceholder')}
+                  className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm ring-primary-500/20 focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+                />
+              </label>
+              <label className="block text-sm font-medium text-gray-800">
+                {t('assignment.rag.assignmentType')}
+                <select
+                  value={assignmentType}
+                  onChange={(e) => onAssignmentTypeChange(e.target.value)}
+                  className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+                >
+                  {ASSIGNMENT_TYPE_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {t(opt.labelKey)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block text-sm font-medium text-gray-800">
+                {t('assignment.rag.dueDate')}
+                <input
+                  type="date"
+                  value={dueAt.length >= 10 ? dueAt.slice(0, 10) : dueAt}
+                  onChange={(e) => onDueAtChange(e.target.value)}
+                  className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+                />
+              </label>
+            </div>
+            <label className="block text-sm font-medium text-gray-800">
+              {t('teacherTools.studentInstructions')}
+              <textarea
+                rows={3}
+                value={studentInstructions}
+                onChange={(e) => onStudentInstructionsChange(e.target.value)}
+                placeholder={t('assignment.rag.instructionsPlaceholder')}
+                className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+              />
+              <span className="mt-1 block text-xs text-gray-500">{t('assignment.rag.instructionsHint')}</span>
+            </label>
+          </TeacherToolsFieldBand>
+          <TeacherToolsFieldBand variant="library">
+            <div className="grid gap-4 md:grid-cols-2">
+              <SubjectSelect
+                value={subject}
+                onChange={onSubjectChange}
+                label={t('teacherTools.subject')}
+                variant="native"
+                context="teacherTools"
+                selectClassName="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+              />
+              <GradeSelect
+                value={grade}
+                onChange={onGradeChange}
+                label={t('teacherTools.gradeCohort')}
+                variant="native"
+              />
+            </div>
+            <label className="block text-sm font-medium text-gray-800">
+              {t('assignment.rag.rigorProfile')}
+              <select
+                value={rigorProfile}
+                onChange={(e) => onRigorProfileChange(e.target.value)}
+                className="mt-1.5 w-full max-w-xl rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+              >
+                {RIGOR_OPTION_KEYS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {t(opt.labelKey)}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <p className="text-xs text-gray-500">{t('teacherTools.libraryMatchHint')}</p>
+          </TeacherToolsFieldBand>
         </div>
       </section>
       )}
@@ -456,24 +464,31 @@ export function AssignmentRagBuildSection({
               </div>
             </div>
           ) : (
-            <>
+            <ScopeStepChrome
+              title={t('teacherTools.scopeStep.title')}
+              subtitle={t('teacherTools.scopeStep.subtitle')}
+              searchSlot={
+                !rag.generateWithoutSources ? (
+                  <div className="relative">
+                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                    <input
+                      value={rag.topicQuery}
+                      onChange={(e) => rag.setTopicQuery(e.target.value)}
+                      placeholder={t('teacherTools.scopeSearchPlaceholder')}
+                      className="w-full rounded-xl border border-gray-200 py-2.5 pl-10 pr-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+                    />
+                  </div>
+                ) : undefined
+              }
+            >
               {!rag.generateWithoutSources ? (
+                <TeacherToolsFieldBand variant="library">
                 <div>
                   <label className="block text-sm font-medium text-gray-800">{t('teacherTools.topicStrandsHeading')}</label>
                   <p className="mt-1 text-xs text-gray-500">
                     {t('quiz.rag.topicsRefreshHint')}
                     {rag.topicsIndexing ? ` ${t('quiz.rag.topicsRefreshing')}` : ''}
                   </p>
-                  <div className="relative mt-2">
-                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                    <input
-                      value={rag.topicQuery}
-                      onChange={(e) => rag.setTopicQuery(e.target.value)}
-                      placeholder={t('assignment.rag.topicFilterPlaceholder')}
-                      className="w-full rounded-xl border border-gray-200 py-2.5 pl-10 pr-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
-                    />
-                  </div>
-
                   {rag.topicsError && !rag.topicsIndexing && (
                     <div className="mt-2 flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs text-amber-900">
                       <AlertCircle className="h-4 w-4 shrink-0 text-amber-600" aria-hidden />
@@ -553,19 +568,21 @@ export function AssignmentRagBuildSection({
                     </div>
                   )}
                 </div>
+                </TeacherToolsFieldBand>
               ) : (
                 <div className="rounded-xl border border-gray-200 bg-gray-50/70 px-4 py-3 text-sm text-gray-700">
                   {t('quiz.rag.topicOnlyStrandsHidden')}
                 </div>
               )}
 
+              <TeacherToolsFieldBand variant="ai">
               <label className="block text-sm font-medium text-gray-800">
                 {rag.generateWithoutSources ? (
                   <>
-                    {t('teacherTools.scopeRefinement')} <span className="text-red-500">*</span>
+                    {t('teacherTools.focusForAi')} <span className="text-red-500">*</span>
                   </>
                 ) : (
-                  t('teacherTools.scopeRefinementOptional')
+                  t('teacherTools.focusForAi')
                 )}
                 <textarea
                   rows={2}
@@ -622,7 +639,8 @@ export function AssignmentRagBuildSection({
                     : t('quiz.rag.scopePreviewWithSource')}
                 </p>
               </div>
-            </>
+              </TeacherToolsFieldBand>
+            </ScopeStepChrome>
           )}
         </div>
       </section>
@@ -640,6 +658,7 @@ export function AssignmentRagBuildSection({
           />
         </div>
         <div className="space-y-5 p-6">
+          <TeacherToolsFieldBand variant="ai">
           <div className="rounded-2xl border border-gray-100 bg-gray-50/80 p-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
@@ -726,7 +745,7 @@ export function AssignmentRagBuildSection({
           </fieldset>
 
           <label className="block text-sm font-medium text-gray-800">
-            {t('quiz.rag.generatorInstructions')}
+            {t('teacherTools.generationNotes')}
             <textarea
               rows={2}
               value={generatorInstructions}
@@ -734,8 +753,9 @@ export function AssignmentRagBuildSection({
               placeholder={t('assignment.rag.generatorPlaceholder')}
               className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-100"
             />
-            <span className="mt-1 block text-xs text-gray-500">{t('quiz.rag.generatorHint')}</span>
+            <span className="mt-1 block text-xs text-gray-500">{t('teacherTools.generationNotesHint')}</span>
           </label>
+          </TeacherToolsFieldBand>
         </div>
       </section>
       )}

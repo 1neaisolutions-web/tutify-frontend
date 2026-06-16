@@ -11068,6 +11068,37 @@
     "topicOnly": "Topic-only mode",
     "retry": "Retry",
     "sectionsIndexed": "{{count}} sections indexed",
+    "sectionsCount": "{{count}} sections",
+    "sectionsIndexedMeta": "{{documents}} documents · {{count}} sections indexed",
+    "scopeSearchPlaceholder": "Search chapters and topics (e.g. fractions, motion)",
+    "libraryMatchHint": "Used to match books in your library.",
+    "focusForAi": "Focus for AI (optional)",
+    "generationNotes": "Generation notes (optional)",
+    "generationNotesHint": "Students won't see this.",
+    "selectChapter": "Select chapter",
+    "clearChapter": "Clear chapter",
+    "expandChapter": "Expand",
+    "collapseChapter": "Collapse",
+    "expandBook": "Show topics",
+    "collapseBook": "Hide topics",
+    "fieldBands": {
+      "student": {
+        "title": "What students will see",
+        "description": "These appear on the assignment or assessment after you publish."
+      },
+      "library": {
+        "title": "Content library match",
+        "description": "Helps find the right books and materials in your catalog."
+      },
+      "ai": {
+        "title": "AI generation settings",
+        "description": "Guides question generation only — students never see these."
+      }
+    },
+    "scopeStep": {
+      "title": "Select content to use",
+      "subtitle": "Choose chapters and topics from your selected materials."
+    },
     "clearSearch": "Clear search",
     "scopeRefinement": "Scope refinement",
     "scopeRefinementOptional": "Scope refinement (optional)",
@@ -11347,13 +11378,13 @@
     "rag": {
       "stepBasicsKicker": "Assessment identity",
       "stepBasicsTitle": "Quiz basics",
-      "stepBasicsSubtitle": "Name the quiz and set what students see before they begin.",
+      "stepBasicsSubtitle": "Set what students see and which library materials to match.",
       "stepSourcesKicker": "Retrieval sources",
       "stepSourcesTitle": "Source materials",
       "stepSourcesSubtitle": "Pick published packs; retrieval uses indexed chunks from your workspace.",
       "stepScopeKicker": "Scope definition",
       "stepScopeTitle": "Topics & refinement",
-      "stepScopeSubtitle": "Pick topic strands, then optionally narrow with a scope hint.",
+      "stepScopeSubtitle": "Choose chapters and topics from your books, then optionally focus the AI.",
       "stepDesignKicker": "Question design",
       "stepDesignTitle": "Generation parameters",
       "stepDesignSubtitle": "Volume, difficulty, and formats for this retrieval pass.",
@@ -11640,13 +11671,13 @@
     "rag": {
       "basicsKicker": "Assignment identity",
       "basicsTitle": "Basics",
-      "basicsSubtitle": "Name the assignment, set type and due date, and tune subject and cohort for catalog alignment.",
+      "basicsSubtitle": "Set what students see, then align subject and cohort with your content library.",
       "sourcesKicker": "Retrieval sources",
       "sourcesTitle": "Source materials",
       "sourcesSubtitle": "Pick any published pack in your workspace (any board or publisher). Retrieval uses indexed chunks; titles and topic strands come from pack and document metadata.",
       "scopeKicker": "Scope definition",
       "scopeTitle": "Topics & refinement",
-      "scopeSubtitle": "Strands come from the book's PDF outline or chapter map when available; otherwise they are grouped by page ranges. Pick one or more, then optionally narrow with the hint below.",
+      "scopeSubtitle": "Search and select topics from your materials, then optionally focus the AI.",
       "designKicker": "Assignment design",
       "designTitle": "Generation parameters",
       "designSubtitle": "Volume, difficulty, and optional generator notes for this retrieval pass.",
@@ -11855,13 +11886,13 @@
     "rag": {
       "basicsKicker": "Worksheet identity",
       "basicsTitle": "Worksheet basics",
-      "basicsSubtitle": "Name the worksheet and set output format, subject, and cohort.",
+      "basicsSubtitle": "Set what students see and match subject and cohort to your library.",
       "sourcesKicker": "Content sources",
       "sourcesTitle": "Source materials",
       "sourcesSubtitle": "Choose catalog titles or switch to topic-only generation.",
       "scopeKicker": "Scope definition",
       "scopeTitle": "Topic strands & refinement",
-      "scopeSubtitle": "Pick strands from your materials or describe the topic focus.",
+      "scopeSubtitle": "Search and select topics from your materials, then optionally focus the AI.",
       "titlePlaceholder": "e.g. Photosynthesis — retrieval practice (Grade 8)",
       "outputFormat": "Output format",
       "outputInteractive": "Interactive digital",
@@ -12018,7 +12049,7 @@
     "create": {
       "identityKicker": "Exam identity",
       "basicsTitle": "Exam basics",
-      "basicsSubtitle": "Name the exam and set type, term, duration, and cohort.",
+      "basicsSubtitle": "Set exam details students see and align subject, grade, and standard profile.",
       "examTitle": "Exam title",
       "examType": "Exam type",
       "term": "Term",

@@ -11068,6 +11068,37 @@
     "topicOnly": "టాపిక్-మాత్రమే మోడ్",
     "retry": "మళ్లీ ప్రయత్నించండి",
     "sectionsIndexed": "{{count}} విభాగాలు సూచిక చేయబడ్డాయి",
+    "sectionsCount": "{{count}} sections",
+    "sectionsIndexedMeta": "{{documents}} documents · {{count}} sections indexed",
+    "scopeSearchPlaceholder": "Search chapters and topics (e.g. fractions, motion)",
+    "libraryMatchHint": "Used to match books in your library.",
+    "focusForAi": "Focus for AI (optional)",
+    "generationNotes": "Generation notes (optional)",
+    "generationNotesHint": "Students won't see this.",
+    "selectChapter": "Select chapter",
+    "clearChapter": "Clear chapter",
+    "expandChapter": "Expand",
+    "collapseChapter": "Collapse",
+    "expandBook": "Show topics",
+    "collapseBook": "Hide topics",
+    "fieldBands": {
+      "student": {
+        "title": "What students will see",
+        "description": "These appear on the assignment or assessment after you publish."
+      },
+      "library": {
+        "title": "Content library match",
+        "description": "Helps find the right books and materials in your catalog."
+      },
+      "ai": {
+        "title": "AI generation settings",
+        "description": "Guides question generation only — students never see these."
+      }
+    },
+    "scopeStep": {
+      "title": "Select content to use",
+      "subtitle": "Choose chapters and topics from your selected materials."
+    },
     "clearSearch": "శోధనను క్లియర్ చేయండి",
     "scopeRefinement": "స్కోప్ శుద్ధీకరణ",
     "scopeRefinementOptional": "స్కోప్ రిఫైన్‌మెంట్ (ఐచ్ఛికం)",
@@ -11407,7 +11438,18 @@
       "timeLimitMinutes": "సమయ పరిమితి (నిమిషాలు)",
       "shuffleQuestions": "ప్రతి విద్యార్థికి ప్రశ్న క్రమాన్ని షఫుల్ చేయండి",
       "shuffleMcq": "MCQ ఎంపికలను షఫుల్ చేయండి",
-      "negativeMarking": "ప్రతికూల మార్కింగ్"
+      "negativeMarking": "ప్రతికూల మార్కింగ్",
+      "scopeSummaryTitle": "Scope summary",
+      "approximateChapterMap": "This book's chapter map is approximate. Contact admin to re-process.",
+      "selectAllDocument": "Select all",
+      "clearDocument": "Clear all",
+      "selectTopic": "Select",
+      "clearTopic": "Clear",
+      "selectWholeChapter": "Select chapter",
+      "clearChapter": "Clear chapter",
+      "chapterScopeOnlyHint": "This book is indexed by chapter. Click a chapter row to select it. Section-level topics appear when the book includes section entries in its table of contents.",
+      "noSegmentsForScope": "No content found for selected chapters. Try different chapters or contact admin.",
+      "unmappedContentWarning": "Some pages in this book are not mapped to chapters. Contact your admin if content seems missing."
     },
     "review": {
       "printPreview": "ప్రింట్ ప్రివ్యూ",
@@ -11422,6 +11464,7 @@
       "badgeShort": "పొట్టి",
       "questionMarks": "Q{{num}} · {{pts}} పాయింట్లు",
       "lines": "పంక్తులు",
+      "scopeWarning": "Scope unverified",
       "modalAddQuestion": "ప్రశ్నను జోడించండి"
     },
     "generating": {

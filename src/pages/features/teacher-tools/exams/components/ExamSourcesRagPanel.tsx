@@ -16,6 +16,7 @@ import type { QuizRagScopeModel } from '../../quiz/hooks/useQuizRagScope'
 import { getBookById } from '../../demo/demoContentLibrary'
 import { formatSourceSummary } from '../../demo/generationFromSources'
 import { subjectToTeacherToolsLabel } from '@/catalog/adapters/subjectAdapters'
+import { ScopeStepChrome, TeacherToolsFieldBand } from '../../components'
 
 type Props = {
   rag: QuizRagScopeModel
@@ -226,24 +227,31 @@ export function ExamSourcesRagPanel({ rag, subject, grade, panelStep }: Props) {
           </div>
         </div>
       ) : (
-        <>
+        <ScopeStepChrome
+          title={t('teacherTools.scopeStep.title')}
+          subtitle={t('teacherTools.scopeStep.subtitle')}
+          searchSlot={
+            !rag.generateWithoutSources ? (
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <input
+                  value={rag.topicQuery}
+                  onChange={(e) => rag.setTopicQuery(e.target.value)}
+                  placeholder={t('teacherTools.scopeSearchPlaceholder')}
+                  className="w-full rounded-xl border border-gray-200 py-2.5 pl-10 pr-3 text-sm focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
+                />
+              </div>
+            ) : undefined
+          }
+        >
           {!rag.generateWithoutSources ? (
+            <TeacherToolsFieldBand variant="library">
             <div>
               <label className="block text-sm font-medium text-gray-800">{t('teacherTools.topicStrandsHeading')}</label>
               <p className="mt-1 text-xs text-gray-500">
                 {t('quiz.rag.topicsRefreshHint')}
                 {rag.topicsIndexing ? ` ${t('quiz.rag.topicsRefreshing')}` : ''}
               </p>
-              <div className="relative mt-2">
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                <input
-                  value={rag.topicQuery}
-                  onChange={(e) => rag.setTopicQuery(e.target.value)}
-                  placeholder={t('teacherTools.topicFilterPlaceholder')}
-                  className="w-full rounded-xl border border-gray-200 py-2.5 pl-10 pr-3 text-sm focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
-                />
-              </div>
-
               {rag.topicsError && !rag.topicsIndexing && (
                 <div className="mt-2 flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs text-amber-900">
                   <AlertCircle className="h-4 w-4 shrink-0 text-amber-600" aria-hidden />
@@ -323,19 +331,21 @@ export function ExamSourcesRagPanel({ rag, subject, grade, panelStep }: Props) {
                 </div>
               )}
             </div>
+            </TeacherToolsFieldBand>
           ) : (
             <div className="rounded-xl border border-gray-200 bg-gray-50/70 px-4 py-3 text-sm text-gray-700">
               {t('quiz.rag.topicOnlyStrandsHidden')}
             </div>
           )}
 
+          <TeacherToolsFieldBand variant="ai">
           <label className="block text-sm font-medium text-gray-800">
             {rag.generateWithoutSources ? (
               <>
-                {t('teacherTools.scopeRefinement')} <span className="text-red-500">*</span>
+                {t('teacherTools.focusForAi')} <span className="text-red-500">*</span>
               </>
             ) : (
-              t('teacherTools.scopeRefinementOptional')
+              t('teacherTools.focusForAi')
             )}
             <textarea
               rows={2}
@@ -354,13 +364,14 @@ export function ExamSourcesRagPanel({ rag, subject, grade, panelStep }: Props) {
                 : t('quiz.rag.scopeHintWithSource')}
             </span>
           </label>
-        </>
-      )}
+          </TeacherToolsFieldBand>
 
-      <p className="border-t border-gray-100 pt-4 text-xs leading-relaxed text-gray-600">
-        <span className="font-semibold text-gray-800">{t('teacherTools.generationScope')}</span>{' '}
-        {formatSourceSummary(rag.getGenerationContext())}
-      </p>
+          <p className="border-t border-gray-100 pt-4 text-xs leading-relaxed text-gray-600">
+            <span className="font-semibold text-gray-800">{t('teacherTools.generationScope')}</span>{' '}
+            {formatSourceSummary(rag.getGenerationContext())}
+          </p>
+        </ScopeStepChrome>
+      )}
         </>
       )}
     </div>

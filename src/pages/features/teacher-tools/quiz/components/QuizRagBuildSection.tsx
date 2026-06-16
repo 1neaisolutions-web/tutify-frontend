@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   AlertCircle,
@@ -10,9 +10,16 @@ import {
   X,
 } from 'lucide-react'
 import type { QuizRagScopeModel } from '../hooks/useQuizRagScope'
-import { BookScopePanel } from '../../../../../features/quiz/components/BookScopePanel'
+import {
+  BookScopePanel,
+  collectSelectedTopicLabels,
+} from '../../../../../features/quiz/components/BookScopePanel'
 import { ScopeSummaryBar } from '../../../../../features/quiz/components/ScopeSummaryBar'
-import { TeacherToolsPanelHeader } from '../../components/TeacherToolsPanelHeader'
+import {
+  ScopeStepChrome,
+  TeacherToolsFieldBand,
+  TeacherToolsPanelHeader,
+} from '../../components'
 import { getBookById, type DemoBook } from '../../demo/demoContentLibrary'
 import { DIFFICULTY_OPTIONS, QUESTION_COUNT } from '../config/quizCreationConfig'
 import type { QuizBuildSubStepId } from '../config/quizWizardSteps'
@@ -102,6 +109,7 @@ export function QuizRagBuildSection({
   activeStepId,
 }: Props) {
   const { t } = useTranslation()
+  const [scopeTreeQuery, setScopeTreeQuery] = useState('')
 
   const stepMeta = useMemo(
     (): Record<
@@ -158,46 +166,71 @@ export function QuizRagBuildSection({
     .map((id) => getBookById(id, rag.catalog as unknown as DemoBook[]))
     .filter(Boolean)
 
+  const selectedTopicLabels = useMemo(
+    () => collectSelectedTopicLabels(rag.selectedPackStructures, rag.selectedTopicIds),
+    [rag.selectedPackStructures, rag.selectedTopicIds],
+  )
+
+  const scopeSearchInput = (
+    <div className="relative">
+      <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+      <input
+        value={scopeTreeQuery}
+        onChange={(e) => setScopeTreeQuery(e.target.value)}
+        placeholder={t('teacherTools.scopeSearchPlaceholder')}
+        className="w-full rounded-xl border border-gray-200 py-2.5 pl-10 pr-3 text-sm focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
+        aria-label={t('teacherTools.ariaSearch')}
+      />
+    </div>
+  )
+
   return (
     <div>
       {activeStepId === 'basics' && (
       <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
         <TeacherToolsPanelHeader {...stepMeta.basics} />
-        <div className="grid gap-4 p-5 md:grid-cols-2">
-          <label className="md:col-span-2 block text-sm font-medium text-gray-800">
-            {t('teacherTools.title')} <span className="text-red-500">*</span>
-            <input
-              value={title}
-              onChange={(e) => onTitleChange(e.target.value)}
-              placeholder={t('quiz.rag.titlePlaceholder')}
-              className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm ring-primary-500/20 focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-            />
-          </label>
-          <SubjectSelect
-            value={subject}
-            onChange={onSubjectChange}
-            label={t('teacherTools.subject')}
-            variant="native"
-            context="teacherTools"
-            selectClassName="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-          />
-          <GradeSelect
-            value={grade}
-            onChange={onGradeChange}
-            label={t('teacherTools.gradeCohort')}
-            variant="native"
-          />
-          <label className="md:col-span-2 block text-sm font-medium text-gray-800">
-            {t('teacherTools.studentInstructions')}
-            <textarea
-              rows={3}
-              value={studentInstructions}
-              onChange={(e) => onStudentInstructionsChange(e.target.value)}
-              placeholder={t('quiz.defaultInstructions')}
-              className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-            />
-            <span className="mt-1 block text-xs text-gray-500">{t('quiz.rag.instructionsHint')}</span>
-          </label>
+        <div className="space-y-4 p-5">
+          <TeacherToolsFieldBand variant="student">
+            <label className="block text-sm font-medium text-gray-800">
+              {t('teacherTools.title')} <span className="text-red-500">*</span>
+              <input
+                value={title}
+                onChange={(e) => onTitleChange(e.target.value)}
+                placeholder={t('quiz.rag.titlePlaceholder')}
+                className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm ring-primary-500/20 focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+              />
+            </label>
+            <label className="block text-sm font-medium text-gray-800">
+              {t('teacherTools.studentInstructions')}
+              <textarea
+                rows={3}
+                value={studentInstructions}
+                onChange={(e) => onStudentInstructionsChange(e.target.value)}
+                placeholder={t('quiz.defaultInstructions')}
+                className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+              />
+              <span className="mt-1 block text-xs text-gray-500">{t('quiz.rag.instructionsHint')}</span>
+            </label>
+          </TeacherToolsFieldBand>
+          <TeacherToolsFieldBand variant="library">
+            <div className="grid gap-4 md:grid-cols-2">
+              <SubjectSelect
+                value={subject}
+                onChange={onSubjectChange}
+                label={t('teacherTools.subject')}
+                variant="native"
+                context="teacherTools"
+                selectClassName="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+              />
+              <GradeSelect
+                value={grade}
+                onChange={onGradeChange}
+                label={t('teacherTools.gradeCohort')}
+                variant="native"
+              />
+            </div>
+            <p className="text-xs text-gray-500">{t('teacherTools.libraryMatchHint')}</p>
+          </TeacherToolsFieldBand>
         </div>
       </section>
       )}
@@ -388,7 +421,7 @@ export function QuizRagBuildSection({
       {activeStepId === 'scope' && (
       <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
         <TeacherToolsPanelHeader {...stepMeta.scope} />
-        <div className="space-y-5 p-5">
+        <div className="p-5">
           {!rag.generateWithoutSources && rag.selectedBookIds.length === 0 ? (
             <div className="flex gap-3 rounded-2xl border border-amber-200 bg-amber-50/80 px-4 py-4 text-sm text-amber-950">
               <AlertCircle className="h-5 w-5 shrink-0 text-amber-600" aria-hidden />
@@ -400,31 +433,65 @@ export function QuizRagBuildSection({
               </div>
             </div>
           ) : (
-            <>
+            <ScopeStepChrome
+              title={t('teacherTools.scopeStep.title')}
+              subtitle={t('teacherTools.scopeStep.subtitle')}
+              searchSlot={
+                !rag.generateWithoutSources && rag.selectedPackStructures.length > 0
+                  ? scopeSearchInput
+                  : undefined
+              }
+              summarySlot={
+                <ScopeSummaryBar
+                  bookCount={rag.selectedBookIds.length}
+                  topicCount={rag.allSelectedTopicIds.length || rag.selectedTopics.length}
+                  estimatedSegments={rag.estimatedSegments}
+                  generateWithoutSources={rag.generateWithoutSources}
+                  scopeError={rag.scopeError}
+                  perDocument={rag.perDocumentPreview}
+                  scopeSummaryLabel={rag.scopeSummaryLabel}
+                />
+              }
+            >
               {!rag.generateWithoutSources ? (
                 <>
                   {rag.structureLoading ? (
                     <div className="h-32 animate-pulse rounded-xl bg-gray-100" aria-hidden />
                   ) : rag.selectedPackStructures.length > 0 ? (
-                    <div className="space-y-4">
-                      {rag.selectedPackStructures.map((pack) => (
-                        <BookScopePanel
-                          key={pack.pack_id}
-                          packStructure={pack}
-                          selectedTopicIds={rag.selectedTopicIds}
-                          onToggleTopic={(topicId, includeChildren, leafOnly) =>
-                            rag.toggleTopicId(topicId, includeChildren, leafOnly)
-                          }
-                          onToggleDocument={(_docId, topicIds) => rag.toggleDocumentTopics(topicIds)}
-                          onRemoveBook={() => {
-                            rag.removeBook(pack.pack_id)
-                            rag.clearBookScope(pack.pack_id)
-                          }}
-                        />
-                      ))}
-                    </div>
+                    <TeacherToolsFieldBand variant="library">
+                      <div className="space-y-4">
+                        {rag.selectedPackStructures.map((pack) => (
+                          <BookScopePanel
+                            key={pack.pack_id}
+                            packStructure={pack}
+                            selectedTopicIds={rag.selectedTopicIds}
+                            filterQuery={scopeTreeQuery}
+                            onToggleTopic={(topicId, includeChildren, leafOnly) =>
+                              rag.toggleTopicId(topicId, includeChildren, leafOnly)
+                            }
+                            onToggleDocument={(_docId, topicIds) => rag.toggleDocumentTopics(topicIds)}
+                            onRemoveBook={() => {
+                              rag.removeBook(pack.pack_id)
+                              rag.clearBookScope(pack.pack_id)
+                            }}
+                          />
+                        ))}
+                        {selectedTopicLabels.length > 0 ? (
+                          <div className="flex flex-wrap gap-2">
+                            {selectedTopicLabels.map((label) => (
+                              <span
+                                key={label}
+                                className="inline-flex rounded-full bg-violet-50 px-3 py-1 text-xs font-medium text-violet-900 ring-1 ring-violet-200"
+                              >
+                                {label}
+                              </span>
+                            ))}
+                          </div>
+                        ) : null}
+                      </div>
+                    </TeacherToolsFieldBand>
                   ) : (
-                    <div>
+                    <TeacherToolsFieldBand variant="library">
                       <label className="block text-sm font-medium text-gray-800">{t('teacherTools.topicStrandsHeading')}</label>
                       <p className="mt-1 text-xs text-gray-500">{t('quiz.rag.topicsRefreshHint')}</p>
                       <div className="mt-3 max-h-44 overflow-y-auto rounded-xl border border-gray-200 bg-gray-50/50 p-2">
@@ -453,7 +520,7 @@ export function QuizRagBuildSection({
                           </div>
                         )}
                       </div>
-                    </div>
+                    </TeacherToolsFieldBand>
                   )}
                 </>
               ) : (
@@ -462,37 +529,29 @@ export function QuizRagBuildSection({
                 </div>
               )}
 
-              <label className="block text-sm font-medium text-gray-800">
-                {rag.generateWithoutSources ? (
-                  <>
-                    {t('teacherTools.scopeRefinement')} <span className="text-red-500">*</span>
-                  </>
-                ) : (
-                  t('teacherTools.scopeRefinementOptional')
-                )}
-                <textarea
-                  rows={2}
-                  value={rag.scopeRefinement}
-                  onChange={(e) => rag.setScopeRefinement(e.target.value)}
-                  placeholder={
-                    rag.generateWithoutSources
-                      ? t('quiz.rag.scopePlaceholderNoSource')
-                      : t('teacherTools.scopeRefinementPlaceholder')
-                  }
-                  className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-100"
-                />
-              </label>
-
-              <ScopeSummaryBar
-                bookCount={rag.selectedBookIds.length}
-                topicCount={rag.allSelectedTopicIds.length || rag.selectedTopics.length}
-                estimatedSegments={rag.estimatedSegments}
-                generateWithoutSources={rag.generateWithoutSources}
-                scopeError={rag.scopeError}
-                perDocument={rag.perDocumentPreview}
-                scopeSummaryLabel={rag.scopeSummaryLabel}
-              />
-            </>
+              <TeacherToolsFieldBand variant="ai">
+                <label className="block text-sm font-medium text-gray-800">
+                  {rag.generateWithoutSources ? (
+                    <>
+                      {t('teacherTools.focusForAi')} <span className="text-red-500">*</span>
+                    </>
+                  ) : (
+                    t('teacherTools.focusForAi')
+                  )}
+                  <textarea
+                    rows={2}
+                    value={rag.scopeRefinement}
+                    onChange={(e) => rag.setScopeRefinement(e.target.value)}
+                    placeholder={
+                      rag.generateWithoutSources
+                        ? t('quiz.rag.scopePlaceholderNoSource')
+                        : t('teacherTools.scopeRefinementPlaceholder')
+                    }
+                    className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-100"
+                  />
+                </label>
+              </TeacherToolsFieldBand>
+            </ScopeStepChrome>
           )}
         </div>
       </section>
@@ -502,6 +561,7 @@ export function QuizRagBuildSection({
       <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
         <TeacherToolsPanelHeader {...stepMeta.design} />
         <div className="space-y-5 p-5">
+          <TeacherToolsFieldBand variant="ai">
           <div className="rounded-2xl border border-gray-100 bg-gray-50/80 p-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
@@ -649,7 +709,7 @@ export function QuizRagBuildSection({
           )}
 
           <label className="block text-sm font-medium text-gray-800">
-            {t('quiz.rag.generatorInstructions')}
+            {t('teacherTools.generationNotes')}
             <textarea
               rows={2}
               value={teacherNotes}
@@ -657,9 +717,11 @@ export function QuizRagBuildSection({
               placeholder={t('quiz.rag.generatorPlaceholder')}
               className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-100"
             />
-            <span className="mt-1 block text-xs text-gray-500">{t('quiz.rag.generatorHint')}</span>
+            <span className="mt-1 block text-xs text-gray-500">{t('teacherTools.generationNotesHint')}</span>
           </label>
+          </TeacherToolsFieldBand>
 
+          <TeacherToolsFieldBand variant="student">
           <label className="block max-w-xs text-sm font-medium text-gray-800">
             {t('quiz.rag.timeLimitMinutes')}
             <input
@@ -671,6 +733,7 @@ export function QuizRagBuildSection({
               className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm"
             />
           </label>
+          </TeacherToolsFieldBand>
         </div>
       </section>
       )}
@@ -678,7 +741,8 @@ export function QuizRagBuildSection({
       {activeStepId === 'delivery' && (
       <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
         <TeacherToolsPanelHeader {...stepMeta.delivery} />
-        <div className="flex flex-wrap gap-4 p-5">
+        <TeacherToolsFieldBand variant="student" className="m-5">
+        <div className="flex flex-wrap gap-4">
           <label className="inline-flex items-center gap-2 text-sm text-gray-800">
             <input type="checkbox" checked={shuffleQuestions} onChange={(e) => onShuffleQuestions(e.target.checked)} />
             {t('quiz.rag.shuffleQuestions')}
@@ -692,6 +756,7 @@ export function QuizRagBuildSection({
             {t('quiz.rag.negativeMarking')}
           </label>
         </div>
+        </TeacherToolsFieldBand>
       </section>
       )}
     </div>
