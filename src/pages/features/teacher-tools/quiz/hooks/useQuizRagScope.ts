@@ -13,6 +13,7 @@ import {
   type TopicNode,
   type TopicsResponse,
 } from '../../../../../api/quizCatalog'
+import { buildCatalogListParams, isBookInCatalogFilter } from '@/catalog/adapters/quizCatalogAdapters'
 import { buildRagScopeGenerationContext, type GenerationSourceContext } from '../../demo/generationFromSources'
 
 function isRequestCancelled(err: unknown): boolean {
@@ -75,6 +76,8 @@ export function useQuizRagScope({
 }: UseQuizRagScopeOptions) {
   const [catalog, setCatalog] = useState<AdaptedBook[]>([])
   const [filteredCatalog, setFilteredCatalog] = useState<AdaptedBook[]>([])
+  const [nearMatchCatalog, setNearMatchCatalog] = useState<AdaptedBook[]>([])
+  const [browseAllCatalog, setBrowseAllCatalog] = useState(false)
   const [catalogQuery, setCatalogQuery] = useState('')
   const [catalogBusy, setCatalogBusy] = useState(false)
   const [catalogError, setCatalogError] = useState<string | null>(null)
@@ -106,7 +109,7 @@ export function useQuizRagScope({
   const [perDocumentPreview, setPerDocumentPreview] = useState<ScopePreviewResponse['per_document']>([])
 
   const catalogLoadAbortRef = useRef<AbortController | null>(null)
-  const catalogSearchAbortRef = useRef<AbortController | null>(null)
+  const subjectGradeKeyRef = useRef<string | null>(null)
   const structureAbortRef = useRef<AbortController | null>(null)
   const topicsAbortRef = useRef<AbortController | null>(null)
   const previewAbortRef = useRef<AbortController | null>(null)
@@ -142,37 +145,57 @@ export function useQuizRagScope({
 
   const CATALOG_PAGE_SIZE = 100
 
+  const catalogListParams = useMemo(
+    () =>
+      buildCatalogListParams({
+        subject,
+        grade,
+        strict: !browseAllCatalog,
+        includeNearMatches: !browseAllCatalog,
+      }),
+    [subject, grade, browseAllCatalog],
+  )
+
+  // Reset source selections when basics subject/grade change (not on initial mount).
   useEffect(() => {
+    const key = `${subject}~${grade}`
+    if (subjectGradeKeyRef.current === null) {
+      subjectGradeKeyRef.current = key
+      return
+    }
+    if (subjectGradeKeyRef.current === key) return
+    subjectGradeKeyRef.current = key
+    setSelectedBookIds([])
+    setSelectedTopicIds(new Set())
+    setSelectedTopics([])
+    setCatalogStructure(null)
+    setCatalogQuery('')
+    setBrowseAllCatalog(false)
+  }, [subject, grade])
+
+  useEffect(() => {
+    if (generateWithoutSources) return
+
     catalogLoadAbortRef.current?.abort()
     const controller = new AbortController()
     catalogLoadAbortRef.current = controller
     setCatalogBusy(true)
     setCatalogError(null)
-    setCatalog([])
-    fetchCatalog({ page: 1, page_size: CATALOG_PAGE_SIZE }, controller.signal)
-      .then((res: CatalogListResponse) => {
-        setCatalog(res.items.map(adaptCatalogBook))
-        setCatalogBusy(false)
-      })
-      .catch((err: Error) => {
-        if (isRequestCancelled(err)) return
-        setCatalogError(err.message)
-        setCatalogBusy(false)
-      })
-    return () => controller.abort()
-  }, [retryCounter])
 
-  useEffect(() => {
-    if (!catalogQuery.trim()) return
-    catalogSearchAbortRef.current?.abort()
-    const controller = new AbortController()
-    catalogSearchAbortRef.current = controller
-    setCatalogBusy(true)
-    setCatalogError(null)
-    const timer = window.setTimeout(() => {
-      fetchCatalog({ page: 1, page_size: CATALOG_PAGE_SIZE, q: catalogQuery }, controller.signal)
-        .then((res) => {
-          setFilteredCatalog(res.items.map(adaptCatalogBook))
+    const runFetch = () => {
+      fetchCatalog(
+        buildCatalogListParams({
+          ...catalogListParams,
+          q: catalogQuery.trim() || undefined,
+          page_size: CATALOG_PAGE_SIZE,
+        }),
+        controller.signal,
+      )
+        .then((res: CatalogListResponse) => {
+          const items = res.items.map(adaptCatalogBook)
+          setCatalog(items)
+          setFilteredCatalog(items)
+          setNearMatchCatalog((res.near_matches ?? []).map(adaptCatalogBook))
           setCatalogBusy(false)
         })
         .catch((err: Error) => {
@@ -180,16 +203,16 @@ export function useQuizRagScope({
           setCatalogError(err.message)
           setCatalogBusy(false)
         })
-    }, 300)
+    }
+
+    const debounceMs = catalogQuery.trim() ? 300 : 0
+    const timer = window.setTimeout(runFetch, debounceMs)
+
     return () => {
       window.clearTimeout(timer)
       controller.abort()
     }
-  }, [catalogQuery])
-
-  useEffect(() => {
-    if (!catalogQuery.trim()) setFilteredCatalog(catalog)
-  }, [catalog, catalogQuery])
+  }, [catalogListParams, catalogQuery, retryCounter, generateWithoutSources])
 
   useEffect(() => {
     if (!generateWithoutSources) return
@@ -295,7 +318,13 @@ export function useQuizRagScope({
     }
   }, [selectedBookIds, allSelectedTopicIds, selectedTopics, scopeRefinement, scopeIncludeSubTopics])
 
-  const pool = catalog
+  const pool = useMemo(() => {
+    const byId = new Map<string, AdaptedBook>()
+    for (const b of [...catalog, ...nearMatchCatalog, ...filteredCatalog]) {
+      byId.set(b.id, b)
+    }
+    return [...byId.values()]
+  }, [catalog, nearMatchCatalog, filteredCatalog])
 
   const topicOptionsFiltered = useMemo(() => {
     const q = topicQuery.trim().toLowerCase()
@@ -423,9 +452,9 @@ export function useQuizRagScope({
       selectedBookIds,
       selectedScopeTopics: selectedTopicTitles,
       scopeRefinement,
-      allBooks: catalog as never,
+      allBooks: pool as never,
     })
-  }, [subject, grade, generateWithoutSources, selectedBookIds, selectedTopicTitles, scopeRefinement, catalog])
+  }, [subject, grade, generateWithoutSources, selectedBookIds, selectedTopicTitles, scopeRefinement, pool])
 
   const generationSignature = useMemo(
     () =>
@@ -449,7 +478,8 @@ export function useQuizRagScope({
       generateWithoutSources ||
       !!scopeRefinement.trim() ||
       !!catalogQuery ||
-      !!topicQuery,
+      !!topicQuery ||
+      browseAllCatalog,
     [
       selectedBookIds.length,
       allSelectedTopicIds.length,
@@ -458,7 +488,23 @@ export function useQuizRagScope({
       scopeRefinement,
       catalogQuery,
       topicQuery,
+      browseAllCatalog,
     ],
+  )
+
+  const isBookOutsideFilter = useCallback(
+    (book: AdaptedBook) =>
+      !browseAllCatalog && !isBookInCatalogFilter(book, subject, grade),
+    [browseAllCatalog, subject, grade],
+  )
+
+  const showNearMatches = useMemo(
+    () =>
+      !browseAllCatalog &&
+      !catalogQuery.trim() &&
+      filteredCatalog.length === 0 &&
+      nearMatchCatalog.length > 0,
+    [browseAllCatalog, catalogQuery, filteredCatalog.length, nearMatchCatalog.length],
   )
 
   const resetSources = useCallback(() => {
@@ -470,6 +516,7 @@ export function useQuizRagScope({
     setGenerateWithoutSources(false)
     setTopicQuery('')
     setScopeError(null)
+    setBrowseAllCatalog(false)
   }, [])
 
   const applySourceSnapshot = useCallback(
@@ -492,10 +539,10 @@ export function useQuizRagScope({
   const ragSourceLabels = useMemo(
     () =>
       selectedBookIds
-        .map((id) => catalog.find((b) => b.id === id))
+        .map((id) => pool.find((b) => b.id === id))
         .filter((b): b is AdaptedBook => Boolean(b))
         .map((b) => (b.title.length > 40 ? `${b.title.slice(0, 38)}…` : b.title)),
-    [selectedBookIds, catalog],
+    [selectedBookIds, pool],
   )
 
   return {
@@ -504,6 +551,11 @@ export function useQuizRagScope({
     catalogQuery,
     setCatalogQuery,
     filteredCatalog,
+    nearMatchCatalog,
+    showNearMatches,
+    browseAllCatalog,
+    setBrowseAllCatalog,
+    isBookOutsideFilter,
     catalogBusy,
     catalogError,
     retryCatalog,

@@ -8,6 +8,9 @@ import { uploadDocumentStream, UploadProgressEvent } from '../../api/contentInge
 import { TocJsonOptionalSection } from './TocJsonOptionalSection'
 import { parseChapterMapFromJson } from './tocChapterMapParse'
 import { useSnackbar } from '../../hooks/useSnackbar'
+import { SubjectSelect } from '@/components/shared/SubjectSelect'
+import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
+import { subjectToTeacherToolsLabel } from '@/catalog/adapters/subjectAdapters'
 
 interface SimpleDocumentUploadProps {
   existingPackId?: string
@@ -28,6 +31,7 @@ export const SimpleDocumentUpload = ({
   const [packDescription, setPackDescription] = useState('')
   const [packSubject, setPackSubject] = useState('')
   const [packGrade, setPackGrade] = useState('')
+  const [packLevelLabel, setPackLevelLabel] = useState('')
   const [packCurriculum, setPackCurriculum] = useState('')
   const [tocJsonText, setTocJsonText] = useState('')
   const [forceOcr, setForceOcr] = useState(false)
@@ -89,8 +93,12 @@ export const SimpleDocumentUpload = ({
           pack_id: existingPackId,
           pack_name: existingPackId ? undefined : packName,
           pack_description: existingPackId ? undefined : packDescription,
-          pack_subject: existingPackId ? undefined : packSubject,
-          pack_grade: existingPackId ? undefined : packGrade,
+          pack_subject: existingPackId
+            ? undefined
+            : packSubject
+              ? subjectToTeacherToolsLabel(packSubject)
+              : undefined,
+          pack_grade: existingPackId ? undefined : packLevelLabel.trim() || packGrade || undefined,
           pack_curriculum: existingPackId ? undefined : packCurriculum,
           file,
           title: title || undefined,
@@ -147,30 +155,36 @@ export const SimpleDocumentUpload = ({
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('content.upload.pack.subject')}
-                </label>
-                <input
-                  type="text"
-                  value={packSubject}
-                  onChange={(e) => setPackSubject(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder={t('content.upload.pack.placeholders.subject')}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('content.upload.pack.grade')}
-                </label>
-                <input
-                  type="text"
-                  value={packGrade}
-                  onChange={(e) => setPackGrade(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder={t('content.upload.pack.placeholders.grade')}
-                />
-              </div>
+              <SubjectSelect
+                variant="native"
+                context="default"
+                value={packSubject}
+                onChange={setPackSubject}
+                label={t('content.upload.pack.subject')}
+                selectClassName="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              />
+              <GradeBandSelect
+                variant="native"
+                context="default"
+                value={packGrade}
+                onChange={setPackGrade}
+                label={t('content.upload.pack.grade')}
+                allowEmpty
+                emptyLabel={t('content.upload.pack.placeholders.grade')}
+                selectClassName="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('content.upload.pack.levelLabel', { defaultValue: 'Level label (optional)' })}
+              </label>
+              <input
+                type="text"
+                value={packLevelLabel}
+                onChange={(e) => setPackLevelLabel(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                placeholder={t('content.upload.pack.placeholders.levelLabel', { defaultValue: 'e.g. AS & A Level' })}
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">

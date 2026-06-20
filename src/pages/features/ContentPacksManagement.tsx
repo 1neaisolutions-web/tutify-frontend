@@ -87,6 +87,7 @@ interface PackFormValues {
   description: string
   subject: string
   grade: string
+  levelLabel: string
   curriculum: string
 }
 
@@ -106,6 +107,7 @@ const EMPTY_FORM: PackFormValues = {
   description: '',
   subject: '',
   grade: '',
+  levelLabel: '',
   curriculum: '',
 }
 
@@ -115,6 +117,7 @@ const PackFormModal = ({ mode, initialValues, onClose, onSubmit }: PackFormModal
     ...EMPTY_FORM,
     ...initialValues,
     subject: subjectValueForSelect(initialValues?.subject),
+    levelLabel: initialValues?.levelLabel ?? '',
   })
   const [errors, setErrors] = useState<PackFormErrors>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -150,7 +153,7 @@ const PackFormModal = ({ mode, initialValues, onClose, onSubmit }: PackFormModal
         name: values.name.trim(),
         description: values.description.trim() || null,
         subject: values.subject.trim() || null,
-        grade: values.grade.trim() || null,
+        grade: values.levelLabel.trim() || values.grade.trim() || null,
         curriculum: values.curriculum.trim() || null,
       })
     } catch (err) {
@@ -242,7 +245,27 @@ const PackFormModal = ({ mode, initialValues, onClose, onSubmit }: PackFormModal
                   allowEmpty
                   emptyLabel={t('contentPacksPage.eGGrade10', { defaultValue: 'Select grade band' })}
                 />
+                <p className="mt-1 text-xs text-gray-500">
+                  {t('contentPacksPage.gradeBandCatalogHint', {
+                    defaultValue:
+                      'For Cambridge/IB materials use 9–12 or Higher Education and set Curriculum. Optional level label below for AS & A Level display.',
+                  })}
+                </p>
               </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('contentPacksPage.levelLabel', { defaultValue: 'Level label (optional)' })}
+              </label>
+              <input
+                type="text"
+                value={values.levelLabel}
+                onChange={set('levelLabel')}
+                disabled={isSubmitting}
+                placeholder={t('contentPacksPage.levelLabelPlaceholder', { defaultValue: 'e.g. AS & A Level' })}
+                className={inputCls()}
+              />
             </div>
 
             <div>
@@ -599,6 +622,7 @@ export const ContentPacksManagement = () => {
             description: modal.pack.description ?? '',
             subject: subjectValueForSelect(modal.pack.subject ?? ''),
             grade: modal.pack.grade ?? '',
+            levelLabel: '',
             curriculum: modal.pack.curriculum ?? '',
           }}
           onClose={closeModal}

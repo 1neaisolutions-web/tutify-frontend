@@ -27,5 +27,8 @@ export { SkeletonLine, TableSkeletonRows, CardGridSkeleton, ChartSkeleton } from
 export { SimpleBarChart } from './TeacherToolsCharts'
 export { ContentSourcesPanel } from './ContentSourcesPanel'
 export type { ContentSourcesPanelProps } from './ContentSourcesPanel'
+export { CatalogBrowseControls } from './CatalogBrowseControls'
+export { CatalogBookGrid } from './CatalogBookGrid'
+export { CatalogSourcesBookPicker } from './CatalogSourcesBookPicker'
 export { Phase2Badge, Phase2Section, LockedTooltip } from './Phase2Lock'
 export { TeacherToolsListSyncHint } from './TeacherToolsListSyncHint'

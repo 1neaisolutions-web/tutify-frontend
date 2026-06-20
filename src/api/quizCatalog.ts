@@ -22,6 +22,7 @@ export interface CatalogListResponse {
   page: number
   page_size: number
   items: CatalogBookCard[]
+  near_matches?: CatalogBookCard[]
 }
 
 export interface CatalogListParams {
@@ -29,6 +30,8 @@ export interface CatalogListParams {
   grade?: string
   curriculum?: string
   q?: string
+  strict?: boolean
+  include_near_matches?: boolean
   page?: number
   page_size?: number
 }
@@ -127,11 +130,10 @@ export async function fetchCatalog(
 ): Promise<CatalogListResponse> {
   // Strip keys whose value is undefined or an empty string so the backend
   // doesn't receive spurious empty query params.
-  const query: Record<string, string | number> = {}
+  const query: Record<string, string | number | boolean> = {}
   for (const [key, value] of Object.entries(params)) {
-    if (value !== undefined && value !== '') {
-      query[key] = value as string | number
-    }
+    if (value === undefined || value === '') continue
+    query[key] = value as string | number | boolean
   }
 
   return apiRequest<CatalogListResponse>('/v1/quiz/catalog', { query, signal })
