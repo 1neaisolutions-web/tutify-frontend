@@ -358,6 +358,8 @@ export function BookScopePanel({
   )
 }
 
+export type SelectedTopicEntry = { id: string; label: string }
+
 /**
  * Collect display titles for selected topic IDs from pack structures (display-only chips).
  */
@@ -365,13 +367,23 @@ export function collectSelectedTopicLabels(
   packs: PackStructure[],
   selectedTopicIds: Set<string>,
 ): string[] {
-  const labels: string[] = []
+  return collectSelectedTopicEntries(packs, selectedTopicIds).map((e) => e.label)
+}
+
+/**
+ * Collect id + label pairs for selected leaf topics (chips with remove actions).
+ */
+export function collectSelectedTopicEntries(
+  packs: PackStructure[],
+  selectedTopicIds: Set<string>,
+): SelectedTopicEntry[] {
+  const entries: SelectedTopicEntry[] = []
   const seen = new Set<string>()
   const walk = (nodes: TopicNode[]) => {
     for (const node of nodes) {
       if (selectedTopicIds.has(node.id) && node.chunk_count > 0 && !seen.has(node.id)) {
         seen.add(node.id)
-        labels.push(node.display_title)
+        entries.push({ id: node.id, label: node.display_title })
       }
       walk(node.children)
     }
@@ -381,5 +393,5 @@ export function collectSelectedTopicLabels(
       walk(doc.topic_tree)
     }
   }
-  return labels
+  return entries
 }

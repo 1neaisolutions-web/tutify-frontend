@@ -43,6 +43,7 @@ export interface WorksheetApiItem {
   topic: string
   sourceBookIds: string[]
   scopeTopics: string[]
+  scopeTopicIds?: string[]
   scopeRefinement?: string | null
   sourceSummary?: string | null
   difficulty?: string | null
@@ -84,6 +85,7 @@ export interface WorksheetCreatePayload {
   status?: WorksheetStatus
   sourceBookIds: string[]
   scopeTopics: string[]
+  scopeTopicIds?: string[]
   scopeRefinement?: string
   generateWithoutSources: boolean
   difficulty?: DifficultyId
@@ -103,6 +105,7 @@ export interface WorksheetPatchPayload {
   dueAt?: string | null
   sourceBookIds?: string[]
   scopeTopics?: string[]
+  scopeTopicIds?: string[]
   scopeRefinement?: string
   generateWithoutSources?: boolean
   difficulty?: DifficultyId

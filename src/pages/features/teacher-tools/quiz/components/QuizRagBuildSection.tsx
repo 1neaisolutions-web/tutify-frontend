@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   AlertCircle,
@@ -11,14 +11,9 @@ import {
 } from 'lucide-react'
 import type { QuizRagScopeModel } from '../hooks/useQuizRagScope'
 import {
-  BookScopePanel,
-  collectSelectedTopicLabels,
-} from '../../../../../features/quiz/components/BookScopePanel'
-import { ScopeSummaryBar } from '../../../../../features/quiz/components/ScopeSummaryBar'
-import {
-  ScopeStepChrome,
   TeacherToolsFieldBand,
   TeacherToolsPanelHeader,
+  TeacherToolsScopeStepContent,
 } from '../../components'
 import { getBookById, type DemoBook } from '../../demo/demoContentLibrary'
 import { DIFFICULTY_OPTIONS, QUESTION_COUNT } from '../config/quizCreationConfig'
@@ -109,7 +104,6 @@ export function QuizRagBuildSection({
   activeStepId,
 }: Props) {
   const { t } = useTranslation()
-  const [scopeTreeQuery, setScopeTreeQuery] = useState('')
 
   const stepMeta = useMemo(
     (): Record<
@@ -165,24 +159,6 @@ export function QuizRagBuildSection({
   const selectedBooks = rag.selectedBookIds
     .map((id) => getBookById(id, rag.catalog as unknown as DemoBook[]))
     .filter(Boolean)
-
-  const selectedTopicLabels = useMemo(
-    () => collectSelectedTopicLabels(rag.selectedPackStructures, rag.selectedTopicIds),
-    [rag.selectedPackStructures, rag.selectedTopicIds],
-  )
-
-  const scopeSearchInput = (
-    <div className="relative">
-      <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-      <input
-        value={scopeTreeQuery}
-        onChange={(e) => setScopeTreeQuery(e.target.value)}
-        placeholder={t('teacherTools.scopeSearchPlaceholder')}
-        className="w-full rounded-xl border border-gray-200 py-2.5 pl-10 pr-3 text-sm focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
-        aria-label={t('teacherTools.ariaSearch')}
-      />
-    </div>
-  )
 
   return (
     <div>
@@ -433,125 +409,7 @@ export function QuizRagBuildSection({
               </div>
             </div>
           ) : (
-            <ScopeStepChrome
-              title={t('teacherTools.scopeStep.title')}
-              subtitle={t('teacherTools.scopeStep.subtitle')}
-              searchSlot={
-                !rag.generateWithoutSources && rag.selectedPackStructures.length > 0
-                  ? scopeSearchInput
-                  : undefined
-              }
-              summarySlot={
-                <ScopeSummaryBar
-                  bookCount={rag.selectedBookIds.length}
-                  topicCount={rag.allSelectedTopicIds.length || rag.selectedTopics.length}
-                  estimatedSegments={rag.estimatedSegments}
-                  generateWithoutSources={rag.generateWithoutSources}
-                  scopeError={rag.scopeError}
-                  perDocument={rag.perDocumentPreview}
-                  scopeSummaryLabel={rag.scopeSummaryLabel}
-                />
-              }
-            >
-              {!rag.generateWithoutSources ? (
-                <>
-                  {rag.structureLoading ? (
-                    <div className="h-32 animate-pulse rounded-xl bg-gray-100" aria-hidden />
-                  ) : rag.selectedPackStructures.length > 0 ? (
-                    <TeacherToolsFieldBand variant="library">
-                      <div className="space-y-4">
-                        {rag.selectedPackStructures.map((pack) => (
-                          <BookScopePanel
-                            key={pack.pack_id}
-                            packStructure={pack}
-                            selectedTopicIds={rag.selectedTopicIds}
-                            filterQuery={scopeTreeQuery}
-                            onToggleTopic={(topicId, includeChildren, leafOnly) =>
-                              rag.toggleTopicId(topicId, includeChildren, leafOnly)
-                            }
-                            onToggleDocument={(_docId, topicIds) => rag.toggleDocumentTopics(topicIds)}
-                            onRemoveBook={() => {
-                              rag.removeBook(pack.pack_id)
-                              rag.clearBookScope(pack.pack_id)
-                            }}
-                          />
-                        ))}
-                        {selectedTopicLabels.length > 0 ? (
-                          <div className="flex flex-wrap gap-2">
-                            {selectedTopicLabels.map((label) => (
-                              <span
-                                key={label}
-                                className="inline-flex rounded-full bg-violet-50 px-3 py-1 text-xs font-medium text-violet-900 ring-1 ring-violet-200"
-                              >
-                                {label}
-                              </span>
-                            ))}
-                          </div>
-                        ) : null}
-                      </div>
-                    </TeacherToolsFieldBand>
-                  ) : (
-                    <TeacherToolsFieldBand variant="library">
-                      <label className="block text-sm font-medium text-gray-800">{t('teacherTools.topicStrandsHeading')}</label>
-                      <p className="mt-1 text-xs text-gray-500">{t('quiz.rag.topicsRefreshHint')}</p>
-                      <div className="mt-3 max-h-44 overflow-y-auto rounded-xl border border-gray-200 bg-gray-50/50 p-2">
-                        {rag.topicOptionsFiltered.length === 0 ? (
-                          <p className="px-2 py-6 text-center text-xs text-gray-600">{t('quiz.rag.noTopicsReturned')}</p>
-                        ) : (
-                          <div className="flex flex-wrap gap-2">
-                            {rag.topicOptionsFiltered.map((topicLabel) => {
-                              const active = rag.selectedTopics.includes(topicLabel)
-                              return (
-                                <button
-                                  key={topicLabel}
-                                  type="button"
-                                  onClick={() => rag.toggleTopic(topicLabel)}
-                                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
-                                    active
-                                      ? 'border-violet-500 bg-violet-600 text-white shadow-sm'
-                                      : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
-                                  }`}
-                                >
-                                  {active ? <Check className="h-3 w-3" /> : <ChevronRight className="h-3 w-3 opacity-40" />}
-                                  {topicLabel}
-                                </button>
-                              )
-                            })}
-                          </div>
-                        )}
-                      </div>
-                    </TeacherToolsFieldBand>
-                  )}
-                </>
-              ) : (
-                <div className="rounded-xl border border-gray-200 bg-gray-50/70 px-4 py-3 text-sm text-gray-700">
-                  {t('quiz.rag.topicOnlyStrandsHidden')}
-                </div>
-              )}
-
-              <TeacherToolsFieldBand variant="ai">
-                <label className="block text-sm font-medium text-gray-800">
-                  {rag.generateWithoutSources ? (
-                    <>
-                      {t('teacherTools.focusForAi')} <span className="text-red-500">*</span>
-                    </>
-                  ) : (
-                    t('teacherTools.focusForAi')
-                  )}
-                  <textarea
-                    rows={2}
-                    value={rag.scopeRefinement}
-                    onChange={(e) => rag.setScopeRefinement(e.target.value)}
-                    placeholder={
-                      rag.generateWithoutSources
-                        ? t('quiz.rag.scopePlaceholderNoSource')
-                        : t('teacherTools.scopeRefinementPlaceholder')
-                    }
-                    className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-100"
-                  />
-                </label>
-              </TeacherToolsFieldBand>
-            </ScopeStepChrome>
+            <TeacherToolsScopeStepContent rag={rag} accent="violet" />
           )}
         </div>
       </section>

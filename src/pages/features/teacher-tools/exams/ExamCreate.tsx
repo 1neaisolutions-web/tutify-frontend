@@ -9,6 +9,7 @@ import {
   TeacherToolsExemplarReviewBanner,
   TeacherToolsFieldBand,
   TeacherToolsFieldErrors,
+  TeacherToolsPageHeader,
   TeacherToolsPanelHeader,
   TeacherToolsReviewHeaderCompact,
   TeacherToolsWizardFooter,
@@ -196,6 +197,7 @@ export default function ExamCreate() {
   const [scopeHydration, setScopeHydration] = useState<{
     bookIds: string[]
     topics: string[]
+    topicIds: string[]
     refinement: string
     without: boolean
   } | null>(null)
@@ -263,6 +265,7 @@ export default function ExamCreate() {
     grade,
     initialSelectedBookIds: scopeHydration?.bookIds,
     initialScopeTopics: scopeHydration?.topics,
+    initialScopeTopicIds: scopeHydration?.topicIds,
     initialScopeRefinement: scopeHydration?.refinement ?? loadedTopic,
     initialGenerateWithoutSources: scopeHydration?.without,
   })
@@ -278,6 +281,7 @@ export default function ExamCreate() {
       generateWithoutSources: rag.generateWithoutSources,
       selectedBookIds: rag.selectedBookIds,
       selectedTopics: rag.selectedTopics,
+      selectedTopicIds: rag.allSelectedTopicIds,
       scopeRefinement: rag.scopeRefinement,
       durationMinutes,
       sectionTargetCount,
@@ -288,6 +292,7 @@ export default function ExamCreate() {
       rag.generateWithoutSources,
       rag.selectedBookIds,
       rag.selectedTopics,
+      rag.allSelectedTopicIds,
       rag.scopeRefinement,
       durationMinutes,
       sectionTargetCount,
@@ -520,6 +525,7 @@ export default function ExamCreate() {
         setScopeHydration({
           bookIds: ex.sourceBookIds ?? [],
           topics: ex.scopeTopics ?? [],
+          topicIds: ex.scopeTopicIds ?? [],
           refinement: ex.scopeRefinement ?? '',
           without: ex.generateWithoutSources,
         })
@@ -544,7 +550,11 @@ export default function ExamCreate() {
       generateWithoutSources: rag.generateWithoutSources,
       selectedBookIds: rag.selectedBookIds,
       selectedTopics: rag.selectedTopics,
+      selectedTopicIds: rag.allSelectedTopicIds,
       scopeRefinement: rag.scopeRefinement,
+      durationMinutes,
+      sectionTargetCount,
+      paper,
     })
     if (!ragV.ok) errs.push(...ragV.errors)
     const pe = validateExamPaperFields(paper)
@@ -583,6 +593,7 @@ export default function ExamCreate() {
           sectionTargetCount,
           sourceBookIds: rag.selectedBookIds,
           scopeTopics: rag.selectedTopics,
+          scopeTopicIds: rag.allSelectedTopicIds,
           scopeRefinement: rag.scopeRefinement || undefined,
           generateWithoutSources: rag.generateWithoutSources,
           paper,
@@ -600,6 +611,7 @@ export default function ExamCreate() {
           durationMinutes,
           sourceBookIds: rag.selectedBookIds,
           scopeTopics: rag.selectedTopics,
+          scopeTopicIds: rag.allSelectedTopicIds,
           scopeRefinement: rag.scopeRefinement || undefined,
           generateWithoutSources: rag.generateWithoutSources,
           handoutLayout,
@@ -622,6 +634,14 @@ export default function ExamCreate() {
       if (credit) {
         setCreditGate(credit)
         setGenerationError(null)
+        return
+      }
+      const detail =
+        (e as { data?: { detail?: { code?: string; message?: string } } })?.data?.detail ??
+        (e as { detail?: { code?: string; message?: string } })?.detail
+      if (detail?.code === 'RETRIEVAL_SCOPE_ERROR') {
+        setGenerationError(detail.message || t('quiz.rag.noSegmentsForScope'))
+        toast.error(detail.message || t('quiz.rag.noSegmentsForScope'))
         return
       }
       setGenerationError(t('exam.generationFailed'))
@@ -911,6 +931,7 @@ export default function ExamCreate() {
       sectionTargetCount,
       sourceBookIds: rag.selectedBookIds,
       scopeTopics: rag.selectedTopics,
+      scopeTopicIds: rag.allSelectedTopicIds,
       scopeRefinement: rag.scopeRefinement || undefined,
       generateWithoutSources: rag.generateWithoutSources,
       paper,

@@ -400,6 +400,7 @@ export default function WorksheetCreate() {
   const [ragHydration, setRagHydration] = useState<{
     sourceBookIds: string[]
     scopeTopics: string[]
+    scopeTopicIds: string[]
     scopeRefinement: string
     generateWithoutSources: boolean
   } | null>(null)
@@ -457,6 +458,7 @@ export default function WorksheetCreate() {
     grade,
     initialSelectedBookIds: ragHydration?.sourceBookIds,
     initialScopeTopics: ragHydration?.scopeTopics,
+    initialScopeTopicIds: ragHydration?.scopeTopicIds,
     initialScopeRefinement: ragHydration ? ragHydration.scopeRefinement : loadedTopic,
     initialGenerateWithoutSources: ragHydration?.generateWithoutSources,
   })
@@ -472,6 +474,7 @@ export default function WorksheetCreate() {
       generateWithoutSources: rag.generateWithoutSources,
       selectedBookIds: rag.selectedBookIds,
       selectedTopics: rag.selectedTopics,
+      selectedTopicIds: rag.allSelectedTopicIds,
       scopeRefinement: rag.scopeRefinement,
       mixMode,
       questionCount,
@@ -486,6 +489,7 @@ export default function WorksheetCreate() {
       rag.generateWithoutSources,
       rag.selectedBookIds,
       rag.selectedTopics,
+      rag.allSelectedTopicIds,
       rag.scopeRefinement,
       mixMode,
       questionCount,
@@ -719,6 +723,7 @@ export default function WorksheetCreate() {
         setRagHydration({
           sourceBookIds: w.sourceBookIds ?? [],
           scopeTopics: w.scopeTopics ?? [],
+          scopeTopicIds: w.scopeTopicIds ?? [],
           scopeRefinement: w.scopeRefinement ?? '',
           generateWithoutSources: Boolean(w.generateWithoutSources),
         })
@@ -993,6 +998,7 @@ export default function WorksheetCreate() {
       generateWithoutSources: rag.generateWithoutSources,
       selectedBookIds: rag.selectedBookIds,
       selectedTopics: rag.selectedTopics,
+      selectedTopicIds: rag.allSelectedTopicIds,
       scopeRefinement: rag.scopeRefinement,
       mixMode,
       questionCount,
@@ -1028,6 +1034,7 @@ export default function WorksheetCreate() {
           classes: [classKeyForGrade(grade)],
           sourceBookIds: rag.selectedBookIds,
           scopeTopics: rag.selectedTopics,
+          scopeTopicIds: rag.allSelectedTopicIds,
           scopeRefinement: rag.scopeRefinement.trim() || undefined,
           generateWithoutSources: rag.generateWithoutSources,
           difficulty,
@@ -1048,6 +1055,7 @@ export default function WorksheetCreate() {
             classes: [classKeyForGrade(grade)],
             sourceBookIds: rag.selectedBookIds,
             scopeTopics: rag.selectedTopics,
+            scopeTopicIds: rag.allSelectedTopicIds,
             scopeRefinement: rag.scopeRefinement.trim() || undefined,
             generateWithoutSources: rag.generateWithoutSources,
             difficulty,
@@ -1082,6 +1090,14 @@ export default function WorksheetCreate() {
       if (credit) {
         setCreditGate(credit)
         setGenerationError(null)
+        return
+      }
+      const detail =
+        (err as { data?: { detail?: { code?: string; message?: string } } })?.data?.detail ??
+        (err as { detail?: { code?: string; message?: string } })?.detail
+      if (detail?.code === 'RETRIEVAL_SCOPE_ERROR') {
+        setGenerationError(detail.message || t('quiz.rag.noSegmentsForScope'))
+        toast.error(detail.message || t('quiz.rag.noSegmentsForScope'))
         return
       }
       setGenerationError(t('worksheet.generationFailed'))

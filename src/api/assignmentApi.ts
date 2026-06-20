@@ -32,6 +32,7 @@ export interface AssignmentApiItem {
   handoutLayout?: Record<string, unknown> | null
   sourceBookIds: string[]
   scopeTopics: string[]
+  scopeTopicIds?: string[]
   scopeRefinement?: string | null
   generateWithoutSources: boolean
   rigorProfile: string
@@ -72,6 +73,7 @@ export interface AssignmentCreatePayload {
   status?: AssignmentApiStatus
   sourceBookIds: string[]
   scopeTopics: string[]
+  scopeTopicIds?: string[]
   scopeRefinement?: string
   generateWithoutSources: boolean
   difficulty?: DifficultyId
@@ -93,6 +95,7 @@ export interface AssignmentPatchPayload {
   status?: AssignmentApiStatus
   sourceBookIds?: string[]
   scopeTopics?: string[]
+  scopeTopicIds?: string[]
   scopeRefinement?: string
   generateWithoutSources?: boolean
   difficulty?: DifficultyId

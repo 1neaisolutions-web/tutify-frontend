@@ -8,6 +8,7 @@ export type AssignmentRagBuildInput = {
   generateWithoutSources: boolean
   selectedBookIds: string[]
   selectedTopics: string[]
+  selectedTopicIds?: string[]
   scopeRefinement: string
   topicCount?: number
 }
@@ -35,8 +36,11 @@ export function validateAssignmentBuildSubStep(
       }
       break
     case 'scope':
-      if (!input.generateWithoutSources && input.selectedTopics.length === 0) {
-        errors.push('Choose one or more topic strands derived from your selected material.')
+      if (!input.generateWithoutSources) {
+        const topicIds = input.selectedTopicIds ?? []
+        if (topicIds.length === 0 && input.selectedTopics.length === 0) {
+          errors.push('Choose one or more topic strands derived from your selected material.')
+        }
       }
       if (input.generateWithoutSources && !input.scopeRefinement.trim()) {
         errors.push('Add a topic focus in scope refinement when generating without sources.')

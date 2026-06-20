@@ -16,7 +16,7 @@ import type { QuizRagScopeModel } from '../../quiz/hooks/useQuizRagScope'
 import { getBookById } from '../../demo/demoContentLibrary'
 import { formatSourceSummary } from '../../demo/generationFromSources'
 import { subjectToTeacherToolsLabel } from '@/catalog/adapters/subjectAdapters'
-import { ScopeStepChrome, TeacherToolsFieldBand } from '../../components'
+import { TeacherToolsFieldBand, TeacherToolsScopeStepContent } from '../../components'
 
 type Props = {
   rag: QuizRagScopeModel
@@ -227,150 +227,23 @@ export function ExamSourcesRagPanel({ rag, subject, grade, panelStep }: Props) {
           </div>
         </div>
       ) : (
-        <ScopeStepChrome
-          title={t('teacherTools.scopeStep.title')}
-          subtitle={t('teacherTools.scopeStep.subtitle')}
-          searchSlot={
-            !rag.generateWithoutSources ? (
-              <div className="relative">
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                <input
-                  value={rag.topicQuery}
-                  onChange={(e) => rag.setTopicQuery(e.target.value)}
-                  placeholder={t('teacherTools.scopeSearchPlaceholder')}
-                  className="w-full rounded-xl border border-gray-200 py-2.5 pl-10 pr-3 text-sm focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
-                />
-              </div>
-            ) : undefined
-          }
-        >
-          {!rag.generateWithoutSources ? (
-            <TeacherToolsFieldBand variant="library">
-            <div>
-              <label className="block text-sm font-medium text-gray-800">{t('teacherTools.topicStrandsHeading')}</label>
-              <p className="mt-1 text-xs text-gray-500">
-                {t('quiz.rag.topicsRefreshHint')}
-                {rag.topicsIndexing ? ` ${t('quiz.rag.topicsRefreshing')}` : ''}
-              </p>
-              {rag.topicsError && !rag.topicsIndexing && (
-                <div className="mt-2 flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs text-amber-900">
-                  <AlertCircle className="h-4 w-4 shrink-0 text-amber-600" aria-hidden />
-                  <span>{t('quiz.rag.topicsUnavailable')} {rag.topicsError}</span>
-                </div>
-              )}
-
-              {rag.topicsIndexing ? (
-                <div className="mt-3 h-24 animate-pulse rounded-xl bg-gray-100" aria-hidden />
-              ) : (
-                <div className="mt-3 max-h-44 overflow-y-auto rounded-xl border border-gray-200 bg-gray-50/50 p-2">
-                  {rag.topicOptionsFiltered.length === 0 ? (
-                    <p className="px-2 py-6 text-center text-xs text-gray-600">
-                      {rag.topicQuery.trim()
-                        ? t('quiz.rag.noTopicsMatch', { query: rag.topicQuery.trim() })
-                        : rag.availableTopics.length === 0
-                          ? t('quiz.rag.noTopicsReturned')
-                          : t('quiz.rag.noTopicsFilter')}
-                    </p>
-                  ) : (
-                    <div className="flex flex-wrap gap-2">
-                      {rag.topicOptionsFiltered.map((topic) => {
-                        const active = rag.selectedTopics.includes(topic)
-                        return (
-                          <button
-                            key={topic}
-                            type="button"
-                            onClick={() => rag.toggleTopic(topic)}
-                            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
-                              active
-                                ? 'border-violet-500 bg-violet-600 text-white shadow-sm'
-                                : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
-                            }`}
-                          >
-                            {active ? <Check className="h-3 w-3" /> : <ChevronRight className="h-3 w-3 opacity-40" />}
-                            {topic}
-                          </button>
-                        )
-                      })}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {rag.selectedTopics.length > 0 && (
-                <div className="mt-3">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-xs font-semibold text-gray-600">
-                      {t('quiz.rag.selectedTopics', { count: rag.selectedTopics.length })}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => rag.clearAllTopics()}
-                      className="text-xs font-semibold text-violet-700 hover:text-violet-600"
-                    >
-                      {t('quiz.rag.clearAllTopics')}
-                    </button>
-                  </div>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {rag.selectedTopics.map((topic) => (
-                      <span
-                        key={topic}
-                        className="inline-flex items-center gap-1 rounded-full bg-violet-50 px-3 py-1 text-xs font-medium text-violet-900 ring-1 ring-violet-200"
-                      >
-                        {topic}
-                        <button
-                          type="button"
-                          onClick={() => rag.toggleTopic(topic)}
-                          className="rounded-full p-0.5 hover:bg-violet-100"
-                          aria-label={`${t('teacherTools.remove')} ${topic}`}
-                        >
-                          <X className="h-3.5 w-3.5" />
-                        </button>
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-            </TeacherToolsFieldBand>
-          ) : (
-            <div className="rounded-xl border border-gray-200 bg-gray-50/70 px-4 py-3 text-sm text-gray-700">
-              {t('quiz.rag.topicOnlyStrandsHidden')}
-            </div>
-          )}
-
-          <TeacherToolsFieldBand variant="ai">
-          <label className="block text-sm font-medium text-gray-800">
-            {rag.generateWithoutSources ? (
-              <>
-                {t('teacherTools.focusForAi')} <span className="text-red-500">*</span>
-              </>
-            ) : (
-              t('teacherTools.focusForAi')
-            )}
-            <textarea
-              rows={2}
-              value={rag.scopeRefinement}
-              onChange={(e) => rag.setScopeRefinement(e.target.value)}
-              placeholder={
-                rag.generateWithoutSources
-                  ? t('quiz.rag.scopePlaceholderNoSource')
-                  : t('teacherTools.scopeRefinementPlaceholder')
-              }
-              className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-100"
-            />
+        <TeacherToolsScopeStepContent
+          rag={rag}
+          accent="violet"
+          refinementExtra={
             <span className="mt-1 block text-xs text-gray-500">
               {rag.generateWithoutSources
                 ? t('quiz.rag.scopeRequiredNoSource')
                 : t('quiz.rag.scopeHintWithSource')}
             </span>
-          </label>
-          </TeacherToolsFieldBand>
-
-          <p className="border-t border-gray-100 pt-4 text-xs leading-relaxed text-gray-600">
-            <span className="font-semibold text-gray-800">{t('teacherTools.generationScope')}</span>{' '}
-            {formatSourceSummary(rag.getGenerationContext())}
-          </p>
-        </ScopeStepChrome>
+          }
+          afterRefinement={
+            <p className="border-t border-gray-100 pt-4 text-xs leading-relaxed text-gray-600">
+              <span className="font-semibold text-gray-800">{t('teacherTools.generationScope')}</span>{' '}
+              {formatSourceSummary(rag.getGenerationContext())}
+            </p>
+          }
+        />
       )}
         </>
       )}

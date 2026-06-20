@@ -34,6 +34,7 @@ export function adaptApiItemToDemoAssignment(item: AssignmentApiItem): DemoAssig
     handoutLayout: item.handoutLayout as DemoAssignment['handoutLayout'],
     sourceBookIds: item.sourceBookIds?.length ? [...item.sourceBookIds] : undefined,
     scopeTopics: item.scopeTopics?.length ? [...item.scopeTopics] : undefined,
+    scopeTopicIds: item.scopeTopicIds?.length ? [...item.scopeTopicIds] : undefined,
     scopeRefinement: item.scopeRefinement ?? undefined,
     generateWithoutSources: item.generateWithoutSources,
     rigorProfile: item.rigorProfile,
@@ -56,6 +57,7 @@ export function adaptDemoAssignmentToCreatePayload(a: DemoAssignment): Assignmen
     status: (a.status as AssignmentCreatePayload['status']) ?? 'draft',
     sourceBookIds: a.sourceBookIds ?? [],
     scopeTopics: a.scopeTopics ?? [],
+    scopeTopicIds: a.scopeTopicIds ?? [],
     scopeRefinement: a.scopeRefinement,
     generateWithoutSources: a.generateWithoutSources ?? false,
     difficulty: a.difficulty as AssignmentCreatePayload['difficulty'],
@@ -79,6 +81,7 @@ export function adaptDemoAssignmentPatchToApiPatch(patch: Partial<DemoAssignment
     out.handoutLayout = (patch.handoutLayout as Record<string, unknown>) ?? null
   if (patch.sourceBookIds !== undefined) out.sourceBookIds = patch.sourceBookIds
   if (patch.scopeTopics !== undefined) out.scopeTopics = patch.scopeTopics
+  if (patch.scopeTopicIds !== undefined) out.scopeTopicIds = patch.scopeTopicIds
   if (patch.scopeRefinement !== undefined) out.scopeRefinement = patch.scopeRefinement
   if (patch.generateWithoutSources !== undefined) out.generateWithoutSources = patch.generateWithoutSources
   if (patch.rigorProfile !== undefined) out.rigorProfile = patch.rigorProfile

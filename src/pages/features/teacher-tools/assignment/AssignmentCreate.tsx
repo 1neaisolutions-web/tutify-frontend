@@ -147,6 +147,7 @@ export default function AssignmentCreate() {
   const [hydratedRag, setHydratedRag] = useState<{
     bookIds?: string[]
     topics?: string[]
+    topicIds?: string[]
     refinement?: string
     withoutSources?: boolean
   } | null>(null)
@@ -158,9 +159,9 @@ export default function AssignmentCreate() {
   const rag = useQuizRagScope({
     subject,
     grade,
-    bookSelectionMode: 'single',
     initialSelectedBookIds: hydratedRag?.bookIds,
     initialScopeTopics: hydratedRag?.topics,
+    initialScopeTopicIds: hydratedRag?.topicIds,
     initialScopeRefinement: hydratedRag?.refinement ?? loadedTopic,
     initialGenerateWithoutSources: hydratedRag?.withoutSources,
   })
@@ -176,6 +177,7 @@ export default function AssignmentCreate() {
       generateWithoutSources: rag.generateWithoutSources,
       selectedBookIds: rag.selectedBookIds,
       selectedTopics: rag.selectedTopics,
+      selectedTopicIds: rag.allSelectedTopicIds,
       scopeRefinement: rag.scopeRefinement,
       topicCount,
     }),
@@ -184,6 +186,7 @@ export default function AssignmentCreate() {
       rag.generateWithoutSources,
       rag.selectedBookIds,
       rag.selectedTopics,
+      rag.allSelectedTopicIds,
       rag.scopeRefinement,
       topicCount,
     ],
@@ -393,6 +396,7 @@ export default function AssignmentCreate() {
       setHydratedRag({
         bookIds: a.sourceBookIds ?? [],
         topics: a.scopeTopics ?? [],
+        topicIds: a.scopeTopicIds ?? [],
         refinement: a.scopeRefinement ?? '',
         withoutSources: a.generateWithoutSources ?? false,
       })
@@ -424,6 +428,7 @@ export default function AssignmentCreate() {
       status: 'draft',
       sourceBookIds: rag.selectedBookIds,
       scopeTopics: rag.selectedTopics,
+      scopeTopicIds: rag.allSelectedTopicIds,
       scopeRefinement: rag.scopeRefinement || undefined,
       generateWithoutSources: rag.generateWithoutSources,
       difficulty,
@@ -441,6 +446,7 @@ export default function AssignmentCreate() {
     generatorInstructions,
     rag.selectedBookIds,
     rag.selectedTopics,
+    rag.allSelectedTopicIds,
     rag.scopeRefinement,
     rag.generateWithoutSources,
     difficulty,
@@ -452,7 +458,9 @@ export default function AssignmentCreate() {
       generateWithoutSources: rag.generateWithoutSources,
       selectedBookIds: rag.selectedBookIds,
       selectedTopics: rag.selectedTopics,
+      selectedTopicIds: rag.allSelectedTopicIds,
       scopeRefinement: rag.scopeRefinement,
+      topicCount,
     })
     if (!v.ok) {
       setBuildErrors(v.errors)
@@ -477,6 +485,19 @@ export default function AssignmentCreate() {
         ).unwrap()
         assignmentId = created.id
         setLiveAssignmentId(created.id)
+      } else {
+        await appDispatch(
+          assignmentApiSlice.endpoints.patchAssignment.initiate({
+            id: assignmentId,
+            patch: {
+              sourceBookIds: rag.selectedBookIds,
+              scopeTopics: rag.selectedTopics,
+              scopeTopicIds: rag.allSelectedTopicIds,
+              scopeRefinement: rag.scopeRefinement || undefined,
+              generateWithoutSources: rag.generateWithoutSources,
+            },
+          }),
+        ).unwrap()
       }
       if (!assignmentId) {
         setGenerationError(t('assignment.createGenerationError'))
@@ -510,6 +531,14 @@ export default function AssignmentCreate() {
       if (credit) {
         setCreditGate(credit)
         setGenerationError(null)
+        return
+      }
+      const detail =
+        (e as { data?: { detail?: { code?: string; message?: string } } })?.data?.detail ??
+        (e as { detail?: { code?: string; message?: string } })?.detail
+      if (detail?.code === 'RETRIEVAL_SCOPE_ERROR') {
+        setGenerationError(detail.message || t('quiz.rag.noSegmentsForScope'))
+        toast.error(detail.message || t('quiz.rag.noSegmentsForScope'))
         return
       }
       setGenerationError(t('assignment.generationFailed'))
@@ -807,6 +836,7 @@ export default function AssignmentCreate() {
       handoutLayout: handoutLayoutRef.current,
       sourceBookIds: rag.selectedBookIds,
       scopeTopics: rag.selectedTopics,
+      scopeTopicIds: rag.allSelectedTopicIds,
       scopeRefinement: rag.scopeRefinement,
       generateWithoutSources: rag.generateWithoutSources,
       rigorProfile,
