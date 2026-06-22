@@ -20,23 +20,30 @@ export function useRestoreChatbotsCatalogScroll(ready = true) {
   const navigationType = useNavigationType()
   const { getScrollContainer, scrollToTop } = useDashboardScroll()
   const restoreScroll = (state as LocationState | null)?.restoreScroll === true
+  const shouldRestore = navigationType === 'POP' || restoreScroll
 
   useLayoutEffect(() => {
     if (!ready || !isChatbotCatalogRoute(pathname)) return
-    if (navigationType === 'POP' || restoreScroll) return
+
+    if (shouldRestore) {
+      const saved = peekChatbotsCatalogScrollState()
+      if (!saved || saved.pathname !== pathname) return
+      const container = getScrollContainer()
+      if (container) container.scrollTop = saved.scrollTop
+      return
+    }
+
     clearChatbotsCatalogScrollState()
     scrollToTop()
-  }, [pathname, navigationType, restoreScroll, ready, scrollToTop])
+  }, [pathname, shouldRestore, ready, scrollToTop, getScrollContainer])
 
   useEffect(() => {
     if (!ready || !isChatbotCatalogRoute(pathname)) return
-
-    const shouldRestore = navigationType === 'POP' || restoreScroll
     if (!shouldRestore) return
 
     const saved = peekChatbotsCatalogScrollState()
     if (!saved || saved.pathname !== pathname) return
 
     return restoreScrollWhenReady(() => getScrollContainer(), saved.scrollTop)
-  }, [pathname, navigationType, restoreScroll, ready, getScrollContainer])
+  }, [pathname, shouldRestore, ready, getScrollContainer])
 }

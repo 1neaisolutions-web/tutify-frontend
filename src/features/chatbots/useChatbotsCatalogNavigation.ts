@@ -7,7 +7,7 @@ import { saveChatbotsCatalogScrollState } from './chatbotsScrollState'
 export function useChatbotsCatalogNavigation() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const { getScrollTop, scrollToTop } = useDashboardScroll()
+  const { getScrollTop } = useDashboardScroll()
 
   const saveScroll = useCallback(() => {
     saveChatbotsCatalogScrollState({
@@ -20,10 +20,9 @@ export function useChatbotsCatalogNavigation() {
     (target: string, state?: object) => {
       saveScroll()
       clearRouteScrollForPathname(target)
-      scrollToTop()
       navigate(target, { state })
     },
-    [navigate, saveScroll, scrollToTop],
+    [navigate, saveScroll],
   )
 
   return { navigateToDetail, saveScroll }
