@@ -10,16 +10,17 @@ import { setAuthToken } from '../redux/http';
 const PublicRoutes = () => {
   const user = useSelector((state) => state?.auth?.user);
   const isRehydrated = useSelector((state) => state?._persist?.rehydrated);
+  const isAuthenticated = !!user;
 
   const role = user?.role || '';
-  const token = user?.token || localStorage.getItem('access_token');
-
   const firstPath = useMemo(() => getFirstRouteByRole(role), [role]);
 
-  // Ensure axios headers persist across reloads
+  // Ensure axios headers persist across reloads for authenticated sessions
   useEffect(() => {
-    setAuthToken(token);
-  }, [token]);
+    if (isAuthenticated && user?.token) {
+      setAuthToken(user.token);
+    }
+  }, [isAuthenticated, user?.token]);
   
   // Avoid redirecting while state is still loading from storage
   if (!isRehydrated) {
@@ -33,8 +34,7 @@ const PublicRoutes = () => {
     );
   }
 
-  if (token) {
-    // Avoid redirect loops when role resolution falls back to /login
+  if (isAuthenticated) {
     const destination = firstPath && firstPath !== '/login' ? firstPath : '/dashboard';
     return <Navigate to={destination} replace />;
   }

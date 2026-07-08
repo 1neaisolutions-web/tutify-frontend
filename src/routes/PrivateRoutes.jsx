@@ -6,17 +6,9 @@ import { useSelector } from 'react-redux';
 import { setAuthToken } from '../redux/http';
 
 const PrivateRoutes = () => {
-  // Read persisted auth state
   const user = useSelector((state) => state?.auth?.user);
   const isRehydrated = useSelector((state) => state?._persist?.rehydrated);
-  // Some login flows persist the raw access token to localStorage even if redux
-  // user hydration lags or the token field name differs.
-  const token = user?.token || localStorage.getItem('access_token');
-
-  // Ensure axios has the auth header before children render on first paint
-  if (token) {
-    setAuthToken(token);
-  }
+  const isAuthenticated = !!user;
 
   // Wait until redux-persist finishes rehydration to avoid false redirects
   if (!isRehydrated) {
@@ -30,11 +22,18 @@ const PrivateRoutes = () => {
     );
   }
 
-  if (token) {
-    return <Outlet />;
+  if (!isAuthenticated) {
+    // Stale localStorage token without a persisted user causes a /dashboard ↔ /login loop.
+    localStorage.removeItem('access_token');
+    setAuthToken(null);
+    return <Navigate to='/login' replace />;
   }
 
-  return <Navigate to='/login' replace />;
+  if (user.token) {
+    setAuthToken(user.token);
+  }
+
+  return <Outlet />;
 };
 
 export default PrivateRoutes;

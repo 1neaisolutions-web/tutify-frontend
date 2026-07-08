@@ -12,6 +12,7 @@ import { getFirstRouteByRole } from '../../../routes/routeHelpers';
 import { setAuthToken } from '../../../redux/http';
 import { CustomButton, CustomInput } from '../../../components/shared';
 import TenantSelection from '@/components/Auth/TenantSelection';
+import MfaChallenge from '@/components/Auth/MfaChallenge';
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -30,6 +31,16 @@ export const Login = () => {
   const authState = useSelector((state) => state?.auth) || {};
   const { loginChallenge, user } = authState;
   const isRehydrated = useSelector((state) => state?._persist?.rehydrated) ?? false;
+
+  // Drop stale MFA challenges on load (persist used to keep MFA_ENROLL screens around
+  // after REQUIRE_SUPER_ADMIN_MFA was turned off).
+  useEffect(() => {
+    if (!isRehydrated) return;
+    const type = loginChallenge?.challengeType;
+    if (type === 'MFA_REQUIRED' || type === 'MFA_ENROLL_REQUIRED') {
+      dispatch(clearLoginChallenge());
+    }
+  }, [isRehydrated, dispatch]); // intentionally not depending on loginChallenge to avoid loops
 
   const [formData, setFormData] = useState({
     email: '',
@@ -268,6 +279,28 @@ export const Login = () => {
       }
     }
   };
+
+  // Show MFA challenge for super_admin
+  if (loginChallenge && (loginChallenge.challengeType === 'MFA_REQUIRED' || loginChallenge.challengeType === 'MFA_ENROLL_REQUIRED')) {
+    return (
+      <AuthLayout>
+        <MfaChallenge
+          challengeType={loginChallenge.challengeType}
+          loginToken={loginChallenge.loginToken}
+          mfaSecret={loginChallenge.mfaSecret}
+          otpauthUrl={loginChallenge.otpauthUrl}
+          onSuccess={async (tokens) => {
+            setAuthToken(tokens.access_token);
+            localStorage.setItem('access_token', tokens.access_token);
+            localStorage.setItem('refresh_token', tokens.refresh_token);
+            dispatch(clearLoginChallenge());
+            navigate('/administration', { replace: true });
+          }}
+          onCancel={() => dispatch(clearLoginChallenge())}
+        />
+      </AuthLayout>
+    );
+  }
 
   // Show tenant selection if challenge is present
   if (loginChallenge && loginChallenge.challengeType === 'TENANT_SELECTION_REQUIRED') {

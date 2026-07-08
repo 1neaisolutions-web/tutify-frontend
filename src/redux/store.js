@@ -1,6 +1,6 @@
 // Library imports
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { persistReducer, persistStore } from 'redux-persist';
+import { persistReducer, persistStore, createTransform } from 'redux-persist';
 
 // Local imports
 import authSlice from './features/auth/authSlice';
@@ -43,11 +43,26 @@ const storage =
         removeItem: () => Promise.resolve(),
       };
 
+// Never persist ephemeral login challenges (MFA / tenant selection UI).
+const stripLoginChallenge = createTransform(
+  (inboundState) => {
+    if (!inboundState || typeof inboundState !== 'object') return inboundState;
+    const { loginChallenge, loading, error, updatePasswordLoading, ...rest } = inboundState;
+    return { ...rest, loginChallenge: null, loading: false, error: null, updatePasswordLoading: false };
+  },
+  (outboundState) => {
+    if (!outboundState || typeof outboundState !== 'object') return outboundState;
+    return { ...outboundState, loginChallenge: null, loading: false, error: null };
+  },
+  { whitelist: ['auth'] },
+);
+
 // Define the persist configuration
 const persistConfig = {
   key: 'root',
   storage,
   whitelist: ['auth', 'preferences'],
+  transforms: [stripLoginChallenge],
 };
 
 // Combine reducers
