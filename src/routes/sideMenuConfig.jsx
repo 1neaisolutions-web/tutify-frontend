@@ -36,6 +36,8 @@ import {
   Timer,
   FlaskConical,
   PenLine,
+  Brain,
+  CreditCard,
 } from 'lucide-react';
 
 const teacherMenu = [
@@ -82,15 +84,33 @@ const teacherMenu = [
 ];
 
 const superAdminMenu = [
+  { path: '/administration', text: 'Dashboard', i18nKey: 'nav.administration', icon: Shield },
+  { path: '/administration/memory', text: 'Memory', i18nKey: 'nav.memory', icon: Brain },
+  { path: '/administration/organizations', text: 'Organizations', i18nKey: 'nav.organizations', icon: Building2 },
+  { path: '/administration/schools', text: 'Schools', i18nKey: 'nav.schools', icon: School },
+  { path: '/administration/users', text: 'Users', i18nKey: 'nav.users', icon: Users },
+  { path: '/administration/subscriptions', text: 'Subscriptions', i18nKey: 'nav.subscriptions', icon: CreditCard },
+  { path: '/administration/analytics', text: 'Analytics', i18nKey: 'nav.analytics', icon: BarChart3 },
   {
-    path: '/administration',
-    text: 'Administration',
-    i18nKey: 'nav.administration',
+    path: '/admin/content-packs',
+    text: 'Content Operations',
+    i18nKey: 'nav.contentOperations',
+    icon: BookOpen,
+    child: [
+      { path: '/admin/content-packs', text: 'Content Packs', i18nKey: 'nav.contentPacks', moduleName: 'Content Packs', icon: FolderOpen, childIcon: FolderOpen },
+      { path: '/admin/documents', text: 'Documents', i18nKey: 'nav.documents', moduleName: 'Documents', icon: FileText, childIcon: FileText },
+      { path: '/administration/learning-hub-content', text: 'LH Factory', i18nKey: 'nav.learningHubContent', icon: BookOpen },
+      { path: '/admin/access-codes', text: 'Access Codes', i18nKey: 'nav.accessCodes', moduleName: 'Access Codes', icon: Key, childIcon: Key },
+    ],
+  },
+  {
+    path: '/administration/security/audit',
+    text: 'Security',
+    i18nKey: 'nav.security',
     icon: Shield,
     child: [
-      { path: '/admin/content-packs', text: 'Content Management', i18nKey: 'nav.contentManagement', moduleName: 'Content Management', icon: BookOpen, childIcon: BookOpen },
-      { path: '/administration/learning-hub-content', text: 'Learning Hub content', i18nKey: 'nav.learningHubContent', icon: BookOpen },
-      { path: '/admin/access-codes', text: 'Access Codes', i18nKey: 'nav.accessCodes', moduleName: 'Access Codes', icon: Key, childIcon: Key },
+      { path: '/administration/security/audit', text: 'Audit Log', i18nKey: 'nav.auditLog', icon: Shield, childIcon: Shield },
+      { path: '/administration/security/compliance-requests', text: 'Compliance', i18nKey: 'nav.compliance', icon: FileText, childIcon: FileText },
     ],
   },
   { path: '/profile', text: 'Profile', i18nKey: 'nav.profile', icon: User },

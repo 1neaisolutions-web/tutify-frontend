@@ -105,14 +105,15 @@ const headerMessages: {
   unread: boolean
 }[] = []
 
-const headerNotifications: {
-  id: number
+type HeaderNotification = {
+  id: string | number
   type: 'success' | 'info' | 'warning'
   title: string
   message: string
   time: string
   unread: boolean
-}[] = []
+  link?: string
+}
 
 const DropdownEmptyState = ({
   icon: Icon,
@@ -138,6 +139,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false)
   const [messagesDropdownOpen, setMessagesDropdownOpen] = useState(false)
   const [notificationsDropdownOpen, setNotificationsDropdownOpen] = useState(false)
+  const [headerNotifications, setHeaderNotifications] = useState<HeaderNotification[]>([])
   const messagesTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const notificationsTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const location = useLocation()
@@ -196,6 +198,30 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       return null;
     }
   };
+  
+  const userRole = getUserRole();
+
+  // Load admin alerts for super_admin notification bell
+  useEffect(() => {
+    if (userRole !== 'super_admin') return
+    import('../api/admin').then(({ getAdminAlerts }) => {
+      getAdminAlerts()
+        .then((res) => {
+          setHeaderNotifications(
+            res.items.map((a) => ({
+              id: a.id,
+              type: a.severity === 'critical' ? 'warning' as const : 'info' as const,
+              title: a.title,
+              message: a.message,
+              time: new Date(a.created_at).toLocaleString(),
+              unread: true,
+              link: a.link,
+            })),
+          )
+        })
+        .catch(() => setHeaderNotifications([]))
+    })
+  }, [userRole])
   
   // Safely get formatted role and badge color
   let formattedRole = '';

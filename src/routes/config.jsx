@@ -77,6 +77,17 @@ import Reporting from '../pages/features/Reporting';
 import Assessment from '../pages/features/Assessment';
 import LearningHubContentOperations from '../pages/admin/LearningHubContentOperations';
 import AccessCodesAdmin from '../pages/admin/AccessCodesAdmin';
+import AdminDashboard from '../pages/admin/AdminDashboard';
+import MemoryManagement from '../pages/admin/MemoryManagement';
+import AdminUsersList from '../pages/admin/AdminUsersList';
+import AdminUserDetail from '../pages/admin/AdminUserDetail';
+import AdminOrganizationsList from '../pages/admin/AdminOrganizationsList';
+import AdminOrganizationDetail from '../pages/admin/AdminOrganizationDetail';
+import AdminSchoolsList from '../pages/admin/AdminSchoolsList';
+import AdminSubscriptionsList from '../pages/admin/AdminSubscriptionsList';
+import AdminAuditLog from '../pages/admin/AdminAuditLog';
+import AdminComplianceRequests from '../pages/admin/AdminComplianceRequests';
+import AdminAnalytics from '../pages/admin/AdminAnalytics';
 import Profile from '../pages/Profile';
 import Settings from '../pages/Settings';
 // Subscription page retired — /subscription redirects to /settings?tab=plan
@@ -970,10 +981,104 @@ export const superAdminRoutes = [
     moduleName: 'Administration',
     element: (
       <DashboardLayout>
-        <ComingSoon />
+        <AdminDashboard />
       </DashboardLayout>
     ),
     child: [
+      {
+        path: '/administration/memory',
+        moduleName: 'Memory',
+        element: (
+          <DashboardLayout>
+            <MemoryManagement />
+          </DashboardLayout>
+        ),
+      },
+      {
+        path: '/administration/organizations',
+        moduleName: 'Organizations',
+        element: (
+          <DashboardLayout>
+            <AdminOrganizationsList />
+          </DashboardLayout>
+        ),
+        child: [
+          {
+            path: '/administration/organizations/:id',
+            moduleName: 'Organization Detail',
+            element: (
+              <DashboardLayout>
+                <AdminOrganizationDetail />
+              </DashboardLayout>
+            ),
+          },
+        ],
+      },
+      {
+        path: '/administration/schools',
+        moduleName: 'Schools',
+        element: (
+          <DashboardLayout>
+            <AdminSchoolsList />
+          </DashboardLayout>
+        ),
+      },
+      {
+        path: '/administration/users',
+        moduleName: 'Users',
+        element: (
+          <DashboardLayout>
+            <AdminUsersList />
+          </DashboardLayout>
+        ),
+        child: [
+          {
+            path: '/administration/users/:id',
+            moduleName: 'User Detail',
+            element: (
+              <DashboardLayout>
+                <AdminUserDetail />
+              </DashboardLayout>
+            ),
+          },
+        ],
+      },
+      {
+        path: '/administration/subscriptions',
+        moduleName: 'Subscriptions',
+        element: (
+          <DashboardLayout>
+            <AdminSubscriptionsList />
+          </DashboardLayout>
+        ),
+      },
+      {
+        path: '/administration/analytics',
+        moduleName: 'Analytics',
+        element: (
+          <DashboardLayout>
+            <AdminAnalytics />
+          </DashboardLayout>
+        ),
+      },
+      {
+        path: '/administration/security/audit',
+        moduleName: 'Audit Log',
+        element: (
+          <DashboardLayout>
+            <AdminAuditLog />
+          </DashboardLayout>
+        ),
+      },
+      {
+        path: '/administration/security/compliance-requests',
+        moduleName: 'Compliance Requests',
+        element: (
+          <DashboardLayout>
+            <AdminComplianceRequests />
+          </DashboardLayout>
+        ),
+      },
       {
         path: '/admin/content-packs',
         moduleName: 'Content Management',
@@ -995,6 +1100,15 @@ export const superAdminRoutes = [
             ),
           },
         ],
+      },
+      {
+        path: '/admin/documents',
+        moduleName: 'Documents',
+        element: (
+          <DashboardLayout>
+            <DocumentsList />
+          </DashboardLayout>
+        ),
       },
       {
         path: '/administration/learning-hub-content',

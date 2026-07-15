@@ -118,6 +118,22 @@ export const completeLoginChallenge = createAsyncThunk(
   }
 );
 
+// Complete MFA login challenge
+export const verifyMfaLogin = createAsyncThunk(
+  'auth/verifyMfaLogin',
+  async ({ loginToken, code }, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post('/api/v1/auth/mfa/verify', {
+        login_token: loginToken,
+        code,
+      });
+      return data;
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  }
+);
+
 // Register User API Function
 export const registerUser = createAsyncThunk(
   'auth/register',
@@ -420,6 +436,8 @@ export const authSlice = createSlice({
             loginToken: response.challenge.login_token,
             message: response.challenge.message,
             memberships: response.challenge.memberships || [],
+            mfaSecret: response.challenge.mfa_secret,
+            otpauthUrl: response.challenge.otpauth_url,
           };
           state.error = null;
           state.isAuthenticated = false;
@@ -496,6 +514,40 @@ export const authSlice = createSlice({
         state.isAuthenticated = true;
       })
       .addCase(completeLoginChallenge.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // MFA verification
+      .addCase(verifyMfaLogin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(verifyMfaLogin.fulfilled, (state, action) => {
+        state.loading = false;
+        const response = action.payload;
+        const userData = response?.user;
+        const primaryRole = getPrimaryRole(userData?.roles || []);
+        state.user = {
+          id: userData?.id,
+          email: userData?.email,
+          first_name: userData?.first_name,
+          last_name: userData?.last_name,
+          full_name: `${userData?.first_name || ''} ${userData?.last_name || ''}`.trim(),
+          phone: userData?.phone,
+          username: userData?.username,
+          tenant_id: userData?.tenant_id,
+          status: userData?.status,
+          email_verified: userData?.email_verified,
+          roles: userData?.roles || [],
+          role: primaryRole,
+          token: response?.access_token,
+          refresh_token: response?.refresh_token,
+        };
+        state.loginChallenge = null;
+        state.error = null;
+        state.isAuthenticated = true;
+      })
+      .addCase(verifyMfaLogin.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
