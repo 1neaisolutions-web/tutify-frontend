@@ -12,6 +12,7 @@ export type WorksheetRagBuildInput = {
   generateWithoutSources: boolean
   selectedBookIds: string[]
   selectedTopics: string[]
+  selectedTopicIds?: string[]
   scopeRefinement: string
   mixMode: QuestionMixMode
   questionCount: number
@@ -40,8 +41,11 @@ export function validateWorksheetBuildSubStep(
       }
       break
     case 'scope':
-      if (!input.generateWithoutSources && input.selectedTopics.length === 0) {
-        errors.push('Choose one or more topic strands derived from your selected materials.')
+      if (!input.generateWithoutSources) {
+        const topicIds = input.selectedTopicIds ?? []
+        if (topicIds.length === 0 && input.selectedTopics.length === 0) {
+          errors.push('Choose one or more topic strands derived from your selected materials.')
+        }
       }
       if (input.generateWithoutSources && !input.scopeRefinement.trim()) {
         errors.push('Add a topic focus in scope refinement when using topic-only mode.')

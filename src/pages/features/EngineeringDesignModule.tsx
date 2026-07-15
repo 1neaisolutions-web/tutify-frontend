@@ -21,6 +21,8 @@ import {
 } from 'lucide-react'
 
 import { useTranslation } from 'react-i18next'
+import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
+import { engineeringBandToApi } from '@/catalog/adapters/gradeBandAdapters'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template' | 'project'
@@ -284,7 +286,7 @@ Authentic engineering challenges connect to real-world problems that students ca
         'Ease of use',
         'Durability',
       ],
-      gradeLevel: 'Middle School',
+      gradeLevel: '6-8',
       subject: 'Science',
     },
     {
@@ -301,7 +303,7 @@ Authentic engineering challenges connect to real-world problems that students ca
         'Sustainability',
         'Ease of implementation',
       ],
-      gradeLevel: 'Elementary',
+      gradeLevel: '3-5',
       subject: 'Science/Social Studies',
     },
   ]
@@ -587,17 +589,15 @@ Authentic engineering challenges connect to real-world problems that students ca
                       <div className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('engineeringDesignModule.gradeLevel')}</label>
-                            <select
+                            <GradeBandSelect
+                              variant="native"
                               value={challengeData.gradeLevel}
-                              onChange={(e) => setChallengeData({ ...challengeData, gradeLevel: e.target.value })}
-                              className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
-                            >
-                              <option value="">{t('engineeringDesignModule.selectGrade')}</option>
-                              <option value="Elementary">Elementary (K-5)</option>
-                              <option value="Middle School">Middle School (6-8)</option>
-                              <option value="High School">High School (9-12)</option>
-                            </select>
+                              onChange={(value) => setChallengeData({ ...challengeData, gradeLevel: value })}
+                              label={t('engineeringDesignModule.gradeLevel')}
+                              context="chatbotBand"
+                              allowEmpty
+                              emptyLabel={t('engineeringDesignModule.selectGrade')}
+                            />
                           </div>
                           <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">{t('engineeringDesignModule.subjectArea')}</label>
@@ -653,7 +653,7 @@ Authentic engineering challenges connect to real-world problems that students ca
                           <h4 className="text-base font-bold text-gray-900">{challenge.title}</h4>
                           <div className="flex gap-2">
                             <span className="px-2 py-1 rounded bg-white text-orange-700 text-xs font-semibold">
-                              {challenge.gradeLevel}
+                              {engineeringBandToApi(challenge.gradeLevel)}
                             </span>
                             <span className="px-2 py-1 rounded bg-white text-orange-700 text-xs font-semibold">
                               {challenge.subject}

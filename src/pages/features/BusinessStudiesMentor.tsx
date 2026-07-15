@@ -53,6 +53,8 @@ import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
 
 import { useTranslation } from 'react-i18next'
+import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
+import { careerBusinessBandToApi } from '@/catalog/adapters/gradeBandAdapters'
 const BUSINESS_MENTOR_SLUG = 'business-studies-mentor'
 
 type TabType = 'standards' | 'entrepreneurship' | 'economics' | 'financial' | 'scenarios' | 'trade' | 'cultural' | 'assessment'
@@ -169,7 +171,7 @@ const BusinessStudiesMentor = () => {
       const response = await runWithCredits(chatbotApi.executeCapability(BUSINESS_MENTOR_SLUG, 'international_standards', {
         input: selectedStandard,
         input_type: 'text',
-        parameters: { grade_level: gradeLevel, region: selectedRegion, industry: selectedIndustry },
+        parameters: { grade_level: careerBusinessBandToApi(gradeLevel), region: selectedRegion, industry: selectedIndustry },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
       if (response == null) return
@@ -192,7 +194,7 @@ const BusinessStudiesMentor = () => {
       const response = await runWithCredits(chatbotApi.executeCapability(BUSINESS_MENTOR_SLUG, 'entrepreneurship_framework', {
         input: '',
         input_type: 'text',
-        parameters: { grade_level: gradeLevel, region: selectedRegion, industry: selectedIndustry },
+        parameters: { grade_level: careerBusinessBandToApi(gradeLevel), region: selectedRegion, industry: selectedIndustry },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
       if (response == null) return
@@ -215,7 +217,7 @@ const BusinessStudiesMentor = () => {
       const response = await runWithCredits(chatbotApi.executeCapability(BUSINESS_MENTOR_SLUG, 'economic_concepts', {
         input: selectedConcept,
         input_type: 'text',
-        parameters: { grade_level: gradeLevel, region: selectedRegion, industry: selectedIndustry },
+        parameters: { grade_level: careerBusinessBandToApi(gradeLevel), region: selectedRegion, industry: selectedIndustry },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
       if (response == null) return
@@ -238,7 +240,7 @@ const BusinessStudiesMentor = () => {
       const response = await runWithCredits(chatbotApi.executeCapability(BUSINESS_MENTOR_SLUG, 'financial_literacy_module', {
         input: financialTopic,
         input_type: 'text',
-        parameters: { grade_level: gradeLevel, region: selectedRegion, industry: selectedIndustry },
+        parameters: { grade_level: careerBusinessBandToApi(gradeLevel), region: selectedRegion, industry: selectedIndustry },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
       if (response == null) return
@@ -261,7 +263,7 @@ const BusinessStudiesMentor = () => {
       const response = await runWithCredits(chatbotApi.executeCapability(BUSINESS_MENTOR_SLUG, 'business_scenarios', {
         input: scenarioType,
         input_type: 'text',
-        parameters: { grade_level: gradeLevel, region: selectedRegion, industry: selectedIndustry },
+        parameters: { grade_level: careerBusinessBandToApi(gradeLevel), region: selectedRegion, industry: selectedIndustry },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
       if (response == null) return
@@ -284,7 +286,7 @@ const BusinessStudiesMentor = () => {
       const response = await runWithCredits(chatbotApi.executeCapability(BUSINESS_MENTOR_SLUG, 'trade_agreements', {
         input: '',
         input_type: 'text',
-        parameters: { grade_level: gradeLevel, region: selectedRegion, industry: selectedIndustry },
+        parameters: { grade_level: careerBusinessBandToApi(gradeLevel), region: selectedRegion, industry: selectedIndustry },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
       if (response == null) return
@@ -307,7 +309,7 @@ const BusinessStudiesMentor = () => {
       const response = await runWithCredits(chatbotApi.executeCapability(BUSINESS_MENTOR_SLUG, 'cross_cultural_guide', {
         input: culturalRegion,
         input_type: 'text',
-        parameters: { grade_level: gradeLevel, region: selectedRegion, industry: selectedIndustry },
+        parameters: { grade_level: careerBusinessBandToApi(gradeLevel), region: selectedRegion, industry: selectedIndustry },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
       if (response == null) return
@@ -372,15 +374,14 @@ const BusinessStudiesMentor = () => {
             <div className="flex flex-wrap gap-4 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
                 <label className="text-sm font-medium">{t('businessStudiesMentor.gradeLevel')}</label>
-                <select
+                <GradeBandSelect
+                  variant="native"
                   value={gradeLevel}
-                  onChange={(e) => setGradeLevel(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                >
-                  <option value="9-12">9-12</option>
-                  <option value="11-12">11-12</option>
-                  <option value="College">{t('businessStudiesMentor.college')}</option>
-                </select>
+                  onChange={setGradeLevel}
+                  label=""
+                  context="careerBusiness"
+                  selectClassName="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                />
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
                 <label className="text-sm font-medium">{t('businessStudiesMentor.region')}</label>

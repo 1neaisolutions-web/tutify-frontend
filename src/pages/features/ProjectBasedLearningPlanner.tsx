@@ -2,16 +2,10 @@ import { useState } from 'react'
 import { FileText, Sparkles, RefreshCw, Download } from 'lucide-react'
 
 import { useTranslation } from 'react-i18next'
-type PblSubject =
-  | 'Science'
-  | 'Technology'
-  | 'Engineering'
-  | 'Mathematics'
-  | 'English'
-  | 'Social Studies'
-  | 'Arts'
-  | 'Physical Education'
-
+import { GradeSelect } from '@/components/shared/GradeSelect'
+import { SubjectSelect } from '@/components/shared/SubjectSelect'
+import { subjectToTemplateLabel } from '@/catalog/adapters/subjectAdapters'
+import { gradeToNumeric } from '@/catalog/adapters/gradeAdapters'
 type ProjectFormat =
   | 'poster'
   | 'presentation'
@@ -22,8 +16,8 @@ type ProjectFormat =
 type OutputFormat = 'structured_json' | 'markdown' | 'teacher_friendly_text'
 
 interface PblInputs {
-  grade: number | ''
-  subject: PblSubject | ''
+  grade: string
+  subject: string
   secondary_subjects: string[]
   driving_question: string
   duration: string
@@ -170,8 +164,8 @@ const samplePblPlan: PblOutput = {
 const ProjectBasedLearningPlanner = () => {
   const { t } = useTranslation()
   const [inputs, setInputs] = useState<PblInputs>({
-    grade: 8,
-    subject: 'Science',
+    grade: '8',
+    subject: 'science',
     secondary_subjects: ['Math'],
     driving_question: 'How can we reduce waste in our school?',
     duration: 'P3W',
@@ -228,8 +222,8 @@ const ProjectBasedLearningPlanner = () => {
     setTimeout(() => {
       const mockOutput: PblOutput = {
         title: inputs.driving_question,
-        grade: inputs.grade as number,
-        subject: inputs.subject as string,
+        grade: gradeToNumeric(inputs.grade) ?? 1,
+        subject: subjectToTemplateLabel(inputs.subject),
         duration: inputs.duration,
         driving_question: inputs.driving_question,
         summary: `Students engage in a project-based learning experience centered on "${inputs.driving_question}". Over the course of ${
@@ -367,14 +361,11 @@ const ProjectBasedLearningPlanner = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">{t('projectBasedLearningPlanner.grade2')}<span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="12"
-                  value={inputs.grade}
-                  onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
-                  className="input-field"
-                  placeholder={t('common.gradePlaceholder')}
+                <GradeSelect
+                  variant="native"
+                  value={String(inputs.grade ?? '')}
+                  onChange={(v) => handleInputChange('grade', v)}
+                  label=""
                   required
                 />
               </div>
@@ -382,24 +373,17 @@ const ProjectBasedLearningPlanner = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">{t('projectBasedLearningPlanner.subject2')}<span className="text-red-500">*</span>
                 </label>
-                <select
+                <SubjectSelect
+                  variant="native"
+                  context="template"
+                  allowEmpty
+                  emptyLabel={t('projectBasedLearningPlanner.selectSubject')}
                   value={inputs.subject}
-                  onChange={(e) =>
-                    handleInputChange('subject', e.target.value as PblInputs['subject'])
-                  }
-                  className="input-field"
+                  onChange={(v) => handleInputChange('subject', v)}
+                  label=""
+                  selectClassName="input-field"
                   required
-                >
-                  <option value="">{t('projectBasedLearningPlanner.selectSubject')}</option>
-                  <option value="Science">{t('projectBasedLearningPlanner.science')}</option>
-                  <option value="Technology">{t('projectBasedLearningPlanner.technology')}</option>
-                  <option value="Engineering">{t('projectBasedLearningPlanner.engineering')}</option>
-                  <option value="Mathematics">{t('projectBasedLearningPlanner.mathematics')}</option>
-                  <option value="English">{t('projectBasedLearningPlanner.english')}</option>
-                  <option value="Social Studies">{t('projectBasedLearningPlanner.socialStudies')}</option>
-                  <option value="Arts">{t('projectBasedLearningPlanner.arts')}</option>
-                  <option value="Physical Education">{t('projectBasedLearningPlanner.physicalEducation')}</option>
-                </select>
+                />
               </div>
 
               <div>

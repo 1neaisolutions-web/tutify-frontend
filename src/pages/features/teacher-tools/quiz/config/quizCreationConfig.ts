@@ -88,6 +88,8 @@ export type QuizRagBuildInput = {
   generateWithoutSources: boolean
   selectedBookIds: string[]
   selectedTopics: string[]
+  selectedTopicIds: string[]
+  estimatedSegments: number
   scopeRefinement: string
   mixMode: QuestionMixMode
   includeMcq: boolean
@@ -115,8 +117,14 @@ export function validateQuizBuildSubStep(
       }
       break
     case 'scope':
-      if (!input.generateWithoutSources && input.selectedTopics.length === 0) {
-        errors.push('Choose one or more scope topics derived from your selected materials.')
+      if (!input.generateWithoutSources && input.selectedBookIds.length > 0) {
+        const topicIds = input.selectedTopicIds ?? []
+        if (topicIds.length === 0 && input.selectedTopics.length === 0) {
+          errors.push('Choose one or more chapters or topics from your selected materials.')
+        }
+        if (topicIds.length > 0 && (input.estimatedSegments ?? 0) === 0) {
+          errors.push('No indexed content found for the selected scope. Try a different chapter or contact your admin.')
+        }
       }
       if (input.generateWithoutSources && !input.scopeRefinement.trim()) {
         errors.push('Add a topic focus in scope refinement when generating without sources.')

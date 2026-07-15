@@ -30,6 +30,8 @@ import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
 
 import { useTranslation } from 'react-i18next'
+import { GradeSelect } from '@/components/shared/GradeSelect'
+import { gradeLevelToChatbotApi } from '@/catalog/adapters/chatbotAdapters'
 import { resolveApiMessage } from '../../i18n/resolveApiMessage'
 interface TextAnalysis {
   readingLevel: string
@@ -132,7 +134,7 @@ const LiteracyLabCoach = () => {
           input: textInput,
           input_type: 'text',
           parameters: {
-            grade_level: gradeLevel,
+            grade_level: gradeLevelToChatbotApi(gradeLevel),
             subject: subject,
           },
           conversation_id: conversationIdForActiveTab ?? undefined,
@@ -179,7 +181,7 @@ const LiteracyLabCoach = () => {
           input: textInput,
           input_type: 'text',
           parameters: {
-            grade_level: gradeLevel,
+            grade_level: gradeLevelToChatbotApi(gradeLevel),
           },
           conversation_id: conversationIdForActiveTab ?? undefined,
         }
@@ -223,7 +225,7 @@ const LiteracyLabCoach = () => {
           input: textInput,
           input_type: 'text',
           parameters: {
-            grade_level: gradeLevel,
+            grade_level: gradeLevelToChatbotApi(gradeLevel),
           },
           conversation_id: conversationIdForActiveTab ?? undefined,
         }
@@ -390,17 +392,12 @@ const LiteracyLabCoach = () => {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.gradeLevel')}</label>
-                    <select
+                    <GradeSelect
+                      variant="native"
                       value={gradeLevel}
-                      onChange={(e) => setGradeLevel(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-                    >
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
-                        <option key={grade} value={grade}>
-                          {t('common.gradeOption', { grade })}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setGradeLevel}
+                      label=""
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.pasteOrTypeTextForAnalysis')}</label>
@@ -502,17 +499,12 @@ const LiteracyLabCoach = () => {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.gradeLevel')}</label>
-                    <select
+                    <GradeSelect
+                      variant="native"
                       value={gradeLevel}
-                      onChange={(e) => setGradeLevel(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-                    >
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
-                        <option key={grade} value={grade}>
-                          {t('common.gradeOption', { grade })}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setGradeLevel}
+                      label=""
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.textForGuidedReading')}</label>
@@ -657,17 +649,12 @@ const LiteracyLabCoach = () => {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.gradeLevel')}</label>
-                    <select
+                    <GradeSelect
+                      variant="native"
                       value={gradeLevel}
-                      onChange={(e) => setGradeLevel(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-                    >
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
-                        <option key={grade} value={grade}>
-                          {t('common.gradeOption', { grade })}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setGradeLevel}
+                      label=""
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.studentWritingSample')}</label>
@@ -837,17 +824,12 @@ const LiteracyLabCoach = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.gradeLevel')}</label>
-                    <select
+                    <GradeSelect
+                      variant="native"
                       value={gradeLevel}
-                      onChange={(e) => setGradeLevel(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-                    >
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
-                        <option key={grade} value={grade}>
-                          {t('common.gradeOption', { grade })}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setGradeLevel}
+                      label=""
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.promptType')}</label>
@@ -904,17 +886,12 @@ const LiteracyLabCoach = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.gradeLevel')}</label>
-                    <select
+                    <GradeSelect
+                      variant="native"
                       value={gradeLevel}
-                      onChange={(e) => setGradeLevel(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-                    >
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
-                        <option key={grade} value={grade}>
-                          {t('common.gradeOption', { grade })}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setGradeLevel}
+                      label=""
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.topicTheme')}</label>

@@ -2,10 +2,12 @@ import { useState } from 'react'
 import { Users, Sparkles, RefreshCw, Download } from 'lucide-react'
 
 import { useTranslation } from 'react-i18next'
+import { GradeSelect } from '@/components/shared/GradeSelect'
+import { gradeToNumeric } from '@/catalog/adapters/gradeAdapters'
 type OutputFormat = 'structured_json' | 'markdown' | 'teacher_text'
 
 interface BehaviourPlanInputs {
-  grade: number | ''
+  grade: string
   class_size: number | ''
   age_range: string
   known_challenges: string[]
@@ -126,7 +128,7 @@ const samplePlan: BehaviourPlanOutput = {
 const BehaviourPlanBuilder = () => {
   const { t } = useTranslation()
   const [inputs, setInputs] = useState<BehaviourPlanInputs>({
-    grade: 6,
+    grade: '6',
     class_size: 30,
     age_range: '10–12',
     known_challenges: ['low participation', 'frequent disruptions'],
@@ -173,7 +175,7 @@ const BehaviourPlanBuilder = () => {
     setTimeout(() => {
       const mockOutput: BehaviourPlanOutput = {
         title: `Grade ${inputs.grade} Behaviour Plan`,
-        grade: inputs.grade as number,
+        grade: gradeToNumeric(inputs.grade) ?? 1,
         class_size: inputs.class_size as number,
         age_range: inputs.age_range || undefined,
         summary: `This plan supports a class of ${inputs.class_size} students by addressing key challenges through consistent expectations, reinforcement, and responsive strategies.`,
@@ -274,14 +276,11 @@ const BehaviourPlanBuilder = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">{t('behaviourPlanBuilder.grade2')}<span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="12"
-                  value={inputs.grade}
-                  onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
-                  className="input-field"
-                  placeholder="Grade level (1-12)"
+                <GradeSelect
+                  variant="native"
+                  value={String(inputs.grade ?? '')}
+                  onChange={(v) => handleInputChange('grade', v)}
+                  label=""
                   required
                 />
               </div>

@@ -52,6 +52,8 @@ import { useSnackbar } from '../../hooks/useSnackbar'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 
 import { useTranslation } from 'react-i18next'
+import { GradeSelect } from '@/components/shared/GradeSelect'
+import { gradeLevelForSelect, gradeLevelToChatbotApi } from '@/catalog/adapters/chatbotAdapters'
 interface VisualExplanation {
   concept: string
   explanation: string
@@ -147,9 +149,8 @@ const AlgebraGeometryTutor = () => {
         }
 
         const gl = meta.grade_level ?? meta.gradeLevel
-        if (typeof gl === 'string' || typeof gl === 'number') {
-          const g = String(gl).replace(/\D/g, '')
-          if (g) setGradeLevel(g)
+        if (gl != null && gl !== '') {
+          setGradeLevel(gradeLevelForSelect(gl))
         }
 
         if (userContent) {
@@ -250,7 +251,7 @@ const AlgebraGeometryTutor = () => {
           title: `Visual explanation · ${mockVisual.concept}`,
           user_content: topic,
           assistant_content: JSON.stringify(mockVisual, null, 2),
-          metadata: { tab: 'visual', subject, grade_level: gradeLevel },
+          metadata: { tab: 'visual', subject, grade_level: gradeLevelToChatbotApi(gradeLevel) },
           conversation_id: conversationIdForActiveTab ?? undefined,
         })
         .then((r) => pinFromResponse(r.conversation_id))
@@ -338,7 +339,7 @@ const AlgebraGeometryTutor = () => {
           title: `Proof strategy · ${mockProof.theorem}`,
           user_content: topic,
           assistant_content: JSON.stringify(mockProof, null, 2),
-          metadata: { tab: 'proof', subject, grade_level: gradeLevel },
+          metadata: { tab: 'proof', subject, grade_level: gradeLevelToChatbotApi(gradeLevel) },
           conversation_id: conversationIdForActiveTab ?? undefined,
         })
         .then((r) => pinFromResponse(r.conversation_id))
@@ -441,7 +442,7 @@ const AlgebraGeometryTutor = () => {
           title: `Practice · ${mockPractice.topic}`,
           user_content: topic,
           assistant_content: JSON.stringify(mockPractice, null, 2),
-          metadata: { tab: 'practice', subject, grade_level: gradeLevel },
+          metadata: { tab: 'practice', subject, grade_level: gradeLevelToChatbotApi(gradeLevel) },
           conversation_id: conversationIdForActiveTab ?? undefined,
         })
         .then((r) => pinFromResponse(r.conversation_id))
@@ -603,17 +604,12 @@ const AlgebraGeometryTutor = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('algebraGeometryTutor.gradeLevel')}</label>
-                    <select
+                    <GradeSelect
+                      variant="native"
                       value={gradeLevel}
-                      onChange={(e) => setGradeLevel(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-                    >
-                      {[6, 7, 8, 9, 10, 11, 12].map((grade) => (
-                        <option key={grade} value={grade}>
-                          {t('common.gradeOption', { grade })}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setGradeLevel}
+                      label=""
+                    />
                   </div>
                   <button
                     onClick={handleVisualExplanation}
@@ -865,17 +861,12 @@ const AlgebraGeometryTutor = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('algebraGeometryTutor.gradeLevel')}</label>
-                    <select
+                    <GradeSelect
+                      variant="native"
                       value={gradeLevel}
-                      onChange={(e) => setGradeLevel(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-                    >
-                      {[6, 7, 8, 9, 10, 11, 12].map((grade) => (
-                        <option key={grade} value={grade}>
-                          {t('common.gradeOption', { grade })}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setGradeLevel}
+                      label=""
+                    />
                   </div>
                   <button
                     onClick={handleScaffoldedPractice}

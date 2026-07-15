@@ -27,7 +27,12 @@ import {
 } from '../demo/generationFromSources'
 import { downloadQuizPdf } from '../utils/generateQuizPdf'
 import type { DemoQuiz } from '../demo/teacherToolsDemoData'
-import { GRADES, SUBJECTS } from '../types'
+import { SubjectSelect } from '@/components/shared/SubjectSelect'
+import {
+  subjectToTeacherToolsLabel,
+  subjectValueForSelect,
+} from '@/catalog/adapters/subjectAdapters'
+import { gradeToLabel, gradeValueForSelect } from '@/catalog/adapters/gradeAdapters'
 import { newDemoId } from '../demo/newDemoId'
 import { useTeacherToolsDemo } from '../TeacherToolsDemoProvider'
 // @ts-expect-error — JS module
@@ -68,7 +73,8 @@ import { setBalance } from '../../../../redux/features/subscription/subscription
 import { parseCreditError, type ParsedCreditError } from '../../../../utils/creditErrors'
 
 function classKeyForGrade(grade: string) {
-  return demoClasses.find((c) => c.grade === grade)?.key ?? demoClasses[0]?.key ?? 'g8c'
+  const label = gradeToLabel(grade)
+  return demoClasses.find((c) => c.grade === label)?.key ?? demoClasses[0]?.key ?? 'g8c'
 }
 
 function isDifficultyId(x: string | undefined): x is QuizDifficultyId {
@@ -115,8 +121,8 @@ export default function QuizCreate() {
   const [isRegeneratingAll, setIsRegeneratingAll] = useState(false)
 
   const [title, setTitle] = useState(() => t('quiz.defaultTitle'))
-  const [subject, setSubject] = useState<string>(SUBJECTS[0])
-  const [grade, setGrade] = useState<string>(GRADES[0])
+  const [subject, setSubject] = useState<string>('math')
+  const [grade, setGrade] = useState<string>('8')
   const [studentInstructions, setStudentInstructions] = useState(() => t('quiz.defaultInstructions'))
   const [teacherNotes, setTeacherNotes] = useState('')
   const [timeLimit, setTimeLimit] = useState(30)
@@ -152,6 +158,7 @@ export default function QuizCreate() {
     grade,
     initialSelectedBookIds: isEdit ? loadedQuiz?.sourceBookIds : undefined,
     initialScopeTopics: isEdit ? loadedQuiz?.scopeTopics : undefined,
+    initialScopeTopicIds: isEdit ? loadedQuiz?.scopeTopicIds : undefined,
     initialScopeRefinement: isEdit ? loadedQuiz?.scopeRefinement : templateScopeHint,
   })
 
@@ -166,6 +173,8 @@ export default function QuizCreate() {
       generateWithoutSources: rag.generateWithoutSources,
       selectedBookIds: rag.selectedBookIds,
       selectedTopics: rag.selectedTopics,
+      selectedTopicIds: rag.allSelectedTopicIds,
+      estimatedSegments: rag.estimatedSegments,
       scopeRefinement: rag.scopeRefinement,
       mixMode,
       includeMcq,
@@ -180,6 +189,8 @@ export default function QuizCreate() {
       rag.generateWithoutSources,
       rag.selectedBookIds,
       rag.selectedTopics,
+      rag.allSelectedTopicIds,
+      rag.estimatedSegments,
       rag.scopeRefinement,
       mixMode,
       includeMcq,
@@ -329,8 +340,8 @@ export default function QuizCreate() {
     setLiveQuizId(null)
     enterExemplarPreview()
     setTitle(ex.title)
-    setSubject(ex.subject)
-    setGrade(ex.grade)
+    setSubject(subjectValueForSelect(ex.subject))
+    setGrade(gradeValueForSelect(ex.grade))
     setStudentInstructions(ex.studentInstructions)
     setTeacherNotes(ex.teacherNotes)
     setMixMode(ex.mixMode)
@@ -364,11 +375,13 @@ export default function QuizCreate() {
     const titleParam = searchParams.get('title')
     if (titleParam) setTitle(titleParam)
     const sub = searchParams.get('subject')
-    const subOk = SUBJECTS.find((s) => s === sub)
-    if (subOk) setSubject(subOk)
+    if (sub) {
+      const resolved = subjectValueForSelect(sub)
+      if (resolved) setSubject(resolved)
+    }
     const gr = searchParams.get('grade')
-    const grOk = GRADES.find((g) => g === gr)
-    if (grOk) setGrade(grOk)
+    const grResolved = gr ? gradeValueForSelect(gr) : ''
+    if (grResolved) setGrade(grResolved)
     const topic = searchParams.get('topic')
     if (topic) setTemplateScopeHint(topic)
     if (searchParams.get('fromTemplate') && !templateToastRef.current) {
@@ -393,8 +406,8 @@ export default function QuizCreate() {
         return
       }
       setTitle(q.title)
-      setSubject(q.subject)
-      setGrade(q.grade)
+      setSubject(subjectValueForSelect(q.subject))
+      setGrade(gradeValueForSelect(q.grade))
       setTimeLimit(q.timeLimitMinutes)
       setLoadedQuiz(q)
       setQuestionCount(q.questions)
@@ -436,8 +449,8 @@ export default function QuizCreate() {
         return {
           quizId: idForGen,
           topic: rag.combinedTopicLabel,
-          subject,
-          grade,
+          subject: subjectToTeacherToolsLabel(subject),
+          grade: gradeToLabel(grade),
           count: Math.min(QUESTION_COUNT.max, Math.max(QUESTION_COUNT.min, customSum)),
           difficulty,
           includeMcq: countMcq > 0,
@@ -452,8 +465,8 @@ export default function QuizCreate() {
       return {
         quizId: idForGen,
         topic: rag.combinedTopicLabel,
-        subject,
-        grade,
+        subject: subjectToTeacherToolsLabel(subject),
+        grade: gradeToLabel(grade),
         count: Math.min(QUESTION_COUNT.max, Math.max(QUESTION_COUNT.min, questionCount)),
         difficulty,
         includeMcq,
@@ -483,19 +496,7 @@ export default function QuizCreate() {
   )
 
   const runGeneration = useCallback(async () => {
-    const v = validateRagQuizBuild({
-      title,
-      generateWithoutSources: rag.generateWithoutSources,
-      selectedBookIds: rag.selectedBookIds,
-      selectedTopics: rag.selectedTopics,
-      scopeRefinement: rag.scopeRefinement,
-      mixMode,
-      includeMcq,
-      includeTf,
-      includeShort,
-      questionCount,
-      countsByType: { mcq: countMcq, tf: countTf, short: countShort },
-    })
+    const v = fullBuildValidation
     if (!v.ok) {
       setBuildErrors(v.errors)
       toast.error(t('teacherTools.toastFixFields'))
@@ -542,8 +543,8 @@ export default function QuizCreate() {
       const payload = {
         id: '',
         title: title.trim() || t('quiz.untitled'),
-        subject,
-        grade,
+        subject: subjectToTeacherToolsLabel(subject),
+        grade: gradeToLabel(grade),
         classes: [classKeyForGrade(grade)],
         questions: 0,
         totalMarks: 0,
@@ -575,7 +576,8 @@ export default function QuizCreate() {
         teacherNotes: teacherNotes.trim() || undefined,
         status: 'draft',
         sourceBookIds: payload.sourceBookIds,
-        scopeTopics: payload.scopeTopics,
+        scopeTopics: rag.selectedTopics,
+        scopeTopicIds: rag.allSelectedTopicIds,
         scopeRefinement: payload.scopeRefinement,
         generateWithoutSources: rag.generateWithoutSources,
         difficulty: difficulty as any,
@@ -600,6 +602,12 @@ export default function QuizCreate() {
         setGenerationError(null)
         return
       }
+      const detail = (e as { detail?: { code?: string; message?: string } })?.detail
+      if (detail?.code === 'RETRIEVAL_SCOPE_ERROR') {
+        setGenerationError(detail.message || t('quiz.rag.noSegmentsForScope'))
+        toast.error(detail.message || t('quiz.rag.noSegmentsForScope'))
+        return
+      }
       setGenerationError(t('quiz.generationFailed'))
       toast.error(t('quiz.toastGenerateFailed'))
       console.error('Quiz generation failed:', e)
@@ -621,11 +629,27 @@ export default function QuizCreate() {
     toast,
     resolveQuizIdForGen,
     buildCriteria,
+    fullBuildValidation,
+    quizBuildInput,
     rag.generateWithoutSources,
     rag.selectedBookIds,
+    rag.allSelectedTopicIds,
     rag.selectedTopics,
     rag.scopeRefinement,
     refreshCredits,
+    liveQuizId,
+    title,
+    subject,
+    grade,
+    studentInstructions,
+    handoutLayoutRef,
+    difficulty,
+    shuffleQuestions,
+    shuffleAnswers,
+    negativeMarking,
+    teacherNotes,
+    mixMode,
+    t,
   ])
 
   const regenerateAll = useCallback(() => {
@@ -893,8 +917,8 @@ export default function QuizCreate() {
     const q: DemoQuiz = {
       id: isEdit && quizId ? quizId : 'export',
       title: title.trim() || t('quiz.fallbackTitle'),
-      subject,
-      grade,
+      subject: subjectToTeacherToolsLabel(subject),
+      grade: gradeToLabel(grade),
       classes: [classKeyForGrade(grade)],
       questions: stubs.length,
       totalMarks: totalMarksFromStubs(stubs),
@@ -922,7 +946,7 @@ export default function QuizCreate() {
 
   const printMeta: QuizPrintMeta = {
     title: title.trim() || 'Quiz',
-    subject,
+    subject: subjectToTeacherToolsLabel(subject),
     grade,
     timeLimitMinutes: timeLimit,
     studentInstructions,

@@ -56,6 +56,7 @@ export interface DemoQuiz {
   /** Catalog IDs selected for retrieval scope (quiz create RAG demo). */
   sourceBookIds?: string[]
   scopeTopics?: string[]
+  scopeTopicIds?: string[]
   scopeRefinement?: string
   sourceSummary?: string
   questionStubs?: QuizQuestionStub[]
@@ -94,6 +95,7 @@ export interface DemoAssignment {
   /** Round-trip RAG + generation settings (API-backed assignments). */
   sourceBookIds?: string[]
   scopeTopics?: string[]
+  scopeTopicIds?: string[]
   scopeRefinement?: string
   generateWithoutSources?: boolean
   rigorProfile?: string

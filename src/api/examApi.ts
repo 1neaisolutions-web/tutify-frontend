@@ -70,6 +70,7 @@ export interface ExamApiItem {
   sectionTargetCount: number
   sourceBookIds: string[]
   scopeTopics: string[]
+  scopeTopicIds?: string[]
   scopeRefinement?: string | null
   sourceSummary?: string | null
   generateWithoutSources: boolean
@@ -121,6 +122,7 @@ export interface ExamCreatePayload {
   sectionTargetCount: number
   sourceBookIds: string[]
   scopeTopics: string[]
+  scopeTopicIds?: string[]
   scopeRefinement?: string
   generateWithoutSources: boolean
   paper: ExamPaperConfigApi
@@ -145,6 +147,7 @@ export interface ExamPatchPayload {
   sectionTargetCount?: number
   sourceBookIds?: string[]
   scopeTopics?: string[]
+  scopeTopicIds?: string[]
   scopeRefinement?: string
   generateWithoutSources?: boolean
   paper?: ExamPaperConfigApi

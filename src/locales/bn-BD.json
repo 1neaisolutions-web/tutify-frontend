@@ -11068,6 +11068,37 @@
     "topicOnly": "শুধুমাত্র বিষয় মোড",
     "retry": "আবার চেষ্টা করুন",
     "sectionsIndexed": "{{count}} বিভাগ সূচীকৃত",
+    "sectionsCount": "{{count}} sections",
+    "sectionsIndexedMeta": "{{documents}} documents · {{count}} sections indexed",
+    "scopeSearchPlaceholder": "Search chapters and topics (e.g. fractions, motion)",
+    "libraryMatchHint": "Used to match books in your library.",
+    "focusForAi": "Focus for AI (optional)",
+    "generationNotes": "Generation notes (optional)",
+    "generationNotesHint": "Students won't see this.",
+    "selectChapter": "Select chapter",
+    "clearChapter": "Clear chapter",
+    "expandChapter": "Expand",
+    "collapseChapter": "Collapse",
+    "expandBook": "Show topics",
+    "collapseBook": "Hide topics",
+    "fieldBands": {
+      "student": {
+        "title": "What students will see",
+        "description": "These appear on the assignment or assessment after you publish."
+      },
+      "library": {
+        "title": "Content library match",
+        "description": "Helps find the right books and materials in your catalog."
+      },
+      "ai": {
+        "title": "AI generation settings",
+        "description": "Guides question generation only — students never see these."
+      }
+    },
+    "scopeStep": {
+      "title": "Select content to use",
+      "subtitle": "Choose chapters and topics from your selected materials."
+    },
     "clearSearch": "সাফ অনুসন্ধান",
     "scopeRefinement": "সুযোগ পরিমার্জন",
     "scopeRefinementOptional": "সুযোগ পরিমার্জন (ঐচ্ছিক)",
@@ -11079,6 +11110,14 @@
     "excerptPreview": "উদ্ধৃতি পূর্বরূপ",
     "topicStrandsHeading": "অনুসন্ধান করুন এবং টপিক স্ট্র্যান্ড নির্বাচন করুন",
     "catalogSearchPlaceholder": "শিরোনাম, লেখক, ISBN, বা বিষয়ের স্ট্র্যান্ড অনুসন্ধান করুন...",
+    "catalogFilterSummary": "Showing books matching {{subject}} · {{grade}}",
+    "browseAllCatalog": "Browse all library books",
+    "browseAllCatalogHint": "Ignore subject and grade filter to see every published title in your library.",
+    "browseAllCatalogActive": "Showing all library books. Your activity is still labeled {{subject}} · {{grade}}.",
+    "bookOutsideFilter": "Outside current filter",
+    "catalogNearMatchesTitle": "Other {{subject}} materials",
+    "catalogNearMatchesHint": "These titles match your subject but not {{grade}}. Select one or browse all books above.",
+    "incompleteMetadata": "Incomplete metadata",
     "topicFilterPlaceholder": "ফিল্টার করতে টাইপ করুন (যেমন ভগ্নাংশ, শব্দ সমস্যা...)",
     "scopeRefinementPlaceholder": "শব্দ সমস্যা, পরীক্ষা-শৈলী যুক্তি, এবং সাধারণ ভুল ধারণার উপর ফোকাস করুন",
     "generateWithoutSources": "উৎস উপকরণ ছাড়া তৈরি",
@@ -11407,7 +11446,18 @@
       "timeLimitMinutes": "সময়সীমা (মিনিট)",
       "shuffleQuestions": "প্রতিটি শিক্ষার্থীর জন্য প্রশ্ন ক্রম এলোমেলো করুন",
       "shuffleMcq": "MCQ বিকল্পগুলি এলোমেলো করুন",
-      "negativeMarking": "নেগেটিভ মার্কিং"
+      "negativeMarking": "নেগেটিভ মার্কিং",
+      "scopeSummaryTitle": "Scope summary",
+      "approximateChapterMap": "This book's chapter map is approximate. Contact admin to re-process.",
+      "selectAllDocument": "Select all",
+      "clearDocument": "Clear all",
+      "selectTopic": "Select",
+      "clearTopic": "Clear",
+      "selectWholeChapter": "Select chapter",
+      "clearChapter": "Clear chapter",
+      "chapterScopeOnlyHint": "This book is indexed by chapter. Click a chapter row to select it. Section-level topics appear when the book includes section entries in its table of contents.",
+      "noSegmentsForScope": "No content found for selected chapters. Try different chapters or contact admin.",
+      "unmappedContentWarning": "Some pages in this book are not mapped to chapters. Contact your admin if content seems missing."
     },
     "review": {
       "printPreview": "প্রিন্ট প্রিভিউ",
@@ -11422,6 +11472,7 @@
       "badgeShort": "সংক্ষিপ্ত",
       "questionMarks": "Q{{num}} · {{pts}} পয়েন্ট",
       "lines": "লাইন",
+      "scopeWarning": "Scope unverified",
       "modalAddQuestion": "প্রশ্ন যোগ করুন"
     },
     "generating": {

@@ -1,6 +1,8 @@
 /* eslint-disable react-refresh/only-export-components -- shared FilterValues type + component */
 import { Search, SlidersHorizontal } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { GradeSelect } from '@/components/shared/GradeSelect'
+import { SubjectSelect } from '@/components/shared/SubjectSelect'
 import type { StatusFilterOption } from './teacherToolsStatusFilterOptions'
 
 export interface FilterValues {
@@ -28,7 +30,7 @@ export type { StatusFilterOption }
 interface Props {
   value: FilterValues
   onChange: (next: FilterValues) => void
-  subjects?: string[]
+  /** @deprecated Grades come from Redux metadata via GradeSelect */
   grades?: string[]
   /** Include `grade` when using `hideGrade` so class selection can sync `filters.grade`. */
   classOptions?: { key: string; label: string; grade?: string }[]
@@ -44,8 +46,7 @@ interface Props {
 export function TeacherToolsFilterBar({
   value,
   onChange,
-  subjects = [],
-  grades = [],
+  grades: _grades = [],
   classOptions = [],
   statusOptions = [],
   showDateRange = true,
@@ -103,37 +104,31 @@ export function TeacherToolsFilterBar({
         </div>
       </div>
       <div className={filterColClass}>
-        <label className="flex min-w-0 flex-col gap-1">
+        <div className="flex min-w-0 flex-col gap-1">
           {filterLabelShim}
-          <select
+          <SubjectSelect
+            variant="native"
+            context="teacherTools"
+            allowEmpty
+            emptyLabel={t('teacherTools.allSubjects')}
             value={v.subject}
-            onChange={(e) => set({ subject: e.target.value })}
-            className="rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-100"
-          >
-            <option value="">{t('teacherTools.allSubjects')}</option>
-            {subjects.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
-        </label>
+            onChange={(val) => set({ subject: val })}
+            label=""
+            selectClassName="rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-100"
+          />
+        </div>
         {!hideGrade ? (
-          <label className="flex min-w-0 flex-col gap-1">
+          <div className="flex min-w-0 flex-col gap-1">
             {filterLabelShim}
-            <select
+            <GradeSelect
+              variant="native"
+              label=""
               value={v.grade}
-              onChange={(e) => set({ grade: e.target.value })}
-              className="rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-100"
-            >
-              <option value="">{t('teacherTools.allGrades')}</option>
-              {grades.map((g) => (
-                <option key={g} value={g}>
-                  {g}
-                </option>
-              ))}
-            </select>
-          </label>
+              onChange={(val) => set({ grade: val })}
+              allowEmpty
+              emptyLabel={t('teacherTools.allGrades')}
+            />
+          </div>
         ) : null}
         <div
           className="flex min-w-0 flex-col gap-1"

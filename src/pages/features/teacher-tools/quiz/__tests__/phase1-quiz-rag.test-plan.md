@@ -159,6 +159,29 @@ Assert none of Tenant A's pack IDs appear in the response items.
 
 ---
 
+## Catalog subject/grade filter (post Phase 1)
+
+### Unit tests
+
+- [ ] `buildCatalogListParams` passes canonical slugs and browse-all flags
+- [ ] `grade_filter_matches` (backend) handles bands, qualifications, and K–12 grades
+- [ ] `useQuizRagScope` calls `fetchCatalog` with `subject` and `grade` on mount
+- [ ] Subject/grade change clears selections and refetches (not on initial mount)
+- [ ] `browseAllCatalog` sends `strict=false` to API
+- [ ] `near_matches` populated when strict filter returns empty primary list
+
+### Manual E2E
+
+- [ ] Math G8 basics → sources shows only matching books (Quiz, Worksheet, Assignment, Exam)
+- [ ] Search scoped to active filter mode
+- [ ] Browse all shows full tenant catalog; activity label unchanged
+- [ ] Physics G11 shows Cambridge AS & A Level without browse-all
+- [ ] Near-matches section when strict empty but same-subject books exist
+- [ ] Out-of-filter badge on selected books after toggling browse-all off
+- [ ] Upload with SubjectSelect + GradeBand creates matchable pack metadata
+
+---
+
 ## Non-Goals (Phase 2)
 
 The following were intentionally NOT implemented in Phase 1:

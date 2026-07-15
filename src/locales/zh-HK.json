@@ -171,9 +171,9 @@
     "teacherToolsOverview": "概述",
     "teacherToolsAnalytics": "分析",
     "quiz": "测验",
-    "assignment": "作業",
+    "assignment": "作业",
     "worksheet": "工作表",
-    "exams": "考試",
+    "exams": "考试",
     "templates": "模板库",
     "chatbots": "专用聊天机器人",
     "youtubeQuiz": "YouTube测验生成器",
@@ -11068,6 +11068,37 @@
     "topicOnly": "僅主題模式",
     "retry": "重試",
     "sectionsIndexed": "{{count}} 部分已索引",
+    "sectionsCount": "{{count}} sections",
+    "sectionsIndexedMeta": "{{documents}} documents · {{count}} sections indexed",
+    "scopeSearchPlaceholder": "Search chapters and topics (e.g. fractions, motion)",
+    "libraryMatchHint": "Used to match books in your library.",
+    "focusForAi": "Focus for AI (optional)",
+    "generationNotes": "Generation notes (optional)",
+    "generationNotesHint": "Students won't see this.",
+    "selectChapter": "Select chapter",
+    "clearChapter": "Clear chapter",
+    "expandChapter": "Expand",
+    "collapseChapter": "Collapse",
+    "expandBook": "Show topics",
+    "collapseBook": "Hide topics",
+    "fieldBands": {
+      "student": {
+        "title": "What students will see",
+        "description": "These appear on the assignment or assessment after you publish."
+      },
+      "library": {
+        "title": "Content library match",
+        "description": "Helps find the right books and materials in your catalog."
+      },
+      "ai": {
+        "title": "AI generation settings",
+        "description": "Guides question generation only — students never see these."
+      }
+    },
+    "scopeStep": {
+      "title": "Select content to use",
+      "subtitle": "Choose chapters and topics from your selected materials."
+    },
     "clearSearch": "清除搜尋",
     "scopeRefinement": "範圍細化",
     "scopeRefinementOptional": "範圍細化（可選）",
@@ -11079,6 +11110,14 @@
     "excerptPreview": "摘錄預覽",
     "topicStrandsHeading": "搜尋並選擇主題鏈",
     "catalogSearchPlaceholder": "搜尋標題、作者、ISBN 或主題鏈...",
+    "catalogFilterSummary": "Showing books matching {{subject}} · {{grade}}",
+    "browseAllCatalog": "Browse all library books",
+    "browseAllCatalogHint": "Ignore subject and grade filter to see every published title in your library.",
+    "browseAllCatalogActive": "Showing all library books. Your activity is still labeled {{subject}} · {{grade}}.",
+    "bookOutsideFilter": "Outside current filter",
+    "catalogNearMatchesTitle": "Other {{subject}} materials",
+    "catalogNearMatchesHint": "These titles match your subject but not {{grade}}. Select one or browse all books above.",
+    "incompleteMetadata": "Incomplete metadata",
     "topicFilterPlaceholder": "輸入要篩選的內容（例如分數、應用問題…）",
     "scopeRefinementPlaceholder": "重點在於文字問題、考試式推理和常見誤解",
     "generateWithoutSources": "無源材料生成",
@@ -11407,7 +11446,18 @@
       "timeLimitMinutes": "時間限制（分鐘）",
       "shuffleQuestions": "為每個學生打亂問題順序",
       "shuffleMcq": "隨機播放 MCQ 選項",
-      "negativeMarking": "負面標記"
+      "negativeMarking": "負面標記",
+      "scopeSummaryTitle": "Scope summary",
+      "approximateChapterMap": "This book's chapter map is approximate. Contact admin to re-process.",
+      "selectAllDocument": "Select all",
+      "clearDocument": "Clear all",
+      "selectTopic": "Select",
+      "clearTopic": "Clear",
+      "selectWholeChapter": "Select chapter",
+      "clearChapter": "Clear chapter",
+      "chapterScopeOnlyHint": "This book is indexed by chapter. Click a chapter row to select it. Section-level topics appear when the book includes section entries in its table of contents.",
+      "noSegmentsForScope": "No content found for selected chapters. Try different chapters or contact admin.",
+      "unmappedContentWarning": "Some pages in this book are not mapped to chapters. Contact your admin if content seems missing."
     },
     "review": {
       "printPreview": "列印預覽",
@@ -11422,6 +11472,7 @@
       "badgeShort": "短的",
       "questionMarks": "Q{{num}} · {{pts}} 分",
       "lines": "線",
+      "scopeWarning": "Scope unverified",
       "modalAddQuestion": "添加問題"
     },
     "generating": {

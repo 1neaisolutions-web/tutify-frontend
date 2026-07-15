@@ -21,7 +21,12 @@ import { useTeacherToolsLeaveGuard } from '../hooks/useTeacherToolsLeaveGuard'
 import { demoClasses, type DemoAssignment } from '../demo/teacherToolsDemoData'
 import { formatSourceSummary, type AssignmentBriefLineStub, type AssignmentBriefTopicStub, type QuizDifficultyId } from '../demo/generationFromSources'
 import { downloadAssignmentBriefPdf } from '../utils/generateAssignmentPdf'
-import { GRADES, SUBJECTS } from '../types'
+import { SubjectSelect } from '@/components/shared/SubjectSelect'
+import {
+  subjectToTeacherToolsLabel,
+  subjectValueForSelect,
+} from '@/catalog/adapters/subjectAdapters'
+import { gradeToLabel, gradeValueForSelect } from '@/catalog/adapters/gradeAdapters'
 import { newDemoId } from '../demo/newDemoId'
 import { useTeacherToolsDemo } from '../TeacherToolsDemoProvider'
 // @ts-expect-error — JS module
@@ -68,7 +73,8 @@ import { ASSIGNMENT_EXEMPLAR } from '../exemplars/assignmentExemplar'
 const appDispatch = store.dispatch as any
 
 function classKeyForGrade(grade: string) {
-  return demoClasses.find((c) => c.grade === grade)?.key ?? demoClasses[0]?.key ?? 'g8c'
+  const label = gradeToLabel(grade)
+  return demoClasses.find((c) => c.grade === label)?.key ?? demoClasses[0]?.key ?? 'g8c'
 }
 
 function dueDateIso(daysAhead: number) {
@@ -120,8 +126,8 @@ export default function AssignmentCreate() {
   const handoutLayoutRef = useRef<HandoutLayoutOpts>(DEFAULT_HANDOUT_LAYOUT)
 
   const [title, setTitle] = useState(() => t('assignment.defaultTitle'))
-  const [subject, setSubject] = useState<string>(SUBJECTS[1])
-  const [grade, setGrade] = useState<string>(GRADES[0])
+  const [subject, setSubject] = useState<string>('math')
+  const [grade, setGrade] = useState<string>('5')
   const [assignmentType, setAssignmentType] = useState('Structured response')
   const [dueAt, setDueAt] = useState(dueDateIso(14))
   const [studentInstructions, setStudentInstructions] = useState(() => t('assignment.defaultInstructions'))
@@ -141,6 +147,7 @@ export default function AssignmentCreate() {
   const [hydratedRag, setHydratedRag] = useState<{
     bookIds?: string[]
     topics?: string[]
+    topicIds?: string[]
     refinement?: string
     withoutSources?: boolean
   } | null>(null)
@@ -152,9 +159,9 @@ export default function AssignmentCreate() {
   const rag = useQuizRagScope({
     subject,
     grade,
-    bookSelectionMode: 'single',
     initialSelectedBookIds: hydratedRag?.bookIds,
     initialScopeTopics: hydratedRag?.topics,
+    initialScopeTopicIds: hydratedRag?.topicIds,
     initialScopeRefinement: hydratedRag?.refinement ?? loadedTopic,
     initialGenerateWithoutSources: hydratedRag?.withoutSources,
   })
@@ -170,6 +177,7 @@ export default function AssignmentCreate() {
       generateWithoutSources: rag.generateWithoutSources,
       selectedBookIds: rag.selectedBookIds,
       selectedTopics: rag.selectedTopics,
+      selectedTopicIds: rag.allSelectedTopicIds,
       scopeRefinement: rag.scopeRefinement,
       topicCount,
     }),
@@ -178,6 +186,7 @@ export default function AssignmentCreate() {
       rag.generateWithoutSources,
       rag.selectedBookIds,
       rag.selectedTopics,
+      rag.allSelectedTopicIds,
       rag.scopeRefinement,
       topicCount,
     ],
@@ -303,8 +312,8 @@ export default function AssignmentCreate() {
     setLiveAssignmentId(null)
     enterExemplarPreview()
     setTitle(ex.title)
-    setSubject(ex.subject)
-    setGrade(ex.grade)
+    setSubject(subjectValueForSelect(ex.subject))
+    setGrade(gradeValueForSelect(ex.grade))
     setAssignmentType(ex.assignmentType)
     setDueAt(ex.dueAt)
     setStudentInstructions(ex.studentInstructions)
@@ -340,11 +349,13 @@ export default function AssignmentCreate() {
     const titleParam = searchParams.get('title')
     if (titleParam) setTitle(titleParam)
     const sub = searchParams.get('subject')
-    const subOk = SUBJECTS.find((s) => s === sub)
-    if (subOk) setSubject(subOk)
+    if (sub) {
+      const resolved = subjectValueForSelect(sub)
+      if (resolved) setSubject(resolved)
+    }
     const gr = searchParams.get('grade')
-    const grOk = GRADES.find((g) => g === gr)
-    if (grOk) setGrade(grOk)
+    const grResolved = gr ? gradeValueForSelect(gr) : ''
+    if (grResolved) setGrade(grResolved)
     const topic = searchParams.get('topic')
     if (topic) setLoadedTopic(topic)
     if (searchParams.get('fromTemplate') && !templateToastRef.current) {
@@ -369,8 +380,8 @@ export default function AssignmentCreate() {
         return
       }
       setTitle(a.title)
-      setSubject(a.subject)
-      setGrade(a.grade)
+      setSubject(subjectValueForSelect(a.subject))
+      setGrade(gradeValueForSelect(a.grade))
       setAssignmentType(a.type)
       setDueAt(a.dueAt)
       setStudentInstructions(
@@ -385,6 +396,7 @@ export default function AssignmentCreate() {
       setHydratedRag({
         bookIds: a.sourceBookIds ?? [],
         topics: a.scopeTopics ?? [],
+        topicIds: a.scopeTopicIds ?? [],
         refinement: a.scopeRefinement ?? '',
         withoutSources: a.generateWithoutSources ?? false,
       })
@@ -405,8 +417,8 @@ export default function AssignmentCreate() {
   const buildShellCreatePayload = useCallback((): AssignmentCreatePayload => {
     return {
       title: title.trim() || t('assignment.untitled'),
-      subject,
-      grade,
+      subject: subjectToTeacherToolsLabel(subject),
+      grade: gradeToLabel(grade),
       classes: [classKeyForGrade(grade)],
       type: assignmentType,
       rigorProfile,
@@ -416,6 +428,7 @@ export default function AssignmentCreate() {
       status: 'draft',
       sourceBookIds: rag.selectedBookIds,
       scopeTopics: rag.selectedTopics,
+      scopeTopicIds: rag.allSelectedTopicIds,
       scopeRefinement: rag.scopeRefinement || undefined,
       generateWithoutSources: rag.generateWithoutSources,
       difficulty,
@@ -433,6 +446,7 @@ export default function AssignmentCreate() {
     generatorInstructions,
     rag.selectedBookIds,
     rag.selectedTopics,
+    rag.allSelectedTopicIds,
     rag.scopeRefinement,
     rag.generateWithoutSources,
     difficulty,
@@ -444,7 +458,9 @@ export default function AssignmentCreate() {
       generateWithoutSources: rag.generateWithoutSources,
       selectedBookIds: rag.selectedBookIds,
       selectedTopics: rag.selectedTopics,
+      selectedTopicIds: rag.allSelectedTopicIds,
       scopeRefinement: rag.scopeRefinement,
+      topicCount,
     })
     if (!v.ok) {
       setBuildErrors(v.errors)
@@ -469,6 +485,19 @@ export default function AssignmentCreate() {
         ).unwrap()
         assignmentId = created.id
         setLiveAssignmentId(created.id)
+      } else {
+        await appDispatch(
+          assignmentApiSlice.endpoints.patchAssignment.initiate({
+            id: assignmentId,
+            patch: {
+              sourceBookIds: rag.selectedBookIds,
+              scopeTopics: rag.selectedTopics,
+              scopeTopicIds: rag.allSelectedTopicIds,
+              scopeRefinement: rag.scopeRefinement || undefined,
+              generateWithoutSources: rag.generateWithoutSources,
+            },
+          }),
+        ).unwrap()
       }
       if (!assignmentId) {
         setGenerationError(t('assignment.createGenerationError'))
@@ -502,6 +531,14 @@ export default function AssignmentCreate() {
       if (credit) {
         setCreditGate(credit)
         setGenerationError(null)
+        return
+      }
+      const detail =
+        (e as { data?: { detail?: { code?: string; message?: string } } })?.data?.detail ??
+        (e as { detail?: { code?: string; message?: string } })?.detail
+      if (detail?.code === 'RETRIEVAL_SCOPE_ERROR') {
+        setGenerationError(detail.message || t('quiz.rag.noSegmentsForScope'))
+        toast.error(detail.message || t('quiz.rag.noSegmentsForScope'))
         return
       }
       setGenerationError(t('assignment.generationFailed'))
@@ -747,7 +784,7 @@ export default function AssignmentCreate() {
 
   const assignmentPrintMeta: AssignmentPrintMeta = {
     title: title.trim() || t('assignment.fallbackTitle'),
-    subject,
+    subject: subjectToTeacherToolsLabel(subject),
     grade,
     dueAt,
     assignmentType,
@@ -761,8 +798,8 @@ export default function AssignmentCreate() {
       downloadAssignmentBriefPdf(
         {
           title: title.trim() || t('assignment.fallbackTitle'),
-          subject,
-          grade,
+          subject: subjectToTeacherToolsLabel(subject),
+          grade: gradeToLabel(grade),
           dueAt,
           assignmentType,
           studentInstructions,
@@ -782,8 +819,8 @@ export default function AssignmentCreate() {
   const buildPayload = useCallback(
     (status: 'draft' | 'active') => ({
       title: title.trim() || t('assignment.untitled'),
-      subject,
-      grade,
+      subject: subjectToTeacherToolsLabel(subject),
+      grade: gradeToLabel(grade),
       classes: [classKeyForGrade(grade)],
       type: assignmentType,
       dueAt,
@@ -799,6 +836,7 @@ export default function AssignmentCreate() {
       handoutLayout: handoutLayoutRef.current,
       sourceBookIds: rag.selectedBookIds,
       scopeTopics: rag.selectedTopics,
+      scopeTopicIds: rag.allSelectedTopicIds,
       scopeRefinement: rag.scopeRefinement,
       generateWithoutSources: rag.generateWithoutSources,
       rigorProfile,

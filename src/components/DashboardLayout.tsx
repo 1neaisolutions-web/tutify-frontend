@@ -54,6 +54,7 @@ import {
   Zap,
 } from 'lucide-react'
 import { fetchCreditBalance } from '../redux/features/subscription/subscriptionSlice'
+import { fetchProfileMetadata } from '../redux/features/profileContext/profileContextSlice'
 import ActivateCreditsModal from './ActivateCreditsModal'
 import { creditBalanceUiPercents } from '../utils/creditBalanceUi'
 import { formatDate, formatNumber } from '../lib/i18n/format'
@@ -171,6 +172,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({})
   const { profileDetails } = useSelector((state: any) => state.auth)
   const subscription = useSelector((state: any) => state.subscription)
+  const profileContext = useSelector((state: any) => state.profileContext)
+  const isAuthenticated = useSelector((state: any) => !!state.auth?.isAuthenticated)
   const language = useSelector((state: any) => state.preferences?.language)
   void language
   const profileDropdownRef = useRef<HTMLDivElement>(null)
@@ -248,6 +251,25 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       dispatch(fetchCreditBalance() as any)
     }
   }, [user?.token, user?.id, dispatch])
+
+  // Load education metadata (grades, subjects, etc.) once per session
+  useEffect(() => {
+    const gradesLoaded = (profileContext?.grades?.length ?? 0) > 0
+    if (
+      isAuthenticated &&
+      !profileContext?.loading &&
+      !gradesLoaded &&
+      !profileContext?.error
+    ) {
+      dispatch(fetchProfileMetadata() as any)
+    }
+  }, [
+    isAuthenticated,
+    profileContext?.loading,
+    profileContext?.grades?.length,
+    profileContext?.error,
+    dispatch,
+  ])
 
   // Close dropdown when clicking outside
   // Delay to allow Link navigation to happen first

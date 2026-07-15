@@ -11068,6 +11068,37 @@
     "topicOnly": "विषय-मात्र मोड",
     "retry": "पुन: प्रयास करें",
     "sectionsIndexed": "{{count}} अनुभाग अनुक्रमित",
+    "sectionsCount": "{{count}} sections",
+    "sectionsIndexedMeta": "{{documents}} documents · {{count}} sections indexed",
+    "scopeSearchPlaceholder": "Search chapters and topics (e.g. fractions, motion)",
+    "libraryMatchHint": "Used to match books in your library.",
+    "focusForAi": "Focus for AI (optional)",
+    "generationNotes": "Generation notes (optional)",
+    "generationNotesHint": "Students won't see this.",
+    "selectChapter": "Select chapter",
+    "clearChapter": "Clear chapter",
+    "expandChapter": "Expand",
+    "collapseChapter": "Collapse",
+    "expandBook": "Show topics",
+    "collapseBook": "Hide topics",
+    "fieldBands": {
+      "student": {
+        "title": "What students will see",
+        "description": "These appear on the assignment or assessment after you publish."
+      },
+      "library": {
+        "title": "Content library match",
+        "description": "Helps find the right books and materials in your catalog."
+      },
+      "ai": {
+        "title": "AI generation settings",
+        "description": "Guides question generation only — students never see these."
+      }
+    },
+    "scopeStep": {
+      "title": "Select content to use",
+      "subtitle": "Choose chapters and topics from your selected materials."
+    },
     "clearSearch": "स्पष्ट खोज",
     "scopeRefinement": "कार्यक्षेत्र परिशोधन",
     "scopeRefinementOptional": "दायरा परिशोधन (वैकल्पिक)",
@@ -11079,6 +11110,14 @@
     "excerptPreview": "अंश पूर्वावलोकन",
     "topicStrandsHeading": "विषय स्ट्रैंड खोजें और चुनें",
     "catalogSearchPlaceholder": "शीर्षक, लेखक, आईएसबीएन, या विषय स्ट्रैंड खोजें...",
+    "catalogFilterSummary": "Showing books matching {{subject}} · {{grade}}",
+    "browseAllCatalog": "Browse all library books",
+    "browseAllCatalogHint": "Ignore subject and grade filter to see every published title in your library.",
+    "browseAllCatalogActive": "Showing all library books. Your activity is still labeled {{subject}} · {{grade}}.",
+    "bookOutsideFilter": "Outside current filter",
+    "catalogNearMatchesTitle": "Other {{subject}} materials",
+    "catalogNearMatchesHint": "These titles match your subject but not {{grade}}. Select one or browse all books above.",
+    "incompleteMetadata": "Incomplete metadata",
     "topicFilterPlaceholder": "फ़िल्टर करने के लिए टाइप करें (जैसे अंश, शब्द समस्या...)",
     "scopeRefinementPlaceholder": "शब्द समस्याओं, परीक्षा-शैली तर्क और सामान्य गलतफहमियों पर ध्यान दें",
     "generateWithoutSources": "स्रोत सामग्री के बिना उत्पन्न करें",
@@ -11407,7 +11446,18 @@
       "timeLimitMinutes": "समय सीमा (मिनट)",
       "shuffleQuestions": "प्रत्येक छात्र के लिए प्रश्न क्रम में फेरबदल करें",
       "shuffleMcq": "एमसीक्यू विकल्पों को शफ़ल करें",
-      "negativeMarking": "नकारात्मक अंकन"
+      "negativeMarking": "नकारात्मक अंकन",
+      "scopeSummaryTitle": "Scope summary",
+      "approximateChapterMap": "This book's chapter map is approximate. Contact admin to re-process.",
+      "selectAllDocument": "Select all",
+      "clearDocument": "Clear all",
+      "selectTopic": "Select",
+      "clearTopic": "Clear",
+      "selectWholeChapter": "Select chapter",
+      "clearChapter": "Clear chapter",
+      "chapterScopeOnlyHint": "This book is indexed by chapter. Click a chapter row to select it. Section-level topics appear when the book includes section entries in its table of contents.",
+      "noSegmentsForScope": "No content found for selected chapters. Try different chapters or contact admin.",
+      "unmappedContentWarning": "Some pages in this book are not mapped to chapters. Contact your admin if content seems missing."
     },
     "review": {
       "printPreview": "मुद्रण पूर्वावलोकन",
@@ -11422,6 +11472,7 @@
       "badgeShort": "छोटा",
       "questionMarks": "Q{{num}} · {{pts}} अंक",
       "lines": "पंक्तियां",
+      "scopeWarning": "Scope unverified",
       "modalAddQuestion": "प्रश्न जोड़ें"
     },
     "generating": {

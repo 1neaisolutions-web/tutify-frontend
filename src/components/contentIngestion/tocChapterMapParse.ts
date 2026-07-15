@@ -70,6 +70,36 @@ export function parseChapterMapFromJson(raw: string): ParseChapterMapResult {
     return { ok: false, message: i18n.t('content.toc.errors.emptyArray') }
   }
 
+  const seenIds = new Set<string>()
+  for (let i = 0; i < chapters.length; i += 1) {
+    const id = chapters[i].id
+    if (seenIds.has(id)) {
+      return { ok: false, message: `Duplicate id "${id}" at entry ${i + 1}.` }
+    }
+    seenIds.add(id)
+  }
+
+  const byParent = new Map<string | null, typeof chapters>()
+  for (const ch of chapters) {
+    const parent = ch.parent_id ?? null
+    const list = byParent.get(parent) ?? []
+    list.push(ch)
+    byParent.set(parent, list)
+  }
+  for (const [, siblings] of byParent) {
+    const sorted = [...siblings].sort((a, b) => a.start_page_pdf - b.start_page_pdf)
+    for (let j = 1; j < sorted.length; j += 1) {
+      const prev = sorted[j - 1]
+      const cur = sorted[j]
+      if (cur.start_page_pdf <= prev.end_page_pdf) {
+        return {
+          ok: false,
+          message: `Overlapping pages between "${prev.id}" and "${cur.id}".`,
+        }
+      }
+    }
+  }
+
   return { ok: true, chapters }
 }
 

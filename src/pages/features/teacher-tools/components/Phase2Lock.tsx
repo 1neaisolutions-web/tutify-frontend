@@ -14,6 +14,7 @@ export function Phase2Badge({ className = '' }: { className?: string }) {
 
 /** Use on disabled controls; provides hover/focus hint for Phase 2 gating. */
 export function LockedTooltip({ children, className = '' }: { children: ReactNode; className?: string }) {
+  const { t } = useTranslation()
   return (
     <span className={`inline-flex cursor-not-allowed ${className}`} tabIndex={0} title={t('teacherTools.phase2Tooltip')}>
       {children}
@@ -30,6 +31,7 @@ export function Phase2Section({
   footnote?: string
   children: ReactNode
 }) {
+  const { t } = useTranslation()
   return (
     <div className="relative overflow-hidden rounded-2xl border border-indigo-100 bg-gradient-to-b from-indigo-50/80 to-white p-5 shadow-inner">
       <div className="mb-3 flex flex-wrap items-center gap-2">

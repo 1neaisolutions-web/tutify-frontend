@@ -46,6 +46,8 @@ import NoCreditsCard from '../../components/NoCreditsCard'
 import { resolveApiMessage } from '../../i18n/resolveApiMessage'
 
 import { useTranslation } from 'react-i18next'
+import { GradeSelect } from '@/components/shared/GradeSelect'
+import { gradeLevelToChatbotApi } from '@/catalog/adapters/chatbotAdapters'
 interface GrammarCheck {
   errors: {
     type: string
@@ -187,7 +189,7 @@ const GrammarWritingMentor = () => {
           input: textInput,
           input_type: 'text',
           parameters: {
-            grade_level: gradeLevel,
+            grade_level: gradeLevelToChatbotApi(gradeLevel),
           },
           conversation_id: conversationIdForActiveTab ?? undefined,
         }
@@ -231,7 +233,7 @@ const GrammarWritingMentor = () => {
           input: textInput,
           input_type: 'text',
           parameters: {
-            grade_level: gradeLevel,
+            grade_level: gradeLevelToChatbotApi(gradeLevel),
             writing_type: writingType,
           },
           conversation_id: conversationIdForActiveTab ?? undefined,
@@ -271,7 +273,7 @@ const GrammarWritingMentor = () => {
           input: 'Generate peer review guide',
           input_type: 'text',
           parameters: {
-            grade_level: gradeLevel,
+            grade_level: gradeLevelToChatbotApi(gradeLevel),
           },
           conversation_id: conversationIdForActiveTab ?? undefined,
         }
@@ -311,7 +313,7 @@ const GrammarWritingMentor = () => {
           input: 'Generate grammar lesson',
           input_type: 'text',
           parameters: {
-            grade_level: gradeLevel,
+            grade_level: gradeLevelToChatbotApi(gradeLevel),
           },
           conversation_id: conversationIdForActiveTab ?? undefined,
         }
@@ -480,17 +482,12 @@ const GrammarWritingMentor = () => {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('grammarWritingMentor.gradeLevel')}</label>
-                    <select
+                    <GradeSelect
+                      variant="native"
                       value={gradeLevel}
-                      onChange={(e) => setGradeLevel(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
-                    >
-                      {[3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
-                        <option key={grade} value={grade}>
-                          {t('common.gradeOption', { grade })}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setGradeLevel}
+                      label=""
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('grammarWritingMentor.pasteStudentWriting')}</label>
@@ -627,17 +624,12 @@ const GrammarWritingMentor = () => {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('grammarWritingMentor.gradeLevel')}</label>
-                    <select
+                    <GradeSelect
+                      variant="native"
                       value={gradeLevel}
-                      onChange={(e) => setGradeLevel(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
-                    >
-                      {[3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
-                        <option key={grade} value={grade}>
-                          {t('common.gradeOption', { grade })}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setGradeLevel}
+                      label=""
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('grammarWritingMentor.writingType')}</label>
@@ -995,17 +987,12 @@ const GrammarWritingMentor = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('grammarWritingMentor.gradeLevel')}</label>
-                    <select
+                    <GradeSelect
+                      variant="native"
                       value={gradeLevel}
-                      onChange={(e) => setGradeLevel(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100"
-                    >
-                      {[3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
-                        <option key={grade} value={grade}>
-                          {t('common.gradeOption', { grade })}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setGradeLevel}
+                      label=""
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('grammarWritingMentor.promptType')}</label>
@@ -1063,17 +1050,12 @@ const GrammarWritingMentor = () => {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('grammarWritingMentor.gradeLevel')}</label>
-                    <select
+                    <GradeSelect
+                      variant="native"
                       value={gradeLevel}
-                      onChange={(e) => setGradeLevel(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
-                    >
-                      {[3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
-                        <option key={grade} value={grade}>
-                          {t('common.gradeOption', { grade })}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setGradeLevel}
+                      label=""
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t('grammarWritingMentor.writingType')}</label>

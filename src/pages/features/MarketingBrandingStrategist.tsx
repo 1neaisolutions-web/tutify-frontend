@@ -29,7 +29,6 @@ import {
   Image as ImageIcon,
 } from 'lucide-react'
 import {
-  getGradeLevels,
   getMarketingTopics,
   MarketingConcept,
   BrandingStrategy,
@@ -52,6 +51,8 @@ import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
 
 import { useTranslation } from 'react-i18next'
+import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
+import { chatbotBandToApi } from '@/catalog/adapters/chatbotAdapters'
 const MARKETING_STRATEGIST_SLUG = 'marketing-branding-strategist'
 
 type TabType = 'marketing-concepts' | 'branding' | 'digital-marketing' | 'market-research' | 'campaigns' | 'standards' | 'resources'
@@ -60,7 +61,7 @@ const MarketingBrandingStrategist = () => {
   const { t } = useTranslation()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const [activeTab, setActiveTab] = useState<TabType>('marketing-concepts')
-  const [gradeLevel, setGradeLevel] = useState('High School (9-12)')
+  const [gradeLevel, setGradeLevel] = useState('9-12')
   const [isGenerating, setIsGenerating] = useState(false)
 
   // Marketing Concepts State
@@ -89,7 +90,7 @@ const MarketingBrandingStrategist = () => {
   const [objective, setObjective] = useState('')
   const [generatedCampaign, setGeneratedCampaign] = useState<MarketingCampaign | null>(null)
 
-  const gradeLevels = getGradeLevels()
+  const apiGradeLevel = chatbotBandToApi(gradeLevel)
   const marketingTopics = getMarketingTopics()
 
   const MARKETING_CAP_TABS: Record<string, TabType> = {
@@ -136,7 +137,7 @@ const MarketingBrandingStrategist = () => {
         setGeneratedCampaign(null)
 
         if (tab === 'marketing-concepts') {
-          setMarketingConcepts(mapMarketingConceptsResponseToUI(data, gradeLevel))
+          setMarketingConcepts(mapMarketingConceptsResponseToUI(data, apiGradeLevel))
         } else if (tab === 'branding') {
           setBrandingStrategies(mapBrandingStrategiesResponseToUI(data))
         } else if (tab === 'digital-marketing') {
@@ -160,13 +161,13 @@ const MarketingBrandingStrategist = () => {
     clearCreditError()
     try {
       const response = await runWithCredits(chatbotApi.executeCapability(MARKETING_STRATEGIST_SLUG, 'marketing_concepts', {
-        input: gradeLevel,
+        input: apiGradeLevel,
         input_type: 'text',
-        parameters: { grade_level: gradeLevel },
+        parameters: { grade_level: apiGradeLevel },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
       if (response == null) return
-      const concepts = mapMarketingConceptsResponseToUI(response.result as Record<string, unknown>, gradeLevel)
+      const concepts = mapMarketingConceptsResponseToUI(response.result as Record<string, unknown>, apiGradeLevel)
       setMarketingConcepts(concepts)
       pinFromResponse(response.conversation_id)
     } catch (e: unknown) {
@@ -183,9 +184,9 @@ const MarketingBrandingStrategist = () => {
     clearCreditError()
     try {
       const response = await runWithCredits(chatbotApi.executeCapability(MARKETING_STRATEGIST_SLUG, 'branding_strategies', {
-        input: gradeLevel,
+        input: apiGradeLevel,
         input_type: 'text',
-        parameters: { grade_level: gradeLevel },
+        parameters: { grade_level: apiGradeLevel },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
       if (response == null) return
@@ -206,9 +207,9 @@ const MarketingBrandingStrategist = () => {
     clearCreditError()
     try {
       const response = await runWithCredits(chatbotApi.executeCapability(MARKETING_STRATEGIST_SLUG, 'digital_marketing_channels', {
-        input: gradeLevel,
+        input: apiGradeLevel,
         input_type: 'text',
-        parameters: { grade_level: gradeLevel },
+        parameters: { grade_level: apiGradeLevel },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
       if (response == null) return
@@ -229,9 +230,9 @@ const MarketingBrandingStrategist = () => {
     clearCreditError()
     try {
       const response = await runWithCredits(chatbotApi.executeCapability(MARKETING_STRATEGIST_SLUG, 'market_research_methods', {
-        input: gradeLevel,
+        input: apiGradeLevel,
         input_type: 'text',
-        parameters: { grade_level: gradeLevel },
+        parameters: { grade_level: apiGradeLevel },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
       if (response == null) return
@@ -252,9 +253,9 @@ const MarketingBrandingStrategist = () => {
     clearCreditError()
     try {
       const response = await runWithCredits(chatbotApi.executeCapability(MARKETING_STRATEGIST_SLUG, 'international_marketing_standards', {
-        input: gradeLevel,
+        input: apiGradeLevel,
         input_type: 'text',
-        parameters: { grade_level: gradeLevel },
+        parameters: { grade_level: apiGradeLevel },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
       if (response == null) return
@@ -277,10 +278,10 @@ const MarketingBrandingStrategist = () => {
     try {
       // Backend capability key is "compaign" (typo) — must match seed.
       const response = await runWithCredits(chatbotApi.executeCapability(MARKETING_STRATEGIST_SLUG, 'compaign', {
-        input: gradeLevel,
+        input: apiGradeLevel,
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: apiGradeLevel,
           product: product.trim(),
           target_audience: targetAudience.trim(),
           primary_objective: objective.trim(),
@@ -347,16 +348,15 @@ const MarketingBrandingStrategist = () => {
             {/* Quick Settings */}
             <div className="flex flex-wrap gap-4 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">{t('marketingBrandingStrategist.gradeLevel')}</label>
-                <select
+                <GradeBandSelect
+                  variant="native"
                   value={gradeLevel}
-                  onChange={(e) => setGradeLevel(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                >
-                  {gradeLevels.map(level => (
-                    <option key={level} value={level}>{level}</option>
-                  ))}
-                </select>
+                  onChange={setGradeLevel}
+                  label={t('marketingBrandingStrategist.gradeLevel')}
+                  context="chatbotBand"
+                  selectClassName="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="flex items-center gap-2 [&_span]:text-sm [&_span]:font-medium [&_span]:text-white"
+                />
               </div>
             </div>
           </div>
@@ -414,9 +414,9 @@ const MarketingBrandingStrategist = () => {
                 <div className="space-y-4">
                   {marketingConcepts
                     .filter(concept => {
-                      if (gradeLevel === 'Elementary (K-5)') return concept.gradeLevel.includes('Elementary')
-                      if (gradeLevel === 'Middle School (6-8)') return concept.gradeLevel.includes('Middle')
-                      if (gradeLevel === 'High School (9-12)') return concept.gradeLevel.includes('High')
+                      if (gradeLevel === '3-5') return concept.gradeLevel.includes('Elementary')
+                      if (gradeLevel === '6-8') return concept.gradeLevel.includes('Middle')
+                      if (gradeLevel === '9-12') return concept.gradeLevel.includes('High')
                       return true
                     })
                     .map((concept, idx) => (

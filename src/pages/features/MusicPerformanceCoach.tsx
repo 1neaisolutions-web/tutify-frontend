@@ -59,6 +59,8 @@ import {
 } from '../../utils/musicAdapters'
 
 import { useTranslation } from 'react-i18next'
+import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
+import { chatbotBandToApi } from '@/catalog/adapters/chatbotAdapters'
 const CHATBOT_SLUG = 'music-performance-coach'
 
 type TabType = 'theory' | 'composition' | 'performance' | 'ensemble' | 'pedagogy' | 'games' | 'standards' | 'resources'
@@ -68,7 +70,7 @@ const MusicPerformanceCoach = () => {
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const [activeTab, setActiveTab] = useState<TabType>('theory')
-  const [gradeLevel, setGradeLevel] = useState('High School (9-12)')
+  const [gradeLevel, setGradeLevel] = useState('9-12')
   const [selectedInstrument, setSelectedInstrument] = useState('Piano')
   const [selectedStyle, setSelectedStyle] = useState('Classical')
   const [isGenerating, setIsGenerating] = useState(false)
@@ -135,12 +137,12 @@ const MusicPerformanceCoach = () => {
         setMusicGames([])
         setMusicStandards([])
         if (tab === 'theory') setMusicTheoryInfo(mapMusicTheoryResult(raw))
-        else if (tab === 'composition') setCompositionGuide(mapMusicCompositionResult(raw, selectedStyle, gradeLevel))
+        else if (tab === 'composition') setCompositionGuide(mapMusicCompositionResult(raw, selectedStyle, chatbotBandToApi(gradeLevel)))
         else if (tab === 'performance') setTechniqueInfo(mapPerformanceTechniqueResult(raw, performanceTechnique))
         else if (tab === 'ensemble') setEnsembleGuide(mapEnsembleResult(raw))
         else if (tab === 'pedagogy') setPedagogicalMethods(mapMusicPedagogyList(raw))
         else if (tab === 'games') setMusicGames(mapMusicGamesList(raw))
-        else if (tab === 'standards') setMusicStandards(mapMusicStandardsList(raw, gradeLevel))
+        else if (tab === 'standards') setMusicStandards(mapMusicStandardsList(raw, chatbotBandToApi(gradeLevel)))
       } catch {
         toast.error(t('musicPerformanceCoach.couldNotRestoreSavedOutputFromHistory'))
       }
@@ -161,7 +163,7 @@ const MusicPerformanceCoach = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           instrument: selectedInstrument,
           style: selectedStyle,
           theory_concept: theoryConcept,
@@ -192,7 +194,7 @@ const MusicPerformanceCoach = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           instrument: selectedInstrument,
           style: selectedStyle,
           composition_type: compositionType,
@@ -200,7 +202,7 @@ const MusicPerformanceCoach = () => {
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
       if (response == null) return
-      setCompositionGuide(mapMusicCompositionResult(response.result, selectedStyle, gradeLevel))
+      setCompositionGuide(mapMusicCompositionResult(response.result, selectedStyle, chatbotBandToApi(gradeLevel)))
       pinFromResponse(response.conversation_id)
       toast.success(t('musicPerformanceCoach.compositionGuideLoaded'))
     } catch (error: unknown) {
@@ -223,7 +225,7 @@ const MusicPerformanceCoach = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           instrument: selectedInstrument,
           style: selectedStyle,
           technique: performanceTechnique,
@@ -254,7 +256,7 @@ const MusicPerformanceCoach = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           instrument: selectedInstrument,
           style: selectedStyle,
           ensemble_type: ensembleType,
@@ -285,7 +287,7 @@ const MusicPerformanceCoach = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           instrument: selectedInstrument,
           style: selectedStyle,
         },
@@ -315,7 +317,7 @@ const MusicPerformanceCoach = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           instrument: selectedInstrument,
           style: selectedStyle,
           game_category: gameCategory.toLowerCase(),
@@ -346,14 +348,14 @@ const MusicPerformanceCoach = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           instrument: selectedInstrument,
           style: selectedStyle,
         },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
       if (response == null) return
-      setMusicStandards(mapMusicStandardsList(response.result, gradeLevel))
+      setMusicStandards(mapMusicStandardsList(response.result, chatbotBandToApi(gradeLevel)))
       pinFromResponse(response.conversation_id)
       toast.success(t('musicPerformanceCoach.musicStandardsLoaded'))
     } catch (error: unknown) {
@@ -416,17 +418,15 @@ const MusicPerformanceCoach = () => {
             {/* Quick Settings */}
             <div className="flex flex-wrap gap-4 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">{t('musicPerformanceCoach.gradeLevel')}</label>
-                <select
+                <GradeBandSelect
+                  variant="native"
                   value={gradeLevel}
-                  onChange={(e) => setGradeLevel(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                >
-                  <option>Elementary (K-5)</option>
-                  <option>Middle School (6-8)</option>
-                  <option>High School (9-12)</option>
-                  <option>{t('musicPerformanceCoach.college')}</option>
-                </select>
+                  onChange={setGradeLevel}
+                  label={t('musicPerformanceCoach.gradeLevel')}
+                  context="chatbotBand"
+                  selectClassName="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  className="flex items-center gap-2 [&_span]:text-sm [&_span]:font-medium [&_span]:text-white"
+                />
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
                 <label className="text-sm font-medium">{t('musicPerformanceCoach.instrument')}</label>

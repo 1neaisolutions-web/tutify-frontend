@@ -11068,6 +11068,37 @@
     "topicOnly": "Тэматычны рэжым",
     "retry": "Паўтарыць",
     "sectionsIndexed": "{{count}} раздзелаў праіндэксавана",
+    "sectionsCount": "{{count}} sections",
+    "sectionsIndexedMeta": "{{documents}} documents · {{count}} sections indexed",
+    "scopeSearchPlaceholder": "Search chapters and topics (e.g. fractions, motion)",
+    "libraryMatchHint": "Used to match books in your library.",
+    "focusForAi": "Focus for AI (optional)",
+    "generationNotes": "Generation notes (optional)",
+    "generationNotesHint": "Students won't see this.",
+    "selectChapter": "Select chapter",
+    "clearChapter": "Clear chapter",
+    "expandChapter": "Expand",
+    "collapseChapter": "Collapse",
+    "expandBook": "Show topics",
+    "collapseBook": "Hide topics",
+    "fieldBands": {
+      "student": {
+        "title": "What students will see",
+        "description": "These appear on the assignment or assessment after you publish."
+      },
+      "library": {
+        "title": "Content library match",
+        "description": "Helps find the right books and materials in your catalog."
+      },
+      "ai": {
+        "title": "AI generation settings",
+        "description": "Guides question generation only — students never see these."
+      }
+    },
+    "scopeStep": {
+      "title": "Select content to use",
+      "subtitle": "Choose chapters and topics from your selected materials."
+    },
     "clearSearch": "Выразны пошук",
     "scopeRefinement": "Дапрацоўка сферы",
     "scopeRefinementOptional": "Удакладненне вобласці (неабавязкова)",
@@ -11079,6 +11110,14 @@
     "excerptPreview": "папярэдні прагляд урыўка",
     "topicStrandsHeading": "Пошук і выбар тэм",
     "catalogSearchPlaceholder": "Пошук па назве, аўтару, ISBN або тэме...",
+    "catalogFilterSummary": "Showing books matching {{subject}} · {{grade}}",
+    "browseAllCatalog": "Browse all library books",
+    "browseAllCatalogHint": "Ignore subject and grade filter to see every published title in your library.",
+    "browseAllCatalogActive": "Showing all library books. Your activity is still labeled {{subject}} · {{grade}}.",
+    "bookOutsideFilter": "Outside current filter",
+    "catalogNearMatchesTitle": "Other {{subject}} materials",
+    "catalogNearMatchesHint": "These titles match your subject but not {{grade}}. Select one or browse all books above.",
+    "incompleteMetadata": "Incomplete metadata",
     "topicFilterPlaceholder": "Увядзіце для фільтрацыі (напрыклад, дроб, тэкставая задача…)",
     "scopeRefinementPlaceholder": "Засяродзьцеся на тэкставых праблемах, развагах у стылі экзамену і распаўсюджаных памылковых уяўленнях",
     "generateWithoutSources": "Генераваць без зыходных матэрыялаў",
@@ -11407,7 +11446,18 @@
       "timeLimitMinutes": "Ліміт часу (хвілін)",
       "shuffleQuestions": "Перамяшайце парадак пытанняў для кожнага студэнта",
       "shuffleMcq": "Ператасаваць параметры MCQ",
-      "negativeMarking": "Адмоўная маркіроўка"
+      "negativeMarking": "Адмоўная маркіроўка",
+      "scopeSummaryTitle": "Scope summary",
+      "approximateChapterMap": "This book's chapter map is approximate. Contact admin to re-process.",
+      "selectAllDocument": "Select all",
+      "clearDocument": "Clear all",
+      "selectTopic": "Select",
+      "clearTopic": "Clear",
+      "selectWholeChapter": "Select chapter",
+      "clearChapter": "Clear chapter",
+      "chapterScopeOnlyHint": "This book is indexed by chapter. Click a chapter row to select it. Section-level topics appear when the book includes section entries in its table of contents.",
+      "noSegmentsForScope": "No content found for selected chapters. Try different chapters or contact admin.",
+      "unmappedContentWarning": "Some pages in this book are not mapped to chapters. Contact your admin if content seems missing."
     },
     "review": {
       "printPreview": "Папярэдні прагляд для друку",
@@ -11422,6 +11472,7 @@
       "badgeShort": "Кароткі",
       "questionMarks": "Q{{num}} · {{pts}} балаў",
       "lines": "лініі",
+      "scopeWarning": "Scope unverified",
       "modalAddQuestion": "Дадаць пытанне"
     },
     "generating": {

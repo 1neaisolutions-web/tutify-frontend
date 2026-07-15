@@ -22,6 +22,7 @@ export interface CatalogListResponse {
   page: number
   page_size: number
   items: CatalogBookCard[]
+  near_matches?: CatalogBookCard[]
 }
 
 export interface CatalogListParams {
@@ -29,6 +30,8 @@ export interface CatalogListParams {
   grade?: string
   curriculum?: string
   q?: string
+  strict?: boolean
+  include_near_matches?: boolean
   page?: number
   page_size?: number
 }
@@ -43,6 +46,43 @@ export interface ScopePreviewResponse {
   topics_count: number
   estimated_segments: number
   matched_pack_ids: string[]
+  per_document?: Array<{
+    document_id: string
+    document_title: string
+    chunk_count: number
+    topics_matched: number
+  }>
+}
+
+export interface TopicNode {
+  id: string
+  topic_key: string
+  display_title: string
+  level: number
+  chunk_count: number
+  start_page?: number | null
+  end_page?: number | null
+  children: TopicNode[]
+}
+
+export interface DocumentStructure {
+  document_id: string
+  document_title: string
+  total_chunks: number
+  topic_tree: TopicNode[]
+  has_page_bin_fallbacks: boolean
+}
+
+export interface PackStructure {
+  pack_id: string
+  pack_name: string
+  subject: string | null
+  grade: string | null
+  documents: DocumentStructure[]
+}
+
+export interface CatalogStructureResponse {
+  packs: PackStructure[]
 }
 
 // ---------------------------------------------------------------------------
@@ -90,18 +130,29 @@ export async function fetchCatalog(
 ): Promise<CatalogListResponse> {
   // Strip keys whose value is undefined or an empty string so the backend
   // doesn't receive spurious empty query params.
-  const query: Record<string, string | number> = {}
+  const query: Record<string, string | number | boolean> = {}
   for (const [key, value] of Object.entries(params)) {
-    if (value !== undefined && value !== '') {
-      query[key] = value as string | number
-    }
+    if (value === undefined || value === '') continue
+    query[key] = value as string | number | boolean
   }
 
   return apiRequest<CatalogListResponse>('/v1/quiz/catalog', { query, signal })
 }
 
+export async function fetchCatalogStructure(
+  packIds: string[],
+  signal?: AbortSignal,
+): Promise<CatalogStructureResponse> {
+  return apiRequest<CatalogStructureResponse>('/v1/quiz/catalog/structure', {
+    method: 'POST',
+    body: { pack_ids: packIds },
+    signal,
+  })
+}
+
 /**
  * Fetch aggregated topic labels for the given content-pack IDs.
+ * @deprecated Prefer fetchCatalogStructure for hierarchical topic trees.
  */
 export async function fetchTopicsForPacks(
   packIds: string[],
@@ -120,16 +171,20 @@ export async function fetchTopicsForPacks(
  */
 export async function fetchScopePreview(
   packIds: string[],
+  topicIds: string[],
   topics: string[],
   refinement: string | undefined,
+  includeSubTopics: boolean,
   signal?: AbortSignal,
 ): Promise<ScopePreviewResponse> {
   return apiRequest<ScopePreviewResponse>('/v1/quiz/catalog/scope-preview', {
     method: 'POST',
     body: {
       pack_ids: packIds,
+      topic_ids: topicIds,
       topics,
       ...(refinement ? { refinement } : {}),
+      include_sub_topics: includeSubTopics,
     },
     signal,
   })

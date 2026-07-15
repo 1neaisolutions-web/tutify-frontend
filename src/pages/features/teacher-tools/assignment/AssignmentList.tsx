@@ -13,7 +13,8 @@ import {
 } from '../components'
 import { ASSIGNMENT_STATUS_FILTER_OPTIONS } from '../components/teacherToolsStatusFilterOptions'
 import { demoClasses } from '../demo/teacherToolsDemoData'
-import { SUBJECTS, GRADES } from '../types'
+import { subjectsMatch } from '@/catalog/adapters/subjectAdapters'
+import { formatGradeDisplay, gradesMatch } from '@/catalog/adapters/gradeAdapters'
 import { useTeacherToolsDemo } from '../TeacherToolsDemoProvider'
 import { formatListLoadError } from '../utils/listLoadError'
 // @ts-expect-error — JS module
@@ -82,8 +83,8 @@ export default function AssignmentList() {
   const filtered = useMemo(() => {
     return allAssignments.filter((a) => {
       if (filters.q && !a.title.toLowerCase().includes(filters.q.toLowerCase())) return false
-      if (filters.subject && a.subject !== filters.subject) return false
-      if (filters.grade && a.grade !== filters.grade) return false
+      if (!subjectsMatch(filters.subject, a.subject)) return false
+      if (filters.grade && !gradesMatch(a.grade, filters.grade)) return false
       if (filters.classKey && !a.classes?.includes(filters.classKey)) return false
       if (tab === 'All' && filters.status && a.status !== filters.status) return false
       if (tab === 'Active' && a.status !== 'active' && a.status !== 'pending_review') return false
@@ -185,8 +186,6 @@ export default function AssignmentList() {
       <TeacherToolsFilterBar
         value={filters}
         onChange={setFilters}
-        subjects={[...SUBJECTS]}
-        grades={[...GRADES]}
         classOptions={demoClasses.map((c) => ({ key: c.key, label: c.label, grade: c.grade }))}
         statusOptions={ASSIGNMENT_STATUS_FILTER_OPTIONS}
       />

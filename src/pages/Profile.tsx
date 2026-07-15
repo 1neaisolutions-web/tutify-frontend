@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from '../hooks/useSnackbar';
-import { CustomInput, CustomButton, ProfilePictureUpload, SelectDropdown } from '../components/shared';
+import { CustomInput, CustomButton, ProfilePictureUpload, SelectDropdown, GradeSelect, GradeBandSelect } from '../components/shared';
 import { getProfileDetails, updateProfile, changePassword, updateUserEmail } from '../redux/features/auth/authSlice';
 import {
   fetchProfileMetadata,
@@ -27,6 +27,7 @@ import type { PreflightResult } from '../features/personalization/Personalizatio
 import ProfileProfessionalIdentitySection from './ProfileProfessionalIdentitySection';
 import { setAuthToken } from '../redux/http';
 import { validateEmail, validatePassword } from '../utils/utils';
+import { gradeValueForSelect } from '@/catalog/adapters/gradeAdapters';
 import { baseURL } from '../redux/constant';
 import { Lock, User, Mail, Phone, AtSign, AlertCircle, CheckCircle2, BookOpen } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -1320,14 +1321,12 @@ const Profile = () => {
                         />
                       </div>
                       <div>
-                        <CustomInput
-                          label={t('profile.studentProfile.gradeLevel')}
-                          name="student_grade"
-                          value={profile.gradeLevel || ''}
-                          onChange={(e) => {
-                            profile = { ...profile, gradeLevel: e.target.value };
+                        <GradeSelect
+                          value={gradeValueForSelect(profile.gradeLevel)}
+                          onChange={(v) => {
+                            profile = { ...profile, gradeLevel: v };
                           }}
-                          placeholder={t('profile.studentProfile.gradePlaceholder')}
+                          label={t('profile.studentProfile.gradeLevel')}
                         />
                       </div>
                       <div className="md:col-span-2">
@@ -1423,7 +1422,18 @@ const Profile = () => {
                     <SelectDropdown label={t('profile.teachingContext.schoolType')} name="school_type" value={contextForm.school_type} onChange={handleContextChange} options={schoolTypes || []} disabled={metadataLoading} error={!!contextFormErrors.school_type} errorMsg={contextFormErrors.school_type} required placeholder={t('profile.teachingContext.selectSchoolType')} />
                   </div>
                   <div>
-                    <SelectDropdown label={t('profile.teachingContext.gradeBand')} name="grade_band" value={contextForm.grade_band} onChange={handleContextChange} options={gradeBands || []} disabled={metadataLoading} error={!!contextFormErrors.grade_band} errorMsg={contextFormErrors.grade_band} required placeholder={t('profile.teachingContext.selectGradeBand')} />
+                    <GradeBandSelect
+                      label={t('profile.teachingContext.gradeBand')}
+                      name="grade_band"
+                      value={contextForm.grade_band}
+                      onChange={(value) => handleContextChange({ target: { name: 'grade_band', value } })}
+                      disabled={metadataLoading}
+                      error={!!contextFormErrors.grade_band}
+                      errorMsg={contextFormErrors.grade_band}
+                      required
+                      placeholder={t('profile.teachingContext.selectGradeBand')}
+                      context="default"
+                    />
                   </div>
                   <div className="md:col-span-2">
                     <SelectDropdown label={t('profile.teachingContext.subjects')} name="subjects" value={contextForm.subjects} onChange={handleContextChange} options={subjects || []} multiSelect disabled={metadataLoading} error={!!contextFormErrors.subjects} errorMsg={contextFormErrors.subjects} required placeholder={t('profile.teachingContext.selectSubjects')} />

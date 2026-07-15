@@ -163,6 +163,11 @@ export function QuizReviewSection({
                     {q.reviewBadges.source}
                   </span>
                 ) : null}
+                {q.reviewBadges?.scopeWarning === 'true' ? (
+                  <span className="inline-flex items-center rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-900 ring-1 ring-amber-200">
+                    {t('quiz.review.scopeWarning')}
+                  </span>
+                ) : null}
                 <span className="text-xs font-medium text-gray-500">
                   {t('quiz.review.questionMarks', { num: index + 1, pts: q.points ?? '—' })}
                   {q.type === 'short' ? (

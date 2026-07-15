@@ -56,6 +56,8 @@ import {
 } from '../../utils/codingTutorAdapters'
 
 import { useTranslation } from 'react-i18next'
+import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
+import { bandToApi } from '@/catalog/adapters/gradeBandAdapters'
 const CHATBOT_SLUG = 'coding-programming-tutor'
 
 type TabType = 'competition' | 'algorithm' | 'debugging' | 'pbl' | 'thinking' | 'roadmap' | 'standards'
@@ -172,7 +174,7 @@ const CodingProgrammingTutor = () => {
         input: text,
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: bandToApi(gradeLevel, 'visualArts'),
           language: programmingLanguage,
           competition: selectedCompetition,
           problem_description: text,
@@ -203,7 +205,7 @@ const CodingProgrammingTutor = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: bandToApi(gradeLevel, 'visualArts'),
           language: programmingLanguage,
           competition: selectedCompetition,
           select_algorithm: selectedAlgorithm,
@@ -234,7 +236,7 @@ const CodingProgrammingTutor = () => {
         input: codeInput.trim() || ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: bandToApi(gradeLevel, 'visualArts'),
           language: programmingLanguage,
           competition: selectedCompetition,
           error_type: errorType,
@@ -265,7 +267,7 @@ const CodingProgrammingTutor = () => {
         input: projectType,
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: bandToApi(gradeLevel, 'visualArts'),
           language: programmingLanguage,
           competition: selectedCompetition,
           project_type: projectType,
@@ -297,7 +299,7 @@ const CodingProgrammingTutor = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: bandToApi(gradeLevel, 'visualArts'),
           language: programmingLanguage,
           competition: selectedCompetition,
         },
@@ -327,7 +329,7 @@ const CodingProgrammingTutor = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: bandToApi(gradeLevel, 'visualArts'),
           language: programmingLanguage,
           competition: selectedCompetition,
           current_level: currentLevel,
@@ -361,7 +363,7 @@ const CodingProgrammingTutor = () => {
         input: content,
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: bandToApi(gradeLevel, 'visualArts'),
           language: programmingLanguage,
           competition: selectedCompetition,
           standards_framework: standardsFramework,
@@ -433,16 +435,14 @@ const CodingProgrammingTutor = () => {
             <div className="relative z-20 flex flex-wrap gap-4 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
                 <label htmlFor="coding-tutor-grade" className="text-sm font-medium shrink-0">{t('codingProgrammingTutor.gradeLevel')}</label>
-                <select
-                  id="coding-tutor-grade"
+                <GradeBandSelect
+                  variant="native"
                   value={gradeLevel}
-                  onChange={(e) => setGradeLevel(e.target.value)}
-                  className="chatbot-header-select"
-                >
-                  <option value="K-5">{t('codingProgrammingTutor.k5')}</option>
-                  <option value="6-8">6-8</option>
-                  <option value="9-12">9-12</option>
-                </select>
+                  onChange={setGradeLevel}
+                  label=""
+                  context="visualArts"
+                  selectClassName="chatbot-header-select"
+                />
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
                 <label htmlFor="coding-tutor-language" className="text-sm font-medium shrink-0">{t('codingProgrammingTutor.language')}</label>

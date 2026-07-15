@@ -7,6 +7,7 @@ import { TEACHER_TOOLS_SEED_EXAM_IDS } from '../demo/teacherToolsDemoData'
 import * as examApi from '../../../../api/examApi'
 // @ts-expect-error — JS module
 import { useSnackbar } from '../../../../hooks/useSnackbar'
+import { formatGradeDisplay } from '@/catalog/adapters/gradeAdapters'
 
 const tabs = ['Overview', 'Sections', 'Rules', 'Candidates', 'Results', 'Analytics', 'Settings'] as const
 
@@ -253,7 +254,7 @@ export default function ExamDetail() {
               <dl className="mt-3 space-y-2 text-sm">
                 <div className="flex items-start justify-between gap-3">
                   <dt className="text-gray-500">{t('exam.detail.grade')}</dt>
-                  <dd className="text-right text-gray-800">{e.grade}</dd>
+                  <dd className="text-right text-gray-800">{formatGradeDisplay(e.grade)}</dd>
                 </div>
                 {e.sourceSummary && (
                   <div className="flex items-start justify-between gap-3">

@@ -20,7 +20,8 @@ import {
   CardGridSkeleton,
   SimpleBarChart,
 } from './components'
-import { SUBJECTS } from './types'
+import { getSubjectOptionsForContext } from '@/catalog/adapters/subjectAdapters'
+import { formatGradeDisplay } from '@/catalog/adapters/gradeAdapters'
 import { useTeacherToolsDemo } from './TeacherToolsDemoProvider'
 import { useGetStatsQuery } from '../../../redux/features/teacherTools/stats/statsApiSlice'
 
@@ -476,7 +477,7 @@ export default function TeacherToolsOverview() {
       <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-gray-200 bg-white px-4 py-3 shadow-sm">
         <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
           <span className="rounded-full bg-gray-100 px-2 py-1">{t('teacherTools.overview.actionLive')}</span>
-          <span>{t('teacherTools.overview.subjectsSupported', { count: SUBJECTS.length })}</span>
+          <span>{t('teacherTools.overview.subjectsSupported', { count: getSubjectOptionsForContext('teacherTools').length })}</span>
         </div>
         <div className="text-xs text-gray-500">{t('teacherTools.overview.overviewHint')}</div>
       </div>
@@ -563,7 +564,7 @@ export default function TeacherToolsOverview() {
                           </time>
                         </div>
                         <p className="mt-0.5 truncate text-xs text-gray-500">
-                          {[a.subject, a.grade].filter(Boolean).join(' · ')}
+                          {[a.subject, formatGradeDisplay(a.grade)].filter(Boolean).join(' · ')}
                         </p>
                         <div className="mt-1.5 flex flex-wrap items-center gap-2">
                           <span
@@ -659,7 +660,7 @@ export default function TeacherToolsOverview() {
                           </span>
                         </div>
                         <p className="mt-0.5 truncate text-xs text-gray-500">
-                          {[d.subject, d.grade].filter(Boolean).join(' · ')}
+                          {[d.subject, formatGradeDisplay(d.grade)].filter(Boolean).join(' · ')}
                         </p>
                         <div className="mt-1.5 flex flex-wrap items-center gap-2">
                           <span className={`text-[10px] font-semibold uppercase tracking-wide ${acc.chip} rounded-full px-2 py-0.5`}>

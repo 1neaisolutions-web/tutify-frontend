@@ -29,4 +29,7 @@ export { LineBarChat } from './LineBarChat';
 export { CustomAccordion } from './CustomAccordion';
 export { ProfilePictureUpload } from './ProfilePictureUpload';
 export { default as NotificationEmptyState } from './NotificationEmptyState';
+export { GradeSelect } from './GradeSelect';
+export { GradeBandSelect } from './GradeBandSelect';
+export { SubjectSelect } from './SubjectSelect';
 export * from './Tabs';

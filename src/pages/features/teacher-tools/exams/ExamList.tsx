@@ -14,7 +14,7 @@ import {
 } from '../components'
 import { EXAM_STATUS_FILTER_OPTIONS } from '../components/teacherToolsStatusFilterOptions'
 import { demoClasses, TEACHER_TOOLS_SEED_EXAM_IDS } from '../demo/teacherToolsDemoData'
-import { SUBJECTS, GRADES } from '../types'
+import { subjectToTeacherToolsLabel } from '@/catalog/adapters/subjectAdapters'
 import * as examApi from '../../../../api/examApi'
 import { formatListLoadError } from '../utils/listLoadError'
 // @ts-expect-error — JS module
@@ -83,7 +83,7 @@ export default function ExamList() {
                     : undefined
       const res = await examApi.fetchExamList({
         q: filters.q || undefined,
-        subject: filters.subject || undefined,
+        subject: filters.subject ? subjectToTeacherToolsLabel(filters.subject) : undefined,
         grade: filters.grade || undefined,
         status: statusForTab,
         class_key: filters.classKey || undefined,
@@ -202,8 +202,6 @@ export default function ExamList() {
       <TeacherToolsFilterBar
         value={filters}
         onChange={setFilters}
-        subjects={[...SUBJECTS]}
-        grades={[...GRADES]}
         classOptions={demoClasses.map((c) => ({ key: c.key, label: c.label, grade: c.grade }))}
         statusOptions={EXAM_STATUS_FILTER_OPTIONS}
       />

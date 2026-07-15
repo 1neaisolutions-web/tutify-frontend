@@ -31,7 +31,6 @@ import {
 } from 'lucide-react'
 import {
   getLabTypes,
-  getLabGradeLevels,
   getProtocolCategories,
   SafetyStandard,
   SafetyProtocol,
@@ -58,6 +57,8 @@ import {
 } from '../../utils/labSafetyAdapters'
 
 import { useTranslation } from 'react-i18next'
+import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
+import { chatbotBandToApi } from '@/catalog/adapters/chatbotAdapters'
 const CHATBOT_SLUG = 'lab-safety-protocol-advisor'
 
 type TabType = 'standards' | 'protocols' | 'risk-assessment' | 'chemicals' | 'equipment' | 'emergency' | 'experiment-design' | 'compliance'
@@ -68,7 +69,7 @@ const LabSafetyProtocolAdvisor = () => {
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const [activeTab, setActiveTab] = useState<TabType>('standards')
   const [labType, setLabType] = useState('Chemistry')
-  const [gradeLevel, setGradeLevel] = useState('High School (9-12)')
+  const [gradeLevel, setGradeLevel] = useState('9-12')
   const [isGenerating, setIsGenerating] = useState(false)
 
   // Standards State
@@ -166,7 +167,6 @@ const LabSafetyProtocolAdvisor = () => {
   })
 
   const labTypes = getLabTypes()
-  const gradeLevels = getLabGradeLevels()
   const protocolCategories = getProtocolCategories()
 
   // Load Safety Standards
@@ -178,7 +178,7 @@ const LabSafetyProtocolAdvisor = () => {
         input_type: 'text',
         parameters: {
           lab_type: labType,
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
         },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
@@ -202,13 +202,13 @@ const LabSafetyProtocolAdvisor = () => {
   const handleGenerateProtocol = async () => {
     setIsGenerating(true)
     try {
-      const context = `Lab safety protocol for ${labType} (${gradeLevel}). Focus: ${protocolCategory}.`
+      const context = `Lab safety protocol for ${labType} (${chatbotBandToApi(gradeLevel)}). Focus: ${protocolCategory}.`
       const response = await runWithCredits(chatbotApi.executeCapability(CHATBOT_SLUG, 'lab_safety_protocols', {
         input: context,
         input_type: 'text',
         parameters: {
           lab_type: labType,
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           protocol_category: labProtocolCategoryToParam(protocolCategory),
         },
         conversation_id: conversationIdForActiveTab ?? undefined,
@@ -239,7 +239,7 @@ const LabSafetyProtocolAdvisor = () => {
         input_type: 'text',
         parameters: {
           lab_type: labType,
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
         },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
@@ -269,7 +269,7 @@ const LabSafetyProtocolAdvisor = () => {
         input_type: 'text',
         parameters: {
           lab_type: labType,
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
         },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
@@ -299,7 +299,7 @@ const LabSafetyProtocolAdvisor = () => {
         input_type: 'text',
         parameters: {
           lab_type: labType,
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
         },
         conversation_id: conversationIdForActiveTab ?? undefined,
       }))
@@ -328,7 +328,7 @@ const LabSafetyProtocolAdvisor = () => {
         input_type: 'text',
         parameters: {
           lab_type: labType,
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           emergency_type: emergencyType,
         },
         conversation_id: conversationIdForActiveTab ?? undefined,
@@ -359,7 +359,7 @@ const LabSafetyProtocolAdvisor = () => {
         input_type: 'text',
         parameters: {
           lab_type: labType,
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           experiment_title: experimentTitle.trim(),
           experiment_objective: experimentObjective.trim(),
         },
@@ -442,15 +442,14 @@ const LabSafetyProtocolAdvisor = () => {
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
                 <label className="text-sm font-medium">{t('labSafetyProtocolAdvisor.gradeLevel')}</label>
-                <select
+                <GradeBandSelect
+                  variant="native"
                   value={gradeLevel}
-                  onChange={(e) => setGradeLevel(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                >
-                  {gradeLevels.map(level => (
-                    <option key={level} value={level}>{level}</option>
-                  ))}
-                </select>
+                  onChange={setGradeLevel}
+                  label=""
+                  context="chatbotBand"
+                  selectClassName="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                />
               </div>
             </div>
           </div>

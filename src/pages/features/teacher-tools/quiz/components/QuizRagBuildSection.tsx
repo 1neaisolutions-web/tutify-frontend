@@ -5,19 +5,23 @@ import {
   BookMarked,
   Check,
   ChevronRight,
-  Layers,
   Library,
   Search,
-  Sparkles,
   X,
 } from 'lucide-react'
 import type { QuizRagScopeModel } from '../hooks/useQuizRagScope'
-import { TeacherToolsPanelHeader } from '../../components/TeacherToolsPanelHeader'
+import {
+  TeacherToolsFieldBand,
+  TeacherToolsPanelHeader,
+  TeacherToolsScopeStepContent,
+  CatalogSourcesBookPicker,
+} from '../../components'
 import { getBookById, type DemoBook } from '../../demo/demoContentLibrary'
 import { DIFFICULTY_OPTIONS, QUESTION_COUNT } from '../config/quizCreationConfig'
 import type { QuizBuildSubStepId } from '../config/quizWizardSteps'
 import type { QuestionMixMode, QuizDifficultyId } from '../../demo/generationFromSources'
-import { SUBJECTS, GRADES } from '../../types'
+import { SubjectSelect } from '@/components/shared/SubjectSelect'
+import { GradeSelect } from '@/components/shared/GradeSelect'
 
 type Props = {
   rag: QuizRagScopeModel
@@ -154,63 +158,56 @@ export function QuizRagBuildSection({
   const customTotal = countMcq + countTf + countShort
 
   const selectedBooks = rag.selectedBookIds
-    .map((id) => getBookById(id, rag.catalog as unknown as DemoBook[]))
-    .filter(Boolean)
+    .map((id) => rag.pool.find((b) => b.id === id))
+    .filter((b): b is NonNullable<typeof b> => Boolean(b))
 
   return (
     <div>
       {activeStepId === 'basics' && (
       <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
         <TeacherToolsPanelHeader {...stepMeta.basics} />
-        <div className="grid gap-4 p-5 md:grid-cols-2">
-          <label className="md:col-span-2 block text-sm font-medium text-gray-800">
-            {t('teacherTools.title')} <span className="text-red-500">*</span>
-            <input
-              value={title}
-              onChange={(e) => onTitleChange(e.target.value)}
-              placeholder={t('quiz.rag.titlePlaceholder')}
-              className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm ring-primary-500/20 focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-            />
-          </label>
-          <label className="block text-sm font-medium text-gray-800">
-            {t('teacherTools.subject')}
-            <select
-              value={subject}
-              onChange={(e) => onSubjectChange(e.target.value)}
-              className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-            >
-              {SUBJECTS.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="block text-sm font-medium text-gray-800">
-            {t('teacherTools.gradeCohort')}
-            <select
-              value={grade}
-              onChange={(e) => onGradeChange(e.target.value)}
-              className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-            >
-              {GRADES.map((g) => (
-                <option key={g} value={g}>
-                  {g}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="md:col-span-2 block text-sm font-medium text-gray-800">
-            {t('teacherTools.studentInstructions')}
-            <textarea
-              rows={3}
-              value={studentInstructions}
-              onChange={(e) => onStudentInstructionsChange(e.target.value)}
-              placeholder={t('quiz.defaultInstructions')}
-              className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-            />
-            <span className="mt-1 block text-xs text-gray-500">{t('quiz.rag.instructionsHint')}</span>
-          </label>
+        <div className="space-y-4 p-5">
+          <TeacherToolsFieldBand variant="student">
+            <label className="block text-sm font-medium text-gray-800">
+              {t('teacherTools.title')} <span className="text-red-500">*</span>
+              <input
+                value={title}
+                onChange={(e) => onTitleChange(e.target.value)}
+                placeholder={t('quiz.rag.titlePlaceholder')}
+                className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm ring-primary-500/20 focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+              />
+            </label>
+            <label className="block text-sm font-medium text-gray-800">
+              {t('teacherTools.studentInstructions')}
+              <textarea
+                rows={3}
+                value={studentInstructions}
+                onChange={(e) => onStudentInstructionsChange(e.target.value)}
+                placeholder={t('quiz.defaultInstructions')}
+                className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+              />
+              <span className="mt-1 block text-xs text-gray-500">{t('quiz.rag.instructionsHint')}</span>
+            </label>
+          </TeacherToolsFieldBand>
+          <TeacherToolsFieldBand variant="library">
+            <div className="grid gap-4 md:grid-cols-2">
+              <SubjectSelect
+                value={subject}
+                onChange={onSubjectChange}
+                label={t('teacherTools.subject')}
+                variant="native"
+                context="teacherTools"
+                selectClassName="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+              />
+              <GradeSelect
+                value={grade}
+                onChange={onGradeChange}
+                label={t('teacherTools.gradeCohort')}
+                variant="native"
+              />
+            </div>
+            <p className="text-xs text-gray-500">{t('teacherTools.libraryMatchHint')}</p>
+          </TeacherToolsFieldBand>
         </div>
       </section>
       )}
@@ -235,160 +232,12 @@ export function QuizRagBuildSection({
           </label>
 
           {!rag.generateWithoutSources ? (
-            <>
-              <div className="relative">
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                <input
-                  value={rag.catalogQuery}
-                  onChange={(e) => rag.setCatalogQuery(e.target.value)}
-                  placeholder={t('teacherTools.catalogSearchPlaceholder')}
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50/80 py-2.5 pl-10 pr-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
-                  aria-label={t('teacherTools.ariaSearch')}
-                />
-                {rag.catalogBusy && (
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-emerald-700">
-                    {t('teacherTools.working')}
-                  </span>
-                )}
-              </div>
-
-              {rag.catalogError && !rag.catalogBusy && (
-                <div className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-950">
-                  <AlertCircle className="h-5 w-5 shrink-0 text-red-600 mt-0.5" aria-hidden />
-                  <div className="min-w-0 flex-1">
-                    <p className="font-semibold">{t('quiz.rag.catalogLoadFailed')}</p>
-                    <p className="mt-0.5 text-red-900/80 text-xs">{rag.catalogError}</p>
-                    <button
-                      type="button"
-                      onClick={rag.retryCatalog}
-                      className="mt-2 rounded-full bg-red-600 px-3 py-1 text-xs font-semibold text-white hover:bg-red-700"
-                    >
-                      {t('teacherTools.retry')}
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                {rag.catalogBusy && rag.filteredCatalog.length === 0 ? (
-                  <>
-                    {[1, 2, 3].map((i) => (
-                      <div key={i} className="h-28 animate-pulse rounded-2xl bg-gray-100" />
-                    ))}
-                  </>
-                ) : null}
-                {rag.filteredCatalog.map((b) => {
-                  const on = rag.selectedBookIds.includes(b.id)
-                  return (
-                    <button
-                      key={b.id}
-                      type="button"
-                      onClick={() => rag.toggleBook(b.id)}
-                      className={`flex h-full flex-col rounded-2xl border p-4 text-left transition ${
-                        on
-                          ? 'border-emerald-500 bg-emerald-50/80 shadow-md ring-2 ring-emerald-500/25'
-                          : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
-                      }`}
-                    >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex min-w-0 items-center gap-2">
-                      <Library
-                        className={`h-5 w-5 shrink-0 ${on ? 'text-emerald-700' : 'text-gray-400'}`}
-                        aria-hidden
-                      />
-                      <span className="truncate text-sm font-semibold text-gray-900">{b.title}</span>
-                    </div>
-                    <span
-                      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs ${
-                        on ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-gray-200 bg-white text-gray-300'
-                      }`}
-                      aria-hidden
-                    >
-                      {on ? <Check className="h-4 w-4" /> : null}
-                    </span>
-                  </div>
-                  <p className="mt-2 line-clamp-2 text-xs text-gray-600">{b.authors}</p>
-                  <div className="mt-3 flex flex-wrap gap-1.5">
-                    <span className="rounded-md bg-white/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gray-500 ring-1 ring-gray-200">
-                      {t('teacherTools.sectionsIndexed', { count: b.indexedSections })}
-                    </span>
-                    {b.grades.slice(0, 2).map((g) => (
-                      <span key={g} className="rounded-md bg-gray-50 px-2 py-0.5 text-[10px] text-gray-600 ring-1 ring-gray-100">
-                        {g}
-                      </span>
-                    ))}
-                  </div>
-                    </button>
-                  )
-                })}
-              </div>
-
-              {rag.filteredCatalog.length === 0 && !rag.catalogBusy && (
-                <div className="flex flex-col items-center rounded-2xl border border-dashed border-gray-200 bg-gray-50 px-6 py-10 text-center">
-                  <Search className="h-8 w-8 text-gray-300" aria-hidden />
-                  {rag.catalogQuery.trim() ? (
-                    <>
-                      <p className="mt-2 text-sm font-medium text-gray-800">{t('quiz.rag.noSearchMatch')}</p>
-                      <p className="mt-1 max-w-sm text-xs text-gray-600">
-                        {t('quiz.rag.noSearchMatchHint')}
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => rag.setCatalogQuery('')}
-                        className="mt-4 rounded-full bg-gray-900 px-4 py-2 text-xs font-semibold text-white hover:bg-gray-800"
-                      >
-                        {t('teacherTools.clearSearch')}
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <p className="mt-2 text-sm font-medium text-gray-800">{t('quiz.rag.noCatalogForGrade')}</p>
-                      <p className="mt-1 max-w-sm text-xs text-gray-600">
-                        {t('quiz.rag.noCatalogHint', { subject, grade })}
-                      </p>
-                    </>
-                  )}
-                </div>
-              )}
-
-              <div className="rounded-2xl border border-gray-100 bg-slate-50/60 p-4">
-                <p className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-                  <BookMarked className="h-4 w-4 text-indigo-600" aria-hidden />
-                  {t('quiz.rag.selectedForRetrieval', { count: selectedBooks.length })}
-                </p>
-                {selectedBooks.length === 0 ? (
-                  <p className="mt-3 text-sm text-gray-600">
-                    {t('quiz.rag.noMaterialsSelected')}
-                  </p>
-                ) : (
-                  <ul className="mt-3 space-y-2">
-                    {selectedBooks.map((b) =>
-                      b ? (
-                        <li
-                          key={b.id}
-                          className="flex items-start justify-between gap-3 rounded-xl border border-white bg-white px-3 py-2.5 shadow-sm"
-                        >
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium text-gray-900">{b.title}</p>
-                        <p className="text-xs text-gray-500">
-                          {b.authors} · {b.publisher}
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => rag.removeBook(b.id)}
-                        className="shrink-0 rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-700"
-                        aria-label={`${t('teacherTools.remove')} ${b.title}`}
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                        </li>
-                      ) : null
-                    )}
-                  </ul>
-                )}
-              </div>
-            </>
+            <CatalogSourcesBookPicker
+              rag={rag}
+              subject={subject}
+              grade={grade}
+              selectedBooks={selectedBooks}
+            />
           ) : (
             <div className="rounded-2xl border border-dashed border-emerald-200 bg-emerald-50/70 p-4 text-sm text-emerald-900">
               {t('quiz.rag.topicOnlySourcesDisabled')}
@@ -401,7 +250,7 @@ export function QuizRagBuildSection({
       {activeStepId === 'scope' && (
       <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
         <TeacherToolsPanelHeader {...stepMeta.scope} />
-        <div className="space-y-5 p-5">
+        <div className="p-5">
           {!rag.generateWithoutSources && rag.selectedBookIds.length === 0 ? (
             <div className="flex gap-3 rounded-2xl border border-amber-200 bg-amber-50/80 px-4 py-4 text-sm text-amber-950">
               <AlertCircle className="h-5 w-5 shrink-0 text-amber-600" aria-hidden />
@@ -413,175 +262,7 @@ export function QuizRagBuildSection({
               </div>
             </div>
           ) : (
-            <>
-              {!rag.generateWithoutSources ? (
-                <div>
-                  <label className="block text-sm font-medium text-gray-800">{t('teacherTools.topicStrandsHeading')}</label>
-                  <p className="mt-1 text-xs text-gray-500">
-                    {t('quiz.rag.topicsRefreshHint')}
-                    {rag.topicsIndexing ? ` ${t('quiz.rag.topicsRefreshing')}` : ''}
-                  </p>
-                  <div className="relative mt-2">
-                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                    <input
-                      value={rag.topicQuery}
-                      onChange={(e) => rag.setTopicQuery(e.target.value)}
-                      placeholder={t('teacherTools.topicFilterPlaceholder')}
-                      className="w-full rounded-xl border border-gray-200 py-2.5 pl-10 pr-3 text-sm focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
-                      aria-label={t('teacherTools.topicStrandsHeading')}
-                    />
-                  </div>
-
-                {rag.topicsError && !rag.topicsIndexing && (
-                  <div className="mt-2 flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs text-amber-900">
-                    <AlertCircle className="h-4 w-4 shrink-0 text-amber-600" aria-hidden />
-                    <span>{t('quiz.rag.topicsUnavailable')} {rag.topicsError}</span>
-                  </div>
-                )}
-
-                {rag.topicsIndexing ? (
-                  <div className="mt-3 h-24 animate-pulse rounded-xl bg-gray-100" aria-hidden />
-                ) : (
-                  <div className="mt-3 max-h-44 overflow-y-auto rounded-xl border border-gray-200 bg-gray-50/50 p-2">
-                    {rag.topicOptionsFiltered.length === 0 ? (
-                      <p className="px-2 py-6 text-center text-xs text-gray-600">
-                        {rag.topicQuery.trim()
-                          ? t('quiz.rag.noTopicsMatch', { query: rag.topicQuery.trim() })
-                          : rag.availableTopics.length === 0
-                            ? t('quiz.rag.noTopicsReturned')
-                            : t('quiz.rag.noTopicsFilter')}
-                      </p>
-                    ) : (
-                      <div className="flex flex-wrap gap-2">
-                        {rag.topicOptionsFiltered.map((topicLabel) => {
-                          const active = rag.selectedTopics.includes(topicLabel)
-                          return (
-                            <button
-                              key={topicLabel}
-                              type="button"
-                              onClick={() => rag.toggleTopic(topicLabel)}
-                              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
-                                active
-                                  ? 'border-violet-500 bg-violet-600 text-white shadow-sm'
-                                  : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
-                              }`}
-                            >
-                              {active ? <Check className="h-3 w-3" /> : <ChevronRight className="h-3 w-3 opacity-40" />}
-                              {topicLabel}
-                            </button>
-                          )
-                        })}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {rag.selectedTopics.length > 0 && (
-                  <div className="mt-3">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-xs font-semibold text-gray-600">
-                        {t('quiz.rag.selectedTopics', { count: rag.selectedTopics.length })}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => rag.clearAllTopics()}
-                        className="text-xs font-semibold text-violet-700 hover:text-violet-600"
-                      >
-                        {t('quiz.rag.clearAllTopics')}
-                      </button>
-                    </div>
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {rag.selectedTopics.map((topicLabel) => (
-                        <span
-                          key={topicLabel}
-                          className="inline-flex items-center gap-1 rounded-full bg-violet-50 px-3 py-1 text-xs font-medium text-violet-900 ring-1 ring-violet-200"
-                        >
-                          {topicLabel}
-                          <button
-                            type="button"
-                            onClick={() => rag.toggleTopic(topicLabel)}
-                            className="rounded-full p-0.5 hover:bg-violet-100"
-                            aria-label={`${t('teacherTools.remove')} ${topicLabel}`}
-                          >
-                            <X className="h-3.5 w-3.5" />
-                          </button>
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                </div>
-              ) : (
-                <div className="rounded-xl border border-gray-200 bg-gray-50/70 px-4 py-3 text-sm text-gray-700">
-                  {t('quiz.rag.topicOnlyStrandsHidden')}
-                </div>
-              )}
-
-              <label className="block text-sm font-medium text-gray-800">
-                {rag.generateWithoutSources ? (
-                  <>
-                    {t('teacherTools.scopeRefinement')} <span className="text-red-500">*</span>
-                  </>
-                ) : (
-                  t('teacherTools.scopeRefinementOptional')
-                )}
-                <textarea
-                  rows={2}
-                  value={rag.scopeRefinement}
-                  onChange={(e) => rag.setScopeRefinement(e.target.value)}
-                  placeholder={
-                    rag.generateWithoutSources
-                      ? t('quiz.rag.scopePlaceholderNoSource')
-                      : t('teacherTools.scopeRefinementPlaceholder')
-                  }
-                  className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-100"
-                />
-                <span className="mt-1 block text-xs text-gray-500">
-                  {rag.generateWithoutSources
-                    ? t('quiz.rag.scopeRequiredNoSource')
-                    : t('quiz.rag.scopeHintWithSource')}
-                </span>
-              </label>
-
-              {/* Scope preview */}
-              <div className="rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50/90 via-white to-white p-5 shadow-sm ring-1 ring-indigo-100/60">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-indigo-700">
-                      <Layers className="h-4 w-4" aria-hidden />
-                      {t('quiz.rag.scopePreview')}
-                    </p>
-                    <p className="mt-2 text-sm font-semibold text-gray-900">
-                      {rag.generateWithoutSources ? t('quiz.rag.topicOnlyScopePreview') : t('quiz.rag.retrievalWindow')}
-                    </p>
-                  </div>
-                  <Sparkles className="h-5 w-5 text-indigo-400" aria-hidden />
-                </div>
-                <dl className="mt-4 grid gap-3 sm:grid-cols-3">
-                  <div className="rounded-xl bg-white/90 px-3 py-3 ring-1 ring-gray-100">
-                    <dt className="text-[11px] font-semibold uppercase text-gray-500">{t('quiz.rag.sources')}</dt>
-                    <dd className="mt-1 text-2xl font-bold text-gray-900">{rag.selectedBookIds.length}</dd>
-                  </div>
-                  <div className="rounded-xl bg-white/90 px-3 py-3 ring-1 ring-gray-100">
-                    <dt className="text-[11px] font-semibold uppercase text-gray-500">{t('quiz.rag.topicStrands')}</dt>
-                    <dd className="mt-1 text-2xl font-bold text-gray-900">{rag.selectedTopics.length}</dd>
-                  </div>
-                  <div className="rounded-xl bg-white/90 px-3 py-3 ring-1 ring-gray-100">
-                    <dt className="text-[11px] font-semibold uppercase text-gray-500">
-                      {rag.generateWithoutSources ? t('quiz.rag.segmentsNa') : t('quiz.rag.segmentsMatched')}
-                    </dt>
-                    <dd className="mt-1 text-2xl font-bold text-indigo-700">
-                      {rag.generateWithoutSources ? '—' : rag.estimatedSegments}
-                    </dd>
-                  </div>
-                </dl>
-                <p className="mt-4 text-xs leading-relaxed text-gray-600">
-                  {rag.generateWithoutSources
-                    ? t('quiz.rag.scopePreviewNoSource')
-                    : t('quiz.rag.scopePreviewWithSource')}
-                </p>
-              </div>
-            </>
+            <TeacherToolsScopeStepContent rag={rag} accent="violet" />
           )}
         </div>
       </section>
@@ -591,6 +272,7 @@ export function QuizRagBuildSection({
       <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
         <TeacherToolsPanelHeader {...stepMeta.design} />
         <div className="space-y-5 p-5">
+          <TeacherToolsFieldBand variant="ai">
           <div className="rounded-2xl border border-gray-100 bg-gray-50/80 p-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
@@ -738,7 +420,7 @@ export function QuizRagBuildSection({
           )}
 
           <label className="block text-sm font-medium text-gray-800">
-            {t('quiz.rag.generatorInstructions')}
+            {t('teacherTools.generationNotes')}
             <textarea
               rows={2}
               value={teacherNotes}
@@ -746,9 +428,11 @@ export function QuizRagBuildSection({
               placeholder={t('quiz.rag.generatorPlaceholder')}
               className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-100"
             />
-            <span className="mt-1 block text-xs text-gray-500">{t('quiz.rag.generatorHint')}</span>
+            <span className="mt-1 block text-xs text-gray-500">{t('teacherTools.generationNotesHint')}</span>
           </label>
+          </TeacherToolsFieldBand>
 
+          <TeacherToolsFieldBand variant="student">
           <label className="block max-w-xs text-sm font-medium text-gray-800">
             {t('quiz.rag.timeLimitMinutes')}
             <input
@@ -760,6 +444,7 @@ export function QuizRagBuildSection({
               className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm"
             />
           </label>
+          </TeacherToolsFieldBand>
         </div>
       </section>
       )}
@@ -767,7 +452,8 @@ export function QuizRagBuildSection({
       {activeStepId === 'delivery' && (
       <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
         <TeacherToolsPanelHeader {...stepMeta.delivery} />
-        <div className="flex flex-wrap gap-4 p-5">
+        <TeacherToolsFieldBand variant="student" className="m-5">
+        <div className="flex flex-wrap gap-4">
           <label className="inline-flex items-center gap-2 text-sm text-gray-800">
             <input type="checkbox" checked={shuffleQuestions} onChange={(e) => onShuffleQuestions(e.target.checked)} />
             {t('quiz.rag.shuffleQuestions')}
@@ -781,6 +467,7 @@ export function QuizRagBuildSection({
             {t('quiz.rag.negativeMarking')}
           </label>
         </div>
+        </TeacherToolsFieldBand>
       </section>
       )}
     </div>

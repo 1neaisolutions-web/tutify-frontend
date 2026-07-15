@@ -7,6 +7,7 @@ import {
   TeacherToolsCreateLayout,
   TeacherToolsCreateReviewFooter,
   TeacherToolsExemplarReviewBanner,
+  TeacherToolsFieldBand,
   TeacherToolsFieldErrors,
   TeacherToolsPageHeader,
   TeacherToolsPanelHeader,
@@ -22,7 +23,13 @@ import { useTeacherToolsLeaveGuard } from '../hooks/useTeacherToolsLeaveGuard'
 import { demoClasses } from '../demo/teacherToolsDemoData'
 import { formatSourceSummary, generateExamSectionStubs } from '../demo/generationFromSources'
 import type { ExamSectionStub } from '../demo/generationFromSources'
-import { GRADES, SUBJECTS } from '../types'
+import { SubjectSelect } from '@/components/shared/SubjectSelect'
+import {
+  subjectToTeacherToolsLabel,
+  subjectValueForSelect,
+} from '@/catalog/adapters/subjectAdapters'
+import { GradeSelect } from '@/components/shared/GradeSelect'
+import { gradeToLabel, gradeValueForSelect } from '@/catalog/adapters/gradeAdapters'
 import * as examApi from '../../../../api/examApi'
 import {
   hydrateFromApi,
@@ -97,7 +104,8 @@ const STANDARD_LABEL_KEYS: Record<(typeof INTERNATIONAL_STANDARDS)[number], stri
 }
 
 function classKeyForGrade(grade: string) {
-  return demoClasses.find((c) => c.grade === grade)?.key ?? demoClasses[0]?.key ?? 'g8c'
+  const label = gradeToLabel(grade)
+  return demoClasses.find((c) => c.grade === label)?.key ?? demoClasses[0]?.key ?? 'g8c'
 }
 
 function normExamText(s: string) {
@@ -155,8 +163,8 @@ export default function ExamCreate() {
   const [examType, setExamType] = useState<(typeof EXAM_TYPES)[number]>('Unit test')
   const [term, setTerm] = useState<(typeof TERMS)[number]>('Term 2')
   const [durationMinutes, setDurationMinutes] = useState(60)
-  const [subject, setSubject] = useState<string>(SUBJECTS[2])
-  const [grade, setGrade] = useState<string>(GRADES[2])
+  const [subject, setSubject] = useState<string>('math')
+  const [grade, setGrade] = useState<string>('8')
   const [internationalStandard, setInternationalStandard] = useState<(typeof INTERNATIONAL_STANDARDS)[number]>(
     'Cambridge-style',
   )
@@ -189,6 +197,7 @@ export default function ExamCreate() {
   const [scopeHydration, setScopeHydration] = useState<{
     bookIds: string[]
     topics: string[]
+    topicIds: string[]
     refinement: string
     without: boolean
   } | null>(null)
@@ -198,8 +207,8 @@ export default function ExamCreate() {
     setTitle(h.title)
     setExamType(h.examType)
     setTerm(h.term)
-    setSubject(h.subject)
-    setGrade(h.grade)
+    setSubject(subjectValueForSelect(h.subject))
+    setGrade(gradeValueForSelect(h.grade))
     setInternationalStandard(h.internationalStandard as (typeof INTERNATIONAL_STANDARDS)[number])
     setDurationMinutes(h.durationMinutes)
     setSectionTargetCount(h.sectionTargetCount)
@@ -256,6 +265,7 @@ export default function ExamCreate() {
     grade,
     initialSelectedBookIds: scopeHydration?.bookIds,
     initialScopeTopics: scopeHydration?.topics,
+    initialScopeTopicIds: scopeHydration?.topicIds,
     initialScopeRefinement: scopeHydration?.refinement ?? loadedTopic,
     initialGenerateWithoutSources: scopeHydration?.without,
   })
@@ -271,6 +281,7 @@ export default function ExamCreate() {
       generateWithoutSources: rag.generateWithoutSources,
       selectedBookIds: rag.selectedBookIds,
       selectedTopics: rag.selectedTopics,
+      selectedTopicIds: rag.allSelectedTopicIds,
       scopeRefinement: rag.scopeRefinement,
       durationMinutes,
       sectionTargetCount,
@@ -281,6 +292,7 @@ export default function ExamCreate() {
       rag.generateWithoutSources,
       rag.selectedBookIds,
       rag.selectedTopics,
+      rag.allSelectedTopicIds,
       rag.scopeRefinement,
       durationMinutes,
       sectionTargetCount,
@@ -431,8 +443,8 @@ export default function ExamCreate() {
     setExamType(ex.examType)
     setTerm(ex.term)
     setDurationMinutes(ex.durationMinutes)
-    setSubject(ex.subject)
-    setGrade(ex.grade)
+    setSubject(subjectValueForSelect(ex.subject))
+    setGrade(gradeValueForSelect(ex.grade))
     setInternationalStandard(ex.internationalStandard)
     setSectionTargetCount(ex.sectionTargetCount)
     setPaper(ex.paper)
@@ -457,11 +469,13 @@ export default function ExamCreate() {
     const titleParam = searchParams.get('title')
     if (titleParam) setTitle(titleParam)
     const sub = searchParams.get('subject')
-    const subOk = SUBJECTS.find((s) => s === sub)
-    if (subOk) setSubject(subOk)
+    if (sub) {
+      const resolved = subjectValueForSelect(sub)
+      if (resolved) setSubject(resolved)
+    }
     const gr = searchParams.get('grade')
-    const grOk = GRADES.find((g) => g === gr)
-    if (grOk) setGrade(grOk)
+    const grResolved = gr ? gradeValueForSelect(gr) : ''
+    if (grResolved) setGrade(grResolved)
     const topic = searchParams.get('topic')
     if (topic) setLoadedTopic(topic)
     if (searchParams.get('fromTemplate') && !templateToastRef.current) {
@@ -511,6 +525,7 @@ export default function ExamCreate() {
         setScopeHydration({
           bookIds: ex.sourceBookIds ?? [],
           topics: ex.scopeTopics ?? [],
+          topicIds: ex.scopeTopicIds ?? [],
           refinement: ex.scopeRefinement ?? '',
           without: ex.generateWithoutSources,
         })
@@ -535,7 +550,11 @@ export default function ExamCreate() {
       generateWithoutSources: rag.generateWithoutSources,
       selectedBookIds: rag.selectedBookIds,
       selectedTopics: rag.selectedTopics,
+      selectedTopicIds: rag.allSelectedTopicIds,
       scopeRefinement: rag.scopeRefinement,
+      durationMinutes,
+      sectionTargetCount,
+      paper,
     })
     if (!ragV.ok) errs.push(...ragV.errors)
     const pe = validateExamPaperFields(paper)
@@ -561,8 +580,8 @@ export default function ExamCreate() {
       if (!id) {
         const created = await examApi.createExam({
           title: title.trim() || t('exam.untitled'),
-          subject,
-          grade,
+          subject: subjectToTeacherToolsLabel(subject),
+          grade: gradeToLabel(grade),
           examType,
           term,
           internationalStandard,
@@ -574,6 +593,7 @@ export default function ExamCreate() {
           sectionTargetCount,
           sourceBookIds: rag.selectedBookIds,
           scopeTopics: rag.selectedTopics,
+          scopeTopicIds: rag.allSelectedTopicIds,
           scopeRefinement: rag.scopeRefinement || undefined,
           generateWithoutSources: rag.generateWithoutSources,
           paper,
@@ -591,6 +611,7 @@ export default function ExamCreate() {
           durationMinutes,
           sourceBookIds: rag.selectedBookIds,
           scopeTopics: rag.selectedTopics,
+          scopeTopicIds: rag.allSelectedTopicIds,
           scopeRefinement: rag.scopeRefinement || undefined,
           generateWithoutSources: rag.generateWithoutSources,
           handoutLayout,
@@ -613,6 +634,14 @@ export default function ExamCreate() {
       if (credit) {
         setCreditGate(credit)
         setGenerationError(null)
+        return
+      }
+      const detail =
+        (e as { data?: { detail?: { code?: string; message?: string } } })?.data?.detail ??
+        (e as { detail?: { code?: string; message?: string } })?.detail
+      if (detail?.code === 'RETRIEVAL_SCOPE_ERROR') {
+        setGenerationError(detail.message || t('quiz.rag.noSegmentsForScope'))
+        toast.error(detail.message || t('quiz.rag.noSegmentsForScope'))
         return
       }
       setGenerationError(t('exam.generationFailed'))
@@ -888,8 +917,8 @@ export default function ExamCreate() {
     const classes = selectedClasses.length > 0 ? selectedClasses : [classKeyForGrade(grade)]
     return {
       title: title.trim() || t('exam.untitled'),
-      subject,
-      grade,
+      subject: subjectToTeacherToolsLabel(subject),
+      grade: gradeToLabel(grade),
       term,
       examType,
       internationalStandard,
@@ -902,6 +931,7 @@ export default function ExamCreate() {
       sectionTargetCount,
       sourceBookIds: rag.selectedBookIds,
       scopeTopics: rag.selectedTopics,
+      scopeTopicIds: rag.allSelectedTopicIds,
       scopeRefinement: rag.scopeRefinement || undefined,
       generateWithoutSources: rag.generateWithoutSources,
       paper,
@@ -973,8 +1003,8 @@ export default function ExamCreate() {
     downloadExamHandoutPdf(
       {
         title: `${title || t('exam.fallbackTitle')} — ${t('exam.previewTitleSuffix')}`,
-        subject,
-        grade,
+        subject: subjectToTeacherToolsLabel(subject),
+        grade: gradeToLabel(grade),
         timeLimitMinutes: durationMinutes,
         topic: rag.combinedTopicLabel,
         sourceSummary: formatSourceSummary(rag.getGenerationContext()),
@@ -1148,99 +1178,94 @@ export default function ExamCreate() {
               />
             }
           >
-            <div className="grid gap-4 p-5 md:grid-cols-2">
-              <label className="md:col-span-2 block text-sm font-medium text-gray-800">
-                {t('exam.create.examTitle')} <span className="text-red-500">*</span>
-                <input
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder={t('exam.examTitlePlaceholder')}
-                  className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-                />
-              </label>
-              <label className="block text-sm font-medium text-gray-800">
-                {t('exam.create.examType')}
-                <select
-                  value={examType}
-                  onChange={(e) => setExamType(e.target.value as (typeof EXAM_TYPES)[number])}
-                  className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-                >
-                  {EXAM_TYPES.map((typeValue) => (
-                    <option key={typeValue} value={typeValue}>
-                      {t(EXAM_TYPE_LABEL_KEYS[typeValue])}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="block text-sm font-medium text-gray-800">
-                {t('exam.create.term')}
-                <select
-                  value={term}
-                  onChange={(e) => setTerm(e.target.value as (typeof TERMS)[number])}
-                  className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-                >
-                  {TERMS.map((termValue) => (
-                    <option key={termValue} value={termValue}>
-                      {t(TERM_LABEL_KEYS[termValue])}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="block text-sm font-medium text-gray-800">
-                {t('exam.create.durationMinutes')}
-                <input
-                  type="number"
-                  value={durationMinutes}
-                  min={15}
-                  max={360}
-                  onChange={(e) => setDurationMinutes(Number(e.target.value) || 60)}
-                  className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-                />
-              </label>
-              <label className="block text-sm font-medium text-gray-800">
-                {t('teacherTools.subject')}
-                <select
-                  value={subject}
-                  onChange={(e) => setSubject(e.target.value)}
-                  className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-                >
-                  {SUBJECTS.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="block text-sm font-medium text-gray-800">
-                {t('teacherTools.gradeCohort')}
-                <select
-                  value={grade}
-                  onChange={(e) => setGrade(e.target.value)}
-                  className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-                >
-                  {GRADES.map((g) => (
-                    <option key={g} value={g}>
-                      {g}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="block text-sm font-medium text-gray-800">
-                {t('exam.create.internationalStandard')}
-                <select
-                  value={internationalStandard}
-                  onChange={(e) =>
-                    setInternationalStandard(e.target.value as (typeof INTERNATIONAL_STANDARDS)[number])
-                  }
-                  className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
-                >
-                  {INTERNATIONAL_STANDARDS.map((standardValue) => (
-                    <option key={standardValue} value={standardValue}>
-                      {t(STANDARD_LABEL_KEYS[standardValue])}
-                    </option>
-                  ))}
-                </select>
-              </label>
+            <div className="space-y-4 p-5">
+              <TeacherToolsFieldBand variant="student">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <label className="md:col-span-2 block text-sm font-medium text-gray-800">
+                    {t('exam.create.examTitle')} <span className="text-red-500">*</span>
+                    <input
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder={t('exam.examTitlePlaceholder')}
+                      className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+                    />
+                  </label>
+                  <label className="block text-sm font-medium text-gray-800">
+                    {t('exam.create.examType')}
+                    <select
+                      value={examType}
+                      onChange={(e) => setExamType(e.target.value as (typeof EXAM_TYPES)[number])}
+                      className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+                    >
+                      {EXAM_TYPES.map((typeValue) => (
+                        <option key={typeValue} value={typeValue}>
+                          {t(EXAM_TYPE_LABEL_KEYS[typeValue])}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="block text-sm font-medium text-gray-800">
+                    {t('exam.create.term')}
+                    <select
+                      value={term}
+                      onChange={(e) => setTerm(e.target.value as (typeof TERMS)[number])}
+                      className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+                    >
+                      {TERMS.map((termValue) => (
+                        <option key={termValue} value={termValue}>
+                          {t(TERM_LABEL_KEYS[termValue])}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="block text-sm font-medium text-gray-800">
+                    {t('exam.create.durationMinutes')}
+                    <input
+                      type="number"
+                      value={durationMinutes}
+                      min={15}
+                      max={360}
+                      onChange={(e) => setDurationMinutes(Number(e.target.value) || 60)}
+                      className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+                    />
+                  </label>
+                </div>
+              </TeacherToolsFieldBand>
+              <TeacherToolsFieldBand variant="library">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <SubjectSelect
+                    value={subject}
+                    onChange={setSubject}
+                    label={t('teacherTools.subject')}
+                    variant="native"
+                    context="teacherTools"
+                    selectClassName="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+                  />
+                  <GradeSelect
+                    value={grade}
+                    onChange={setGrade}
+                    label={t('teacherTools.gradeCohort')}
+                    variant="native"
+                  />
+                  <label className="block text-sm font-medium text-gray-800">
+                    {t('exam.create.internationalStandard')}
+                    <select
+                      value={internationalStandard}
+                      onChange={(e) =>
+                        setInternationalStandard(e.target.value as (typeof INTERNATIONAL_STANDARDS)[number])
+                      }
+                      className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+                    >
+                      {INTERNATIONAL_STANDARDS.map((standardValue) => (
+                        <option key={standardValue} value={standardValue}>
+                          {t(STANDARD_LABEL_KEYS[standardValue])}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+                <p className="text-xs text-gray-500">{t('teacherTools.libraryMatchHint')}</p>
+              </TeacherToolsFieldBand>
             </div>
           </ExamSectionShell>
           )}
@@ -1292,6 +1317,7 @@ export default function ExamCreate() {
               tone="gray"
             />
             <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+            <TeacherToolsFieldBand variant="student">
             <label className="mb-4 block text-sm font-medium text-gray-800">
               {t('exam.create.targetSectionCount')}
               <input
@@ -1304,6 +1330,7 @@ export default function ExamCreate() {
               />
             </label>
             <ExamPaperStructureCard paper={paper} onChange={(patch) => setPaper((p) => ({ ...p, ...patch }))} />
+            </TeacherToolsFieldBand>
             </div>
           </div>
           )}

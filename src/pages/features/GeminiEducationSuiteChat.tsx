@@ -34,6 +34,7 @@ import * as chatbotApi from '../../api/chatbots'
 import { useRestoreChatbotConversationFromUrl } from '../../hooks/useRestoreChatbotConversationFromUrl'
 
 import { useTranslation } from 'react-i18next'
+import { GradeSelect } from '@/components/shared/GradeSelect'
 interface Conversation {
   id: string
   title: string
@@ -406,16 +407,14 @@ const GeminiEducationSuiteChat = () => {
                   {languages.map(l => <option key={l.code} value={l.code}>{l.name}</option>)}
                 </select>
                 
-                <select
+                <GradeSelect
+                  variant="native"
                   value={gradeLevel}
-                  onChange={(e) => setGradeLevel(e.target.value)}
-                  className="px-3 py-1.5 rounded-lg border border-gray-200 text-sm bg-white hover:border-blue-300 focus:ring-2 focus:ring-blue-100 outline-none transition cursor-pointer"
-                >
-                  <option value="">{t('geminiEducationSuiteChat.gradeLevel')}</option>
-                  {['K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'].map(g => (
-                    <option key={g} value={g}>Grade {g}</option>
-                  ))}
-                </select>
+                  onChange={setGradeLevel}
+                  label=""
+                  allowEmpty
+                  emptyLabel={t('geminiEducationSuiteChat.gradeLevel')}
+                />
 
                 <select
                    value={subject}

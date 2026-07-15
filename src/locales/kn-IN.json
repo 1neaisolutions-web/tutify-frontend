@@ -11068,6 +11068,37 @@
     "topicOnly": "ವಿಷಯ-ಮಾತ್ರ ಮೋಡ್",
     "retry": "ಮರುಪ್ರಯತ್ನಿಸಿ",
     "sectionsIndexed": "{{count}} ವಿಭಾಗಗಳನ್ನು ಇಂಡೆಕ್ಸ್ ಮಾಡಲಾಗಿದೆ",
+    "sectionsCount": "{{count}} sections",
+    "sectionsIndexedMeta": "{{documents}} documents · {{count}} sections indexed",
+    "scopeSearchPlaceholder": "Search chapters and topics (e.g. fractions, motion)",
+    "libraryMatchHint": "Used to match books in your library.",
+    "focusForAi": "Focus for AI (optional)",
+    "generationNotes": "Generation notes (optional)",
+    "generationNotesHint": "Students won't see this.",
+    "selectChapter": "Select chapter",
+    "clearChapter": "Clear chapter",
+    "expandChapter": "Expand",
+    "collapseChapter": "Collapse",
+    "expandBook": "Show topics",
+    "collapseBook": "Hide topics",
+    "fieldBands": {
+      "student": {
+        "title": "What students will see",
+        "description": "These appear on the assignment or assessment after you publish."
+      },
+      "library": {
+        "title": "Content library match",
+        "description": "Helps find the right books and materials in your catalog."
+      },
+      "ai": {
+        "title": "AI generation settings",
+        "description": "Guides question generation only — students never see these."
+      }
+    },
+    "scopeStep": {
+      "title": "Select content to use",
+      "subtitle": "Choose chapters and topics from your selected materials."
+    },
     "clearSearch": "ಹುಡುಕಾಟವನ್ನು ತೆರವುಗೊಳಿಸಿ",
     "scopeRefinement": "ವ್ಯಾಪ್ತಿ ಪರಿಷ್ಕರಣೆ",
     "scopeRefinementOptional": "ವ್ಯಾಪ್ತಿ ಪರಿಷ್ಕರಣೆ (ಐಚ್ಛಿಕ)",
@@ -11079,6 +11110,14 @@
     "excerptPreview": "ಉದ್ಧೃತ ಪೂರ್ವವೀಕ್ಷಣೆ",
     "topicStrandsHeading": "ವಿಷಯದ ಎಳೆಗಳನ್ನು ಹುಡುಕಿ ಮತ್ತು ಆಯ್ಕೆಮಾಡಿ",
     "catalogSearchPlaceholder": "ಶೀರ್ಷಿಕೆ, ಲೇಖಕ, ISBN, ಅಥವಾ ವಿಷಯದ ಎಳೆಯನ್ನು ಹುಡುಕಿ...",
+    "catalogFilterSummary": "Showing books matching {{subject}} · {{grade}}",
+    "browseAllCatalog": "Browse all library books",
+    "browseAllCatalogHint": "Ignore subject and grade filter to see every published title in your library.",
+    "browseAllCatalogActive": "Showing all library books. Your activity is still labeled {{subject}} · {{grade}}.",
+    "bookOutsideFilter": "Outside current filter",
+    "catalogNearMatchesTitle": "Other {{subject}} materials",
+    "catalogNearMatchesHint": "These titles match your subject but not {{grade}}. Select one or browse all books above.",
+    "incompleteMetadata": "Incomplete metadata",
     "topicFilterPlaceholder": "ಫಿಲ್ಟರ್ ಮಾಡಲು ಟೈಪ್ ಮಾಡಿ (ಉದಾ. ಭಾಗ, ಪದ ಸಮಸ್ಯೆ...)",
     "scopeRefinementPlaceholder": "ಪದದ ಸಮಸ್ಯೆಗಳು, ಪರೀಕ್ಷೆಯ ಶೈಲಿಯ ತಾರ್ಕಿಕತೆ ಮತ್ತು ಸಾಮಾನ್ಯ ತಪ್ಪುಗ್ರಹಿಕೆಗಳ ಮೇಲೆ ಕೇಂದ್ರೀಕರಿಸಿ",
     "generateWithoutSources": "ಮೂಲ ಸಾಮಗ್ರಿಗಳಿಲ್ಲದೆ ಉತ್ಪಾದಿಸಿ",
@@ -11407,7 +11446,18 @@
       "timeLimitMinutes": "ಸಮಯದ ಮಿತಿ (ನಿಮಿಷಗಳು)",
       "shuffleQuestions": "ಪ್ರತಿ ವಿದ್ಯಾರ್ಥಿಗೆ ಪ್ರಶ್ನೆಯ ಕ್ರಮವನ್ನು ಷಫಲ್ ಮಾಡಿ",
       "shuffleMcq": "MCQ ಆಯ್ಕೆಗಳನ್ನು ಷಫಲ್ ಮಾಡಿ",
-      "negativeMarking": "ಋಣಾತ್ಮಕ ಗುರುತು"
+      "negativeMarking": "ಋಣಾತ್ಮಕ ಗುರುತು",
+      "scopeSummaryTitle": "Scope summary",
+      "approximateChapterMap": "This book's chapter map is approximate. Contact admin to re-process.",
+      "selectAllDocument": "Select all",
+      "clearDocument": "Clear all",
+      "selectTopic": "Select",
+      "clearTopic": "Clear",
+      "selectWholeChapter": "Select chapter",
+      "clearChapter": "Clear chapter",
+      "chapterScopeOnlyHint": "This book is indexed by chapter. Click a chapter row to select it. Section-level topics appear when the book includes section entries in its table of contents.",
+      "noSegmentsForScope": "No content found for selected chapters. Try different chapters or contact admin.",
+      "unmappedContentWarning": "Some pages in this book are not mapped to chapters. Contact your admin if content seems missing."
     },
     "review": {
       "printPreview": "ಪ್ರಿಂಟ್ ಪೂರ್ವವೀಕ್ಷಣೆ",
@@ -11422,6 +11472,7 @@
       "badgeShort": "ಚಿಕ್ಕದು",
       "questionMarks": "Q{{num}} · {{pts}} ಅಂಕಗಳು",
       "lines": "ಸಾಲುಗಳು",
+      "scopeWarning": "Scope unverified",
       "modalAddQuestion": "ಪ್ರಶ್ನೆಯನ್ನು ಸೇರಿಸಿ"
     },
     "generating": {

@@ -11068,6 +11068,37 @@
     "topicOnly": "Eingöngu efnisstilling",
     "retry": "Reyndu aftur",
     "sectionsIndexed": "{{count}} hlutar verðtryggðir",
+    "sectionsCount": "{{count}} sections",
+    "sectionsIndexedMeta": "{{documents}} documents · {{count}} sections indexed",
+    "scopeSearchPlaceholder": "Search chapters and topics (e.g. fractions, motion)",
+    "libraryMatchHint": "Used to match books in your library.",
+    "focusForAi": "Focus for AI (optional)",
+    "generationNotes": "Generation notes (optional)",
+    "generationNotesHint": "Students won't see this.",
+    "selectChapter": "Select chapter",
+    "clearChapter": "Clear chapter",
+    "expandChapter": "Expand",
+    "collapseChapter": "Collapse",
+    "expandBook": "Show topics",
+    "collapseBook": "Hide topics",
+    "fieldBands": {
+      "student": {
+        "title": "What students will see",
+        "description": "These appear on the assignment or assessment after you publish."
+      },
+      "library": {
+        "title": "Content library match",
+        "description": "Helps find the right books and materials in your catalog."
+      },
+      "ai": {
+        "title": "AI generation settings",
+        "description": "Guides question generation only — students never see these."
+      }
+    },
+    "scopeStep": {
+      "title": "Select content to use",
+      "subtitle": "Choose chapters and topics from your selected materials."
+    },
     "clearSearch": "Hreinsa leit",
     "scopeRefinement": "Fækkun umfangs",
     "scopeRefinementOptional": "Fíngerð umfang (valfrjálst)",
@@ -11079,6 +11110,14 @@
     "excerptPreview": "forskoðun úrdráttar",
     "topicStrandsHeading": "Leitaðu og veldu efnisþræði",
     "catalogSearchPlaceholder": "Leitaðu að titli, höfundi, ISBN eða efnisþræði...",
+    "catalogFilterSummary": "Showing books matching {{subject}} · {{grade}}",
+    "browseAllCatalog": "Browse all library books",
+    "browseAllCatalogHint": "Ignore subject and grade filter to see every published title in your library.",
+    "browseAllCatalogActive": "Showing all library books. Your activity is still labeled {{subject}} · {{grade}}.",
+    "bookOutsideFilter": "Outside current filter",
+    "catalogNearMatchesTitle": "Other {{subject}} materials",
+    "catalogNearMatchesHint": "These titles match your subject but not {{grade}}. Select one or browse all books above.",
+    "incompleteMetadata": "Incomplete metadata",
     "topicFilterPlaceholder": "Sláðu inn til að sía (t.d. brot, orðvandamál…)",
     "scopeRefinementPlaceholder": "Einbeittu þér að orðavandamálum, rökhugsun í prófstíl og algengum ranghugmyndum",
     "generateWithoutSources": "Búðu til án upprunaefnis",
@@ -11407,7 +11446,18 @@
       "timeLimitMinutes": "Tímamörk (mínútur)",
       "shuffleQuestions": "Stokka spurningaröð fyrir hvern nemanda",
       "shuffleMcq": "Stokka MCQ valkosti",
-      "negativeMarking": "Neikvæð merking"
+      "negativeMarking": "Neikvæð merking",
+      "scopeSummaryTitle": "Scope summary",
+      "approximateChapterMap": "This book's chapter map is approximate. Contact admin to re-process.",
+      "selectAllDocument": "Select all",
+      "clearDocument": "Clear all",
+      "selectTopic": "Select",
+      "clearTopic": "Clear",
+      "selectWholeChapter": "Select chapter",
+      "clearChapter": "Clear chapter",
+      "chapterScopeOnlyHint": "This book is indexed by chapter. Click a chapter row to select it. Section-level topics appear when the book includes section entries in its table of contents.",
+      "noSegmentsForScope": "No content found for selected chapters. Try different chapters or contact admin.",
+      "unmappedContentWarning": "Some pages in this book are not mapped to chapters. Contact your admin if content seems missing."
     },
     "review": {
       "printPreview": "Forskoðun prentunar",
@@ -11422,6 +11472,7 @@
       "badgeShort": "Stutt",
       "questionMarks": "Q{{num}} · {{pts}} stig",
       "lines": "línur",
+      "scopeWarning": "Scope unverified",
       "modalAddQuestion": "Bæta við spurningu"
     },
     "generating": {

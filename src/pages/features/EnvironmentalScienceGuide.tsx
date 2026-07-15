@@ -35,7 +35,6 @@ import {
   getRegions,
   getProjectCategories,
   getEcosystemTypes,
-  getGradeLevels,
   RegionalClimateImpact,
   SustainabilityProject,
   EcosystemInfo,
@@ -59,6 +58,8 @@ import {
 } from '../../utils/environmentalAdapters'
 
 import { useTranslation } from 'react-i18next'
+import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
+import { chatbotBandToApi } from '@/catalog/adapters/chatbotAdapters'
 const CHATBOT_SLUG = 'environmental-science-guide'
 const TEACHING_REGION = 'Global'
 
@@ -69,7 +70,7 @@ const EnvironmentalScienceGuide = () => {
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const [activeTab, setActiveTab] = useState<TabType>('climate')
-  const [gradeLevel, setGradeLevel] = useState('High School (9-12)')
+  const [gradeLevel, setGradeLevel] = useState('9-12')
   const [selectedRegion, setSelectedRegion] = useState('Temperate')
   const [isGenerating, setIsGenerating] = useState(false)
 
@@ -155,7 +156,6 @@ const EnvironmentalScienceGuide = () => {
   const regions = getRegions()
   const projectCategories = getProjectCategories()
   const ecosystemTypes = getEcosystemTypes()
-  const gradeLevels = getGradeLevels()
 
   // Load Climate Impact
   const handleLoadClimateImpact = async () => {
@@ -165,7 +165,7 @@ const EnvironmentalScienceGuide = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           region: TEACHING_REGION,
           select_region: climateRegion,
         },
@@ -195,7 +195,7 @@ const EnvironmentalScienceGuide = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           region: TEACHING_REGION,
           project_category: projectCategoryUiToApi(projectCategory),
         },
@@ -225,7 +225,7 @@ const EnvironmentalScienceGuide = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           region: TEACHING_REGION,
           ecosystem_type: ecosystemType,
         },
@@ -255,7 +255,7 @@ const EnvironmentalScienceGuide = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           region: TEACHING_REGION,
           select_region: selectedRegion,
         },
@@ -285,7 +285,7 @@ const EnvironmentalScienceGuide = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           region: selectedRegion,
         },
         conversation_id: conversationIdForActiveTab ?? undefined,
@@ -314,7 +314,7 @@ const EnvironmentalScienceGuide = () => {
         input: ' ',
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           region: TEACHING_REGION,
           assessment_category: assessmentCategory,
         },
@@ -346,7 +346,7 @@ const EnvironmentalScienceGuide = () => {
         input: goal,
         input_type: 'text',
         parameters: {
-          grade_level: gradeLevel,
+          grade_level: chatbotBandToApi(gradeLevel),
           region: TEACHING_REGION,
           action_goal: goal,
           timeframe: actionTimeframe,
@@ -418,15 +418,14 @@ const EnvironmentalScienceGuide = () => {
             <div className="flex flex-wrap gap-4 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
                 <label className="text-sm font-medium">{t('environmentalScienceGuide.gradeLevel')}</label>
-                <select
+                <GradeBandSelect
+                  variant="native"
                   value={gradeLevel}
-                  onChange={(e) => setGradeLevel(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                >
-                  {gradeLevels.map(level => (
-                    <option key={level} value={level}>{level}</option>
-                  ))}
-                </select>
+                  onChange={setGradeLevel}
+                  label=""
+                  context="chatbotBand"
+                  selectClassName="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                />
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
                 <label className="text-sm font-medium">{t('environmentalScienceGuide.region')}</label>

@@ -6,6 +6,7 @@ import { Phase2Section, Phase2Badge } from '../components/Phase2Lock'
 import { analyticsForTopic, getTopicBlueprint } from '../demo/topicAwareGenerators'
 import { useGetWorksheetQuery } from '../../../../redux/features/teacherTools/worksheet/worksheetApiSlice'
 import { apiBlockToLocal } from './worksheetApiAdapters'
+import { formatGradeDisplay } from '@/catalog/adapters/gradeAdapters'
 
 const tabs = ['Overview', 'Content', 'Responses', 'Analytics', 'Settings'] as const
 
@@ -174,7 +175,7 @@ export default function WorksheetDetail() {
                 </div>
                 <div className="flex items-start justify-between gap-3">
                   <dt className="text-gray-500">{t('exam.detail.grade')}</dt>
-                  <dd className="text-right text-gray-800">{w.grade}</dd>
+                  <dd className="text-right text-gray-800">{formatGradeDisplay(w.grade)}</dd>
                 </div>
                 {w.sourceSummary && (
                   <div className="flex items-start justify-between gap-3">

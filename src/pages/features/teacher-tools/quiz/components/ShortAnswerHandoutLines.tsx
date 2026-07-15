@@ -51,6 +51,7 @@ export function ShortAnswerStudentResponsePreview({
   responseLines,
   ruledLineSpacingPx,
 }: ShortAnswerStudentResponsePreviewProps) {
+  const { t } = useTranslation()
   return (
     <div className="mt-3 border-t border-gray-100 pt-3">
       <p className="text-xs font-medium text-gray-500">{t('quiz.handout.studentResponsePreview')}</p>
