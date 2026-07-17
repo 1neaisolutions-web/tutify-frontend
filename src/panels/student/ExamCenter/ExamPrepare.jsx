@@ -1,10 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
+import { findPackByExamId } from '../NightBeforePack/nightBeforePackStorage';
 
 const ExamPrepare = () => {
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
+  const nightPack = findPackByExamId(id);
 
   return (
     <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
@@ -21,6 +23,32 @@ const ExamPrepare = () => {
       </div>
 
       <div className="px-6 py-6 max-w-3xl space-y-4">
+        {nightPack ? (
+          <div className="rounded-xl border border-primary-200 dark:border-primary-900/50 bg-primary-50 dark:bg-primary-950/30 p-4">
+            <p className="text-sm text-primary-800 dark:text-primary-200">{t('studentPanel.exam.preparePage.packReady')}</p>
+            <button
+              type="button"
+              onClick={() => navigate(`/student/night-before/${nightPack.id}`)}
+              className="mt-3 px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700"
+            >
+              {t('studentPanel.exam.preparePage.openPack')}
+            </button>
+          </div>
+        ) : (
+          <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4">
+            <p className="text-sm text-gray-700 dark:text-gray-200">
+              {t('studentPanel.nightBefore.empty.subtitle')}
+            </p>
+            <button
+              type="button"
+              onClick={() => navigate('/student/night-before')}
+              className="mt-3 px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900"
+            >
+              {t('studentPanel.exam.nightBefore')}
+            </button>
+          </div>
+        )}
+
         <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4">
           <h2 className="font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.common.prepareHeading', { id })}</h2>
           <ul className="mt-3 space-y-2 text-sm text-gray-700 dark:text-gray-200">
@@ -35,4 +63,3 @@ const ExamPrepare = () => {
 };
 
 export default ExamPrepare;
-

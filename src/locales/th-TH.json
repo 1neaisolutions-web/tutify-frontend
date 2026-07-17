@@ -211,7 +211,8 @@
       "teachers": "ครู",
       "myTeachers": "ครูของฉัน",
       "doubts": "ข้อสงสัยของฉัน",
-      "progress": "ความก้าวหน้าของฉัน"
+      "progress": "ความก้าวหน้าของฉัน",
+      "nightBefore": "Night Before Pack"
     },
     "accessCodes": "รหัสการเข้าถึง",
     "contentPacks": "ชุดเนื้อหา",
@@ -13168,7 +13169,9 @@
           "review": "Review weak topics",
           "practice": "Do 10 practice questions",
           "sleep": "Sleep + plan your time"
-        }
+        },
+        "openPack": "Open your Night Before Pack",
+        "packReady": "Your AI revision pack is ready for this exam."
       },
       "takePage": {
         "title": "Exam Take",
@@ -13180,7 +13183,8 @@
         "subtitle": "Private notes saved to localStorage (demo).",
         "placeholder": "What went well? What will you improve next time?",
         "successAlert": "Saved reflection (demo)."
-      }
+      },
+      "nightBefore": "Night Before Pack"
     },
     "doubtSolver": {
       "title": "AI Doubt Solver",
@@ -13431,6 +13435,113 @@
       "history": {
         "title": "History",
         "empty": "No images yet."
+      }
+    },
+    "nightBefore": {
+      "title": "Night Before Pack",
+      "subtitle": "Your AI revision pack, ready the evening before each exam.",
+      "createCta": "Create my pack",
+      "storageWarning": "Couldn't save progress locally — you can still use this session.",
+      "status": {
+        "scheduled": "Scheduled",
+        "generating": "Generating",
+        "ready": "Ready",
+        "failed": "Failed",
+        "completed": "Completed"
+      },
+      "source": {
+        "teacher": "From your teacher",
+        "self": "Created by you"
+      },
+      "hero": {
+        "badge": "Tonight's pack",
+        "examAt": "Exam {{date}}",
+        "estimate": "~{{minutes}} min revision",
+        "cta": "Start revision"
+      },
+      "sections": {
+        "upcoming": "Upcoming",
+        "past": "Past packs",
+        "summary": "Topic summary",
+        "formulas": "Key formulas",
+        "questionTypes": "Predicted question types",
+        "mcqs": "Warm-up MCQs ({{done}}/{{total}})"
+      },
+      "list": {
+        "noUpcoming": "No upcoming packs right now.",
+        "noPast": "Completed packs will appear here.",
+        "score": "{{score}}/{{total}} warm-up"
+      },
+      "empty": {
+        "title": "No packs yet",
+        "subtitle": "Packs appear the evening before a scheduled exam — or create your own for solo study."
+      },
+      "error": {
+        "title": "Couldn't build this pack",
+        "default": "We couldn't finish building this pack from your materials. Try again in a moment.",
+        "retry": "Try again",
+        "studyMaterials": "Open Study Materials"
+      },
+      "generation": {
+        "title": "Building your Night Before Pack",
+        "subtitle": "Pulling from your topics and study materials…",
+        "steps": {
+          "topics": "Reading your topics…",
+          "formulas": "Pulling key formulas from study materials…",
+          "questionTypes": "Predicting question types…",
+          "mcqs": "Building 5 warm-up questions…"
+        }
+      },
+      "create": {
+        "title": "Create my pack",
+        "subtitle": "Schedule an exam and generate a revision pack.",
+        "submit": "Generate pack",
+        "simulateError": "Simulate Error (demo)",
+        "fields": {
+          "subject": "Subject",
+          "title": "Exam title",
+          "examAt": "Exam date & time",
+          "topics": "Topics to revise",
+          "notes": "Optional notes"
+        },
+        "placeholders": {
+          "title": "e.g. Biology Midterm",
+          "topics": "One topic per line or comma-separated",
+          "notes": "Anything you want the pack to emphasize…"
+        },
+        "errors": {
+          "title": "Enter an exam title.",
+          "examAt": "Choose an exam date and time.",
+          "topics": "Add at least one topic."
+        }
+      },
+      "formulas": {
+        "copy": "Copy",
+        "copied": "Copied"
+      },
+      "mcq": {
+        "correct": "Correct.",
+        "incorrect": "Not quite."
+      },
+      "detail": {
+        "examAt": "Exam {{date}}",
+        "progress": "{{mcqDone}}/{{mcqTotal}} MCQs",
+        "markDone": "Mark as done",
+        "askCopilot": "Ask Copilot",
+        "scheduledNotice": "This pack is scheduled and will unlock the evening before your exam. You can still preview the outline below."
+      },
+      "completion": {
+        "title": "Pack complete — nice work",
+        "score": "Warm-up score: {{score}}/{{total}} ({{percent}}%)",
+        "message": "Get some rest. You've covered the high-yield review for this exam.",
+        "askCopilot": "Ask Copilot about weak spots",
+        "doubtSolver": "Open Doubt Solver",
+        "backHub": "Back to packs",
+        "copilotPrompt": "Help me understand the weak topics from my Night Before Pack for {{title}} ({{subject}})."
+      },
+      "notFound": {
+        "title": "Pack not found",
+        "subtitle": "This pack may have been removed or the link is incorrect."
       }
     }
   },

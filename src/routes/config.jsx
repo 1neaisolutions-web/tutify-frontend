@@ -140,6 +140,9 @@ import ExamCenter from '../panels/student/ExamCenter';
 import ExamTake from '../panels/student/ExamCenter/ExamTake';
 import ExamPrepare from '../panels/student/ExamCenter/ExamPrepare';
 import ExamReflect from '../panels/student/ExamCenter/ExamReflect';
+import NightBeforePackHub from '../panels/student/NightBeforePack';
+import PackCreate from '../panels/student/NightBeforePack/PackCreate';
+import PackDetail from '../panels/student/NightBeforePack/PackDetail';
 import StudentPixGen from '../panels/student/StudentPixGen';
 import StudentYouTubeQuiz from '../panels/student/StudentYouTubeQuiz';
 import YouTubeQuizTake from '../panels/student/StudentYouTubeQuiz/YouTubeQuizTake';
@@ -1302,6 +1305,16 @@ export const studentRoutes = [
       { path: '/student/exam/:id/take', moduleName: 'Take Exam', element: withDashboardLayout(<ExamTake />) },
       { path: '/student/exams/:id/prepare', moduleName: 'Exam Prepare', element: withDashboardLayout(<ExamPrepare />) },
       { path: '/student/exams/:id/reflect', moduleName: 'Exam Reflect', element: withDashboardLayout(<ExamReflect />) },
+    ],
+  },
+  // Night Before Pack
+  {
+    path: '/student/night-before',
+    moduleName: 'Night Before Pack',
+    element: withDashboardLayout(<NightBeforePackHub />),
+    child: [
+      { path: '/student/night-before/create', moduleName: 'Create Night Before Pack', element: withDashboardLayout(<PackCreate />) },
+      { path: '/student/night-before/:id', moduleName: 'Night Before Pack Detail', element: withDashboardLayout(<PackDetail />) },
     ],
   },
   // AI Tools

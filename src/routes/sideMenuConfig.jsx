@@ -38,6 +38,7 @@ import {
   PenLine,
   Brain,
   CreditCard,
+  Moon,
 } from 'lucide-react';
 
 const teacherMenu = [
@@ -174,6 +175,7 @@ const studentMenu = [
   { path: '/student/assignments', text: 'Assignments', i18nKey: 'nav.student.assignments', icon: ClipboardList },
   { path: '/student/quizzes', text: 'Quizzes', i18nKey: 'nav.student.quizzes', icon: ListChecks },
   { path: '/student/exams', text: 'Exams', i18nKey: 'nav.student.exams', icon: Award },
+  { path: '/student/night-before', text: 'Night Before Pack', i18nKey: 'nav.student.nightBefore', icon: Moon },
   { path: '/student/content', text: 'Study Materials', i18nKey: 'nav.student.content', icon: BookOpen },
   { path: '/student/timetable', text: 'Timetable', i18nKey: 'nav.student.timetable', icon: CalendarDays },
 
