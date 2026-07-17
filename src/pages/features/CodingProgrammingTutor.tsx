@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   Code,
   Target,
@@ -14,7 +14,6 @@ import {
   AlertCircle,
   TrendingUp,
   Clock,
-  Star,
   Lock,
   Layers,
   Zap,
@@ -45,6 +44,11 @@ import { useSnackbar } from '../../hooks/useSnackbar'
 import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
+import { CoachWorkspaceShell } from './ai-coach/CoachWorkspaceShell'
+import {
+  CoachCapabilityRedirect,
+  useCoachCapabilityRoute,
+} from './ai-coach/useCoachCapabilityRoute'
 import {
   mapCompetitionAnalyzerToProblem,
   mapAlgorithmTutorResult,
@@ -66,6 +70,8 @@ const CodingProgrammingTutor = () => {
   const { t } = useTranslation()
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
+  const { redirectTo, capability, siblings, category, tabId } = useCoachCapabilityRoute(CHATBOT_SLUG)
+
   const [activeTab, setActiveTab] = useState<TabType>('competition')
   const [gradeLevel, setGradeLevel] = useState('9-12')
   const [programmingLanguage, setProgrammingLanguage] = useState('python')
@@ -112,6 +118,14 @@ const CodingProgrammingTutor = () => {
     competition_roadmap: 'roadmap',
     standards_alignment: 'standards',
   }
+
+  const isCapabilityTab = useCallback((tab: string): tab is TabType => {
+    return tab === 'competition' || tab === 'algorithm' || tab === 'debugging' || tab === 'pbl' || tab === 'thinking' || tab === 'roadmap' || tab === 'standards'
+  }, [])
+
+  useEffect(() => {
+    if (tabId && isCapabilityTab(tabId)) setActiveTab(tabId)
+  }, [tabId, isCapabilityTab])
 
   const { conversationIdForActiveTab, pinFromResponse } = useChatbotHistorySession({
     slug: CHATBOT_SLUG,
@@ -387,124 +401,74 @@ const CodingProgrammingTutor = () => {
     }
   }
 
-  const tabs = [
-    { id: 'competition' as TabType, label: t('codingProgrammingTutor.tabs.competition'), icon: Trophy },
-    { id: 'algorithm' as TabType, label: t('codingProgrammingTutor.tabs.algorithm'), icon: Code },
-    { id: 'debugging' as TabType, label: t('codingProgrammingTutor.tabs.debugging'), icon: Bug },
-    { id: 'pbl' as TabType, label: t('codingProgrammingTutor.tabs.pbl'), icon: Lightbulb },
-    { id: 'thinking' as TabType, label: t('codingProgrammingTutor.tabs.thinking'), icon: Brain },
-    { id: 'roadmap' as TabType, label: t('codingProgrammingTutor.tabs.roadmap'), icon: Target },
-    { id: 'standards' as TabType, label: t('codingProgrammingTutor.tabs.standards'), icon: FileCheck },
-  ]
 
-  return (
-    <div className="space-y-6">
-      {creditError && (
-        <NoCreditsCard
-          reason={creditError.reason}
-          balance={creditError.balance}
-          required={creditError.required}
-          onActivated={clearCreditError}
-        />
-      )}
 
-      {/* Header */}
-      <div className="relative z-10 overflow-visible bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-3xl p-8 text-white shadow-xl">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-                <Code className="h-6 w-6" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-3xl font-bold">{t('codingProgrammingTutor.codingProgrammingTutor')}</h1>
-                  <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                    <Star className="h-3 w-3" /> 4.9★
-                  </span>
-                  <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" />{t('codingProgrammingTutor.premium')}</span>
-                  <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
-                    <Globe className="inline h-3 w-3 mr-1" />{t('codingProgrammingTutor.globalCompetitions')}</span>
-                </div>
-                <p className="mt-2 text-indigo-100">{t('codingProgrammingTutor.advancedToolsForTeachingCodingAndPreparingStudentsForIn')}</p>
-              </div>
-            </div>
+  const handleNewTask = () => {
+    setProblemText('')
+    setCompetitionProblem(null)
+    setAlgorithmExplanation(null)
+    setCodeInput('')
+    setDebuggingStrategy(null)
+    setProjectMilestones([])
+    setComputationalThinking(null)
+    setRoadmap(null)
+    setContentInput('')
+    setStandardsAlignment(null)
+  }
+
+  if (redirectTo) return <CoachCapabilityRedirect to={redirectTo} />
+  if (!capability) return <CoachCapabilityRedirect to={`/chatbots/${CHATBOT_SLUG}?cap=competition_analyzer`} />
+
+
+  const workspaceBody = (
+        <div className="space-y-6">
+
             
-            {/* Quick Settings */}
-            <div className="relative z-20 flex flex-wrap gap-4 mt-6">
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label htmlFor="coding-tutor-grade" className="text-sm font-medium shrink-0">{t('codingProgrammingTutor.gradeLevel')}</label>
-                <GradeBandSelect
-                  variant="native"
-                  value={gradeLevel}
-                  onChange={setGradeLevel}
-                  label=""
-                  context="visualArts"
-                  selectClassName="chatbot-header-select"
-                />
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label htmlFor="coding-tutor-language" className="text-sm font-medium shrink-0">{t('codingProgrammingTutor.language')}</label>
-                <select
-                  id="coding-tutor-language"
-                  value={programmingLanguage}
-                  onChange={(e) => setProgrammingLanguage(e.target.value)}
-                  className="chatbot-header-select min-w-[8.5rem]"
-                >
-                  {languages.map(lang => (
-                    <option key={lang.id} value={lang.id}>
-                      {lang.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label htmlFor="coding-tutor-competition" className="text-sm font-medium shrink-0">{t('codingProgrammingTutor.competition')}</label>
-                <select
-                  id="coding-tutor-competition"
-                  value={selectedCompetition}
-                  onChange={(e) => setSelectedCompetition(e.target.value)}
-                  className="chatbot-header-select min-w-[9.5rem]"
-                >
-                  {competitions.map(comp => (
-                    <option key={comp.id} value={comp.id}>
-                      {comp.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                      {/* Quick Settings */}
+                      <div className="flex flex-wrap gap-4">
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                          <label htmlFor="coding-tutor-grade" className="text-sm font-medium text-gray-700 shrink-0">{t('codingProgrammingTutor.gradeLevel')}</label>
+                          <GradeBandSelect
+                            variant="native"
+                            value={gradeLevel}
+                            onChange={setGradeLevel}
+                            label=""
+                            context="visualArts"
+                            selectClassName="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900"
+                          />
+                        </div>
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                          <label htmlFor="coding-tutor-language" className="text-sm font-medium text-gray-700 shrink-0">{t('codingProgrammingTutor.language')}</label>
+                          <select
+                            id="coding-tutor-language"
+                            value={programmingLanguage}
+                            onChange={(e) => setProgrammingLanguage(e.target.value)}
+                            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 min-w-[8.5rem]"
+                          >
+                            {languages.map(lang => (
+                              <option key={lang.id} value={lang.id}>
+                                {lang.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                          <label htmlFor="coding-tutor-competition" className="text-sm font-medium text-gray-700 shrink-0">{t('codingProgrammingTutor.competition')}</label>
+                          <select
+                            id="coding-tutor-competition"
+                            value={selectedCompetition}
+                            onChange={(e) => setSelectedCompetition(e.target.value)}
+                            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 min-w-[9.5rem]"
+                          >
+                            {competitions.map(comp => (
+                              <option key={comp.id} value={comp.id}>
+                                {comp.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
 
-      {/* Tabs */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm">
-        <div className="border-b border-gray-200">
-          <div className="flex overflow-x-auto scrollbar-hide">
-            {tabs.map((tab) => {
-              const Icon = tab.icon
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-6 py-4 text-sm font-medium transition-colors border-b-2 ${
-                    activeTab === tab.id
-                      ? 'border-indigo-600 text-indigo-600 bg-indigo-50'
-                      : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                  }`}
-                >
-                  <Icon className="h-5 w-5" />
-                  {tab.label}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        <div className="p-6">
-          {/* Competition Analyzer Tab */}
           {activeTab === 'competition' && (
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-6 border border-purple-200">
@@ -1296,10 +1260,31 @@ const CodingProgrammingTutor = () => {
             </div>
           )}
         </div>
-      </div>
+  )
+
+  return (
+    <div className="space-y-6">
+      {creditError && (
+        <NoCreditsCard
+          reason={creditError.reason}
+          balance={creditError.balance}
+          required={creditError.required}
+          onActivated={clearCreditError}
+        />
+      )}
+      <CoachWorkspaceShell
+        capability={capability}
+        siblings={siblings}
+        categoryKey={category?.key}
+        categoryLabel={category?.label}
+        onNewTask={handleNewTask}
+      >
+        {workspaceBody}
+      </CoachWorkspaceShell>
     </div>
   )
 }
+
 
 export default CodingProgrammingTutor
 

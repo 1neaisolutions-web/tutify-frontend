@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   Calculator,
   Target,
@@ -12,19 +12,10 @@ import {
   AlertCircle,
   Lightbulb,
   BarChart3,
-  Award,
   Clock,
-  Star,
-  Lock,
   Brain,
-  Zap,
   Compass,
   Puzzle,
-  LineChart,
-  PieChart,
-  Grid3x3,
-  Shapes,
-  FileText,
   Eye,
   GraduationCap,
 } from 'lucide-react'
@@ -33,6 +24,11 @@ import { useSnackbar } from '../../hooks/useSnackbar'
 import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
+import { CoachWorkspaceShell } from './ai-coach/CoachWorkspaceShell'
+import {
+  CoachCapabilityRedirect,
+  useCoachCapabilityRoute,
+} from './ai-coach/useCoachCapabilityRoute'
 import { resolveApiMessage } from '../../i18n/resolveApiMessage'
 import {
   mapDifferentiatedProblemsResult,
@@ -55,7 +51,9 @@ const AdaptiveMathStrategist = () => {
   const { t } = useTranslation()
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
-  const [activeTab, setActiveTab] = useState<'problems' | 'adaptive' | 'concepts' | 'intervention' | 'visual' | 'assessment'>('problems')
+  const { redirectTo, capability, siblings, category, tabId } = useCoachCapabilityRoute(CHATBOT_SLUG)
+
+  const [activeTab, setActiveTab] = useState<'problems' | 'adaptive' | 'concepts' | 'intervention'>('problems')
   const [gradeLevel, setGradeLevel] = useState('5')
   const [topic, setTopic] = useState('')
   const [standard, setStandard] = useState('')
@@ -73,6 +71,14 @@ const AdaptiveMathStrategist = () => {
     conceptual_learning: 'concepts',
     intervention_strategies: 'intervention',
   }
+
+  const isCapabilityTab = useCallback((tab: string): tab is 'problems' | 'adaptive' | 'concepts' | 'intervention' => {
+    return tab === 'problems' || tab === 'adaptive' || tab === 'concepts' || tab === 'intervention'
+  }, [])
+
+  useEffect(() => {
+    if (tabId && isCapabilityTab(tabId)) setActiveTab(tabId)
+  }, [tabId, isCapabilityTab])
 
   const { conversationIdForActiveTab, pinFromResponse } = useChatbotHistorySession({
     slug: CHATBOT_SLUG,
@@ -225,141 +231,57 @@ const AdaptiveMathStrategist = () => {
     }
   }
 
-  const tabs = [
-    { id: 'problems', label: t('adaptiveMathStrategist.tabs.problems'), icon: Puzzle },
-    { id: 'adaptive', label: t('adaptiveMathStrategist.tabs.adaptive'), icon: Compass },
-    { id: 'concepts', label: t('adaptiveMathStrategist.tabs.concepts'), icon: Brain },
-    { id: 'intervention', label: t('adaptiveMathStrategist.tabs.intervention'), icon: Target },
-    { id: 'visual', label: t('adaptiveMathStrategist.tabs.visual'), icon: Eye },
-    { id: 'assessment', label: t('adaptiveMathStrategist.tabs.assessment'), icon: FileText },
-  ]
+  const downloadTextFile = (filename: string, content: string) => {
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
 
-  return (
-    <div className="space-y-6">
-      {creditError && (
-        <NoCreditsCard
-          reason={creditError.reason}
-          balance={creditError.balance}
-          required={creditError.required}
-          onActivated={clearCreditError}
-        />
-      )}
+  const handleDownloadInterventionPlan = () => {
+    if (!interventionStrategy) return
+    const lines = [
+      'Intervention Strategy Plan',
+      '',
+      `Area of Need: ${interventionStrategy.area}`,
+      '',
+      'Diagnostic Assessment:',
+      interventionStrategy.diagnostic,
+      '',
+      'Intervention Strategies:',
+      ...interventionStrategy.strategies.flatMap((s) => [
+        `- ${s.strategy}: ${s.description}`,
+        ...s.activities.map((a) => `  • ${a}`),
+      ]),
+      '',
+      'Progress Monitoring:',
+      ...interventionStrategy.progressMonitoring.map((m) => `- ${m}`),
+    ]
+    downloadTextFile('intervention-strategy-plan.txt', lines.join('\n'))
+  }
 
-      {/* Header */}
-      <div className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 rounded-3xl p-8 text-white shadow-xl">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-                <Calculator className="h-6 w-6" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h1 className="text-3xl font-bold">{t('adaptiveMathStrategist.adaptiveMathStrategist')}</h1>
-                  <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                    <Star className="h-3 w-3" /> 4.9★
-                  </span>
-                  <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" />{t('adaptiveMathStrategist.premium')}</span>
-                </div>
-                <p className="mt-2 text-green-100">{t('adaptiveMathStrategist.aiPoweredAdaptiveLearningWithDifferentiatedProblemSetsS')}</p>
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-3 mt-6">
-              <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
-                <Target className="h-4 w-4" />
-                <span>{t('adaptiveMathStrategist.differentiatedProblems')}</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
-                <Compass className="h-4 w-4" />
-                <span>{t('adaptiveMathStrategist.adaptiveLearningPaths')}</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
-                <Brain className="h-4 w-4" />
-                <span>{t('adaptiveMathStrategist.conceptualUnderstanding')}</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
-                <TrendingUp className="h-4 w-4" />
-                <span>{t('adaptiveMathStrategist.realTimeProgress')}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{t('adaptiveMathStrategist.problemsGenerated')}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">3,247</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600">
-              <Puzzle className="h-6 w-6" />
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{t('adaptiveMathStrategist.studentsSupported')}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">1,892</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
-              <Users className="h-6 w-6" />
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{t('adaptiveMathStrategist.masteryRate')}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">87%</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-100 text-teal-600">
-              <Award className="h-6 w-6" />
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{t('adaptiveMathStrategist.avgImprovement')}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">+23%</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600">
-              <TrendingUp className="h-6 w-6" />
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Tabs */}
-      <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div className="border-b border-gray-200">
-          <div className="flex overflow-x-auto">
-            {tabs.map((tab) => {
-              const Icon = tab.icon
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex items-center gap-2 px-6 py-4 text-sm font-semibold transition-colors border-b-2 ${
-                    activeTab === tab.id
-                      ? 'border-green-600 text-green-600'
-                      : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                  {tab.label}
-                </button>
-              )
-            })}
-          </div>
-        </div>
+  const handleNewTask = () => {
+    setTopic('')
+    setStandard('')
+    setProblemSet(null)
+    setAdaptivePath(null)
+    setConceptualUnderstanding(null)
+    setInterventionStrategy(null)
+  }
 
-        <div className="p-6">
+  if (redirectTo) return <CoachCapabilityRedirect to={redirectTo} />
+  if (!capability) return <CoachCapabilityRedirect to={`/chatbots/${CHATBOT_SLUG}?cap=differentiated_problems`} />
+
+
+  const workspaceBody = (
+        <div className="space-y-6">
           {/* Differentiated Problems Tab */}
           {activeTab === 'problems' && (
             <div className="space-y-6">
@@ -843,128 +765,42 @@ const AdaptiveMathStrategist = () => {
                       </ul>
                     </div>
 
-                    <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
+                    <button
+                      onClick={handleDownloadInterventionPlan}
+                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2"
+                    >
                       <Download className="h-4 w-4" />{t('adaptiveMathStrategist.downloadInterventionPlan')}</button>
                   </div>
                 )}
               </div>
             </div>
           )}
-
-          {/* Visual Representations Tab */}
-          {activeTab === 'visual' && (
-            <div className="space-y-6">
-              <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-8">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Eye className="h-6 w-6 text-blue-600" />{t('adaptiveMathStrategist.visualRepresentationGenerator')}</h3>
-                <p className="text-sm text-gray-600 mb-6">{t('adaptiveMathStrategist.generateVisualModelsDiagramsAndManipulativesToSupportMa')}</p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {[
-                    { type: 'Number Line', icon: LineChart, color: 'blue' },
-                    { type: 'Area Model', icon: Grid3x3, color: 'green' },
-                    { type: 'Bar Model', icon: BarChart3, color: 'purple' },
-                    { type: 'Fraction Circles', icon: PieChart, color: 'pink' },
-                    { type: 'Base-10 Blocks', icon: Shapes, color: 'orange' },
-                    { type: 'Coordinate Plane', icon: Compass, color: 'teal' },
-                  ].map((visual, idx) => (
-                    <div key={idx} className="rounded-xl border border-gray-200 bg-white p-6 hover:shadow-md transition">
-                      <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-${visual.color}-100 text-${visual.color}-600 mb-4`}>
-                        <visual.icon className="h-6 w-6" />
-                      </div>
-                      <h4 className="text-base font-semibold text-gray-900 mb-2">{visual.type}</h4>
-                      <button className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">{t('adaptiveMathStrategist.generate')}</button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Assessment Tools Tab */}
-          {activeTab === 'assessment' && (
-            <div className="space-y-6">
-              <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-8">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <FileText className="h-6 w-6 text-indigo-600" />{t('adaptiveMathStrategist.assessmentTools')}</h3>
-                <p className="text-sm text-gray-600 mb-6">{t('adaptiveMathStrategist.createFormativeAndSummativeAssessmentsAlignedWithLearni')}</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {[
-                    { type: 'Quick Check', description: '5-minute exit tickets', icon: Zap },
-                    { type: 'Diagnostic', description: 'Pre-assessment to identify gaps', icon: Target },
-                    { type: 'Formative', description: 'Ongoing progress monitoring', icon: TrendingUp },
-                    { type: 'Summative', description: 'End-of-unit assessments', icon: Award },
-                  ].map((assessment, idx) => (
-                    <div key={idx} className="rounded-xl border border-gray-200 bg-white p-6 hover:shadow-md transition">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600">
-                          <assessment.icon className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <h4 className="text-base font-semibold text-gray-900">{assessment.type}</h4>
-                          <p className="text-xs text-gray-600">{assessment.description}</p>
-                        </div>
-                      </div>
-                      <button className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">{t('adaptiveMathStrategist.createAssessment')}</button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
         </div>
-      </div>
+  )
 
-      {/* Additional Features Section */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-6">{t('adaptiveMathStrategist.advancedAiPoweredFeatures')}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600 mb-4">
-              <TrendingUp className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('adaptiveMathStrategist.realTimeProgressMonitoring')}</h3>
-            <p className="text-sm text-gray-600">{t('adaptiveMathStrategist.trackStudentPerformanceInRealTimeWithIntuitiveDashboard')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 mb-4">
-              <Brain className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('adaptiveMathStrategist.adaptiveDifficultyAdjustment')}</h3>
-            <p className="text-sm text-gray-600">{t('adaptiveMathStrategist.aiAutomaticallyAdjustsProblemDifficultyBasedOnStudentPe')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-teal-50 to-cyan-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-100 text-teal-600 mb-4">
-              <Users className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('adaptiveMathStrategist.personalizedLearningPaths')}</h3>
-            <p className="text-sm text-gray-600">{t('adaptiveMathStrategist.eachStudentReceivesACustomizedLearningPathBasedOnTheir')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-cyan-50 to-blue-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600 mb-4">
-              <Eye className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('adaptiveMathStrategist.multiModalRepresentations')}</h3>
-            <p className="text-sm text-gray-600">{t('adaptiveMathStrategist.visualAuditoryAndKinestheticLearningSupportsForDiverseL')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 mb-4">
-              <Lightbulb className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('adaptiveMathStrategist.realWorldApplications')}</h3>
-            <p className="text-sm text-gray-600">{t('adaptiveMathStrategist.connectAbstractMathConceptsToPracticalEverydaySituation')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 mb-4">
-              <GraduationCap className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('adaptiveMathStrategist.standardsAlignment')}</h3>
-            <p className="text-sm text-gray-600">{t('adaptiveMathStrategist.allContentAlignedWithCommonCoreStateStandardsAndInterna')}</p>
-          </div>
-        </div>
-      </div>
+  return (
+    <div className="space-y-6">
+      {creditError && (
+        <NoCreditsCard
+          reason={creditError.reason}
+          balance={creditError.balance}
+          required={creditError.required}
+          onActivated={clearCreditError}
+        />
+      )}
+      <CoachWorkspaceShell
+        capability={capability}
+        siblings={siblings}
+        categoryKey={category?.key}
+        categoryLabel={category?.label}
+        onNewTask={handleNewTask}
+      >
+        {workspaceBody}
+      </CoachWorkspaceShell>
     </div>
   )
 }
+
 
 export default AdaptiveMathStrategist
 

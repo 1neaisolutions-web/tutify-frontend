@@ -175,7 +175,8 @@
     "worksheet": "Worksheet",
     "exams": "Exams",
     "templates": "Templates Library",
-    "chatbots": "Specialized Chatbots",
+    "chatbots": "AI Coach Desk",
+    "actionStudio": "Teaching Action Studio",
     "youtubeQuiz": "YouTube Quiz Generator",
     "pixgen": "PixGen (AI Media Studio)",
     "learningHub": "Professional Learning Hub",
@@ -201,6 +202,7 @@
       "assignments": "Assignments",
       "quizzes": "Quizzes",
       "exams": "Exams",
+      "nightBefore": "Night Before Pack",
       "content": "Study Materials",
       "timetable": "Timetable",
       "notes": "Notes",
@@ -2753,9 +2755,9 @@
     "premiumSubscriptionRequiredForThisFeature": "Premium subscription required for this feature.",
     "rateLimitExceededPleaseTryAgainLater": "Rate limit exceeded. Please try again later.",
     "failedToSendMessagePleaseTryAgain": "Failed to send message. Please try again.",
-    "yourVersatileAiCompanionForTeaching": "Your versatile AI companion for teaching",
+    "yourVersatileAiCompanionForTeaching": "Quick coaching for everyday teaching questions",
     "allConversationsDeletedSuccessfully": "All conversations deleted successfully",
-    "helloIMGeneralTeachingAssistant": "Hello! I'm General Teaching Assistant",
+    "helloIMGeneralTeachingAssistant": "Hello! I'm your General Teaching Coach",
     "failedToLoadConversationMessages": "Failed to load conversation messages",
     "saveAndReuseYourFavoritePrompts": "Save and reuse your favorite prompts",
     "createAPromptAboveToGetStarted": "Create a prompt above to get started",
@@ -2768,7 +2770,7 @@
     "failedToSaveCustomPrompt": "Failed to save custom prompt",
     "enterYourCustomPrompt": "Enter your custom prompt...",
     "tryADifferentSearchTerm": "Try a different search term",
-    "generalTeachingAssistant": "General Teaching Assistant",
+    "generalTeachingAssistant": "General Teaching Coach",
     "beginningOfConversation": "Beginning of conversation",
     "deleteAllConversations": "Delete all conversations",
     "searchConversations": "Search conversations...",
@@ -5556,7 +5558,7 @@
     "yourAllPurposeAiAssistantForEverydayTeachingTasks": "Your all-purpose AI assistant for everyday teaching tasks",
     "searchBySubjectStandardOrTeachingGoal": "Search by subject, standard, or teaching goal",
     "subjectSpecificSpecialists": "Subject-Specific Specialists",
-    "generalTeachingAssistant": "General Teaching Assistant",
+    "generalTeachingAssistant": "General Teaching Coach",
     "meetYourAiCoTeachers": "Meet your AI co-teachers.",
     "temporarilyUnavailable": "Temporarily unavailable",
     "aiTeachingAssistants": "AI Teaching Assistants",
@@ -13161,6 +13163,7 @@
       "prepare": "Prepare",
       "take": "Take",
       "reflect": "Reflect",
+      "nightBefore": "Night Before Pack",
       "preparePage": {
         "title": "Exam Prepare",
         "subtitle": "Checklist + countdown (demo).",
@@ -13168,7 +13171,9 @@
           "review": "Review weak topics",
           "practice": "Do 10 practice questions",
           "sleep": "Sleep + plan your time"
-        }
+        },
+        "openPack": "Open your Night Before Pack",
+        "packReady": "Your AI revision pack is ready for this exam."
       },
       "takePage": {
         "title": "Exam Take",
@@ -13180,6 +13185,113 @@
         "subtitle": "Private notes saved to localStorage (demo).",
         "placeholder": "What went well? What will you improve next time?",
         "successAlert": "Saved reflection (demo)."
+      }
+    },
+    "nightBefore": {
+      "title": "Night Before Pack",
+      "subtitle": "Your AI revision pack, ready the evening before each exam.",
+      "createCta": "Create my pack",
+      "storageWarning": "Couldn't save progress locally — you can still use this session.",
+      "status": {
+        "scheduled": "Scheduled",
+        "generating": "Generating",
+        "ready": "Ready",
+        "failed": "Failed",
+        "completed": "Completed"
+      },
+      "source": {
+        "teacher": "From your teacher",
+        "self": "Created by you"
+      },
+      "hero": {
+        "badge": "Tonight's pack",
+        "examAt": "Exam {{date}}",
+        "estimate": "~{{minutes}} min revision",
+        "cta": "Start revision"
+      },
+      "sections": {
+        "upcoming": "Upcoming",
+        "past": "Past packs",
+        "summary": "Topic summary",
+        "formulas": "Key formulas",
+        "questionTypes": "Predicted question types",
+        "mcqs": "Warm-up MCQs ({{done}}/{{total}})"
+      },
+      "list": {
+        "noUpcoming": "No upcoming packs right now.",
+        "noPast": "Completed packs will appear here.",
+        "score": "{{score}}/{{total}} warm-up"
+      },
+      "empty": {
+        "title": "No packs yet",
+        "subtitle": "Packs appear the evening before a scheduled exam — or create your own for solo study."
+      },
+      "error": {
+        "title": "Couldn't build this pack",
+        "default": "We couldn't finish building this pack from your materials. Try again in a moment.",
+        "retry": "Try again",
+        "studyMaterials": "Open Study Materials"
+      },
+      "generation": {
+        "title": "Building your Night Before Pack",
+        "subtitle": "Pulling from your topics and study materials…",
+        "steps": {
+          "topics": "Reading your topics…",
+          "formulas": "Pulling key formulas from study materials…",
+          "questionTypes": "Predicting question types…",
+          "mcqs": "Building 5 warm-up questions…"
+        }
+      },
+      "create": {
+        "title": "Create my pack",
+        "subtitle": "Schedule an exam and generate a revision pack.",
+        "submit": "Generate pack",
+        "simulateError": "Simulate Error (demo)",
+        "fields": {
+          "subject": "Subject",
+          "title": "Exam title",
+          "examAt": "Exam date & time",
+          "topics": "Topics to revise",
+          "notes": "Optional notes"
+        },
+        "placeholders": {
+          "title": "e.g. Biology Midterm",
+          "topics": "One topic per line or comma-separated",
+          "notes": "Anything you want the pack to emphasize…"
+        },
+        "errors": {
+          "title": "Enter an exam title.",
+          "examAt": "Choose an exam date and time.",
+          "topics": "Add at least one topic."
+        }
+      },
+      "formulas": {
+        "copy": "Copy",
+        "copied": "Copied"
+      },
+      "mcq": {
+        "correct": "Correct.",
+        "incorrect": "Not quite."
+      },
+      "detail": {
+        "examAt": "Exam {{date}}",
+        "progress": "{{mcqDone}}/{{mcqTotal}} MCQs",
+        "markDone": "Mark as done",
+        "askCopilot": "Ask Copilot",
+        "scheduledNotice": "This pack is scheduled and will unlock the evening before your exam. You can still preview the outline below."
+      },
+      "completion": {
+        "title": "Pack complete — nice work",
+        "score": "Warm-up score: {{score}}/{{total}} ({{percent}}%)",
+        "message": "Get some rest. You've covered the high-yield review for this exam.",
+        "askCopilot": "Ask Copilot about weak spots",
+        "doubtSolver": "Open Doubt Solver",
+        "backHub": "Back to packs",
+        "copilotPrompt": "Help me understand the weak topics from my Night Before Pack for {{title}} ({{subject}})."
+      },
+      "notFound": {
+        "title": "Pack not found",
+        "subtitle": "This pack may have been removed or the link is incorrect."
       }
     },
     "doubtSolver": {
@@ -14115,10 +14227,10 @@
       "favorites": "Favorites"
     },
     "general": {
-      "sectionTitle": "General Teaching Assistant",
-      "sectionSubtitle": "Your all-purpose AI assistant for everyday teaching tasks",
-      "name": "General Teaching Assistant",
-      "description": "Your versatile AI companion for lesson planning, assessment ideas, and classroom management support. Perfect for getting started with AI-powered teaching tools.",
+      "sectionTitle": "General Teaching Coach",
+      "sectionSubtitle": "Your all-purpose coach for everyday teaching tasks",
+      "name": "General Teaching Coach",
+      "description": "Ask anything about lesson planning, assessment ideas, rewriting instructions, or classroom support. Best starting point when you are not sure which specialist capability you need.",
       "startChatting": "Start chatting",
       "features": {
         "lessonPlanning": "Lesson planning assistance",

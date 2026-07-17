@@ -1,8 +1,7 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   Beaker,
   Target,
-  TrendingUp,
   Users,
   Sparkles,
   Download,
@@ -11,41 +10,15 @@ import {
   Circle,
   AlertCircle,
   Lightbulb,
-  BarChart3,
-  Award,
-  Clock,
-  Star,
-  Lock,
   Layers,
   Brain,
-  Zap,
   Compass,
-  Puzzle,
   LineChart,
-  PieChart,
-  Grid3x3,
-  Shapes,
-  BookOpen,
-  FileText,
-  Eye,
   Wand2,
   Settings,
-  Filter,
-  GraduationCap,
-  Code,
-  Ruler,
-  Triangle,
-  Square,
-  PlayCircle,
   FlaskConical,
-  Microscope,
-  Atom,
-  Rocket,
   Wrench,
-  Activity,
   ClipboardCheck,
-  Search,
-  MessageSquare,
   Globe,
 } from 'lucide-react'
 import * as chatbotApi from '../../api/chatbots'
@@ -53,6 +26,11 @@ import { useSnackbar } from '../../hooks/useSnackbar'
 import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
+import { CoachWorkspaceShell } from './ai-coach/CoachWorkspaceShell'
+import {
+  CoachCapabilityRedirect,
+  useCoachCapabilityRoute,
+} from './ai-coach/useCoachCapabilityRoute'
 import { resolveApiMessage } from '../../i18n/resolveApiMessage'
 
 import { useTranslation } from 'react-i18next'
@@ -121,7 +99,9 @@ const STEMInquiryMentor = () => {
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const CHATBOT_SLUG = 'stem-inquiry-mentor'
   
-  const [activeTab, setActiveTab] = useState<'investigation' | 'engineering' | 'inquiry' | 'data' | 'assessment' | 'alignment'>('investigation')
+  const { redirectTo, capability, siblings, category, tabId } = useCoachCapabilityRoute(CHATBOT_SLUG)
+
+  const [activeTab, setActiveTab] = useState<'investigation' | 'engineering' | 'inquiry'>('investigation')
   const [gradeLevel, setGradeLevel] = useState('8')
   const [topic, setTopic] = useState('')
   const [subject, setSubject] = useState<'biology' | 'chemistry' | 'physics' | 'earth-science' | 'engineering'>('biology')
@@ -135,6 +115,14 @@ const STEMInquiryMentor = () => {
     engineering_design: 'engineering',
     inquiry_guidance: 'inquiry',
   }
+
+  const isCapabilityTab = useCallback((tab: string): tab is 'investigation' | 'engineering' | 'inquiry' => {
+    return tab === 'investigation' || tab === 'engineering' || tab === 'inquiry'
+  }, [])
+
+  useEffect(() => {
+    if (tabId && isCapabilityTab(tabId)) setActiveTab(tabId)
+  }, [tabId, isCapabilityTab])
 
   const { conversationIdForActiveTab, pinFromResponse } = useChatbotHistorySession({
     slug: CHATBOT_SLUG,
@@ -298,141 +286,21 @@ const STEMInquiryMentor = () => {
     }
   }
 
-  const tabs = [
-    { id: 'investigation', label: t('sTEMInquiryMentor.tabs.investigation'), icon: FlaskConical },
-    { id: 'engineering', label: t('sTEMInquiryMentor.tabs.engineering'), icon: Wrench },
-    { id: 'inquiry', label: t('sTEMInquiryMentor.tabs.inquiry'), icon: Brain },
-    { id: 'data', label: t('sTEMInquiryMentor.tabs.data'), icon: LineChart },
-    { id: 'assessment', label: t('sTEMInquiryMentor.tabs.assessment'), icon: ClipboardCheck },
-    { id: 'alignment', label: t('sTEMInquiryMentor.tabs.alignment'), icon: Target },
-  ]
 
-  return (
-    <div className="space-y-6">
-      {creditError && (
-        <NoCreditsCard
-          reason={creditError.reason}
-          balance={creditError.balance}
-          required={creditError.required}
-          onActivated={clearCreditError}
-        />
-      )}
 
-      {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 rounded-3xl p-8 text-white shadow-xl">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-                <Beaker className="h-6 w-6" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h1 className="text-3xl font-bold">{t('sTEMInquiryMentor.stemInquiryMentor')}</h1>
-                  <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                    <Star className="h-3 w-3" /> 4.9★
-                  </span>
-                  <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" />{t('sTEMInquiryMentor.premium')}</span>
-                </div>
-                <p className="mt-2 text-blue-100">{t('sTEMInquiryMentor.ngssAlignedInvestigationsEngineeringDesignChallengesAnd')}</p>
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-3 mt-6">
-              <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
-                <Target className="h-4 w-4" />
-                <span>{t('sTEMInquiryMentor.ngssAligned')}</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
-                <Wrench className="h-4 w-4" />
-                <span>{t('sTEMInquiryMentor.engineeringDesign')}</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
-                <Brain className="h-4 w-4" />
-                <span>{t('sTEMInquiryMentor.inquiryBased')}</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
-                <LineChart className="h-4 w-4" />
-                <span>{t('sTEMInquiryMentor.dataAnalysis')}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+  const handleNewTask = () => {
+    setTopic('')
+    setNGSSInvestigation(null)
+    setEngineeringChallenge(null)
+    setInquiryGuidance(null)
+  }
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{t('sTEMInquiryMentor.investigationsCreated')}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">1,847</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
-              <FlaskConical className="h-6 w-6" />
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{t('sTEMInquiryMentor.engineeringChallenges')}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">623</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600">
-              <Wrench className="h-6 w-6" />
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{t('sTEMInquiryMentor.studentsEngaged')}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">4,523</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-100 text-teal-600">
-              <Users className="h-6 w-6" />
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{t('sTEMInquiryMentor.ngssStandards')}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">156</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600">
-              <GraduationCap className="h-6 w-6" />
-            </div>
-          </div>
-        </div>
-      </div>
+  if (redirectTo) return <CoachCapabilityRedirect to={redirectTo} />
+  if (!capability) return <CoachCapabilityRedirect to={`/chatbots/${CHATBOT_SLUG}?cap=ngss_investigation`} />
 
-      {/* Tabs */}
-      <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div className="border-b border-gray-200">
-          <div className="flex overflow-x-auto">
-            {tabs.map((tab) => {
-              const Icon = tab.icon
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex items-center gap-2 px-6 py-4 text-sm font-semibold transition-colors border-b-2 ${
-                    activeTab === tab.id
-                      ? 'border-blue-600 text-blue-600'
-                      : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                  {tab.label}
-                </button>
-              )
-            })}
-          </div>
-        </div>
 
-        <div className="p-6">
+  const workspaceBody = (
+        <div className="space-y-6">
           {/* NGSS Investigations Tab */}
           {activeTab === 'investigation' && (
             <div className="space-y-6">
@@ -901,160 +769,32 @@ const STEMInquiryMentor = () => {
               </div>
             </div>
           )}
-
-          {/* Data & Modeling Tab */}
-          {activeTab === 'data' && (
-            <div className="space-y-6">
-              <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-8">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <LineChart className="h-6 w-6 text-indigo-600" />{t('sTEMInquiryMentor.dataAnalysisModelingTools')}</h3>
-                <p className="text-sm text-gray-600 mb-6">{t('sTEMInquiryMentor.aiPoweredToolsForDataCollectionGraphingStatisticalAnaly')}</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {[
-                    { name: 'Graph Generator', icon: LineChart, description: 'Create line, bar, scatter plots with data analysis' },
-                    { name: 'Statistical Analysis', icon: BarChart3, description: 'Calculate mean, median, mode, standard deviation' },
-                    { name: 'Data Table Builder', icon: Grid3x3, description: 'Organize and format experimental data' },
-                    { name: 'Model Builder', icon: Shapes, description: 'Create mathematical and conceptual models' },
-                    { name: 'Trend Analysis', icon: TrendingUp, description: 'Identify patterns and relationships in data' },
-                    { name: 'Error Analysis', icon: AlertCircle, description: 'Calculate uncertainty and error propagation' },
-                  ].map((tool, idx) => (
-                    <div key={idx} className="rounded-xl border border-gray-200 bg-white p-6 hover:shadow-md transition">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 mb-4">
-                        <tool.icon className="h-6 w-6" />
-                      </div>
-                      <h4 className="text-base font-semibold text-gray-900 mb-2">{tool.name}</h4>
-                      <p className="text-sm text-gray-600 mb-4">{tool.description}</p>
-                      <button className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">{t('sTEMInquiryMentor.launchTool')}</button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Assessment Tab */}
-          {activeTab === 'assessment' && (
-            <div className="space-y-6">
-              <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-8">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <ClipboardCheck className="h-6 w-6 text-purple-600" />{t('sTEMInquiryMentor.assessmentFeedbackTools')}</h3>
-                <p className="text-sm text-gray-600 mb-6">{t('sTEMInquiryMentor.createNgssAlignedAssessmentsWithAutomatedFeedbackAndRub')}</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {[
-                    { type: 'Performance Task', icon: Target, description: '3D assessment aligned to performance expectations', color: 'blue' },
-                    { type: 'Lab Report Rubric', icon: FileText, description: 'Automated rubric for scientific writing', color: 'green' },
-                    { type: 'Claim-Evidence-Reasoning', icon: Brain, description: 'CER framework assessment generator', color: 'purple' },
-                    { type: 'Engineering Portfolio', icon: Wrench, description: 'Assess design process documentation', color: 'orange' },
-                  ].map((assessment, idx) => (
-                    <div key={idx} className="rounded-xl border border-gray-200 bg-white p-6 hover:shadow-md transition">
-                      <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-${assessment.color}-100 text-${assessment.color}-600 mb-3`}>
-                        <assessment.icon className="h-5 w-5" />
-                      </div>
-                      <h4 className="text-base font-semibold text-gray-900 mb-2">{assessment.type}</h4>
-                      <p className="text-sm text-gray-600 mb-4">{assessment.description}</p>
-                      <button className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">{t('sTEMInquiryMentor.createAssessment')}</button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* NGSS Alignment Tab */}
-          {activeTab === 'alignment' && (
-            <div className="space-y-6">
-              <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-teal-50 to-cyan-50 p-8">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Target className="h-6 w-6 text-teal-600" />{t('sTEMInquiryMentor.ngssCurriculumAlignmentEngine')}</h3>
-                <p className="text-sm text-gray-600 mb-6">{t('sTEMInquiryMentor.automaticallyAlignInvestigationsActivitiesAndAssessment')}</p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {[
-                    { feature: 'Performance Expectation Mapping', icon: Target },
-                    { feature: '3D Learning Analysis', icon: Layers },
-                    { feature: 'Cross-Cutting Concepts', icon: Compass },
-                    { feature: 'Science Practices Integration', icon: FlaskConical },
-                    { feature: 'Grade Band Alignment', icon: GraduationCap },
-                    { feature: 'State Standard Mapping', icon: Globe },
-                  ].map((item, idx) => (
-                    <div key={idx} className="rounded-xl border border-gray-200 bg-white p-6">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-100 text-teal-600 mb-3">
-                        <item.icon className="h-5 w-5" />
-                      </div>
-                      <h4 className="text-sm font-semibold text-gray-900">{item.feature}</h4>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
         </div>
-      </div>
+  )
 
-      {/* Additional Features Section */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-6">{t('sTEMInquiryMentor.advancedAiPoweredCapabilities')}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 mb-4">
-              <Target className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('sTEMInquiryMentor.ngssAlignmentEngine')}</h3>
-            <p className="text-sm text-gray-600">{t('sTEMInquiryMentor.automaticMappingToPerformanceExpectationsDcisSepsAndCcc')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-cyan-50 to-teal-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600 mb-4">
-              <Wand2 className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('sTEMInquiryMentor.inquiryDesignCopilot')}</h3>
-            <p className="text-sm text-gray-600">{t('sTEMInquiryMentor.aiAssistedGenerationOfPhenomenaDrivenInvestigationsWith')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-teal-50 to-green-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-100 text-teal-600 mb-4">
-              <Wrench className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('sTEMInquiryMentor.engineeringChallengeGenerator')}</h3>
-            <p className="text-sm text-gray-600">{t('sTEMInquiryMentor.createAuthenticEngineeringDesignChallengesWithConstrain')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600 mb-4">
-              <Brain className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('sTEMInquiryMentor.criticalThinkingCoach')}</h3>
-            <p className="text-sm text-gray-600">{t('sTEMInquiryMentor.guideStudentsThroughHypothesisFormationExperimentalDesi')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-emerald-50 to-blue-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 mb-4">
-              <LineChart className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('sTEMInquiryMentor.dataModelingAssistant')}</h3>
-            <p className="text-sm text-gray-600">{t('sTEMInquiryMentor.automatedGraphingStatisticalAnalysisAndScientificModeli')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 mb-4">
-              <ClipboardCheck className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('sTEMInquiryMentor.assessmentAutomation')}</h3>
-            <p className="text-sm text-gray-600">{t('sTEMInquiryMentor.generateRubricsProvideAutomatedFeedbackAndCreate3dPerfo')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 mb-4">
-              <Users className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('sTEMInquiryMentor.differentiationAccessibility')}</h3>
-            <p className="text-sm text-gray-600">{t('sTEMInquiryMentor.automaticallyAdaptInvestigationsForDiverseLearnersWithM')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600 mb-4">
-              <Settings className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('sTEMInquiryMentor.classroomIntegration')}</h3>
-            <p className="text-sm text-gray-600">{t('sTEMInquiryMentor.seamlessIntegrationWithLmsGradebooksAndClassroomManagem')}</p>
-          </div>
-        </div>
-      </div>
+  return (
+    <div className="space-y-6">
+      {creditError && (
+        <NoCreditsCard
+          reason={creditError.reason}
+          balance={creditError.balance}
+          required={creditError.required}
+          onActivated={clearCreditError}
+        />
+      )}
+      <CoachWorkspaceShell
+        capability={capability}
+        siblings={siblings}
+        categoryKey={category?.key}
+        categoryLabel={category?.label}
+        onNewTask={handleNewTask}
+      >
+        {workspaceBody}
+      </CoachWorkspaceShell>
     </div>
   )
 }
+
 
 export default STEMInquiryMentor
 

@@ -18,6 +18,7 @@ import {
   History,
   ArrowRight,
   AlertCircle,
+  Rocket,
 } from 'lucide-react'
 
 import { useDashboardData, type DashboardItem } from '../hooks/useDashboardData'
@@ -88,6 +89,7 @@ function KPISkeleton() {
 const featureWorkflows = [
   { path: '/templates', icon: FileText, i18nKey: 'nav.templates', color: 'bg-blue-500' },
   { path: '/chatbots', icon: MessageSquare, i18nKey: 'nav.chatbots', color: 'bg-green-500' },
+  { path: '/action-studio', icon: Rocket, i18nKey: 'nav.actionStudio', color: 'bg-sky-500' },
   { path: '/youtube-quiz', icon: Youtube, i18nKey: 'nav.youtubeQuiz', color: 'bg-red-500' },
   { path: '/pixgen', icon: Image, i18nKey: 'nav.pixgen', color: 'bg-purple-500' },
   { path: '/learning-hub', icon: BookOpen, i18nKey: 'nav.learningHub', color: 'bg-orange-500' },

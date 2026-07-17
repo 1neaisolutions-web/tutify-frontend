@@ -1,31 +1,18 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   Music,
-  Headphones,
   Mic,
   Users,
-  Award,
   BookOpen,
   PlayCircle,
   FileMusic,
-  Target,
   CheckCircle,
   Sparkles,
   Download,
   RefreshCw,
-  CheckCircle2,
-  Clock,
-  Star,
   Lock,
   Globe,
-  TrendingUp,
-  BarChart3,
-  Lightbulb,
-  Zap,
-  Copy,
-  ExternalLink,
   GraduationCap,
-  AlertCircle,
   Eye,
   Gamepad2,
 } from 'lucide-react'
@@ -48,6 +35,11 @@ import { useSnackbar } from '../../hooks/useSnackbar'
 import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
+import { CoachWorkspaceShell } from './ai-coach/CoachWorkspaceShell'
+import {
+  CoachCapabilityRedirect,
+  useCoachCapabilityRoute,
+} from './ai-coach/useCoachCapabilityRoute'
 import {
   mapMusicTheoryResult,
   mapMusicCompositionResult,
@@ -63,12 +55,14 @@ import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
 import { chatbotBandToApi } from '@/catalog/adapters/chatbotAdapters'
 const CHATBOT_SLUG = 'music-performance-coach'
 
-type TabType = 'theory' | 'composition' | 'performance' | 'ensemble' | 'pedagogy' | 'games' | 'standards' | 'resources'
+type TabType = 'theory' | 'composition' | 'performance' | 'ensemble' | 'pedagogy' | 'games' | 'standards'
 
 const MusicPerformanceCoach = () => {
   const { t } = useTranslation()
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
+  const { redirectTo, capability, siblings, category, tabId } = useCoachCapabilityRoute(CHATBOT_SLUG)
+
   const [activeTab, setActiveTab] = useState<TabType>('theory')
   const [gradeLevel, setGradeLevel] = useState('9-12')
   const [selectedInstrument, setSelectedInstrument] = useState('Piano')
@@ -113,15 +107,23 @@ const MusicPerformanceCoach = () => {
     music_standards: 'standards',
   }
 
+  const isCapabilityTab = useCallback((tab: string): tab is TabType => {
+    return tab === 'theory' || tab === 'composition' || tab === 'performance' || tab === 'ensemble' || tab === 'pedagogy' || tab === 'games' || tab === 'standards'
+  }, [])
+
+  useEffect(() => {
+    if (tabId && isCapabilityTab(tabId)) setActiveTab(tabId)
+  }, [tabId, isCapabilityTab])
+
   const { conversationIdForActiveTab, pinFromResponse } = useChatbotHistorySession({
     slug: CHATBOT_SLUG,
     activeTab,
     capabilityKeyToTab: MUSIC_CAP_TABS,
     onRestore: async ({ tabKey, assistantContent, assistantMetadata }) => {
       const cap = assistantMetadata?.capability_key as string | undefined
-      const valid: TabType[] = ['theory', 'composition', 'performance', 'ensemble', 'pedagogy', 'games', 'standards', 'resources']
+      const valid: TabType[] = ['theory', 'composition', 'performance', 'ensemble', 'pedagogy', 'games', 'standards']
       const tab: TabType =
-        valid.includes(tabKey as TabType)
+        (valid as readonly string[]).includes(tabKey)
           ? (tabKey as TabType)
           : cap && MUSIC_CAP_TABS[cap]
             ? MUSIC_CAP_TABS[cap]
@@ -370,119 +372,67 @@ const MusicPerformanceCoach = () => {
     }
   }
 
-  const tabs = [
-    { id: 'theory' as TabType, label: t('musicPerformanceCoach.tabs.theory'), icon: BookOpen },
-    { id: 'composition' as TabType, label: t('musicPerformanceCoach.tabs.composition'), icon: FileMusic },
-    { id: 'performance' as TabType, label: t('musicPerformanceCoach.tabs.performance'), icon: Mic },
-    { id: 'ensemble' as TabType, label: t('musicPerformanceCoach.tabs.ensemble'), icon: Users },
-    { id: 'pedagogy' as TabType, label: t('musicPerformanceCoach.tabs.pedagogy'), icon: GraduationCap },
-    { id: 'games' as TabType, label: t('musicPerformanceCoach.tabs.games'), icon: Gamepad2 },
-    { id: 'standards' as TabType, label: t('musicPerformanceCoach.tabs.standards'), icon: CheckCircle },
-    { id: 'resources' as TabType, label: t('musicPerformanceCoach.tabs.resources'), icon: Music },
-  ]
 
-  return (
-    <div className="space-y-6">
-      {creditError && (
-        <NoCreditsCard
-          reason={creditError.reason}
-          balance={creditError.balance}
-          required={creditError.required}
-          onActivated={clearCreditError}
-        />
-      )}
 
-      {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 rounded-3xl p-8 text-white shadow-xl">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-                <Music className="h-6 w-6" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-3xl font-bold">{t('musicPerformanceCoach.musicPerformanceCoach')}</h1>
-                  <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                    <Star className="h-3 w-3" /> 4.9★
-                  </span>
-                  <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" />{t('musicPerformanceCoach.premium')}</span>
-                  <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
-                    <Globe className="inline h-3 w-3 mr-1" />{t('musicPerformanceCoach.internationalStandards')}</span>
-                </div>
-                <p className="mt-2 text-blue-100">{t('musicPerformanceCoach.heroDescription')}</p>
-              </div>
-            </div>
+  const handleNewTask = () => {
+    setMusicTheoryInfo(null)
+    setCompositionGuide(null)
+    setTechniqueInfo(null)
+    setEnsembleGuide(null)
+    setPedagogicalMethods([])
+    setSelectedMethod(null)
+    setMusicGames([])
+    setMusicStandards([])
+    setSelectedStandard(null)
+  }
+
+  if (redirectTo) return <CoachCapabilityRedirect to={redirectTo} />
+  if (!capability) return <CoachCapabilityRedirect to={`/chatbots/${CHATBOT_SLUG}?cap=music_theory`} />
+
+
+  const workspaceBody = (
+        <div className="space-y-6">
+
             
-            {/* Quick Settings */}
-            <div className="flex flex-wrap gap-4 mt-6">
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <GradeBandSelect
-                  variant="native"
-                  value={gradeLevel}
-                  onChange={setGradeLevel}
-                  label={t('musicPerformanceCoach.gradeLevel')}
-                  context="chatbotBand"
-                  selectClassName="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                  className="flex items-center gap-2 [&_span]:text-sm [&_span]:font-medium [&_span]:text-white"
-                />
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">{t('musicPerformanceCoach.instrument')}</label>
-                <select
-                  value={selectedInstrument}
-                  onChange={(e) => setSelectedInstrument(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                >
-                  {instruments.map(instrument => (
-                    <option key={instrument} value={instrument}>{instrument}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">{t('musicPerformanceCoach.style')}</label>
-                <select
-                  value={selectedStyle}
-                  onChange={(e) => setSelectedStyle(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                >
-                  {styles.map(style => (
-                    <option key={style} value={style}>{style}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                      {/* Quick Settings */}
+                      <div className="flex flex-wrap gap-4">
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                          <GradeBandSelect
+                            variant="native"
+                            value={gradeLevel}
+                            onChange={setGradeLevel}
+                            label={t('musicPerformanceCoach.gradeLevel')}
+                            context="chatbotBand"
+                            selectClassName="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                            className="flex items-center gap-2 [&_span]:text-sm [&_span]:font-medium [&_span]:text-gray-900"
+                          />
+                        </div>
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                          <label className="text-sm font-medium text-gray-700">{t('musicPerformanceCoach.instrument')}</label>
+                          <select
+                            value={selectedInstrument}
+                            onChange={(e) => setSelectedInstrument(e.target.value)}
+                            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                          >
+                            {instruments.map(instrument => (
+                              <option key={instrument} value={instrument}>{instrument}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                          <label className="text-sm font-medium text-gray-700">{t('musicPerformanceCoach.style')}</label>
+                          <select
+                            value={selectedStyle}
+                            onChange={(e) => setSelectedStyle(e.target.value)}
+                            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                          >
+                            {styles.map(style => (
+                              <option key={style} value={style}>{style}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
 
-      {/* Tabs */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm">
-        <div className="border-b border-gray-200">
-          <div className="flex overflow-x-auto scrollbar-hide">
-            {tabs.map((tab) => {
-              const Icon = tab.icon
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-6 py-4 text-sm font-medium transition-colors border-b-2 ${
-                    activeTab === tab.id
-                      ? 'border-purple-600 text-purple-600 bg-purple-50'
-                      : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                  }`}
-                >
-                  <Icon className="h-5 w-5" />
-                  {tab.label}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        <div className="p-6">
-          {/* Music Theory Tab */}
           {activeTab === 'theory' && (
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
@@ -1182,63 +1132,32 @@ const MusicPerformanceCoach = () => {
               )}
             </div>
           )}
-
-          {/* Resources Tab */}
-          {activeTab === 'resources' && (
-            <div className="space-y-6">
-              <div className="bg-gradient-to-r from-violet-50 to-purple-50 rounded-xl p-6 border border-violet-200">
-                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Music className="h-6 w-6 text-violet-600" />{t('musicPerformanceCoach.musicResourcesRepertoire')}</h2>
-                <p className="text-gray-600">{t('musicPerformanceCoach.accessCuratedRepertoireLibrariesPracticeMaterialsAndRef')}</p>
-              </div>
-
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <FileMusic className="h-5 w-5 text-violet-600" />{t('musicPerformanceCoach.repertoireLibrary')}</h3>
-                  <p className="text-gray-700 mb-3">{t('musicPerformanceCoach.gradeAppropriatePiecesAcrossGenresAndDifficultyLevels')}</p>
-                  <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-                    <li>{t('musicPerformanceCoach.classicalRepertoire')}</li>
-                    <li>{t('musicPerformanceCoach.popularMusic')}</li>
-                    <li>{t('musicPerformanceCoach.worldMusic')}</li>
-                    <li>{t('musicPerformanceCoach.jazzStandards')}</li>
-                    <li>{t('musicPerformanceCoach.folkSongs')}</li>
-                  </ul>
-                </div>
-
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <BookOpen className="h-5 w-5 text-violet-600" />{t('musicPerformanceCoach.practiceMaterials')}</h3>
-                  <p className="text-gray-700 mb-3">{t('musicPerformanceCoach.exercisesScalesAndTechnicalStudies')}</p>
-                  <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-                    <li>{t('musicPerformanceCoach.scalesAndArpeggios')}</li>
-                    <li>{t('musicPerformanceCoach.technicalExercises')}</li>
-                    <li>{t('musicPerformanceCoach.sightReadingMaterials')}</li>
-                    <li>{t('musicPerformanceCoach.earTrainingExercises')}</li>
-                    <li>{t('musicPerformanceCoach.etudesAndStudies')}</li>
-                  </ul>
-                </div>
-
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <GraduationCap className="h-5 w-5 text-violet-600" />{t('musicPerformanceCoach.referenceMaterials')}</h3>
-                  <p className="text-gray-700 mb-3">{t('musicPerformanceCoach.musicTheoryHistoryAndStyleGuides')}</p>
-                  <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-                    <li>{t('musicPerformanceCoach.musicTheoryReferences')}</li>
-                    <li>{t('musicPerformanceCoach.composerBiographies')}</li>
-                    <li>{t('musicPerformanceCoach.styleGuides')}</li>
-                    <li>{t('musicPerformanceCoach.historicalContext')}</li>
-                    <li>{t('musicPerformanceCoach.performancePractice')}</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
-      </div>
+  )
+
+  return (
+    <div className="space-y-6">
+      {creditError && (
+        <NoCreditsCard
+          reason={creditError.reason}
+          balance={creditError.balance}
+          required={creditError.required}
+          onActivated={clearCreditError}
+        />
+      )}
+      <CoachWorkspaceShell
+        capability={capability}
+        siblings={siblings}
+        categoryKey={category?.key}
+        categoryLabel={category?.label}
+        onNewTask={handleNewTask}
+      >
+        {workspaceBody}
+      </CoachWorkspaceShell>
     </div>
   )
 }
+
 
 export default MusicPerformanceCoach
 

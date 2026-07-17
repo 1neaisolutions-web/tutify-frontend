@@ -1,31 +1,18 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   TrendingUp,
-  Target,
   Palette,
-  BarChart3,
   CheckCircle,
-  FileText,
   Sparkles,
   Download,
   RefreshCw,
-  Star,
   Lock,
   Globe,
   Eye,
-  Lightbulb,
-  Award,
-  Users,
   BookOpen,
   Zap,
-  ExternalLink,
-  GraduationCap,
-  Info,
-  Copy,
   Megaphone,
   Search,
-  MessageSquare,
-  Video,
   Image as ImageIcon,
 } from 'lucide-react'
 import {
@@ -49,17 +36,24 @@ import {
 import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
+import { CoachWorkspaceShell } from './ai-coach/CoachWorkspaceShell'
+import {
+  CoachCapabilityRedirect,
+  useCoachCapabilityRoute,
+} from './ai-coach/useCoachCapabilityRoute'
 
 import { useTranslation } from 'react-i18next'
 import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
 import { chatbotBandToApi } from '@/catalog/adapters/chatbotAdapters'
 const MARKETING_STRATEGIST_SLUG = 'marketing-branding-strategist'
 
-type TabType = 'marketing-concepts' | 'branding' | 'digital-marketing' | 'market-research' | 'campaigns' | 'standards' | 'resources'
+type TabType = 'marketing-concepts' | 'branding' | 'digital-marketing' | 'market-research' | 'campaigns' | 'standards'
 
 const MarketingBrandingStrategist = () => {
   const { t } = useTranslation()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
+  const { redirectTo, capability, siblings, category, tabId } = useCoachCapabilityRoute(MARKETING_STRATEGIST_SLUG)
+
   const [activeTab, setActiveTab] = useState<TabType>('marketing-concepts')
   const [gradeLevel, setGradeLevel] = useState('9-12')
   const [isGenerating, setIsGenerating] = useState(false)
@@ -102,15 +96,23 @@ const MarketingBrandingStrategist = () => {
     compaign: 'campaigns', // backend typo must match seed
   }
 
+  const isCapabilityTab = useCallback((tab: string): tab is TabType => {
+    return tab === 'marketing-concepts' || tab === 'branding' || tab === 'digital-marketing' || tab === 'market-research' || tab === 'campaigns' || tab === 'standards'
+  }, [])
+
+  useEffect(() => {
+    if (tabId && isCapabilityTab(tabId)) setActiveTab(tabId)
+  }, [tabId, isCapabilityTab])
+
   const { conversationIdForActiveTab, pinFromResponse } = useChatbotHistorySession({
     slug: MARKETING_STRATEGIST_SLUG,
     activeTab,
     capabilityKeyToTab: MARKETING_CAP_TABS,
     onRestore: async ({ tabKey, userContent, assistantContent, assistantMetadata }) => {
       const cap = assistantMetadata?.capability_key as string | undefined
-      const valid: TabType[] = ['marketing-concepts', 'branding', 'digital-marketing', 'market-research', 'campaigns', 'standards', 'resources']
+      const valid: TabType[] = ['marketing-concepts', 'branding', 'digital-marketing', 'market-research', 'campaigns', 'standards']
       const tab: TabType =
-        valid.includes(tabKey as TabType)
+        (valid as readonly string[]).includes(tabKey)
           ? (tabKey as TabType)
           : cap && MARKETING_CAP_TABS[cap]
             ? MARKETING_CAP_TABS[cap]
@@ -300,95 +302,45 @@ const MarketingBrandingStrategist = () => {
     }
   }
 
-  const tabs = [
-    { id: 'marketing-concepts' as TabType, label: t('marketingBrandingStrategist.tabs.marketing-concepts'), icon: BookOpen },
-    { id: 'branding' as TabType, label: t('marketingBrandingStrategist.tabs.branding'), icon: Palette },
-    { id: 'digital-marketing' as TabType, label: t('marketingBrandingStrategist.tabs.digital-marketing'), icon: Zap },
-    { id: 'market-research' as TabType, label: t('marketingBrandingStrategist.tabs.market-research'), icon: Search },
-    { id: 'campaigns' as TabType, label: t('marketingBrandingStrategist.tabs.campaigns'), icon: Megaphone },
-    { id: 'standards' as TabType, label: t('marketingBrandingStrategist.tabs.standards'), icon: CheckCircle },
-    { id: 'resources' as TabType, label: t('marketingBrandingStrategist.tabs.resources'), icon: FileText },
-  ]
-  // Exclude last sub-chatbot from UI; data still from backend for rest
-  const visibleTabs = tabs.slice(0, -1)
 
-  return (
-    <div className="space-y-6">
-      {creditError && (
-        <NoCreditsCard
-          reason={creditError.reason}
-          balance={creditError.balance}
-          required={creditError.required}
-          onActivated={clearCreditError}
-        />
-      )}
-      {/* Header */}
-      <div className="bg-gradient-to-r from-pink-600 via-rose-600 to-red-600 rounded-3xl p-8 text-white shadow-xl">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-                <TrendingUp className="h-6 w-6" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-3xl font-bold">{t('marketingBrandingStrategist.marketingBrandingStrategist')}</h1>
-                  <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                    <Star className="h-3 w-3" /> 4.8★
-                  </span>
-                  <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" />{t('marketingBrandingStrategist.premium')}</span>
-                  <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
-                    <Globe className="inline h-3 w-3 mr-1" />{t('marketingBrandingStrategist.internationalStandards')}</span>
-                </div>
-                <p className="mt-2 text-blue-100">{t('marketingBrandingStrategist.heroDescription')}</p>
-              </div>
-            </div>
+
+  const handleNewTask = () => {
+    setMarketingConcepts([])
+    setSelectedConcept(null)
+    setBrandingStrategies([])
+    setSelectedStrategy(null)
+    setDigitalChannels([])
+    setSelectedChannel(null)
+    setResearchMethods([])
+    setSelectedMethod(null)
+    setMarketingStandards([])
+    setSelectedStandard(null)
+    setGeneratedCampaign(null)
+  }
+
+  if (redirectTo) return <CoachCapabilityRedirect to={redirectTo} />
+  if (!capability) return <CoachCapabilityRedirect to={`/chatbots/${MARKETING_STRATEGIST_SLUG}?cap=marketing_concepts`} />
+
+
+  const workspaceBody = (
+        <div className="space-y-6">
+
             
-            {/* Quick Settings */}
-            <div className="flex flex-wrap gap-4 mt-6">
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <GradeBandSelect
-                  variant="native"
-                  value={gradeLevel}
-                  onChange={setGradeLevel}
-                  label={t('marketingBrandingStrategist.gradeLevel')}
-                  context="chatbotBand"
-                  selectClassName="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                  className="flex items-center gap-2 [&_span]:text-sm [&_span]:font-medium [&_span]:text-white"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                      {/* Quick Settings */}
+                      <div className="flex flex-wrap gap-4">
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                          <GradeBandSelect
+                            variant="native"
+                            value={gradeLevel}
+                            onChange={setGradeLevel}
+                            label={t('marketingBrandingStrategist.gradeLevel')}
+                            context="chatbotBand"
+                            selectClassName="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                            className="flex items-center gap-2 [&_span]:text-sm [&_span]:font-medium [&_span]:text-gray-900"
+                          />
+                        </div>
+                      </div>
 
-      {/* Tabs */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm">
-        <div className="border-b border-gray-200">
-          <div className="flex overflow-x-auto scrollbar-hide">
-            {visibleTabs.map((tab) => {
-              const Icon = tab.icon
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-6 py-4 text-sm font-medium transition-colors border-b-2 ${
-                    activeTab === tab.id
-                      ? 'border-pink-600 text-pink-600 bg-pink-50'
-                      : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                  }`}
-                >
-                  <Icon className="h-5 w-5" />
-                  {tab.label}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        <div className="p-6">
-          {/* Marketing Concepts Tab */}
           {activeTab === 'marketing-concepts' && (
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-pink-50 to-rose-50 rounded-xl p-6 border border-pink-200">
@@ -988,116 +940,32 @@ const MarketingBrandingStrategist = () => {
               )}
             </div>
           )}
-
-          {/* Resources Tab */}
-          {activeTab === 'resources' && (
-            <div className="space-y-6">
-              <div className="bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl p-6 border border-gray-200">
-                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <FileText className="h-6 w-6 text-gray-600" />{t('marketingBrandingStrategist.marketingBrandingResources')}</h2>
-                <p className="text-gray-600">{t('marketingBrandingStrategist.curatedResourcesForMarketingConceptsBrandingStrategiesD')}</p>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <BookOpen className="h-5 w-5 text-pink-600" />{t('marketingBrandingStrategist.marketingFundamentals')}</h3>
-                  <ul className="space-y-2 text-gray-700">
-                    <li className="flex items-center gap-2">
-                      <ExternalLink className="h-4 w-4 text-pink-600" />
-                      <span>{t('marketingBrandingStrategist.amaMarketingEducation')}</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <ExternalLink className="h-4 w-4 text-pink-600" />
-                      <span>{t('marketingBrandingStrategist.cimMarketingResources')}</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <ExternalLink className="h-4 w-4 text-pink-600" />
-                      <span>{t('marketingBrandingStrategist.marketingCaseStudies')}</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <ExternalLink className="h-4 w-4 text-pink-600" />
-                      <span>{t('marketingBrandingStrategist.marketingToolsTemplates')}</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <Palette className="h-5 w-5 text-purple-600" />{t('marketingBrandingStrategist.brandingResources')}</h3>
-                  <ul className="space-y-2 text-gray-700">
-                    <li className="flex items-center gap-2">
-                      <ExternalLink className="h-4 w-4 text-purple-600" />
-                      <span>{t('marketingBrandingStrategist.brandStrategyGuides')}</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <ExternalLink className="h-4 w-4 text-purple-600" />
-                      <span>{t('marketingBrandingStrategist.brandIdentityDesignTools')}</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <ExternalLink className="h-4 w-4 text-purple-600" />
-                      <span>{t('marketingBrandingStrategist.brandStorytellingExamples')}</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <ExternalLink className="h-4 w-4 text-purple-600" />
-                      <span>{t('marketingBrandingStrategist.rebrandingCaseStudies')}</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <Zap className="h-5 w-5 text-blue-600" />{t('marketingBrandingStrategist.digitalMarketingTools')}</h3>
-                  <ul className="space-y-2 text-gray-700">
-                    <li className="flex items-center gap-2">
-                      <ExternalLink className="h-4 w-4 text-blue-600" />
-                      <span>{t('marketingBrandingStrategist.googleAnalyticsAcademy')}</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <ExternalLink className="h-4 w-4 text-blue-600" />
-                      <span>{t('marketingBrandingStrategist.socialMediaMarketingGuides')}</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <ExternalLink className="h-4 w-4 text-blue-600" />
-                      <span>{t('marketingBrandingStrategist.seoBestPractices')}</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <ExternalLink className="h-4 w-4 text-blue-600" />
-                      <span>{t('marketingBrandingStrategist.emailMarketingPlatforms')}</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <Search className="h-5 w-5 text-green-600" />{t('marketingBrandingStrategist.marketResearchTools')}</h3>
-                  <ul className="space-y-2 text-gray-700">
-                    <li className="flex items-center gap-2">
-                      <ExternalLink className="h-4 w-4 text-green-600" />
-                      <span>{t('marketingBrandingStrategist.esomarResearchResources')}</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <ExternalLink className="h-4 w-4 text-green-600" />
-                      <span>{t('marketingBrandingStrategist.surveyPlatforms')}</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <ExternalLink className="h-4 w-4 text-green-600" />
-                      <span>{t('marketingBrandingStrategist.dataAnalysisTools')}</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <ExternalLink className="h-4 w-4 text-green-600" />
-                      <span>{t('marketingBrandingStrategist.researchMethodologyGuides')}</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
-      </div>
+  )
+
+  return (
+    <div className="space-y-6">
+      {creditError && (
+        <NoCreditsCard
+          reason={creditError.reason}
+          balance={creditError.balance}
+          required={creditError.required}
+          onActivated={clearCreditError}
+        />
+      )}
+      <CoachWorkspaceShell
+        capability={capability}
+        siblings={siblings}
+        categoryKey={category?.key}
+        categoryLabel={category?.label}
+        onNewTask={handleNewTask}
+      >
+        {workspaceBody}
+      </CoachWorkspaceShell>
     </div>
   )
 }
+
 
 export default MarketingBrandingStrategist
 

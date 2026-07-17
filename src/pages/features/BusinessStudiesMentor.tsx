@@ -1,30 +1,15 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   Briefcase,
   Globe,
   TrendingUp,
   DollarSign,
   Lightbulb,
-  FileText,
-  Users,
-  BarChart3,
   Sparkles,
   Download,
   RefreshCw,
-  CheckCircle2,
-  Clock,
-  Star,
   Lock,
-  BookOpen,
-  Target,
   Award,
-  Zap,
-  Building2,
-  Coins,
-  MapPin,
-  Copy,
-  ExternalLink,
-  GraduationCap,
   Network,
 } from 'lucide-react'
 import {
@@ -51,17 +36,24 @@ import {
 import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
+import { CoachWorkspaceShell } from './ai-coach/CoachWorkspaceShell'
+import {
+  CoachCapabilityRedirect,
+  useCoachCapabilityRoute,
+} from './ai-coach/useCoachCapabilityRoute'
 
 import { useTranslation } from 'react-i18next'
 import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
 import { careerBusinessBandToApi } from '@/catalog/adapters/gradeBandAdapters'
 const BUSINESS_MENTOR_SLUG = 'business-studies-mentor'
 
-type TabType = 'standards' | 'entrepreneurship' | 'economics' | 'financial' | 'scenarios' | 'trade' | 'cultural' | 'assessment'
+type TabType = 'standards' | 'entrepreneurship' | 'economics' | 'financial' | 'scenarios' | 'trade' | 'cultural'
 
 const BusinessStudiesMentor = () => {
   const { t } = useTranslation()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
+  const { redirectTo, capability, siblings, category, tabId } = useCoachCapabilityRoute(BUSINESS_MENTOR_SLUG)
+
   const [activeTab, setActiveTab] = useState<TabType>('standards')
   const [gradeLevel, setGradeLevel] = useState('9-12')
   const [selectedRegion, setSelectedRegion] = useState('Global')
@@ -107,15 +99,23 @@ const BusinessStudiesMentor = () => {
     cross_cultural_guide: 'cultural',
   }
 
+  const isCapabilityTab = useCallback((tab: string): tab is TabType => {
+    return tab === 'standards' || tab === 'entrepreneurship' || tab === 'economics' || tab === 'financial' || tab === 'scenarios' || tab === 'trade' || tab === 'cultural'
+  }, [])
+
+  useEffect(() => {
+    if (tabId && isCapabilityTab(tabId)) setActiveTab(tabId)
+  }, [tabId, isCapabilityTab])
+
   const { conversationIdForActiveTab, pinFromResponse } = useChatbotHistorySession({
     slug: BUSINESS_MENTOR_SLUG,
     activeTab,
     capabilityKeyToTab: BUSINESS_CAP_TABS,
     onRestore: async ({ tabKey, userContent, assistantContent, assistantMetadata }) => {
       const cap = assistantMetadata?.capability_key as string | undefined
-      const valid: TabType[] = ['standards', 'entrepreneurship', 'economics', 'financial', 'scenarios', 'trade', 'cultural', 'assessment']
+      const valid: TabType[] = ['standards', 'entrepreneurship', 'economics', 'financial', 'scenarios', 'trade', 'cultural']
       const tab: TabType =
-        valid.includes(tabKey as TabType)
+        (valid as readonly string[]).includes(tabKey)
           ? (tabKey as TabType)
           : cap && BUSINESS_CAP_TABS[cap]
             ? BUSINESS_CAP_TABS[cap]
@@ -324,120 +324,65 @@ const BusinessStudiesMentor = () => {
     }
   }
 
-  const tabs = [
-    { id: 'standards' as TabType, label: t('businessStudiesMentor.tabs.standards'), icon: Award },
-    { id: 'entrepreneurship' as TabType, label: t('businessStudiesMentor.tabs.entrepreneurship'), icon: Lightbulb },
-    { id: 'economics' as TabType, label: t('businessStudiesMentor.tabs.economics'), icon: TrendingUp },
-    { id: 'financial' as TabType, label: t('businessStudiesMentor.tabs.financial'), icon: DollarSign },
-    { id: 'scenarios' as TabType, label: t('businessStudiesMentor.tabs.scenarios'), icon: Briefcase },
-    { id: 'trade' as TabType, label: t('businessStudiesMentor.tabs.trade'), icon: Network },
-    { id: 'cultural' as TabType, label: t('businessStudiesMentor.tabs.cultural'), icon: Globe },
-    { id: 'assessment' as TabType, label: t('businessStudiesMentor.tabs.assessment'), icon: FileText },
-  ]
-  // Exclude last sub-chatbot (Trade Agreements) from UI; data still from backend for rest
-  const visibleTabs = tabs.filter((t) => t.id !== 'trade')
 
-  return (
-    <div className="space-y-6">
-      {creditError && (
-        <NoCreditsCard
-          reason={creditError.reason}
-          balance={creditError.balance}
-          required={creditError.required}
-          onActivated={clearCreditError}
-        />
-      )}
-      {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-3xl p-8 text-white shadow-xl">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-                <Briefcase className="h-6 w-6" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-3xl font-bold">{t('businessStudiesMentor.businessStudiesMentor')}</h1>
-                  <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                    <Star className="h-3 w-3" /> 4.9★
-                  </span>
-                  <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" />{t('businessStudiesMentor.premium')}</span>
-                  <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
-                    <Globe className="inline h-3 w-3 mr-1" />{t('businessStudiesMentor.internationalFocus')}</span>
-                </div>
-                <p className="mt-2 text-blue-100">{t('businessStudiesMentor.heroDescription')}</p>
-              </div>
-            </div>
+
+  const handleNewTask = () => {
+    setBusinessStandard(null)
+    setEntrepreneurshipFramework([])
+    setEconomicConcept(null)
+    setFinancialModule(null)
+    setBusinessScenario(null)
+    setTradeAgreements([])
+    setCulturalGuide(null)
+  }
+
+  if (redirectTo) return <CoachCapabilityRedirect to={redirectTo} />
+  if (!capability) return <CoachCapabilityRedirect to={`/chatbots/${BUSINESS_MENTOR_SLUG}?cap=international_standards`} />
+
+
+  const workspaceBody = (
+        <div className="space-y-6">
+
             
-            {/* Quick Settings */}
-            <div className="flex flex-wrap gap-4 mt-6">
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">{t('businessStudiesMentor.gradeLevel')}</label>
-                <GradeBandSelect
-                  variant="native"
-                  value={gradeLevel}
-                  onChange={setGradeLevel}
-                  label=""
-                  context="careerBusiness"
-                  selectClassName="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                />
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">{t('businessStudiesMentor.region')}</label>
-                <select
-                  value={selectedRegion}
-                  onChange={(e) => setSelectedRegion(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                >
-                  {regions.map(region => (
-                    <option key={region} value={region}>{region}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">{t('businessStudiesMentor.industry')}</label>
-                <select
-                  value={selectedIndustry}
-                  onChange={(e) => setSelectedIndustry(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                >
-                  {industries.map(industry => (
-                    <option key={industry} value={industry}>{industry}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                      {/* Quick Settings */}
+                      <div className="flex flex-wrap gap-4">
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                          <label className="text-sm font-medium text-gray-700">{t('businessStudiesMentor.gradeLevel')}</label>
+                          <GradeBandSelect
+                            variant="native"
+                            value={gradeLevel}
+                            onChange={setGradeLevel}
+                            label=""
+                            context="careerBusiness"
+                            selectClassName="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                          />
+                        </div>
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                          <label className="text-sm font-medium text-gray-700">{t('businessStudiesMentor.region')}</label>
+                          <select
+                            value={selectedRegion}
+                            onChange={(e) => setSelectedRegion(e.target.value)}
+                            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                          >
+                            {regions.map(region => (
+                              <option key={region} value={region}>{region}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                          <label className="text-sm font-medium text-gray-700">{t('businessStudiesMentor.industry')}</label>
+                          <select
+                            value={selectedIndustry}
+                            onChange={(e) => setSelectedIndustry(e.target.value)}
+                            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                          >
+                            {industries.map(industry => (
+                              <option key={industry} value={industry}>{industry}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
 
-      {/* Tabs */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm">
-        <div className="border-b border-gray-200">
-          <div className="flex overflow-x-auto scrollbar-hide">
-            {visibleTabs.map((tab) => {
-              const Icon = tab.icon
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-6 py-4 text-sm font-medium transition-colors border-b-2 ${
-                    activeTab === tab.id
-                      ? 'border-blue-600 text-blue-600 bg-blue-50'
-                      : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                  }`}
-                >
-                  <Icon className="h-5 w-5" />
-                  {tab.label}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        <div className="p-6">
-          {/* International Standards Tab */}
           {activeTab === 'standards' && (
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
@@ -1196,116 +1141,32 @@ const BusinessStudiesMentor = () => {
               )}
             </div>
           )}
-
-          {/* Assessment Tools Tab */}
-          {activeTab === 'assessment' && (
-            <div className="space-y-6">
-              <div className="bg-gradient-to-r from-violet-50 to-purple-50 rounded-xl p-6 border border-violet-200">
-                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <FileText className="h-6 w-6 text-violet-600" />{t('businessStudiesMentor.assessmentEvaluationTools')}</h2>
-                <p className="text-gray-600">{t('businessStudiesMentor.comprehensiveAssessmentToolsForEvaluatingStudentUnderst')}</p>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Target className="h-5 w-5 text-violet-600" />{t('businessStudiesMentor.caseStudyAnalysisRubric')}</h3>
-                  <div className="space-y-3">
-                    <div className="border-l-4 border-violet-500 pl-4">
-                      <h4 className="font-semibold text-gray-900">Analysis Depth (25 points)</h4>
-                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.excellentComprehensiveAnalysisWithMultiplePerspectives')}</p>
-                    </div>
-                    <div className="border-l-4 border-violet-500 pl-4">
-                      <h4 className="font-semibold text-gray-900">International Context (25 points)</h4>
-                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.excellentStrongUnderstandingOfGlobalBusinessFactors')}</p>
-                    </div>
-                    <div className="border-l-4 border-violet-500 pl-4">
-                      <h4 className="font-semibold text-gray-900">Critical Thinking (25 points)</h4>
-                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.excellentSophisticatedEvaluationAndRecommendations')}</p>
-                    </div>
-                    <div className="border-l-4 border-violet-500 pl-4">
-                      <h4 className="font-semibold text-gray-900">Communication (25 points)</h4>
-                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.excellentClearProfessionalWellStructuredPresentation')}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <BarChart3 className="h-5 w-5 text-violet-600" />{t('businessStudiesMentor.businessPlanEvaluation')}</h3>
-                  <div className="space-y-3">
-                    <div className="border-l-4 border-violet-500 pl-4">
-                      <h4 className="font-semibold text-gray-900">Market Analysis (20 points)</h4>
-                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.includesGlobalMarketOpportunityAssessment')}</p>
-                    </div>
-                    <div className="border-l-4 border-violet-500 pl-4">
-                      <h4 className="font-semibold text-gray-900">Financial Projections (20 points)</h4>
-                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.realisticMultiCurrencyFinancialModel')}</p>
-                    </div>
-                    <div className="border-l-4 border-violet-500 pl-4">
-                      <h4 className="font-semibold text-gray-900">International Strategy (20 points)</h4>
-                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.clearExpansionAndCulturalAdaptationPlan')}</p>
-                    </div>
-                    <div className="border-l-4 border-violet-500 pl-4">
-                      <h4 className="font-semibold text-gray-900">Feasibility (20 points)</h4>
-                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.realisticAssessmentOfChallengesAndOpportunities')}</p>
-                    </div>
-                    <div className="border-l-4 border-violet-500 pl-4">
-                      <h4 className="font-semibold text-gray-900">Presentation (20 points)</h4>
-                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.professionalPitchWithVisualAids')}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Coins className="h-5 w-5 text-violet-600" />{t('businessStudiesMentor.financialLiteracyAssessment')}</h3>
-                  <div className="space-y-3">
-                    <div className="border-l-4 border-violet-500 pl-4">
-                      <h4 className="font-semibold text-gray-900">Budget Creation (30 points)</h4>
-                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.realisticBudgetWithInternationalCostConsiderations')}</p>
-                    </div>
-                    <div className="border-l-4 border-violet-500 pl-4">
-                      <h4 className="font-semibold text-gray-900">Investment Understanding (30 points)</h4>
-                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.knowledgeOfGlobalInvestmentOptionsAndRisks')}</p>
-                    </div>
-                    <div className="border-l-4 border-violet-500 pl-4">
-                      <h4 className="font-semibold text-gray-900">Financial Decision Making (40 points)</h4>
-                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.abilityToMakeInformedFinancialDecisionsWithGlobalPerspe')}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Users className="h-5 w-5 text-violet-600" />{t('businessStudiesMentor.crossCulturalCompetency')}</h3>
-                  <div className="space-y-3">
-                    <div className="border-l-4 border-violet-500 pl-4">
-                      <h4 className="font-semibold text-gray-900">Cultural Awareness (25 points)</h4>
-                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.understandingOfCulturalDifferencesAndBusinessPractices')}</p>
-                    </div>
-                    <div className="border-l-4 border-violet-500 pl-4">
-                      <h4 className="font-semibold text-gray-900">Communication Skills (25 points)</h4>
-                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.effectiveCrossCulturalCommunicationStrategies')}</p>
-                    </div>
-                    <div className="border-l-4 border-violet-500 pl-4">
-                      <h4 className="font-semibold text-gray-900">Adaptation Strategies (25 points)</h4>
-                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.abilityToAdaptBusinessApproachesToDifferentCultures')}</p>
-                    </div>
-                    <div className="border-l-4 border-violet-500 pl-4">
-                      <h4 className="font-semibold text-gray-900">Case Application (25 points)</h4>
-                      <p className="text-sm text-gray-600">{t('businessStudiesMentor.applicationOfCulturalKnowledgeToRealScenarios')}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
-      </div>
+  )
+
+  return (
+    <div className="space-y-6">
+      {creditError && (
+        <NoCreditsCard
+          reason={creditError.reason}
+          balance={creditError.balance}
+          required={creditError.required}
+          onActivated={clearCreditError}
+        />
+      )}
+      <CoachWorkspaceShell
+        capability={capability}
+        siblings={siblings}
+        categoryKey={category?.key}
+        categoryLabel={category?.label}
+        onNewTask={handleNewTask}
+      >
+        {workspaceBody}
+      </CoachWorkspaceShell>
     </div>
   )
 }
+
 
 export default BusinessStudiesMentor
 

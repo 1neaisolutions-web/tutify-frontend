@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   Brain,
   Shield,
@@ -8,7 +8,6 @@ import {
   Sparkles,
   Download,
   RefreshCw,
-  Star,
   Lock,
   Globe,
   Eye,
@@ -39,6 +38,11 @@ import { useSnackbar } from '../../hooks/useSnackbar'
 import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
+import { CoachWorkspaceShell } from './ai-coach/CoachWorkspaceShell'
+import {
+  CoachCapabilityRedirect,
+  useCoachCapabilityRoute,
+} from './ai-coach/useCoachCapabilityRoute'
 import {
   mapAiConceptsResult,
   mapEthicalAiToPrinciples,
@@ -58,6 +62,8 @@ const AIMachineLearningEducator = () => {
   const { t } = useTranslation()
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
+  const { redirectTo, capability, siblings, category, tabId } = useCoachCapabilityRoute(CHATBOT_SLUG)
+
   const [activeTab, setActiveTab] = useState<TabType>('ai-concepts')
   const [gradeLevel, setGradeLevel] = useState('9-12')
   const [difficulty, setDifficulty] = useState('Beginner')
@@ -87,6 +93,14 @@ const AIMachineLearningEducator = () => {
     ml_projects: 'ml-projects',
     ai_standards: 'standards',
   }
+
+  const isCapabilityTab = useCallback((tab: string): tab is TabType => {
+    return tab === 'ai-concepts' || tab === 'ethical-ai' || tab === 'ml-projects' || tab === 'standards' || tab === 'resources'
+  }, [])
+
+  useEffect(() => {
+    if (tabId && isCapabilityTab(tabId)) setActiveTab(tabId)
+  }, [tabId, isCapabilityTab])
 
   const { conversationIdForActiveTab, pinFromResponse } = useChatbotHistorySession({
     slug: CHATBOT_SLUG,
@@ -279,104 +293,56 @@ const AIMachineLearningEducator = () => {
     }
   }
 
-  const tabs = [
-    { id: 'ai-concepts' as TabType, label: t('aIMachineLearningEducator.tabs.ai-concepts'), icon: Brain },
-    { id: 'ethical-ai' as TabType, label: t('aIMachineLearningEducator.tabs.ethical-ai'), icon: Shield },
-    { id: 'ml-projects' as TabType, label: t('aIMachineLearningEducator.tabs.ml-projects'), icon: Code },
-    { id: 'standards' as TabType, label: t('aIMachineLearningEducator.tabs.standards'), icon: CheckCircle },
-    { id: 'resources' as TabType, label: t('aIMachineLearningEducator.tabs.resources'), icon: FileText },
-  ]
 
-  return (
-    <div className="space-y-6">
-      {creditError && (
-        <NoCreditsCard
-          reason={creditError.reason}
-          balance={creditError.balance}
-          required={creditError.required}
-          onActivated={clearCreditError}
-        />
-      )}
 
-      {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 rounded-3xl p-8 text-white shadow-xl">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-                <Brain className="h-6 w-6" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-3xl font-bold">{t('aIMachineLearningEducator.aiMachineLearningEducator')}</h1>
-                  <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                    <Star className="h-3 w-3" /> 4.9★
-                  </span>
-                  <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" />{t('aIMachineLearningEducator.premium')}</span>
-                  <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
-                    <Globe className="inline h-3 w-3 mr-1" />{t('aIMachineLearningEducator.internationalStandards')}</span>
-                </div>
-                <p className="mt-2 text-blue-100">{t('aIMachineLearningEducator.heroDescription')}</p>
-              </div>
-            </div>
+  const handleNewTask = () => {
+    setAiConcepts([])
+    setSelectedConcept(null)
+    setEthicalPrinciples([])
+    setSelectedPrinciple(null)
+    setEthicsFrameworks([])
+    setSelectedFramework(null)
+    setMlProjects([])
+    setSelectedProject(null)
+    setAiStandards([])
+    setSelectedStandard(null)
+  }
+
+  if (redirectTo) return <CoachCapabilityRedirect to={redirectTo} />
+  if (!capability) return <CoachCapabilityRedirect to={`/chatbots/${CHATBOT_SLUG}?cap=ai_concepts`} />
+
+
+  const workspaceBody = (
+        <div className="space-y-6">
+
             
-            {/* Quick Settings */}
-            <div className="flex flex-wrap gap-4 mt-6">
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">{t('aIMachineLearningEducator.gradeLevel')}</label>
-                <GradeBandSelect
-                  variant="native"
-                  value={gradeLevel}
-                  onChange={setGradeLevel}
-                  label=""
-                  context="chatbotBand"
-                  selectClassName="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                />
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">{t('aIMachineLearningEducator.difficulty')}</label>
-                <select
-                  value={difficulty}
-                  onChange={(e) => setDifficulty(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                >
-                  {difficultyLevels.map(level => (
-                    <option key={level} value={level}>{level}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                      {/* Quick Settings */}
+                      <div className="flex flex-wrap gap-4">
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                          <label className="text-sm font-medium text-gray-700">{t('aIMachineLearningEducator.gradeLevel')}</label>
+                          <GradeBandSelect
+                            variant="native"
+                            value={gradeLevel}
+                            onChange={setGradeLevel}
+                            label=""
+                            context="chatbotBand"
+                            selectClassName="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                          />
+                        </div>
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                          <label className="text-sm font-medium text-gray-700">{t('aIMachineLearningEducator.difficulty')}</label>
+                          <select
+                            value={difficulty}
+                            onChange={(e) => setDifficulty(e.target.value)}
+                            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                          >
+                            {difficultyLevels.map(level => (
+                              <option key={level} value={level}>{level}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
 
-      {/* Tabs */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm">
-        <div className="border-b border-gray-200">
-          <div className="flex overflow-x-auto scrollbar-hide">
-            {tabs.map((tab) => {
-              const Icon = tab.icon
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-6 py-4 text-sm font-medium transition-colors border-b-2 ${
-                    activeTab === tab.id
-                      ? 'border-purple-600 text-purple-600 bg-purple-50'
-                      : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                  }`}
-                >
-                  <Icon className="h-5 w-5" />
-                  {tab.label}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        <div className="p-6">
-          {/* AI Concepts Tab */}
           {activeTab === 'ai-concepts' && (
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-6 border border-purple-200">
@@ -949,10 +915,31 @@ const AIMachineLearningEducator = () => {
             </div>
           )}
         </div>
-      </div>
+  )
+
+  return (
+    <div className="space-y-6">
+      {creditError && (
+        <NoCreditsCard
+          reason={creditError.reason}
+          balance={creditError.balance}
+          required={creditError.required}
+          onActivated={clearCreditError}
+        />
+      )}
+      <CoachWorkspaceShell
+        capability={capability}
+        siblings={siblings}
+        categoryKey={category?.key}
+        categoryLabel={category?.label}
+        onNewTask={handleNewTask}
+      >
+        {workspaceBody}
+      </CoachWorkspaceShell>
     </div>
   )
 }
+
 
 export default AIMachineLearningEducator
 

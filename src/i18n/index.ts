@@ -57,7 +57,10 @@ const dynamicResources = Object.fromEntries(
 )
 
 
+// Spread glob first, then pin static imports so HMR updates to core locales
+// are never overwritten by a stale eager-glob snapshot.
 const baseResources = {
+  ...dynamicResources,
   'en-US': { translation: enUS },
   'es-ES': { translation: esES },
   'fr-FR': { translation: frFR },
@@ -65,7 +68,6 @@ const baseResources = {
   'de-DE': { translation: deDE },
   'ur-PK': { translation: urPK },
   'hi-IN': { translation: hiIN },
-  ...dynamicResources,
 }
 
 /** Map language-only codes (e.g. ar → ar-SA) using locale-manifest canonical bundles. */

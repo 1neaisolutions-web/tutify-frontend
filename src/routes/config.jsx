@@ -17,6 +17,8 @@ import { ComingSoon } from '../components/shared/ComingSoon';
 
 // Page imports
 import DashboardHome from '../pages/DashboardHome';
+import ActionStudioHome from '../pages/features/action-studio/ActionStudioHome';
+import InterventionSprintStudio from '../pages/features/action-studio/InterventionSprintStudio';
 import TemplatesLibrary from '../pages/features/TemplatesLibrary';
 import TemplateRunner from '../pages/features/TemplateRunner';
 import GeneralLessonPlanner from '../pages/features/GeneralLessonPlanner';
@@ -34,7 +36,8 @@ import MathGameBuilder from '../pages/features/MathGameBuilder';
 import BudgetMasterChallenge from '../pages/features/BudgetMasterChallenge';
 import ExperimentIdeaGenerator from '../pages/features/ExperimentIdeaGenerator';
 import LearningIntentionBreakdown from '../pages/features/LearningIntentionBreakdown';
-import SpecializedChatbots from '../pages/features/SpecializedChatbots';
+import CoachDeskHome from '../pages/features/ai-coach/CoachDeskHome';
+import CoachCategoryPage from '../pages/features/ai-coach/CoachCategoryPage';
 import GeneralTeachingAssistantChat from '../pages/features/GeneralTeachingAssistantChat';
 import GPT4TeachingAssistantChat from '../pages/features/GPT4TeachingAssistantChat';
 import ClaudeEducationProChat from '../pages/features/ClaudeEducationProChat';
@@ -634,13 +637,18 @@ export const teacherRoutes = [
   },
   {
     path: '/chatbots',
-    moduleName: 'Specialized Chatbots',
+    moduleName: 'AI Coach Desk',
     element: (
       <DashboardLayout>
-        <SpecializedChatbots />
+        <CoachDeskHome />
       </DashboardLayout>
     ),
     child: [
+      {
+        path: '/chatbots/category/:categorySlug',
+        moduleName: 'Coach Category',
+        element: withDashboardLayout(<CoachCategoryPage />),
+      },
       {
         path: '/chatbots/general-teaching-assistant',
         moduleName: 'General Teaching Assistant',
@@ -760,6 +768,18 @@ export const teacherRoutes = [
         path: '/chatbots/problem-solving-coach',
         moduleName: 'Problem Solving Coach',
         element: withDashboardLayout(<ProblemSolvingCoach />),
+      },
+    ],
+  },
+  {
+    path: '/action-studio',
+    moduleName: 'Teaching Action Studio',
+    element: withDashboardLayout(<ActionStudioHome />),
+    child: [
+      {
+        path: '/action-studio/intervention-sprint',
+        moduleName: 'Intervention Sprint Studio',
+        element: withDashboardLayout(<InterventionSprintStudio />),
       },
     ],
   },

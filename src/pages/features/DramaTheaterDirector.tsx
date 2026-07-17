@@ -1,34 +1,19 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   Camera,
   Users,
   FileText,
   Target,
   Award,
-  BookOpen,
-  PlayCircle,
-  Lightbulb,
   CheckCircle,
   Sparkles,
   Download,
   RefreshCw,
-  CheckCircle2,
-  Clock,
-  Star,
   Lock,
   Globe,
-  TrendingUp,
-  BarChart3,
-  Zap,
-  Copy,
-  ExternalLink,
-  GraduationCap,
-  AlertCircle,
   Eye,
   Theater,
-  Film,
   Layout,
-  Mic,
 } from 'lucide-react'
 import {
   getPlayGenres,
@@ -48,6 +33,11 @@ import { useSnackbar } from '../../hooks/useSnackbar'
 import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
+import { CoachWorkspaceShell } from './ai-coach/CoachWorkspaceShell'
+import {
+  CoachCapabilityRedirect,
+  useCoachCapabilityRoute,
+} from './ai-coach/useCoachCapabilityRoute'
 import {
   mapScriptAnalysisResult,
   mapCharacterProfileResult,
@@ -63,12 +53,14 @@ import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
 import { chatbotBandToApi } from '@/catalog/adapters/chatbotAdapters'
 const CHATBOT_SLUG = 'drama-theater-director'
 
-type TabType = 'script-analysis' | 'character' | 'stage-direction' | 'production' | 'acting-methods' | 'theater-styles' | 'standards' | 'resources'
+type TabType = 'script-analysis' | 'character' | 'stage-direction' | 'production' | 'acting-methods' | 'theater-styles' | 'standards'
 
 const DramaTheaterDirector = () => {
   const { t } = useTranslation()
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
+  const { redirectTo, capability, siblings, category, tabId } = useCoachCapabilityRoute(CHATBOT_SLUG)
+
   const [activeTab, setActiveTab] = useState<TabType>('script-analysis')
   const [gradeLevel, setGradeLevel] = useState('9-12')
   const [playGenre, setPlayGenre] = useState('Drama')
@@ -116,6 +108,14 @@ const DramaTheaterDirector = () => {
     theater_standards: 'standards',
   }
 
+  const isCapabilityTab = useCallback((tab: string): tab is TabType => {
+    return tab === 'script-analysis' || tab === 'character' || tab === 'stage-direction' || tab === 'production' || tab === 'acting-methods' || tab === 'theater-styles' || tab === 'standards'
+  }, [])
+
+  useEffect(() => {
+    if (tabId && isCapabilityTab(tabId)) setActiveTab(tabId)
+  }, [tabId, isCapabilityTab])
+
   const { conversationIdForActiveTab, pinFromResponse } = useChatbotHistorySession({
     slug: CHATBOT_SLUG,
     activeTab,
@@ -130,10 +130,9 @@ const DramaTheaterDirector = () => {
         'acting-methods',
         'theater-styles',
         'standards',
-        'resources',
       ]
       const tab: TabType =
-        valid.includes(tabKey as TabType)
+        (valid as readonly string[]).includes(tabKey)
           ? (tabKey as TabType)
           : cap && DRAMA_CAP_TABS[cap]
             ? DRAMA_CAP_TABS[cap]
@@ -404,119 +403,68 @@ const DramaTheaterDirector = () => {
     }
   }
 
-  const tabs = [
-    { id: 'script-analysis' as TabType, label: t('dramaTheaterDirector.tabs.script-analysis'), icon: FileText },
-    { id: 'character' as TabType, label: t('dramaTheaterDirector.tabs.character'), icon: Users },
-    { id: 'stage-direction' as TabType, label: t('dramaTheaterDirector.tabs.stage-direction'), icon: Layout },
-    { id: 'production' as TabType, label: t('dramaTheaterDirector.tabs.production'), icon: Target },
-    { id: 'acting-methods' as TabType, label: t('dramaTheaterDirector.tabs.acting-methods'), icon: Award },
-    { id: 'theater-styles' as TabType, label: t('dramaTheaterDirector.tabs.theater-styles'), icon: Theater },
-    { id: 'standards' as TabType, label: t('dramaTheaterDirector.tabs.standards'), icon: CheckCircle },
-    { id: 'resources' as TabType, label: t('dramaTheaterDirector.tabs.resources'), icon: BookOpen },
-  ]
 
-  return (
-    <div className="space-y-6">
-      {creditError && (
-        <NoCreditsCard
-          reason={creditError.reason}
-          balance={creditError.balance}
-          required={creditError.required}
-          onActivated={clearCreditError}
-        />
-      )}
 
-      {/* Header */}
-      <div className="bg-gradient-to-r from-red-700 via-rose-700 to-pink-700 rounded-3xl p-8 text-white shadow-xl">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-                <Camera className="h-6 w-6" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-3xl font-bold">{t('dramaTheaterDirector.dramaTheaterDirector')}</h1>
-                  <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                    <Star className="h-3 w-3" /> 4.8★
-                  </span>
-                  <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" />{t('dramaTheaterDirector.premium')}</span>
-                  <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
-                    <Globe className="inline h-3 w-3 mr-1" />{t('dramaTheaterDirector.internationalStandards')}</span>
-                </div>
-                <p className="mt-2 text-blue-100">{t('dramaTheaterDirector.heroDescription')}</p>
-              </div>
-            </div>
+  const handleNewTask = () => {
+    setScriptAnalysis(null)
+    setCharacterProfile(null)
+    setStageDirection(null)
+    setProductionPlan(null)
+    setActingMethods([])
+    setSelectedMethod(null)
+    setTheaterStyles([])
+    setSelectedStyle(null)
+    setTheaterStandards([])
+    setSelectedStandard(null)
+  }
+
+  if (redirectTo) return <CoachCapabilityRedirect to={redirectTo} />
+  if (!capability) return <CoachCapabilityRedirect to={`/chatbots/${CHATBOT_SLUG}?cap=script_analysis_tools`} />
+
+
+  const workspaceBody = (
+        <div className="space-y-6">
+
             
-            {/* Quick Settings */}
-            <div className="flex flex-wrap gap-4 mt-6">
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <GradeBandSelect
-                  variant="native"
-                  value={gradeLevel}
-                  onChange={setGradeLevel}
-                  label={t('dramaTheaterDirector.gradeLevel')}
-                  context="chatbotBand"
-                  selectClassName="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                  className="flex items-center gap-2 [&_span]:text-sm [&_span]:font-medium [&_span]:text-white"
-                />
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">{t('dramaTheaterDirector.genre')}</label>
-                <select
-                  value={playGenre}
-                  onChange={(e) => setPlayGenre(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                >
-                  {genres.map(genre => (
-                    <option key={genre} value={genre}>{genre}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">{t('dramaTheaterDirector.stageType')}</label>
-                <select
-                  value={stageType}
-                  onChange={(e) => setStageType(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                >
-                  {stageTypes.map(type => (
-                    <option key={type} value={type}>{type}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                      {/* Quick Settings */}
+                      <div className="flex flex-wrap gap-4">
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                          <GradeBandSelect
+                            variant="native"
+                            value={gradeLevel}
+                            onChange={setGradeLevel}
+                            label={t('dramaTheaterDirector.gradeLevel')}
+                            context="chatbotBand"
+                            selectClassName="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                            className="flex items-center gap-2 [&_span]:text-sm [&_span]:font-medium [&_span]:text-gray-900"
+                          />
+                        </div>
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                          <label className="text-sm font-medium text-gray-700">{t('dramaTheaterDirector.genre')}</label>
+                          <select
+                            value={playGenre}
+                            onChange={(e) => setPlayGenre(e.target.value)}
+                            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                          >
+                            {genres.map(genre => (
+                              <option key={genre} value={genre}>{genre}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                          <label className="text-sm font-medium text-gray-700">{t('dramaTheaterDirector.stageType')}</label>
+                          <select
+                            value={stageType}
+                            onChange={(e) => setStageType(e.target.value)}
+                            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                          >
+                            {stageTypes.map(type => (
+                              <option key={type} value={type}>{type}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
 
-      {/* Tabs */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm">
-        <div className="border-b border-gray-200">
-          <div className="flex overflow-x-auto scrollbar-hide">
-            {tabs.map((tab) => {
-              const Icon = tab.icon
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-6 py-4 text-sm font-medium transition-colors border-b-2 ${
-                    activeTab === tab.id
-                      ? 'border-red-600 text-red-600 bg-red-50'
-                      : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                  }`}
-                >
-                  <Icon className="h-5 w-5" />
-                  {tab.label}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        <div className="p-6">
-          {/* Script Analysis Tab */}
           {activeTab === 'script-analysis' && (
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-red-50 to-rose-50 rounded-xl p-6 border border-red-200">
@@ -1214,63 +1162,32 @@ const DramaTheaterDirector = () => {
               )}
             </div>
           )}
-
-          {/* Resources Tab */}
-          {activeTab === 'resources' && (
-            <div className="space-y-6">
-              <div className="bg-gradient-to-r from-rose-50 to-red-50 rounded-xl p-6 border border-rose-200">
-                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <BookOpen className="h-6 w-6 text-rose-600" />{t('dramaTheaterDirector.theaterResourcesRepertoire')}</h2>
-                <p className="text-gray-600">{t('dramaTheaterDirector.accessCuratedPlayLibrariesMonologueCollectionsAndTheate')}</p>
-              </div>
-
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <FileText className="h-5 w-5 text-rose-600" />{t('dramaTheaterDirector.playLibrary')}</h3>
-                  <p className="text-gray-700 mb-3">{t('dramaTheaterDirector.curatedCollectionOfPlaysAcrossGenresAndPeriods')}</p>
-                  <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-                    <li>{t('dramaTheaterDirector.classicalPlays')}</li>
-                    <li>{t('dramaTheaterDirector.contemporaryWorks')}</li>
-                    <li>{t('dramaTheaterDirector.oneActPlays')}</li>
-                    <li>{t('dramaTheaterDirector.studentWrittenWorks')}</li>
-                    <li>{t('dramaTheaterDirector.internationalPlays')}</li>
-                  </ul>
-                </div>
-
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <Mic className="h-5 w-5 text-rose-600" />{t('dramaTheaterDirector.monologueCollection')}</h3>
-                  <p className="text-gray-700 mb-3">{t('dramaTheaterDirector.ageAppropriateMonologuesForAuditionsAndPractice')}</p>
-                  <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-                    <li>{t('dramaTheaterDirector.classicalMonologues')}</li>
-                    <li>{t('dramaTheaterDirector.contemporaryMonologues')}</li>
-                    <li>{t('dramaTheaterDirector.ageAppropriateSelections')}</li>
-                    <li>{t('dramaTheaterDirector.genreVariety')}</li>
-                    <li>{t('dramaTheaterDirector.characterTypes')}</li>
-                  </ul>
-                </div>
-
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <Film className="h-5 w-5 text-rose-600" />{t('dramaTheaterDirector.sceneStudy')}</h3>
-                  <p className="text-gray-700 mb-3">{t('dramaTheaterDirector.sceneCollectionsWithAnalysisGuides')}</p>
-                  <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-                    <li>{t('dramaTheaterDirector.sceneCollections')}</li>
-                    <li>{t('dramaTheaterDirector.analysisGuides')}</li>
-                    <li>{t('dramaTheaterDirector.performanceNotes')}</li>
-                    <li>{t('dramaTheaterDirector.characterBreakdowns')}</li>
-                    <li>{t('dramaTheaterDirector.directingNotes')}</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
-      </div>
+  )
+
+  return (
+    <div className="space-y-6">
+      {creditError && (
+        <NoCreditsCard
+          reason={creditError.reason}
+          balance={creditError.balance}
+          required={creditError.required}
+          onActivated={clearCreditError}
+        />
+      )}
+      <CoachWorkspaceShell
+        capability={capability}
+        siblings={siblings}
+        categoryKey={category?.key}
+        categoryLabel={category?.label}
+        onNewTask={handleNewTask}
+      >
+        {workspaceBody}
+      </CoachWorkspaceShell>
     </div>
   )
 }
+
 
 export default DramaTheaterDirector
 

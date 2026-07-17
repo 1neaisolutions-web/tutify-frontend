@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   Shield,
   AlertTriangle,
@@ -8,7 +8,6 @@ import {
   Sparkles,
   Download,
   RefreshCw,
-  Star,
   Lock,
   Globe,
   Eye,
@@ -44,6 +43,11 @@ import { useSnackbar } from '../../hooks/useSnackbar'
 import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
+import { CoachWorkspaceShell } from './ai-coach/CoachWorkspaceShell'
+import {
+  CoachCapabilityRedirect,
+  useCoachCapabilityRoute,
+} from './ai-coach/useCoachCapabilityRoute'
 import {
   mapDigitalCitizenshipLessonResult,
   mapDigitalStandardsToCitizenshipList,
@@ -64,6 +68,8 @@ const DigitalLiteracyAdvisor = () => {
   const { t } = useTranslation()
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
+  const { redirectTo, capability, siblings, category, tabId } = useCoachCapabilityRoute(CHATBOT_SLUG)
+
   const [activeTab, setActiveTab] = useState<TabType>('digital-citizenship')
   const [gradeLevel, setGradeLevel] = useState('9-12')
   const [isGenerating, setIsGenerating] = useState(false)
@@ -96,6 +102,14 @@ const DigitalLiteracyAdvisor = () => {
     media_literacy: 'media-literacy',
     tech_integration: 'technology-integration',
   }
+
+  const isCapabilityTab = useCallback((tab: string): tab is TabType => {
+    return tab === 'digital-citizenship' || tab === 'online-safety' || tab === 'media-literacy' || tab === 'technology-integration' || tab === 'standards' || tab === 'resources'
+  }, [])
+
+  useEffect(() => {
+    if (tabId && isCapabilityTab(tabId)) setActiveTab(tabId)
+  }, [tabId, isCapabilityTab])
 
   const { conversationIdForActiveTab, pinFromResponse } = useChatbotHistorySession({
     slug: CHATBOT_SLUG,
@@ -326,93 +340,44 @@ const DigitalLiteracyAdvisor = () => {
     }
   }
 
-  const tabs = [
-    { id: 'digital-citizenship' as TabType, label: t('digitalLiteracyAdvisor.tabs.digital-citizenship'), icon: Users },
-    { id: 'online-safety' as TabType, label: t('digitalLiteracyAdvisor.tabs.online-safety'), icon: Shield },
-    { id: 'media-literacy' as TabType, label: t('digitalLiteracyAdvisor.tabs.media-literacy'), icon: BookOpen },
-    { id: 'technology-integration' as TabType, label: t('digitalLiteracyAdvisor.tabs.technology-integration'), icon: Zap },
-    { id: 'standards' as TabType, label: t('digitalLiteracyAdvisor.tabs.standards'), icon: CheckCircle },
-    { id: 'resources' as TabType, label: t('digitalLiteracyAdvisor.tabs.resources'), icon: FileText },
-  ]
 
-  return (
-    <div className="space-y-6">
-      {creditError && (
-        <NoCreditsCard
-          reason={creditError.reason}
-          balance={creditError.balance}
-          required={creditError.required}
-          onActivated={clearCreditError}
-        />
-      )}
 
-      {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-3xl p-8 text-white shadow-xl">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-                <Shield className="h-6 w-6" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-3xl font-bold">{t('digitalLiteracyAdvisor.digitalLiteracyAdvisor')}</h1>
-                  <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                    <Star className="h-3 w-3" /> 4.9★
-                  </span>
-                  <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" />{t('digitalLiteracyAdvisor.premium')}</span>
-                  <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
-                    <Globe className="inline h-3 w-3 mr-1" />{t('digitalLiteracyAdvisor.internationalStandards')}</span>
-                </div>
-                <p className="mt-2 text-blue-100">{t('digitalLiteracyAdvisor.heroDescription')}</p>
-              </div>
-            </div>
+  const handleNewTask = () => {
+    setCitizenshipStandards([])
+    setSelectedStandard(null)
+    setGeneratedLesson(null)
+    setSafetyGuidelines([])
+    setSelectedGuideline(null)
+    setGeneratedSafetyPlan(null)
+    setMediaConcepts([])
+    setSelectedConcept(null)
+    setIntegrationStrategies([])
+    setSelectedStrategy(null)
+  }
+
+  if (redirectTo) return <CoachCapabilityRedirect to={redirectTo} />
+  if (!capability) return <CoachCapabilityRedirect to={`/chatbots/${CHATBOT_SLUG}?cap=digital_citizenship`} />
+
+
+  const workspaceBody = (
+        <div className="space-y-6">
+
             
-            {/* Quick Settings */}
-            <div className="flex flex-wrap gap-4 mt-6">
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">{t('digitalLiteracyAdvisor.gradeLevel')}</label>
-                <GradeBandSelect
-                  variant="native"
-                  value={gradeLevel}
-                  onChange={setGradeLevel}
-                  label=""
-                  context="chatbotBand"
-                  selectClassName="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                      {/* Quick Settings */}
+                      <div className="flex flex-wrap gap-4">
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                          <label className="text-sm font-medium text-gray-700">{t('digitalLiteracyAdvisor.gradeLevel')}</label>
+                          <GradeBandSelect
+                            variant="native"
+                            value={gradeLevel}
+                            onChange={setGradeLevel}
+                            label=""
+                            context="chatbotBand"
+                            selectClassName="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                          />
+                        </div>
+                      </div>
 
-      {/* Tabs */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm">
-        <div className="border-b border-gray-200">
-          <div className="flex overflow-x-auto scrollbar-hide">
-            {tabs.map((tab) => {
-              const Icon = tab.icon
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-6 py-4 text-sm font-medium transition-colors border-b-2 ${
-                    activeTab === tab.id
-                      ? 'border-blue-600 text-blue-600 bg-blue-50'
-                      : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                  }`}
-                >
-                  <Icon className="h-5 w-5" />
-                  {tab.label}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        <div className="p-6">
-          {/* Digital Citizenship Tab */}
           {activeTab === 'digital-citizenship' && (
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
@@ -1130,10 +1095,31 @@ const DigitalLiteracyAdvisor = () => {
             </div>
           )}
         </div>
-      </div>
+  )
+
+  return (
+    <div className="space-y-6">
+      {creditError && (
+        <NoCreditsCard
+          reason={creditError.reason}
+          balance={creditError.balance}
+          required={creditError.required}
+          onActivated={clearCreditError}
+        />
+      )}
+      <CoachWorkspaceShell
+        capability={capability}
+        siblings={siblings}
+        categoryKey={category?.key}
+        categoryLabel={category?.label}
+        onNewTask={handleNewTask}
+      >
+        {workspaceBody}
+      </CoachWorkspaceShell>
     </div>
   )
 }
+
 
 export default DigitalLiteracyAdvisor
 

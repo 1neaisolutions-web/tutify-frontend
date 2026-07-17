@@ -38,6 +38,7 @@ import {
   PenLine,
   Brain,
   CreditCard,
+  Rocket,
 } from 'lucide-react';
 
 const teacherMenu = [
@@ -59,8 +60,9 @@ const teacherMenu = [
     ],
   },
   // Templates hidden in demo navigation for now (route preserved for phase-2 re-enable).
-  { path: '/templates', text: 'Templates Library', i18nKey: 'nav.templates', icon: FileText }, 
-  { path: '/chatbots', text: 'Specialized Chatbots', i18nKey: 'nav.chatbots', icon: MessageSquare },
+  { path: '/templates', text: 'Templates Library', i18nKey: 'nav.templates', icon: FileText },
+  { path: '/chatbots', text: 'AI Coach Desk', i18nKey: 'nav.chatbots', icon: MessageSquare },
+  { path: '/action-studio', text: 'Teaching Action Studio', i18nKey: 'nav.actionStudio', icon: Rocket },
   { path: '/youtube-quiz', text: 'YouTube Quiz Generator', i18nKey: 'nav.youtubeQuiz', icon: Youtube },
   { path: '/pixgen', text: 'PixGen (AI Media Studio)', i18nKey: 'nav.pixgen', icon: Image },
   { path: '/learning-hub', text: 'Professional Learning Hub', i18nKey: 'nav.learningHub', icon: BookOpen },

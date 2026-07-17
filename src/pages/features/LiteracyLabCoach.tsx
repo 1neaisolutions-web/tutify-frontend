@@ -1,33 +1,32 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   BookOpen,
   FileText,
   Sparkles,
   Download,
   RefreshCw,
-  TrendingUp,
   Users,
-  Target,
   CheckCircle2,
   AlertCircle,
   Lightbulb,
-  MessageSquare,
   PenTool,
-  BarChart3,
-  BookMarked,
-  GraduationCap,
   Award,
-  Clock,
-  Search,
-  Filter,
-  Star,
-  Lock,
+  BarChart3,
+  MessageSquare,
+  BookMarked,
+  Target,
+  Palette,
 } from 'lucide-react'
 import * as chatbotApi from '../../api/chatbots'
 import { useSnackbar } from '../../hooks/useSnackbar'
 import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
+import { CoachWorkspaceShell } from './ai-coach/CoachWorkspaceShell'
+import {
+  CoachCapabilityRedirect,
+  useCoachCapabilityRoute,
+} from './ai-coach/useCoachCapabilityRoute'
 
 import { useTranslation } from 'react-i18next'
 import { GradeSelect } from '@/components/shared/GradeSelect'
@@ -68,13 +67,16 @@ interface WritingFeedback {
   }
 }
 
+type LiteracyTab = 'analyze' | 'guided' | 'writing'
+
 const LiteracyLabCoach = () => {
   const { t } = useTranslation()
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const CHATBOT_SLUG = 'literacy-lab-coach'
-  
-  const [activeTab, setActiveTab] = useState<'analyze' | 'guided' | 'writing' | 'prompts' | 'vocabulary'>('analyze')
+  const { redirectTo, capability, siblings, category, tabId } = useCoachCapabilityRoute(CHATBOT_SLUG)
+
+  const [activeTab, setActiveTab] = useState<LiteracyTab>('analyze')
   const [textInput, setTextInput] = useState('')
   const [gradeLevel, setGradeLevel] = useState('5')
   const [subject, setSubject] = useState('English')
@@ -83,11 +85,19 @@ const LiteracyLabCoach = () => {
   const [guidedReading, setGuidedReading] = useState<GuidedReadingStrategy | null>(null)
   const [writingFeedback, setWritingFeedback] = useState<WritingFeedback | null>(null)
 
-  const LITERACY_CAP_TABS: Record<string, 'analyze' | 'guided' | 'writing'> = {
+  const LITERACY_CAP_TABS: Record<string, LiteracyTab> = {
     text_complexity: 'analyze',
     guided_reading: 'guided',
     writing_feedback: 'writing',
   }
+
+  const isLiteracyTab = useCallback((tab: string): tab is LiteracyTab => {
+    return tab === 'analyze' || tab === 'guided' || tab === 'writing'
+  }, [])
+
+  useEffect(() => {
+    if (tabId && isLiteracyTab(tabId)) setActiveTab(tabId)
+  }, [tabId, isLiteracyTab])
 
   const { conversationIdForActiveTab, pinFromResponse } = useChatbotHistorySession({
     slug: CHATBOT_SLUG,
@@ -252,140 +262,125 @@ const LiteracyLabCoach = () => {
     }
   }
 
-  const tabs = [
-    { id: 'analyze', label: t('literacyLabCoach.tabs.analyze'), icon: FileText },
-    { id: 'guided', label: t('literacyLabCoach.tabs.guided'), icon: BookOpen },
-    { id: 'writing', label: t('literacyLabCoach.tabs.writing'), icon: PenTool },
-    { id: 'prompts', label: t('literacyLabCoach.tabs.prompts'), icon: Lightbulb },
-    { id: 'vocabulary', label: t('literacyLabCoach.tabs.vocabulary'), icon: BookMarked },
-  ]
+  const downloadTextFile = (filename: string, content: string) => {
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
 
-  return (
-    <div className="space-y-6">
-      {creditError && (
-        <NoCreditsCard
-          reason={creditError.reason}
-          balance={creditError.balance}
-          required={creditError.required}
-          onActivated={clearCreditError}
-        />
-      )}
-      {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-3xl p-8 text-white shadow-xl">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-                <BookOpen className="h-6 w-6" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h1 className="text-3xl font-bold">{t('literacyLabCoach.literacyLabCoach')}</h1>
-                  <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                    <Star className="h-3 w-3" /> 4.9★
-                  </span>
-                  <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" />{t('literacyLabCoach.premium')}</span>
-                </div>
-                <p className="mt-2 text-blue-100">{t('literacyLabCoach.comprehensiveLiteracySupportWithTextComplexityAnalysisG')}</p>
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-3 mt-6">
-              <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
-                <Target className="h-4 w-4" />
-                <span>{t('literacyLabCoach.textComplexityAnalysis')}</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
-                <Users className="h-4 w-4" />
-                <span>{t('literacyLabCoach.guidedReadingStrategies')}</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
-                <PenTool className="h-4 w-4" />
-                <span>{t('literacyLabCoach.writingFeedbackRubrics')}</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
-                <TrendingUp className="h-4 w-4" />
-                <span>{t('literacyLabCoach.progressTracking')}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+  const handleDownloadAnalysisReport = () => {
+    if (!analysis) return
+    const lines = [
+      'Text Complexity Analysis',
+      '',
+      `Reading level: ${analysis.readingLevel ?? 'N/A'}`,
+      `Complexity: ${analysis.complexity ?? 'N/A'}`,
+      `Word count: ${analysis.wordCount ?? 0}`,
+      `Sentence count: ${analysis.sentenceCount ?? 0}`,
+      `Avg words per sentence: ${analysis.avgWordsPerSentence ?? 0}`,
+      `Readability score: ${analysis.readabilityScore ?? 0}/100`,
+      `Grade level match: ${analysis.gradeLevel ?? 'N/A'}`,
+      `Vocabulary level: ${analysis.vocabularyLevel ?? 'N/A'}`,
+    ]
+    downloadTextFile('text-complexity-analysis.txt', lines.join('\n'))
+  }
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{t('literacyLabCoach.textsAnalyzed')}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">247</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
-              <FileText className="h-6 w-6" />
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{t('literacyLabCoach.studentsSupported')}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">1,234</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600">
-              <Users className="h-6 w-6" />
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{t('literacyLabCoach.avgReadingLevel')}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{t('literacyLabCoach.grade52')}</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600">
-              <TrendingUp className="h-6 w-6" />
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{t('literacyLabCoach.writingScore')}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">3.8/5</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
-              <Award className="h-6 w-6" />
-            </div>
-          </div>
-        </div>
-      </div>
+  const handleDownloadGuidedReadingPlan = () => {
+    if (!guidedReading) return
+    const lines = [
+      'Guided Reading Plan',
+      '',
+      'Before Reading:',
+      ...(guidedReading.beforeReading || []).map((s) => `- ${s}`),
+      '',
+      'During Reading:',
+      ...(guidedReading.duringReading || []).map((s) => `- ${s}`),
+      '',
+      'After Reading:',
+      ...(guidedReading.afterReading || []).map((s) => `- ${s}`),
+      '',
+      'Key Vocabulary:',
+      ...(guidedReading.vocabulary || []).map((s) => `- ${s}`),
+      '',
+      'Comprehension Questions (Literal):',
+      ...(guidedReading.comprehensionQuestions?.literal || []).map((s) => `- ${s}`),
+      '',
+      'Comprehension Questions (Inferential):',
+      ...(guidedReading.comprehensionQuestions?.inferential || []).map((s) => `- ${s}`),
+      '',
+      'Comprehension Questions (Evaluative):',
+      ...(guidedReading.comprehensionQuestions?.evaluative || []).map((s) => `- ${s}`),
+    ]
+    downloadTextFile('guided-reading-plan.txt', lines.join('\n'))
+  }
 
-      {/* Tabs */}
-      <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div className="border-b border-gray-200">
-          <div className="flex overflow-x-auto">
-            {tabs.map((tab) => {
-              const Icon = tab.icon
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex items-center gap-2 px-6 py-4 text-sm font-semibold transition-colors border-b-2 ${
-                    activeTab === tab.id
-                      ? 'border-blue-600 text-blue-600'
-                      : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                  {tab.label}
-                </button>
-              )
-            })}
-          </div>
-        </div>
+  const handleDownloadFeedbackReport = () => {
+    if (!writingFeedback) return
+    const rubric = writingFeedback.rubricScore
+    const overall = rubric
+      ? ((rubric.content + rubric.organization + rubric.language + rubric.conventions) / 4).toFixed(1)
+      : 'N/A'
+    const lines = [
+      'Writing Feedback Report',
+      '',
+      'Strengths:',
+      ...(writingFeedback.strengths || []).map((s) => `- ${s}`),
+      '',
+      'Areas for Improvement:',
+      ...(writingFeedback.areasForImprovement || []).map((s) => `- ${s}`),
+      '',
+      'Suggestions:',
+      ...(writingFeedback.suggestions || []).map((s) => `- ${s}`),
+      '',
+      `Rubric Score — Content: ${rubric?.content ?? 0}/5, Organization: ${rubric?.organization ?? 0}/5, Language: ${rubric?.language ?? 0}/5, Conventions: ${rubric?.conventions ?? 0}/5`,
+      `Overall: ${overall}/5`,
+    ]
+    downloadTextFile('writing-feedback-report.txt', lines.join('\n'))
+  }
 
-        <div className="p-6">
-          {/* Text Analysis Tab */}
+  const handleShellDownload = () => {
+    if (activeTab === 'analyze') handleDownloadAnalysisReport()
+    else if (activeTab === 'guided') handleDownloadGuidedReadingPlan()
+    else handleDownloadFeedbackReport()
+  }
+
+  const handleShellCopy = async () => {
+    let text = ''
+    if (activeTab === 'analyze' && analysis) text = JSON.stringify(analysis, null, 2)
+    if (activeTab === 'guided' && guidedReading) text = JSON.stringify(guidedReading, null, 2)
+    if (activeTab === 'writing' && writingFeedback) text = JSON.stringify(writingFeedback, null, 2)
+    if (!text) return
+    try {
+      await navigator.clipboard.writeText(text)
+      toast.success(t('literacyLabCoach.copied', { defaultValue: 'Copied to clipboard' }))
+    } catch {
+      toast.error(t('literacyLabCoach.copyFailed', { defaultValue: 'Could not copy' }))
+    }
+  }
+
+  const handleNewTask = () => {
+    setTextInput('')
+    setAnalysis(null)
+    setGuidedReading(null)
+    setWritingFeedback(null)
+  }
+
+  const hasResult =
+    (activeTab === 'analyze' && Boolean(analysis)) ||
+    (activeTab === 'guided' && Boolean(guidedReading)) ||
+    (activeTab === 'writing' && Boolean(writingFeedback))
+
+  if (redirectTo) return <CoachCapabilityRedirect to={redirectTo} />
+  if (!capability) return <CoachCapabilityRedirect to={`/chatbots/${CHATBOT_SLUG}?cap=text_complexity`} />
+
+  const workspaceBody = (
+        <div className="space-y-6">
           {activeTab === 'analyze' && (
             <div className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -478,7 +473,10 @@ const LiteracyLabCoach = () => {
                           <p className="text-lg font-semibold text-gray-900">{analysis.vocabularyLevel ?? 'N/A'}</p>
                         </div>
                       </div>
-                      <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
+                      <button
+                        onClick={handleDownloadAnalysisReport}
+                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2"
+                      >
                         <Download className="h-4 w-4" />{t('literacyLabCoach.downloadAnalysisReport')}</button>
                     </div>
                   ) : (
@@ -628,7 +626,10 @@ const LiteracyLabCoach = () => {
                         </div>
                       </div>
 
-                      <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
+                      <button
+                        onClick={handleDownloadGuidedReadingPlan}
+                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2"
+                      >
                         <Download className="h-4 w-4" />{t('literacyLabCoach.downloadGuidedReadingPlan')}</button>
                     </div>
                   ) : (
@@ -801,7 +802,10 @@ const LiteracyLabCoach = () => {
                         </div>
                       </div>
 
-                      <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
+                      <button
+                        onClick={handleDownloadFeedbackReport}
+                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2"
+                      >
                         <Download className="h-4 w-4" />{t('literacyLabCoach.downloadFeedbackReport')}</button>
                     </div>
                   ) : (
@@ -814,181 +818,33 @@ const LiteracyLabCoach = () => {
               </div>
             </div>
           )}
-
-          {/* Writing Prompts Tab */}
-          {activeTab === 'prompts' && (
-            <div className="space-y-6">
-              <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-8">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Lightbulb className="h-6 w-6 text-indigo-600" />{t('literacyLabCoach.writingPromptGenerator')}</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.gradeLevel')}</label>
-                    <GradeSelect
-                      variant="native"
-                      value={gradeLevel}
-                      onChange={setGradeLevel}
-                      label=""
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.promptType')}</label>
-                    <select className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100">
-                      <option>{t('literacyLabCoach.narrative')}</option>
-                      <option>{t('literacyLabCoach.persuasive')}</option>
-                      <option>{t('literacyLabCoach.expository')}</option>
-                      <option>{t('literacyLabCoach.descriptive')}</option>
-                      <option>{t('literacyLabCoach.creative')}</option>
-                    </select>
-                  </div>
-                </div>
-                <button className="w-full rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-700 flex items-center justify-center gap-2">
-                  <Sparkles className="h-4 w-4" />{t('literacyLabCoach.generateWritingPrompts')}</button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {(
-                  [
-                    { id: 'timeMachine', typeKey: 'literacyLabCoach.narrative' },
-                    { id: 'schoolUniform', typeKey: 'literacyLabCoach.persuasive' },
-                    { id: 'favoriteSeason', typeKey: 'literacyLabCoach.descriptive' },
-                  ] as const
-                ).map((sample, idx) => (
-                  <div key={idx} className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs font-semibold text-indigo-600 uppercase tracking-wide">
-                        {t(sample.typeKey)}
-                      </span>
-                      <span className="text-xs text-gray-500">
-                        {t('common.gradeOption', { grade: t(`literacyLabCoach.samples.${sample.id}.grade`) })}
-                      </span>
-                    </div>
-                    <h4 className="text-lg font-semibold text-gray-900 mb-2">{t(`literacyLabCoach.samples.${sample.id}.title`)}</h4>
-                    <p className="text-sm text-gray-600 mb-4">{t(`literacyLabCoach.samples.${sample.id}.prompt`)}</p>
-                    <div className="flex gap-2">
-                      <button className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">{t('literacyLabCoach.usePrompt')}</button>
-                      <button className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">
-                        <Download className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Vocabulary Builder Tab */}
-          {activeTab === 'vocabulary' && (
-            <div className="space-y-6">
-              <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-8">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <BookMarked className="h-6 w-6 text-emerald-600" />{t('literacyLabCoach.vocabularyBuilder')}</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.gradeLevel')}</label>
-                    <GradeSelect
-                      variant="native"
-                      value={gradeLevel}
-                      onChange={setGradeLevel}
-                      label=""
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.topicTheme')}</label>
-                    <input
-                      type="text"
-                      placeholder={t('literacyLabCoach.eGScienceHistoryLiterature')}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-                    />
-                  </div>
-                </div>
-                <button className="w-full rounded-lg bg-emerald-600 px-6 py-3 text-sm font-semibold text-white hover:bg-emerald-700 flex items-center justify-center gap-2">
-                  <Sparkles className="h-4 w-4" />{t('literacyLabCoach.generateVocabularyList')}</button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[
-                  { word: 'Photosynthesis', definition: 'The process by which plants convert sunlight into energy', example: 'Plants use photosynthesis to make food.' },
-                  { word: 'Ecosystem', definition: 'A community of living organisms and their environment', example: 'The forest is a complex ecosystem.' },
-                  { word: 'Adaptation', definition: 'A change that helps an organism survive in its environment', example: 'A camel\'s hump is an adaptation for desert life.' },
-                ].map((vocab, idx) => (
-                  <div key={idx} className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
-                    <div className="flex items-start justify-between mb-3">
-                      <h4 className="text-lg font-bold text-gray-900">{vocab.word}</h4>
-                      <button className="text-gray-400 hover:text-gray-600">
-                        <Star className="h-4 w-4" />
-                      </button>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-3">{vocab.definition}</p>
-                    <div className="rounded-lg bg-gray-50 p-3">
-                      <p className="text-xs font-medium text-gray-500 mb-1">{t('literacyLabCoach.example')}</p>
-                      <p className="text-sm text-gray-700 italic">"{vocab.example}"</p>
-                    </div>
-                    <div className="mt-4 flex gap-2">
-                      <button className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">{t('literacyLabCoach.practice')}</button>
-                      <button className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">{t('literacyLabCoach.quiz')}</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
-      </div>
+  )
 
-      {/* Additional Features Section */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-6">{t('literacyLabCoach.additionalPremiumFeatures')}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 mb-4">
-              <BarChart3 className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literacyLabCoach.progressTracking')}</h3>
-            <p className="text-sm text-gray-600">{t('literacyLabCoach.monitorStudentReadingAndWritingProgressOverTimeWithDeta')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600 mb-4">
-              <Users className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literacyLabCoach.differentiationTools')}</h3>
-            <p className="text-sm text-gray-600">{t('literacyLabCoach.automaticallyGenerateDifferentiatedActivitiesForStudent')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600 mb-4">
-              <GraduationCap className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literacyLabCoach.standardsAlignment')}</h3>
-            <p className="text-sm text-gray-600">{t('literacyLabCoach.allActivitiesAndAssessmentsAlignWithCommonCoreAndState')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-amber-50 to-orange-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 text-amber-600 mb-4">
-              <Clock className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literacyLabCoach.timeSavingTemplates')}</h3>
-            <p className="text-sm text-gray-600">{t('literacyLabCoach.accessReadyToUseLessonPlansRubricsAndActivityTemplates')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-cyan-50 to-blue-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600 mb-4">
-              <MessageSquare className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literacyLabCoach.aiPoweredChat')}</h3>
-            <p className="text-sm text-gray-600">{t('literacyLabCoach.getInstantAnswersToLiteracyQuestionsAndReceivePersonali')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 mb-4">
-              <Download className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literacyLabCoach.exportShare')}</h3>
-            <p className="text-sm text-gray-600">{t('literacyLabCoach.exportReportsLessonPlansAndAssessmentsInMultipleFormats')}</p>
-          </div>
-        </div>
-      </div>
+  return (
+    <div className="space-y-6">
+      {creditError && (
+        <NoCreditsCard
+          reason={creditError.reason}
+          balance={creditError.balance}
+          required={creditError.required}
+          onActivated={clearCreditError}
+        />
+      )}
+      <CoachWorkspaceShell
+        capability={capability}
+        siblings={siblings}
+        categoryKey={category?.key}
+        categoryLabel={category?.label}
+        hasResult={hasResult}
+        onCopy={handleShellCopy}
+        onDownload={handleShellDownload}
+        onNewTask={handleNewTask}
+      >
+        {workspaceBody}
+      </CoachWorkspaceShell>
     </div>
   )
 }
 
 export default LiteracyLabCoach
-
-
-

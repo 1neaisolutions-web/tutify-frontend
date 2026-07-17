@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   Shield,
   AlertTriangle,
@@ -7,27 +7,13 @@ import {
   Eye,
   Heart,
   FileCheck,
-  CheckCircle,
   Sparkles,
   Download,
   RefreshCw,
-  CheckCircle2,
-  Clock,
-  Star,
   Lock,
   Globe,
-  TrendingUp,
-  BarChart3,
   Lightbulb,
-  BookOpen,
-  Zap,
-  Copy,
-  ExternalLink,
-  GraduationCap,
   AlertCircle,
-  Flame,
-  Droplets,
-  Users,
 } from 'lucide-react'
 import {
   getLabTypes,
@@ -45,6 +31,11 @@ import { useSnackbar } from '../../hooks/useSnackbar'
 import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
+import { CoachWorkspaceShell } from './ai-coach/CoachWorkspaceShell'
+import {
+  CoachCapabilityRedirect,
+  useCoachCapabilityRoute,
+} from './ai-coach/useCoachCapabilityRoute'
 import {
   mapLabSafetyStandardsResult,
   mapLabSafetyProtocolResult,
@@ -61,12 +52,14 @@ import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
 import { chatbotBandToApi } from '@/catalog/adapters/chatbotAdapters'
 const CHATBOT_SLUG = 'lab-safety-protocol-advisor'
 
-type TabType = 'standards' | 'protocols' | 'risk-assessment' | 'chemicals' | 'equipment' | 'emergency' | 'experiment-design' | 'compliance'
+type TabType = 'standards' | 'protocols' | 'risk-assessment' | 'chemicals' | 'equipment' | 'emergency' | 'experiment-design'
 
 const LabSafetyProtocolAdvisor = () => {
   const { t } = useTranslation()
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
+  const { redirectTo, capability, siblings, category, tabId } = useCoachCapabilityRoute(CHATBOT_SLUG)
+
   const [activeTab, setActiveTab] = useState<TabType>('standards')
   const [labType, setLabType] = useState('Chemistry')
   const [gradeLevel, setGradeLevel] = useState('9-12')
@@ -111,6 +104,14 @@ const LabSafetyProtocolAdvisor = () => {
     lab_experiment_design: 'experiment-design',
   }
 
+  const isCapabilityTab = useCallback((tab: string): tab is TabType => {
+    return tab === 'standards' || tab === 'protocols' || tab === 'risk-assessment' || tab === 'chemicals' || tab === 'equipment' || tab === 'emergency' || tab === 'experiment-design'
+  }, [])
+
+  useEffect(() => {
+    if (tabId && isCapabilityTab(tabId)) setActiveTab(tabId)
+  }, [tabId, isCapabilityTab])
+
   const { conversationIdForActiveTab, pinFromResponse } = useChatbotHistorySession({
     slug: CHATBOT_SLUG,
     activeTab,
@@ -125,10 +126,9 @@ const LabSafetyProtocolAdvisor = () => {
         'equipment',
         'emergency',
         'experiment-design',
-        'compliance',
       ]
       const tab: TabType =
-        valid.includes(tabKey as TabType)
+        (valid as readonly string[]).includes(tabKey)
           ? (tabKey as TabType)
           : cap && LAB_CAP_TABS[cap]
             ? LAB_CAP_TABS[cap]
@@ -381,107 +381,54 @@ const LabSafetyProtocolAdvisor = () => {
     }
   }
 
-  const tabs = [
-    { id: 'standards' as TabType, label: t('labSafetyProtocolAdvisor.tabs.standards'), icon: Shield },
-    { id: 'protocols' as TabType, label: t('labSafetyProtocolAdvisor.tabs.protocols'), icon: FileCheck },
-    { id: 'risk-assessment' as TabType, label: t('labSafetyProtocolAdvisor.tabs.risk-assessment'), icon: AlertTriangle },
-    { id: 'chemicals' as TabType, label: t('labSafetyProtocolAdvisor.tabs.chemicals'), icon: Beaker },
-    { id: 'equipment' as TabType, label: t('labSafetyProtocolAdvisor.tabs.equipment'), icon: FlaskConical },
-    { id: 'emergency' as TabType, label: t('labSafetyProtocolAdvisor.tabs.emergency'), icon: Heart },
-    { id: 'experiment-design' as TabType, label: t('labSafetyProtocolAdvisor.tabs.experiment-design'), icon: Lightbulb },
-    { id: 'compliance' as TabType, label: t('labSafetyProtocolAdvisor.tabs.compliance'), icon: CheckCircle },
-  ]
 
-  return (
-    <div className="space-y-6">
-      {creditError && (
-        <NoCreditsCard
-          reason={creditError.reason}
-          balance={creditError.balance}
-          required={creditError.required}
-          onActivated={clearCreditError}
-        />
-      )}
 
-      {/* Header */}
-      <div className="bg-gradient-to-r from-red-600 via-orange-600 to-yellow-600 rounded-3xl p-8 text-white shadow-xl">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-                <Shield className="h-6 w-6" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-3xl font-bold">{t('labSafetyProtocolAdvisor.labSafetyProtocolAdvisor')}</h1>
-                  <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                    <Star className="h-3 w-3" /> 4.8★
-                  </span>
-                  <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" />{t('labSafetyProtocolAdvisor.premium')}</span>
-                  <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
-                    <Globe className="inline h-3 w-3 mr-1" />{t('labSafetyProtocolAdvisor.internationalStandards')}</span>
-                </div>
-                <p className="mt-2 text-blue-100">{t('labSafetyProtocolAdvisor.heroDescription')}</p>
-              </div>
-            </div>
+  const handleNewTask = () => {
+    setSafetyStandards([])
+    setSelectedStandard(null)
+    setSafetyProtocol(null)
+    setRiskAssessment(null)
+    setChemicalInfo(null)
+    setEquipmentSafety(null)
+    setEmergencyProcedure(null)
+    setExperimentDesign(null)
+  }
+
+  if (redirectTo) return <CoachCapabilityRedirect to={redirectTo} />
+  if (!capability) return <CoachCapabilityRedirect to={`/chatbots/${CHATBOT_SLUG}?cap=lab_safety_standards`} />
+
+
+  const workspaceBody = (
+        <div className="space-y-6">
+
             
-            {/* Quick Settings */}
-            <div className="flex flex-wrap gap-4 mt-6">
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">{t('labSafetyProtocolAdvisor.labType')}</label>
-                <select
-                  value={labType}
-                  onChange={(e) => setLabType(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                >
-                  {labTypes.map(type => (
-                    <option key={type} value={type}>{type}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">{t('labSafetyProtocolAdvisor.gradeLevel')}</label>
-                <GradeBandSelect
-                  variant="native"
-                  value={gradeLevel}
-                  onChange={setGradeLevel}
-                  label=""
-                  context="chatbotBand"
-                  selectClassName="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                      {/* Quick Settings */}
+                      <div className="flex flex-wrap gap-4">
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                          <label className="text-sm font-medium text-gray-700">{t('labSafetyProtocolAdvisor.labType')}</label>
+                          <select
+                            value={labType}
+                            onChange={(e) => setLabType(e.target.value)}
+                            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                          >
+                            {labTypes.map(type => (
+                              <option key={type} value={type}>{type}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                          <label className="text-sm font-medium text-gray-700">{t('labSafetyProtocolAdvisor.gradeLevel')}</label>
+                          <GradeBandSelect
+                            variant="native"
+                            value={gradeLevel}
+                            onChange={setGradeLevel}
+                            label=""
+                            context="chatbotBand"
+                            selectClassName="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                          />
+                        </div>
+                      </div>
 
-      {/* Tabs */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm">
-        <div className="border-b border-gray-200">
-          <div className="flex overflow-x-auto scrollbar-hide">
-            {tabs.map((tab) => {
-              const Icon = tab.icon
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-6 py-4 text-sm font-medium transition-colors border-b-2 ${
-                    activeTab === tab.id
-                      ? 'border-red-600 text-red-600 bg-red-50'
-                      : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                  }`}
-                >
-                  <Icon className="h-5 w-5" />
-                  {tab.label}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        <div className="p-6">
-          {/* Safety Standards Tab */}
           {activeTab === 'standards' && (
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-xl p-6 border border-red-200">
@@ -1203,82 +1150,32 @@ const LabSafetyProtocolAdvisor = () => {
               )}
             </div>
           )}
-
-          {/* Compliance Tab */}
-          {activeTab === 'compliance' && (
-            <div className="space-y-6">
-              <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 border border-indigo-200">
-                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <CheckCircle className="h-6 w-6 text-indigo-600" />{t('labSafetyProtocolAdvisor.complianceStandardsAlignment')}</h2>
-                <p className="text-gray-600">{t('labSafetyProtocolAdvisor.thisLabSafetyProtocolAdvisorAlignsWithMajorInternationa')}</p>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Shield className="h-5 w-5 text-indigo-600" />{t('labSafetyProtocolAdvisor.isoIec17025')}</h3>
-                  <p className="text-gray-700 mb-3">{t('labSafetyProtocolAdvisor.generalRequirementsForLaboratoryCompetence')}</p>
-                  <div className="space-y-2">
-                    {['Technical competence', 'Quality management', 'Equipment calibration', 'Personnel qualifications'].map((item, i) => (
-                      <div key={i} className="flex items-center gap-2 text-sm text-gray-700">
-                        <CheckCircle2 className="h-4 w-4 text-green-600" />
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5 text-indigo-600" />{t('labSafetyProtocolAdvisor.oshaLabStandard')}</h3>
-                  <p className="text-gray-700 mb-3">{t('labSafetyProtocolAdvisor.k9Cfr19101450LaboratorySafetyRequirements')}</p>
-                  <div className="space-y-2">
-                    {['Chemical Hygiene Plan', 'Hazard communication', 'Training requirements', 'Exposure limits'].map((item, i) => (
-                      <div key={i} className="flex items-center gap-2 text-sm text-gray-700">
-                        <CheckCircle2 className="h-4 w-4 text-green-600" />
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Beaker className="h-5 w-5 text-indigo-600" />
-                    GHS (Globally Harmonized System)
-                  </h3>
-                  <p className="text-gray-700 mb-3">{t('labSafetyProtocolAdvisor.standardizedChemicalClassificationAndLabeling')}</p>
-                  <div className="space-y-2">
-                    {['Hazard classification', 'Safety data sheets', 'Labeling requirements', 'Pictograms'].map((item, i) => (
-                      <div key={i} className="flex items-center gap-2 text-sm text-gray-700">
-                        <CheckCircle2 className="h-4 w-4 text-green-600" />
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Flame className="h-5 w-5 text-indigo-600" />{t('labSafetyProtocolAdvisor.nfpa45')}</h3>
-                  <p className="text-gray-700 mb-3">{t('labSafetyProtocolAdvisor.fireProtectionForLaboratoriesUsingChemicals')}</p>
-                  <div className="space-y-2">
-                    {['Fire protection systems', 'Ventilation requirements', 'Storage compliance', 'Emergency planning'].map((item, i) => (
-                      <div key={i} className="flex items-center gap-2 text-sm text-gray-700">
-                        <CheckCircle2 className="h-4 w-4 text-green-600" />
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
-      </div>
+  )
+
+  return (
+    <div className="space-y-6">
+      {creditError && (
+        <NoCreditsCard
+          reason={creditError.reason}
+          balance={creditError.balance}
+          required={creditError.required}
+          onActivated={clearCreditError}
+        />
+      )}
+      <CoachWorkspaceShell
+        capability={capability}
+        siblings={siblings}
+        categoryKey={category?.key}
+        categoryLabel={category?.label}
+        onNewTask={handleNewTask}
+      >
+        {workspaceBody}
+      </CoachWorkspaceShell>
     </div>
   )
 }
+
 
 export default LabSafetyProtocolAdvisor
 

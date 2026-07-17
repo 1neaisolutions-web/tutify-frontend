@@ -1,30 +1,20 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   Briefcase,
   FileText,
-  Users,
   Target,
   Award,
   Sparkles,
   Download,
   RefreshCw,
   CheckCircle2,
-  Clock,
-  Star,
   Lock,
   Globe,
   TrendingUp,
   BarChart3,
-  Lightbulb,
-  BookOpen,
-  Zap,
-  Copy,
-  ExternalLink,
-  GraduationCap,
   MessageSquare,
   Linkedin,
   Eye,
-  CheckCircle,
   AlertCircle,
   MapPin,
 } from 'lucide-react'
@@ -53,17 +43,24 @@ import {
 import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
+import { CoachWorkspaceShell } from './ai-coach/CoachWorkspaceShell'
+import {
+  CoachCapabilityRedirect,
+  useCoachCapabilityRoute,
+} from './ai-coach/useCoachCapabilityRoute'
 
 import { useTranslation } from 'react-i18next'
 import { GradeBandSelect } from '@/components/shared/GradeBandSelect'
 import { careerBusinessBandToApi } from '@/catalog/adapters/gradeBandAdapters'
 const CAREER_COACH_SLUG = 'career-readiness-coach'
 
-type TabType = 'resume' | 'interview' | 'skills' | 'industry' | 'pathway' | 'linkedin' | 'assessment' | 'standards'
+type TabType = 'resume' | 'interview' | 'skills' | 'industry' | 'pathway' | 'linkedin' | 'assessment'
 
 const CareerReadinessCoach = () => {
   const { t } = useTranslation()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
+  const { redirectTo, capability, siblings, category, tabId } = useCoachCapabilityRoute(CAREER_COACH_SLUG)
+
   const [activeTab, setActiveTab] = useState<TabType>('resume')
   const [gradeLevel, setGradeLevel] = useState('9-12')
   const [selectedRegion, setSelectedRegion] = useState('United States')
@@ -114,15 +111,23 @@ const CareerReadinessCoach = () => {
     skills_assessment_gap_analysis: 'assessment',
   }
 
+  const isCapabilityTab = useCallback((tab: string): tab is TabType => {
+    return tab === 'resume' || tab === 'interview' || tab === 'skills' || tab === 'industry' || tab === 'pathway' || tab === 'linkedin' || tab === 'assessment'
+  }, [])
+
+  useEffect(() => {
+    if (tabId && isCapabilityTab(tabId)) setActiveTab(tabId)
+  }, [tabId, isCapabilityTab])
+
   const { conversationIdForActiveTab, pinFromResponse } = useChatbotHistorySession({
     slug: CAREER_COACH_SLUG,
     activeTab,
     capabilityKeyToTab: CAREER_CAP_TABS,
     onRestore: async ({ tabKey, userContent, assistantContent, assistantMetadata }) => {
       const cap = assistantMetadata?.capability_key as string | undefined
-      const valid: TabType[] = ['resume', 'interview', 'skills', 'industry', 'pathway', 'linkedin', 'assessment', 'standards']
+      const valid: TabType[] = ['resume', 'interview', 'skills', 'industry', 'pathway', 'linkedin', 'assessment']
       const tab: TabType =
-        valid.includes(tabKey as TabType)
+        (valid as readonly string[]).includes(tabKey)
           ? (tabKey as TabType)
           : cap && CAREER_CAP_TABS[cap]
             ? CAREER_CAP_TABS[cap]
@@ -331,133 +336,80 @@ const CareerReadinessCoach = () => {
     }
   }
 
-  const tabs = [
-    { id: 'resume' as TabType, label: t('careerReadinessCoach.tabs.resume'), icon: FileText },
-    { id: 'interview' as TabType, label: t('careerReadinessCoach.tabs.interview'), icon: MessageSquare },
-    { id: 'skills' as TabType, label: t('careerReadinessCoach.tabs.skills'), icon: Target },
-    { id: 'industry' as TabType, label: t('careerReadinessCoach.tabs.industry'), icon: TrendingUp },
-    { id: 'pathway' as TabType, label: t('careerReadinessCoach.tabs.pathway'), icon: Award },
-    { id: 'linkedin' as TabType, label: t('careerReadinessCoach.tabs.linkedin'), icon: Linkedin },
-    { id: 'assessment' as TabType, label: t('careerReadinessCoach.tabs.assessment'), icon: BarChart3 },
-    { id: 'standards' as TabType, label: t('careerReadinessCoach.tabs.standards'), icon: CheckCircle },
-  ]
-  // Exclude last sub-chatbot from UI; data still from backend for rest
-  const visibleTabs = tabs.slice(0, -1)
 
-  return (
-    <div className="space-y-6">
-      {creditError && (
-        <NoCreditsCard
-          reason={creditError.reason}
-          balance={creditError.balance}
-          required={creditError.required}
-          onActivated={clearCreditError}
-        />
-      )}
-      {/* Header */}
-      <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 rounded-3xl p-8 text-white shadow-xl">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-                <Briefcase className="h-6 w-6" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-3xl font-bold">{t('careerReadinessCoach.careerReadinessCoach')}</h1>
-                  <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                    <Star className="h-3 w-3" /> 4.9★
-                  </span>
-                  <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" />{t('careerReadinessCoach.premium')}</span>
-                  <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
-                    <Globe className="inline h-3 w-3 mr-1" />{t('careerReadinessCoach.internationalStandards')}</span>
-                </div>
-                <p className="mt-2 text-blue-100">{t('careerReadinessCoach.heroDescription')}</p>
-              </div>
-            </div>
+
+  const handleNewTask = () => {
+    setResumeFormat(null)
+    setInterviewQuestions([])
+    setSelectedQuestion(null)
+    setNACECompetencies([])
+    setSelectedCompetency(null)
+    setIndustryInsight(null)
+    setCareerPathway(null)
+    setLinkedInGuide(null)
+    setSkillsAssessment(null)
+  }
+
+  if (redirectTo) return <CoachCapabilityRedirect to={redirectTo} />
+  if (!capability) return <CoachCapabilityRedirect to={`/chatbots/${CAREER_COACH_SLUG}?cap=international_resume_builder`} />
+
+
+  const workspaceBody = (
+        <div className="space-y-6">
+
             
-            {/* Quick Settings */}
-            <div className="flex flex-wrap gap-4 mt-6">
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">{t('careerReadinessCoach.gradeLevel')}</label>
-                <GradeBandSelect
-                  variant="native"
-                  value={gradeLevel}
-                  onChange={setGradeLevel}
-                  label=""
-                  context="careerBusiness"
-                  selectClassName="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                />
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">{t('careerReadinessCoach.region')}</label>
-                <select
-                  value={selectedRegion}
-                  onChange={(e) => setSelectedRegion(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                >
-                  {regions.map(region => (
-                    <option key={region} value={region}>{region}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">{t('careerReadinessCoach.industry')}</label>
-                <select
-                  value={selectedIndustry}
-                  onChange={(e) => setSelectedIndustry(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                >
-                  {industries.map(industry => (
-                    <option key={industry} value={industry}>{industry}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">{t('careerReadinessCoach.careerLevel')}</label>
-                <select
-                  value={careerLevel}
-                  onChange={(e) => setCareerLevel(e.target.value)}
-                  className="bg-white/20 border border-white/30 rounded px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                >
-                  <option>{t('careerReadinessCoach.entry')}</option>
-                  <option>{t('careerReadinessCoach.mid')}</option>
-                  <option>{t('careerReadinessCoach.senior')}</option>
-                  <option>{t('careerReadinessCoach.executive')}</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                      {/* Quick Settings */}
+                      <div className="flex flex-wrap gap-4">
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                          <label className="text-sm font-medium text-gray-700">{t('careerReadinessCoach.gradeLevel')}</label>
+                          <GradeBandSelect
+                            variant="native"
+                            value={gradeLevel}
+                            onChange={setGradeLevel}
+                            label=""
+                            context="careerBusiness"
+                            selectClassName="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                          />
+                        </div>
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                          <label className="text-sm font-medium text-gray-700">{t('careerReadinessCoach.region')}</label>
+                          <select
+                            value={selectedRegion}
+                            onChange={(e) => setSelectedRegion(e.target.value)}
+                            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                          >
+                            {regions.map(region => (
+                              <option key={region} value={region}>{region}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                          <label className="text-sm font-medium text-gray-700">{t('careerReadinessCoach.industry')}</label>
+                          <select
+                            value={selectedIndustry}
+                            onChange={(e) => setSelectedIndustry(e.target.value)}
+                            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                          >
+                            {industries.map(industry => (
+                              <option key={industry} value={industry}>{industry}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+                          <label className="text-sm font-medium text-gray-700">{t('careerReadinessCoach.careerLevel')}</label>
+                          <select
+                            value={careerLevel}
+                            onChange={(e) => setCareerLevel(e.target.value)}
+                            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                          >
+                            <option>{t('careerReadinessCoach.entry')}</option>
+                            <option>{t('careerReadinessCoach.mid')}</option>
+                            <option>{t('careerReadinessCoach.senior')}</option>
+                            <option>{t('careerReadinessCoach.executive')}</option>
+                          </select>
+                        </div>
+                      </div>
 
-      {/* Tabs */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm">
-        <div className="border-b border-gray-200">
-          <div className="flex overflow-x-auto scrollbar-hide">
-            {visibleTabs.map((tab) => {
-              const Icon = tab.icon
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-6 py-4 text-sm font-medium transition-colors border-b-2 ${
-                    activeTab === tab.id
-                      ? 'border-emerald-600 text-emerald-600 bg-emerald-50'
-                      : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                  }`}
-                >
-                  <Icon className="h-5 w-5" />
-                  {tab.label}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        <div className="p-6">
-          {/* Resume Builder Tab */}
           {activeTab === 'resume' && (
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
@@ -1387,146 +1339,32 @@ const CareerReadinessCoach = () => {
               )}
             </div>
           )}
-
-          {/* Standards Alignment Tab */}
-          {activeTab === 'standards' && (
-            <div className="space-y-6">
-              <div className="bg-gradient-to-r from-violet-50 to-purple-50 rounded-xl p-6 border border-violet-200">
-                <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <CheckCircle className="h-6 w-6 text-violet-600" />{t('careerReadinessCoach.internationalStandardsAlignment')}</h2>
-                <p className="text-gray-600">{t('careerReadinessCoach.thisCareerReadinessCoachAlignsWithMajorInternationalSta')}</p>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Award className="h-5 w-5 text-violet-600" />{t('careerReadinessCoach.naceCareerReadinessCompetencies')}</h3>
-                  <p className="text-gray-700 mb-3">{t('careerReadinessCoach.fullAlignmentWithAll8CoreCompetenciesIdentifiedByThe')}</p>
-                  <div className="space-y-2">
-                    {[
-                      'Critical Thinking/Problem Solving',
-                      'Oral/Written Communications',
-                      'Teamwork/Collaboration',
-                      'Digital Technology',
-                      'Leadership',
-                      'Professionalism/Work Ethic',
-                      'Career Management',
-                      'Global/Intercultural Fluency'
-                    ].map((comp, i) => (
-                      <div key={i} className="flex items-center gap-2 text-sm text-gray-700">
-                        <CheckCircle2 className="h-4 w-4 text-green-600" />
-                        {comp}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Globe className="h-5 w-5 text-violet-600" />{t('careerReadinessCoach.cifrFramework')}</h3>
-                  <p className="text-gray-700 mb-3">
-                    Proficiency level assessment aligned with Common International Framework of Reference 
-                    for Future Readiness (A1-C2 scale).
-                  </p>
-                  <div className="space-y-2">
-                    {[
-                      'A1 - Basic Proficiency',
-                      'A2 - Elementary',
-                      'B1 - Intermediate',
-                      'B2 - Proficient',
-                      'C1 - Advanced',
-                      'C2 - Outstanding Mastery'
-                    ].map((level, i) => (
-                      <div key={i} className="flex items-center gap-2 text-sm text-gray-700">
-                        <CheckCircle2 className="h-4 w-4 text-green-600" />
-                        {level}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <GraduationCap className="h-5 w-5 text-violet-600" />{t('careerReadinessCoach.actCollegeCareerReadinessStandards')}</h3>
-                  <p className="text-gray-700 mb-3">{t('careerReadinessCoach.alignmentWithActStandardsDescribingEssentialSkillsForCo')}</p>
-                  <div className="space-y-2">
-                    {[
-                      'English Language Arts',
-                      'Mathematics',
-                      'Reading',
-                      'Science',
-                      'Writing',
-                      'Cross-cutting Skills'
-                    ].map((standard, i) => (
-                      <div key={i} className="flex items-center gap-2 text-sm text-gray-700">
-                        <CheckCircle2 className="h-4 w-4 text-green-600" />
-                        {standard}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-violet-600" />{t('careerReadinessCoach.oecdCareerReadinessGuidelines')}</h3>
-                  <p className="text-gray-700 mb-3">{t('careerReadinessCoach.integrationOfOecdBestPracticesForPreparingYoungPeopleFo')}</p>
-                  <div className="space-y-2">
-                    {[
-                      'Career exploration activities',
-                      'Work-based learning',
-                      'Career guidance',
-                      'Skills development',
-                      'Labor market information',
-                      'Employer engagement'
-                    ].map((guideline, i) => (
-                      <div key={i} className="flex items-center gap-2 text-sm text-gray-700">
-                        <CheckCircle2 className="h-4 w-4 text-green-600" />
-                        {guideline}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">21st Century Skills (P21 Framework)</h3>
-                <div className="grid md:grid-cols-3 gap-4">
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.learningInnovation')}</h4>
-                    <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-                      <li>{t('careerReadinessCoach.criticalThinking')}</li>
-                      <li>{t('careerReadinessCoach.creativity')}</li>
-                      <li>{t('careerReadinessCoach.communication')}</li>
-                      <li>{t('careerReadinessCoach.collaboration')}</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.informationMedia')}</h4>
-                    <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-                      <li>{t('careerReadinessCoach.informationLiteracy')}</li>
-                      <li>{t('careerReadinessCoach.mediaLiteracy')}</li>
-                      <li>{t('careerReadinessCoach.ictLiteracy')}</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">{t('careerReadinessCoach.lifeCareer')}</h4>
-                    <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-                      <li>{t('careerReadinessCoach.flexibilityAdaptability')}</li>
-                      <li>{t('careerReadinessCoach.initiativeSelfDirection')}</li>
-                      <li>{t('careerReadinessCoach.socialCrossCultural')}</li>
-                      <li>{t('careerReadinessCoach.productivityAccountability')}</li>
-                      <li>{t('careerReadinessCoach.leadershipResponsibility')}</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
-      </div>
+  )
+
+  return (
+    <div className="space-y-6">
+      {creditError && (
+        <NoCreditsCard
+          reason={creditError.reason}
+          balance={creditError.balance}
+          required={creditError.required}
+          onActivated={clearCreditError}
+        />
+      )}
+      <CoachWorkspaceShell
+        capability={capability}
+        siblings={siblings}
+        categoryKey={category?.key}
+        categoryLabel={category?.label}
+        onNewTask={handleNewTask}
+      >
+        {workspaceBody}
+      </CoachWorkspaceShell>
     </div>
   )
 }
+
 
 export default CareerReadinessCoach
 

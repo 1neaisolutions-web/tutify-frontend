@@ -1,48 +1,33 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   BookOpen,
-  FileText,
-  Sparkles,
-  Download,
   RefreshCw,
-  TrendingUp,
   Users,
-  Target,
   CheckCircle2,
   AlertCircle,
   Lightbulb,
-  MessageSquare,
   PenTool,
-  BarChart3,
-  BookMarked,
-  GraduationCap,
   Award,
-  Clock,
-  Search,
-  Filter,
-  Star,
-  Lock,
-  Quote,
-  Layers,
-  Eye,
-  Brain,
-  Palette,
-  Music,
-  Zap,
-  Compass,
-  Edit,
   SpellCheck,
   FileCheck,
-  ClipboardList,
-  Wand2,
-  ScrollText,
-  FileEdit,
+  Download,
+  Sparkles,
+  Palette,
+  MessageSquare,
+  BarChart3,
+  Target,
+  BookMarked,
 } from 'lucide-react'
 import * as chatbotApi from '../../api/chatbots'
 import { useSnackbar } from '../../hooks/useSnackbar'
 import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
+import { CoachWorkspaceShell } from './ai-coach/CoachWorkspaceShell'
+import {
+  CoachCapabilityRedirect,
+  useCoachCapabilityRoute,
+} from './ai-coach/useCoachCapabilityRoute'
 import { resolveApiMessage } from '../../i18n/resolveApiMessage'
 
 import { useTranslation } from 'react-i18next'
@@ -113,8 +98,10 @@ const GrammarWritingMentor = () => {
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const CHATBOT_SLUG = 'grammar-writing-mentor'
-  
-  const [activeTab, setActiveTab] = useState<'grammar' | 'feedback' | 'peer' | 'lessons' | 'prompts' | 'rubric'>('grammar')
+  const { redirectTo, capability, siblings, category, tabId } = useCoachCapabilityRoute(CHATBOT_SLUG)
+
+  type GrammarTab = 'grammar' | 'feedback' | 'peer' | 'lessons'
+  const [activeTab, setActiveTab] = useState<GrammarTab>('grammar')
   const [textInput, setTextInput] = useState('')
   const [gradeLevel, setGradeLevel] = useState('7')
   const [writingType, setWritingType] = useState('narrative')
@@ -126,12 +113,20 @@ const GrammarWritingMentor = () => {
   const [hasGeneratedPeerGuide, setHasGeneratedPeerGuide] = useState(false)
   const [hasGeneratedLesson, setHasGeneratedLesson] = useState(false)
 
-  const GRAMMAR_CAPABILITY_TABS: Record<string, 'grammar' | 'feedback' | 'peer' | 'lessons'> = {
+  const GRAMMAR_CAPABILITY_TABS: Record<string, GrammarTab> = {
     grammar_check: 'grammar',
     writing_feedback: 'feedback',
     peer_review_guide: 'peer',
     grammar_lesson: 'lessons',
   }
+
+  const isGrammarTab = useCallback((tab: string): tab is GrammarTab => {
+    return tab === 'grammar' || tab === 'feedback' || tab === 'peer' || tab === 'lessons'
+  }, [])
+
+  useEffect(() => {
+    if (tabId && isGrammarTab(tabId)) setActiveTab(tabId)
+  }, [tabId, isGrammarTab])
 
   const { conversationIdForActiveTab, pinFromResponse } = useChatbotHistorySession({
     slug: CHATBOT_SLUG,
@@ -341,140 +336,21 @@ const GrammarWritingMentor = () => {
     }
   }
 
-  const tabs = [
-    { id: 'grammar', label: t('grammarWritingMentor.tabs.grammar'), icon: SpellCheck },
-    { id: 'feedback', label: t('grammarWritingMentor.tabs.feedback'), icon: FileCheck },
-    { id: 'peer', label: t('grammarWritingMentor.tabs.peer'), icon: Users },
-    { id: 'lessons', label: t('grammarWritingMentor.tabs.lessons'), icon: BookOpen },
-    { id: 'prompts', label: t('grammarWritingMentor.tabs.prompts'), icon: Lightbulb },
-    { id: 'rubric', label: t('grammarWritingMentor.tabs.rubric'), icon: ClipboardList },
-  ]
+  const handleNewTask = () => {
+    setTextInput('')
+    setGrammarCheck(null)
+    setWritingFeedback(null)
+    setPeerReviewGuide(null)
+    setGrammarLesson(null)
+    setHasGeneratedPeerGuide(false)
+    setHasGeneratedLesson(false)
+  }
 
-  return (
-    <div className="space-y-6">
-      {creditError && (
-        <NoCreditsCard
-          reason={creditError.reason}
-          balance={creditError.balance}
-          required={creditError.required}
-          onActivated={clearCreditError}
-        />
-      )}
-      {/* Header */}
-      <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 rounded-3xl p-8 text-white shadow-xl">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-                <PenTool className="h-6 w-6" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h1 className="text-3xl font-bold">{t('grammarWritingMentor.grammarWritingMentor')}</h1>
-                  <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                    <Star className="h-3 w-3" /> 4.8★
-                  </span>
-                  <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" />{t('grammarWritingMentor.premium')}</span>
-                </div>
-                <p className="mt-2 text-emerald-100">{t('grammarWritingMentor.comprehensiveGrammarInstructionWritingWorkshopFacilitat')}</p>
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-3 mt-6">
-              <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
-                <SpellCheck className="h-4 w-4" />
-                <span>{t('grammarWritingMentor.grammarChecking')}</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
-                <FileCheck className="h-4 w-4" />
-                <span>{t('grammarWritingMentor.writingFeedback')}</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
-                <Users className="h-4 w-4" />
-                <span>{t('grammarWritingMentor.peerReviewTools')}</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
-                <BookOpen className="h-4 w-4" />
-                <span>{t('grammarWritingMentor.grammarLessons')}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+  if (redirectTo) return <CoachCapabilityRedirect to={redirectTo} />
+  if (!capability) return <CoachCapabilityRedirect to={`/chatbots/${CHATBOT_SLUG}?cap=grammar_check`} />
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{t('grammarWritingMentor.textsReviewed')}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">1,456</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
-              <FileText className="h-6 w-6" />
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{t('grammarWritingMentor.grammarErrorsFixed')}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">8,234</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-100 text-teal-600">
-              <SpellCheck className="h-6 w-6" />
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{t('grammarWritingMentor.studentsSupported')}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">2,345</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600">
-              <Users className="h-6 w-6" />
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{t('grammarWritingMentor.avgWritingScore')}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">4.2/5</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
-              <Award className="h-6 w-6" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div className="border-b border-gray-200">
-          <div className="flex overflow-x-auto">
-            {tabs.map((tab) => {
-              const Icon = tab.icon
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex items-center gap-2 px-6 py-4 text-sm font-semibold transition-colors border-b-2 ${
-                    activeTab === tab.id
-                      ? 'border-emerald-600 text-emerald-600'
-                      : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                  {tab.label}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        <div className="p-6">
+  const workspaceBody = (
+        <div className="space-y-6">
           {/* Grammar Checker Tab */}
           {activeTab === 'grammar' && (
             <div className="space-y-6">
@@ -978,156 +854,28 @@ const GrammarWritingMentor = () => {
             </div>
           )}
 
-          {/* Writing Prompts Tab */}
-          {activeTab === 'prompts' && (
-            <div className="space-y-6">
-              <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-8">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Lightbulb className="h-6 w-6 text-purple-600" />{t('grammarWritingMentor.writingPromptGenerator')}</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('grammarWritingMentor.gradeLevel')}</label>
-                    <GradeSelect
-                      variant="native"
-                      value={gradeLevel}
-                      onChange={setGradeLevel}
-                      label=""
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('grammarWritingMentor.promptType')}</label>
-                    <select className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-100">
-                      <option>{t('grammarWritingMentor.narrative')}</option>
-                      <option>{t('grammarWritingMentor.persuasive')}</option>
-                      <option>{t('grammarWritingMentor.expository')}</option>
-                      <option>{t('grammarWritingMentor.descriptive')}</option>
-                      <option>{t('grammarWritingMentor.creative')}</option>
-                    </select>
-                  </div>
-                </div>
-                <button className="w-full rounded-lg bg-purple-600 px-6 py-3 text-sm font-semibold text-white hover:bg-purple-700 flex items-center justify-center gap-2">
-                  <Sparkles className="h-4 w-4" />{t('grammarWritingMentor.generateWritingPrompts')}</button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {(
-                  [
-                    { id: 'dayInLife', typeKey: 'grammarWritingMentor.narrative' },
-                    { id: 'schoolUniform', typeKey: 'grammarWritingMentor.persuasive' },
-                    { id: 'favoritePlace', typeKey: 'grammarWritingMentor.descriptive' },
-                  ] as const
-                ).map((sample, idx) => (
-                  <div key={idx} className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs font-semibold text-purple-600 uppercase tracking-wide">
-                        {t(sample.typeKey)}
-                      </span>
-                      <span className="text-xs text-gray-500">
-                        {t('common.gradeOption', { grade: t(`grammarWritingMentor.samples.${sample.id}.grade`) })}
-                      </span>
-                    </div>
-                    <h4 className="text-lg font-semibold text-gray-900 mb-2">{t(`grammarWritingMentor.samples.${sample.id}.title`)}</h4>
-                    <p className="text-sm text-gray-600 mb-4">{t(`grammarWritingMentor.samples.${sample.id}.prompt`)}</p>
-                    <div className="flex gap-2">
-                      <button className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">{t('grammarWritingMentor.usePrompt')}</button>
-                      <button className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">
-                        <Download className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Rubric Builder Tab */}
-          {activeTab === 'rubric' && (
-            <div className="space-y-6">
-              <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-teal-50 to-emerald-50 p-8">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <ClipboardList className="h-6 w-6 text-teal-600" />{t('grammarWritingMentor.rubricBuilder')}</h3>
-                <p className="text-sm text-gray-600 mb-6">{t('grammarWritingMentor.createComprehensiveWritingRubricsTailoredToYourGradeLev')}</p>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('grammarWritingMentor.gradeLevel')}</label>
-                    <GradeSelect
-                      variant="native"
-                      value={gradeLevel}
-                      onChange={setGradeLevel}
-                      label=""
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('grammarWritingMentor.writingType')}</label>
-                    <select
-                      value={writingType}
-                      onChange={(e) => setWritingType(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
-                    >
-                      <option value="narrative">{t('grammarWritingMentor.narrative')}</option>
-                      <option value="persuasive">{t('grammarWritingMentor.persuasive')}</option>
-                      <option value="expository">{t('grammarWritingMentor.expository')}</option>
-                      <option value="descriptive">{t('grammarWritingMentor.descriptive')}</option>
-                      <option value="creative">{t('grammarWritingMentor.creative')}</option>
-                    </select>
-                  </div>
-                  <button className="w-full rounded-lg bg-teal-600 px-6 py-3 text-sm font-semibold text-white hover:bg-teal-700 flex items-center justify-center gap-2">
-                    <Sparkles className="h-4 w-4" />{t('grammarWritingMentor.generateRubric')}</button>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
-      </div>
+  )
 
-      {/* Additional Features Section */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-6">{t('grammarWritingMentor.additionalPremiumFeatures')}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 mb-4">
-              <TrendingUp className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('grammarWritingMentor.progressTracking')}</h3>
-            <p className="text-sm text-gray-600">{t('grammarWritingMentor.monitorStudentWritingProgressOverTimeWithDetailedAnalyt')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-teal-50 to-cyan-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-100 text-teal-600 mb-4">
-              <GraduationCap className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('grammarWritingMentor.standardsAlignment')}</h3>
-            <p className="text-sm text-gray-600">{t('grammarWritingMentor.allToolsAlignWithCommonCoreElaWritingStandardsAnd')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-cyan-50 to-blue-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600 mb-4">
-              <MessageSquare className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('grammarWritingMentor.aiPoweredChat')}</h3>
-            <p className="text-sm text-gray-600">{t('grammarWritingMentor.getInstantAnswersToGrammarAndWritingQuestionsWithPerson')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 mb-4">
-              <Download className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('grammarWritingMentor.exportShare')}</h3>
-            <p className="text-sm text-gray-600">{t('grammarWritingMentor.exportFeedbackReportsRubricsAndLessonPlansInMultipleFor')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 mb-4">
-              <Users className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('grammarWritingMentor.differentiationTools')}</h3>
-            <p className="text-sm text-gray-600">{t('grammarWritingMentor.automaticallyGenerateDifferentiatedWritingActivitiesFor')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600 mb-4">
-              <Clock className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('grammarWritingMentor.timeSavingTemplates')}</h3>
-            <p className="text-sm text-gray-600">{t('grammarWritingMentor.accessReadyToUseRubricsPeerReviewGuidesAndGrammar')}</p>
-          </div>
-        </div>
-      </div>
+  return (
+    <div className="space-y-6">
+      {creditError && (
+        <NoCreditsCard
+          reason={creditError.reason}
+          balance={creditError.balance}
+          required={creditError.required}
+          onActivated={clearCreditError}
+        />
+      )}
+      <CoachWorkspaceShell
+        capability={capability}
+        siblings={siblings}
+        categoryKey={category?.key}
+        categoryLabel={category?.label}
+        onNewTask={handleNewTask}
+      >
+        {workspaceBody}
+      </CoachWorkspaceShell>
     </div>
   )
 }

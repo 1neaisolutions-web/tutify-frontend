@@ -1,7 +1,6 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   BookOpen,
-  FileText,
   Sparkles,
   Download,
   RefreshCw,
@@ -9,26 +8,16 @@ import {
   Users,
   Target,
   CheckCircle2,
-  AlertCircle,
   Lightbulb,
   MessageSquare,
-  PenTool,
   BarChart3,
-  BookMarked,
   GraduationCap,
   Award,
-  Clock,
-  Search,
-  Filter,
-  Star,
-  Lock,
   Quote,
   Layers,
   Eye,
   Brain,
   Palette,
-  Music,
-  Zap,
   Compass,
 } from 'lucide-react'
 import * as chatbotApi from '../../api/chatbots'
@@ -36,6 +25,11 @@ import { useSnackbar } from '../../hooks/useSnackbar'
 import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
+import { CoachWorkspaceShell } from './ai-coach/CoachWorkspaceShell'
+import {
+  CoachCapabilityRedirect,
+  useCoachCapabilityRoute,
+} from './ai-coach/useCoachCapabilityRoute'
 import { resolveApiMessage } from '../../i18n/resolveApiMessage'
 
 import { useTranslation } from 'react-i18next'
@@ -88,7 +82,9 @@ const LiteratureAnalysisExpert = () => {
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const CHATBOT_SLUG = 'literature-analysis-expert'
   
-  const [activeTab, setActiveTab] = useState<'theme' | 'character' | 'devices' | 'discussion' | 'compare' | 'essay'>('theme')
+  const { redirectTo, capability, siblings, category, tabId } = useCoachCapabilityRoute(CHATBOT_SLUG)
+
+  const [activeTab, setActiveTab] = useState<'theme' | 'character' | 'devices' | 'discussion'>('theme')
   const [textInput, setTextInput] = useState('')
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -105,6 +101,14 @@ const LiteratureAnalysisExpert = () => {
     literary_devices: 'devices',
     discussion_prompts: 'discussion',
   }
+
+  const isCapabilityTab = useCallback((tab: string): tab is 'theme' | 'character' | 'devices' | 'discussion' => {
+    return tab === 'theme' || tab === 'character' || tab === 'devices' || tab === 'discussion'
+  }, [])
+
+  useEffect(() => {
+    if (tabId && isCapabilityTab(tabId)) setActiveTab(tabId)
+  }, [tabId, isCapabilityTab])
 
   const { conversationIdForActiveTab, pinFromResponse } = useChatbotHistorySession({
     slug: CHATBOT_SLUG,
@@ -328,141 +332,24 @@ const LiteratureAnalysisExpert = () => {
     }
   }
 
-  const tabs = [
-    { id: 'theme', label: t('literatureAnalysisExpert.tabs.theme'), icon: Compass },
-    { id: 'character', label: t('literatureAnalysisExpert.tabs.character'), icon: Users },
-    { id: 'devices', label: t('literatureAnalysisExpert.tabs.devices'), icon: Palette },
-    { id: 'discussion', label: t('literatureAnalysisExpert.tabs.discussion'), icon: MessageSquare },
-    { id: 'compare', label: t('literatureAnalysisExpert.tabs.compare'), icon: Layers },
-    { id: 'essay', label: t('literatureAnalysisExpert.tabs.essay'), icon: PenTool },
-  ]
 
-  return (
-    <div className="space-y-6">
-      {creditError && (
-        <NoCreditsCard
-          reason={creditError.reason}
-          balance={creditError.balance}
-          required={creditError.required}
-          onActivated={clearCreditError}
-        />
-      )}
 
-      {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 rounded-3xl p-8 text-white shadow-xl">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-                <BookOpen className="h-6 w-6" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h1 className="text-3xl font-bold">{t('literatureAnalysisExpert.literatureAnalysisExpert')}</h1>
-                  <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                    <Star className="h-3 w-3" /> 4.7★
-                  </span>
-                  <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" />{t('literatureAnalysisExpert.premium')}</span>
-                </div>
-                <p className="mt-2 text-purple-100">{t('literatureAnalysisExpert.deepLiteraryAnalysisToolsForThemeExplorationCharacterDe')}</p>
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-3 mt-6">
-              <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
-                <Compass className="h-4 w-4" />
-                <span>{t('literatureAnalysisExpert.themeExploration')}</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
-                <Users className="h-4 w-4" />
-                <span>{t('literatureAnalysisExpert.characterAnalysis')}</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
-                <Palette className="h-4 w-4" />
-                <span>{t('literatureAnalysisExpert.literaryDevices')}</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
-                <MessageSquare className="h-4 w-4" />
-                <span>{t('literatureAnalysisExpert.discussionPrompts')}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+  const handleNewTask = () => {
+    setTextInput('')
+    setTitle('')
+    setAuthor('')
+    setThemeAnalysis(null)
+    setCharacterAnalysis(null)
+    setLiteraryDevices(null)
+    setDiscussionPrompts(null)
+  }
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{t('literatureAnalysisExpert.textsAnalyzed')}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">189</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600">
-              <FileText className="h-6 w-6" />
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{t('literatureAnalysisExpert.themesIdentified')}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">456</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600">
-              <Compass className="h-6 w-6" />
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{t('literatureAnalysisExpert.charactersAnalyzed')}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">723</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
-              <Users className="h-6 w-6" />
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{t('literatureAnalysisExpert.discussionPrompts')}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">1,234</p>
-            </div>
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-pink-100 text-pink-600">
-              <MessageSquare className="h-6 w-6" />
-            </div>
-          </div>
-        </div>
-      </div>
+  if (redirectTo) return <CoachCapabilityRedirect to={redirectTo} />
+  if (!capability) return <CoachCapabilityRedirect to={`/chatbots/${CHATBOT_SLUG}?cap=theme_exploration`} />
 
-      {/* Tabs */}
-      <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <div className="border-b border-gray-200">
-          <div className="flex overflow-x-auto">
-            {tabs.map((tab) => {
-              const Icon = tab.icon
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex items-center gap-2 px-6 py-4 text-sm font-semibold transition-colors border-b-2 ${
-                    activeTab === tab.id
-                      ? 'border-purple-600 text-purple-600'
-                      : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                  {tab.label}
-                </button>
-              )
-            })}
-          </div>
-        </div>
 
-        <div className="p-6">
+  const workspaceBody = (
+        <div className="space-y-6">
           {/* Theme Analysis Tab */}
           {activeTab === 'theme' && (
             <div className="space-y-6">
@@ -928,142 +815,32 @@ const LiteratureAnalysisExpert = () => {
               </div>
             </div>
           )}
-
-          {/* Text Comparison Tab */}
-          {activeTab === 'compare' && (
-            <div className="space-y-6">
-              <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-amber-50 to-orange-50 p-8">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Layers className="h-6 w-6 text-amber-600" />{t('literatureAnalysisExpert.textComparisonTool')}</h3>
-                <p className="text-sm text-gray-600 mb-6">{t('literatureAnalysisExpert.compareThemesCharactersLiteraryDevicesAndStylesAcrossMu')}</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-3">
-                    <label className="block text-sm font-medium text-gray-700">{t('literatureAnalysisExpert.text1')}</label>
-                    <input
-                      type="text"
-                      placeholder={t('literatureAnalysisExpert.titleOrAuthor')}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100"
-                    />
-                    <textarea
-                      placeholder={t('literatureAnalysisExpert.textExcerptOrContext')}
-                      rows={6}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100"
-                    />
-                  </div>
-                  <div className="space-y-3">
-                    <label className="block text-sm font-medium text-gray-700">{t('literatureAnalysisExpert.text2')}</label>
-                    <input
-                      type="text"
-                      placeholder={t('literatureAnalysisExpert.titleOrAuthor')}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100"
-                    />
-                    <textarea
-                      placeholder={t('literatureAnalysisExpert.textExcerptOrContext')}
-                      rows={6}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-100"
-                    />
-                  </div>
-                </div>
-                <button className="mt-4 w-full rounded-lg bg-amber-600 px-6 py-3 text-sm font-semibold text-white hover:bg-amber-700 flex items-center justify-center gap-2">
-                  <Sparkles className="h-4 w-4" />{t('literatureAnalysisExpert.compareTexts')}</button>
-              </div>
-            </div>
-          )}
-
-          {/* Essay Planning Tab */}
-          {activeTab === 'essay' && (
-            <div className="space-y-6">
-              <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-8">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <PenTool className="h-6 w-6 text-green-600" />{t('literatureAnalysisExpert.essayPlanningAssistant')}</h3>
-                <p className="text-sm text-gray-600 mb-6">{t('literatureAnalysisExpert.generateThesisStatementsOutlineStructuresAndSupportingE')}</p>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literatureAnalysisExpert.essayTopicOrQuestion')}</label>
-                    <input
-                      type="text"
-                      placeholder={t('literatureAnalysisExpert.eGAnalyzeTheThemeOfPowerIn')}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literatureAnalysisExpert.textInformation')}</label>
-                    <textarea
-                      placeholder={t('literatureAnalysisExpert.enterTextTitleAuthorAndKeyPointsToAnalyze')}
-                      rows={6}
-                      className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literatureAnalysisExpert.essayType')}</label>
-                    <select className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100">
-                      <option>{t('literatureAnalysisExpert.literaryAnalysis')}</option>
-                      <option>{t('literatureAnalysisExpert.characterAnalysis')}</option>
-                      <option>{t('literatureAnalysisExpert.themeAnalysis')}</option>
-                      <option>{t('literatureAnalysisExpert.comparativeEssay')}</option>
-                      <option>{t('literatureAnalysisExpert.argumentativeEssay')}</option>
-                    </select>
-                  </div>
-                  <button className="w-full rounded-lg bg-green-600 px-6 py-3 text-sm font-semibold text-white hover:bg-green-700 flex items-center justify-center gap-2">
-                    <Sparkles className="h-4 w-4" />{t('literatureAnalysisExpert.generateEssayPlan')}</button>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
-      </div>
+  )
 
-      {/* Additional Features Section */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-6">{t('literatureAnalysisExpert.additionalPremiumFeatures')}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-purple-50 to-indigo-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600 mb-4">
-              <BarChart3 className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literatureAnalysisExpert.textComplexityAnalysis')}</h3>
-            <p className="text-sm text-gray-600">{t('literatureAnalysisExpert.analyzeReadingLevelVocabularyComplexityAndTextStructure')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-blue-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 mb-4">
-              <GraduationCap className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literatureAnalysisExpert.standardsAlignment')}</h3>
-            <p className="text-sm text-gray-600">{t('literatureAnalysisExpert.allAnalysisToolsAlignWithCommonCoreElaStandardsAnd')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 mb-4">
-              <TrendingUp className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literatureAnalysisExpert.progressTracking')}</h3>
-            <p className="text-sm text-gray-600">{t('literatureAnalysisExpert.trackStudentEngagementWithTextsAnalysisQualityAndDiscus')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-cyan-50 to-teal-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600 mb-4">
-              <MessageSquare className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literatureAnalysisExpert.aiPoweredChat')}</h3>
-            <p className="text-sm text-gray-600">{t('literatureAnalysisExpert.getInstantAnswersToLiteratureQuestionsAndReceivePersona')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-teal-50 to-green-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-100 text-teal-600 mb-4">
-              <Download className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literatureAnalysisExpert.exportShare')}</h3>
-            <p className="text-sm text-gray-600">{t('literatureAnalysisExpert.exportAnalysisReportsDiscussionPromptsAndEssayPlansInMu')}</p>
-          </div>
-          <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600 mb-4">
-              <Users className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literatureAnalysisExpert.differentiationTools')}</h3>
-            <p className="text-sm text-gray-600">{t('literatureAnalysisExpert.automaticallyGenerateDifferentiatedAnalysisActivitiesFo')}</p>
-          </div>
-        </div>
-      </div>
+  return (
+    <div className="space-y-6">
+      {creditError && (
+        <NoCreditsCard
+          reason={creditError.reason}
+          balance={creditError.balance}
+          required={creditError.required}
+          onActivated={clearCreditError}
+        />
+      )}
+      <CoachWorkspaceShell
+        capability={capability}
+        siblings={siblings}
+        categoryKey={category?.key}
+        categoryLabel={category?.label}
+        onNewTask={handleNewTask}
+      >
+        {workspaceBody}
+      </CoachWorkspaceShell>
     </div>
   )
 }
+
 
 export default LiteratureAnalysisExpert
 
