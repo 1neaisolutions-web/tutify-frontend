@@ -2,12 +2,15 @@ import { useTranslation } from 'react-i18next';
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { useRecordGamificationEvent } from '@/features/gamification';
+
 const STORAGE_KEY = 'tutify_student_youtube_quizzes_v1';
 
 const YouTubeQuizTake = () => {
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
+  const recordGamificationEvent = useRecordGamificationEvent();
   const quiz = useMemo(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -41,6 +44,20 @@ const YouTubeQuizTake = () => {
       answers,
       completedAt: new Date().toISOString(),
     };
+    const scorePercent =
+      quiz.questions.length > 0 ? Math.round((scored / quiz.questions.length) * 100) : 0;
+    recordGamificationEvent(
+      'quiz_completed',
+      {
+        quizId: quiz.id,
+        quizTitle: quiz.title,
+        score: scored,
+        total: quiz.questions.length,
+        scorePercent,
+        completedAt: result.completedAt,
+      },
+      `youtube-quiz:${quiz.id}`,
+    );
     try {
       localStorage.setItem(`tutify_student_youtube_quiz_result_${quiz.id}`, JSON.stringify(result));
     } catch {

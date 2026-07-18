@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { AI_MODES, DEFAULT_AI_MODE } from '../constants/aiModes';
 import { sendCopilotMessage } from '../api/aiApi';
 
+import { GamificationSummaryCard } from '@/features/gamification';
+
 import ChatThread from './ChatThread';
 import ChatInput from './ChatInput';
 import ModeSelectorChip from './ModeSelectorChip';
@@ -129,6 +131,8 @@ const AICopilot = () => {
               </p>
             </div>
           </div>
+
+          <GamificationSummaryCard />
 
           <div className="flex flex-wrap gap-2">
             {AI_MODES.map((m) => (

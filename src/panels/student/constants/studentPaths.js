@@ -45,5 +45,6 @@ export const STUDENT_PATHS = {
   TIMETABLE: '/student/timetable',
   PROGRESS: '/student/progress',
   PROGRESS_SUBJECT: (id) => `/student/progress/${id}`,
+  GAMIFICATION: '/student/gamification',
 };
 

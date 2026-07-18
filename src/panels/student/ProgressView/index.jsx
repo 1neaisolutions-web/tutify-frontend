@@ -2,6 +2,8 @@ import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useGamification } from '@/features/gamification';
+
 const demoSubjects = [
   { id: 'math', name: 'Math', quizAvg: 68, assignmentsDone: 6, totalAssignments: 8 },
   { id: 'biology', name: 'Biology', quizAvg: 82, assignmentsDone: 4, totalAssignments: 5 },
@@ -11,6 +13,7 @@ const demoSubjects = [
 const ProgressView = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { currentStreak } = useGamification();
 
   const overall = useMemo(() => {
     const avg = Math.round(demoSubjects.reduce((a, s) => a + s.quizAvg, 0) / demoSubjects.length);
@@ -40,7 +43,9 @@ const ProgressView = () => {
           </div>
           <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4">
             <p className="text-xs text-gray-500">{t('studentPanel.progress.stats.streak')}</p>
-            <p className="mt-1 text-2xl font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.progress.streakDays')}</p>
+            <p className="mt-1 text-2xl font-semibold text-gray-900 dark:text-gray-100">
+              {t('studentPanel.progress.streakDaysCount', { count: currentStreak })}
+            </p>
           </div>
         </div>
 

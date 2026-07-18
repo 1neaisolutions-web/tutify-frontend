@@ -16,6 +16,7 @@ import learningHubAdminReducer from './features/learningHubAdmin/learningHubAdmi
 import personalizationReducer from './features/personalization/personalizationSlice';
 import subscriptionReducer from './features/subscription/subscriptionSlice';
 import preferencesReducer from './features/preferences/preferencesSlice';
+import gamificationReducer from './features/gamification/gamificationSlice';
 import { quizApiSlice } from './features/teacherTools/quiz/quizApiSlice';
 import { assignmentApiSlice } from './features/teacherTools/assignment/assignmentApiSlice';
 import { worksheetApiSlice } from './features/teacherTools/worksheet/worksheetApiSlice';
@@ -47,7 +48,7 @@ const storage =
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth', 'preferences'],
+  whitelist: ['auth', 'preferences', 'gamification'],
 };
 
 // Combine reducers
@@ -65,6 +66,7 @@ const rootReducer = combineReducers({
   personalization: personalizationReducer,
   subscription: subscriptionReducer,
   preferences: preferencesReducer,
+  gamification: gamificationReducer,
   [quizApiSlice.reducerPath]: quizApiSlice.reducer,
   [assignmentApiSlice.reducerPath]: assignmentApiSlice.reducer,
   [worksheetApiSlice.reducerPath]: worksheetApiSlice.reducer,

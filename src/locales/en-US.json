@@ -207,6 +207,7 @@
       "tasks": "My Tasks",
       "subjects": "Study Rooms",
       "studyTime": "Study Tracker",
+      "gamification": "Gamification",
       "gradeCalc": "Grade Calculator",
       "teachers": "Teachers",
       "myTeachers": "My Teachers",
@@ -13213,6 +13214,8 @@
         "streak": "Streak"
       },
       "streakDays": "3 days",
+      "streakDaysCount_one": "{{count}} day",
+      "streakDaysCount_other": "{{count}} days",
       "viewDetails": "View details →",
       "subject": {
         "subtitle": "Detail view (demo).",
@@ -13251,6 +13254,114 @@
       "last7Days": "Last 7 days",
       "empty": "No sessions yet.",
       "recentSessions": "Recent sessions"
+    },
+    "gamification": {
+      "title": "Gamification",
+      "subtitle": "Earn XP, keep your streak, and unlock badges as you learn.",
+      "badgesTitle": "Badges",
+      "leaderboardTitle": "Leaderboard",
+      "badgeUnlocked": "Badge unlocked: {{badge}}!",
+      "badgeUnlockedTitle": "Badge unlocked",
+      "xpEarned": "+{{xp}} XP earned",
+      "levelUp": "Level up! Level {{level}}",
+      "devTools": {
+        "title": "Dev tools (demo only)",
+        "subtitle": "Seed realistic progress data for demos and testing.",
+        "seed": "Seed test data",
+        "reset": "Reset all"
+      },
+      "calendar": {
+        "title": "30-day activity",
+        "active": "Active",
+        "inactive": "Inactive",
+        "noActivity": "{{date}} — no activity",
+        "studyMinutes": "{{minutes}} min study",
+        "tasks": "{{count}} tasks",
+        "xp": "{{xp}} XP"
+      },
+      "summary": {
+        "title": "Your progress"
+      },
+      "stats": {
+        "totalXpLabel": "Total XP",
+        "totalXp": "{{xp}} XP",
+        "levelLabel": "Level",
+        "level": "Level {{level}}",
+        "currentStreak": "Current streak",
+        "longestStreak": "Longest streak",
+        "streakDays_one": "{{count}} day",
+        "streakDays_other": "{{count}} days"
+      },
+      "leaderboard": {
+        "demoBanner": "Demo — live rankings coming soon",
+        "rank": "Rank",
+        "student": "Student",
+        "quiz": "Quiz",
+        "score": "Score",
+        "date": "Date",
+        "optInLabel": "Join the quiz leaderboard",
+        "optInDescription": "When live, this shows your quiz scores to classmates who also opt in. Your study time, tasks, and total XP stay private.",
+        "rankUp": "Rank up",
+        "rankDown": "Rank down"
+      },
+      "badges": {
+        "first_steps": {
+          "name": "First Steps",
+          "description": "Earn your first XP."
+        },
+        "study_starter": {
+          "name": "Study Starter",
+          "description": "Complete a 15+ minute study session."
+        },
+        "task_taker": {
+          "name": "Task Taker",
+          "description": "Complete your first personal task."
+        },
+        "quiz_rookie": {
+          "name": "Quiz Rookie",
+          "description": "Complete your first quiz."
+        },
+        "streak_3": {
+          "name": "On a Roll",
+          "description": "Reach a 3-day streak."
+        },
+        "streak_7": {
+          "name": "Week Warrior",
+          "description": "Reach a 7-day streak."
+        },
+        "streak_30": {
+          "name": "Consistency Champion",
+          "description": "Reach a 30-day streak."
+        },
+        "study_marathon": {
+          "name": "Study Marathon",
+          "description": "Study for 60+ minutes in one session."
+        },
+        "task_master_10": {
+          "name": "Task Master",
+          "description": "Complete 10 personal tasks."
+        },
+        "quiz_ace": {
+          "name": "Quiz Ace",
+          "description": "Score 90% or higher on a quiz."
+        },
+        "perfect_score": {
+          "name": "Perfect Score",
+          "description": "Score 100% on a quiz."
+        },
+        "xp_500": {
+          "name": "Rising Star",
+          "description": "Reach 500 total XP."
+        },
+        "xp_2000": {
+          "name": "Scholar",
+          "description": "Reach 2,000 total XP."
+        },
+        "leaderboard_member": {
+          "name": "Team Player",
+          "description": "Opt in to the quiz leaderboard."
+        }
+      }
     },
     "content": {
       "title": "Study Materials",

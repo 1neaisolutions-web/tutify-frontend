@@ -2,6 +2,8 @@ import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { useRecordGamificationEvent } from '@/features/gamification';
+
 const quizBank = {
   qz1: {
     id: 'qz1',
@@ -56,6 +58,7 @@ const QuizTake = () => {
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
+  const recordGamificationEvent = useRecordGamificationEvent();
   const quiz = useMemo(() => quizBank[id] || null, [id]);
   const [state, dispatch] = useReducer(reducer, quiz ? initialState(quiz) : { answers: {}, showHintFor: null, remainingSec: 0 });
   const [submitted, setSubmitted] = useState(false);
@@ -80,6 +83,19 @@ const QuizTake = () => {
     const total = quiz.questions.length;
     const score = quiz.questions.reduce((acc, q) => acc + (Number(state.answers[q.id]) === q.answer ? 1 : 0), 0);
     const result = { quizId: quiz.id, score, total, answers: state.answers, autoSubmitted: auto, completedAt: new Date().toISOString() };
+    const scorePercent = total > 0 ? Math.round((score / total) * 100) : 0;
+    recordGamificationEvent(
+      'quiz_completed',
+      {
+        quizId: quiz.id,
+        quizTitle: quiz.title,
+        score,
+        total,
+        scorePercent,
+        completedAt: result.completedAt,
+      },
+      `quiz:${quiz.id}`,
+    );
     try {
       localStorage.setItem(`tutify_student_quiz_result_${quiz.id}`, JSON.stringify(result));
     } catch {

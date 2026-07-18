@@ -145,6 +145,7 @@ import NoteDetail from '../panels/student/SmartNotes/NoteDetail';
 import SubjectStudyRoom from '../panels/student/SubjectStudyRoom';
 import StudyRoomDetail from '../panels/student/SubjectStudyRoom/StudyRoomDetail';
 import StudyTimeTracker from '../panels/student/StudyTimeTracker';
+import Gamification from '../panels/student/Gamification';
 import GradeCalculator from '../panels/student/GradeCalculator';
 import TeacherHub from '../panels/student/TeacherHub';
 import TeacherDetail from '../panels/student/TeacherHub/TeacherDetail';
@@ -1236,6 +1237,7 @@ export const studentRoutes = [
     child: [{ path: '/student/subjects/:id/room', element: withDashboardLayout(<StudyRoomDetail />) }],
   },
   { path: '/student/study-time', moduleName: 'Study Time', element: withDashboardLayout(<StudyTimeTracker />) },
+  { path: '/student/gamification', moduleName: 'Gamification', element: withDashboardLayout(<Gamification />) },
   { path: '/student/grade-calculator', moduleName: 'Grade Calculator', element: withDashboardLayout(<GradeCalculator />) },
   // Teachers + Doubts
   {

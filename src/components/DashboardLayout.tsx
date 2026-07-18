@@ -26,6 +26,7 @@ const useClickOutside = (ref: React.RefObject<HTMLElement>, handler: (event: Mou
 };
 import { sideMenuRoutes } from '../routes/sideMenuConfig'
 import { TeacherToolsDemoProvider } from '../pages/features/teacher-tools/TeacherToolsDemoProvider'
+import { BadgeUnlockListener } from '@/features/gamification'
 import WorkspaceSwitcher from './workspace/WorkspaceSwitcher'
 import ActiveWorkspaceIndicator from './workspace/ActiveWorkspaceIndicator'
 import {
@@ -1119,6 +1120,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         </div>
 
         <main className="pt-20 lg:pt-24 px-6 lg:px-8 flex-1 min-h-0 overflow-hidden flex flex-col">
+          {location.pathname.startsWith('/student') ? <BadgeUnlockListener /> : null}
           <div className={`flex-1 min-h-0 ${isChatPage ? 'overflow-hidden' : 'overflow-auto'}`}>
             {location.pathname.startsWith('/teacher-tools') ||
             location.pathname.startsWith('/dashboard') ||

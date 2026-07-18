@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo, useState } from 'react';
 
+import { useRecordGamificationEvent } from '@/features/gamification';
+
 const STORAGE_KEY = 'tutify_student_study_time_sessions_v1';
 
 const loadSessions = () => {
@@ -15,6 +17,7 @@ const loadSessions = () => {
 
 const StudyTimeTracker = () => {
   const { t } = useTranslation();
+  const recordGamificationEvent = useRecordGamificationEvent();
   const [subject, setSubject] = useState('Math');
   const [running, setRunning] = useState(false);
   const [elapsedSec, setElapsedSec] = useState(0);
@@ -42,6 +45,16 @@ const StudyTimeTracker = () => {
     }
     const item = { id: `sess_${Date.now()}`, subject, seconds: elapsedSec, endedAt: new Date().toISOString() };
     setSessions((prev) => [item, ...prev]);
+    recordGamificationEvent(
+      'study_session_saved',
+      {
+        sessionId: item.id,
+        subject: item.subject,
+        seconds: item.seconds,
+        endedAt: item.endedAt,
+      },
+      `study:${item.id}`,
+    );
     setRunning(false);
     setElapsedSec(0);
   };
