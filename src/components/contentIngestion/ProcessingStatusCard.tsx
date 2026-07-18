@@ -1,7 +1,8 @@
 /**
  * Processing Status Card - Real-time status display with progress bar
  */
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDocumentStatusStream } from '../../hooks/useDocumentStatusStream'
 import type { DocumentStatus } from '../../api/contentIngestion'
 import { StepIndicator } from './StepIndicator'
@@ -11,21 +12,20 @@ interface ProcessingStatusCardProps {
   documentId: string
   onComplete?: () => void
   onError?: (error: string) => void
-  /** Fired on each SSE payload; use to sync document header fields (total_pages, etc.) */
   onStreamStatus?: (status: DocumentStatus) => void
 }
 
-const PROCESSING_STEPS = [
-  { name: 'uploaded', label: 'Uploaded' },
-  { name: 'text_extracting', label: 'Extracting Text' },
-  { name: 'ocr_running', label: 'Processing OCR (async)' },
-  { name: 'normalizing', label: 'Normalizing' },
-  { name: 'chunking', label: 'Chunking' },
-  { name: 'embedding', label: 'Generating Embeddings' },
-  { name: 'indexing', label: 'Indexing' },
-  { name: 'qa_validation', label: 'QA Validation' },
-  { name: 'published', label: 'Published' },
-]
+const STEP_NAME_TO_KEY: Record<string, string> = {
+  uploaded: 'uploaded',
+  text_extracting: 'textExtracting',
+  ocr_running: 'ocrRunning',
+  normalizing: 'normalizing',
+  chunking: 'chunking',
+  embedding: 'embedding',
+  indexing: 'indexing',
+  qa_validation: 'qaValidation',
+  published: 'published',
+}
 
 const TERMINAL_STATUSES = new Set(['published', 'failed'])
 
@@ -42,17 +42,25 @@ export const ProcessingStatusCard = ({
   onError,
   onStreamStatus,
 }: ProcessingStatusCardProps) => {
-  const { status, isStreaming, error, httpConnected, startStream, stopStream } =
+  const { t } = useTranslation()
+
+  const processingSteps = useMemo(
+    () =>
+      Object.entries(STEP_NAME_TO_KEY).map(([name, key]) => ({
+        name,
+        label: t(`content.processing.steps.${key}`),
+      })),
+    [t]
+  )
+
+  const { status, error, httpConnected, startStream, stopStream } =
     useDocumentStatusStream()
 
-  // Stable refs for parent callbacks — prevents the stream from restarting every time
-  // the parent renders with a new function reference.
   const onErrorRef = useRef(onError)
   onErrorRef.current = onError
   const onStreamStatusRef = useRef(onStreamStatus)
   onStreamStatusRef.current = onStreamStatus
 
-  // Elapsed-time counter: resets when the pipeline step changes
   const [elapsedSecs, setElapsedSecs] = useState(0)
   const stepStartRef = useRef<number | null>(null)
   const prevStepRef = useRef<string | null>(null)
@@ -77,9 +85,6 @@ export const ProcessingStatusCard = ({
     return () => clearInterval(interval)
   }, [status?.status])
 
-  // Start / stop the SSE stream — only re-runs when documentId / stable callbacks change.
-  // onStreamStatus / onError are intentionally NOT in deps; their current values are read
-  // via refs at call time so parent re-renders don't restart the stream.
   useEffect(() => {
     if (!documentId) return
     startStream(documentId, {
@@ -89,16 +94,15 @@ export const ProcessingStatusCard = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [documentId, startStream, stopStream])
 
-  // Notify parent when processing reaches terminal states
   useEffect(() => {
     if (!status) return
     if (status.status === 'published') {
       onComplete?.()
     } else if (status.status === 'failed') {
-      onErrorRef.current?.(status.error_message || 'Processing failed')
+      onErrorRef.current?.(status.error_message || t('content.processing.failed.defaultMessage'))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status?.status, onComplete])
+  }, [status?.status, onComplete, t])
 
   if (!status && !error) {
     return (
@@ -108,16 +112,12 @@ export const ProcessingStatusCard = ({
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             <span className="ml-3 text-gray-700 font-medium">
               {httpConnected
-                ? 'Connected — waiting for first status update…'
-                : 'Connecting to status stream…'}
+                ? t('content.processing.connecting.connected')
+                : t('content.processing.connecting.pending')}
             </span>
           </div>
           <p className="text-xs text-gray-500 text-center max-w-md px-4">
-            If this stays on &quot;Connecting&quot;, the browser never reached your API (wrong URL, CORS, or
-            backend down). If it says &quot;Connected&quot; but never updates, open DevTools → Network →
-            find <code className="bg-gray-100 px-1 rounded">status/stream</code> and confirm{' '}
-            <code className="bg-gray-100 px-1 rounded">VITE_USE_LOCAL</code> /{' '}
-            <code className="bg-gray-100 px-1 rounded">VITE_API_BASE_URL</code> point at your FastAPI host.
+            {t('content.processing.connecting.help')}
           </p>
         </div>
       </div>
@@ -130,10 +130,10 @@ export const ProcessingStatusCard = ({
         <div className="flex items-start space-x-3 text-red-600">
           <XCircle className="w-6 h-6 flex-shrink-0 mt-0.5" />
           <div className="flex-1 min-w-0">
-            <p className="font-semibold">Connection Error</p>
+            <p className="font-semibold">{t('content.processing.error.title')}</p>
             <p className="text-sm text-gray-600 mt-1">{error}</p>
             <p className="text-sm text-gray-500 mt-2">
-              The backend may still be starting up. Click Retry, or check DevTools → Network for details.
+              {t('content.processing.error.help')}
             </p>
             <button
               type="button"
@@ -142,7 +142,7 @@ export const ProcessingStatusCard = ({
               }
               className="mt-4 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
             >
-              Retry
+              {t('common.retry')}
             </button>
           </div>
         </div>
@@ -160,23 +160,21 @@ export const ProcessingStatusCard = ({
     currentStatus === 'indexing' ||
     currentStatus === 'qa_validation'
 
-  // Show page counter once we know total_pages (even before first page is read)
   const totalPages = status?.total_pages ?? 0
   const pagesRead = status?.pages_processed ?? 0
   const showExtractionPages = isExtractionPhase && totalPages > 0
 
-  // Show chunk/vector counter for later pipeline stages
   const showVectorCounts =
     isVectorPhase && progress && progress.total > 0 && progress.completed > 0
 
-  // Friendly active-step label (derive from raw status name if no progress.step)
+  const stepKey = STEP_NAME_TO_KEY[currentStatus]
   const activeStepLabel =
     progress?.step ||
-    currentStatus.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())
+    (stepKey ? t(`content.processing.steps.${stepKey}`) : currentStatus.replace(/_/g, ' '))
 
-  const steps = PROCESSING_STEPS.map((step) => {
-    const stepIndex = PROCESSING_STEPS.findIndex((s) => s.name === step.name)
-    const currentIndex = PROCESSING_STEPS.findIndex((s) => s.name === currentStatus)
+  const steps = processingSteps.map((step) => {
+    const stepIndex = processingSteps.findIndex((s) => s.name === step.name)
+    const currentIndex = processingSteps.findIndex((s) => s.name === currentStatus)
 
     let stepStatus: 'pending' | 'in_progress' | 'completed' | 'failed' = 'pending'
     if (currentStatus === 'failed' && stepIndex <= currentIndex) {
@@ -193,25 +191,25 @@ export const ProcessingStatusCard = ({
   return (
     <div className="bg-white rounded-lg shadow p-6">
       <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Processing Status</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('content.processing.title')}</h3>
 
         {status?.status === 'published' ? (
           <div className="flex items-center space-x-2 text-green-600">
             <CheckCircle className="w-5 h-5" />
-            <span className="font-medium">Document Published Successfully!</span>
+            <span className="font-medium">{t('content.processing.published')}</span>
           </div>
         ) : status?.status === 'failed' ? (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <div className="flex items-start space-x-3">
               <XCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
               <div className="flex-1">
-                <p className="font-semibold text-red-900">Processing Failed</p>
+                <p className="font-semibold text-red-900">{t('content.processing.failed.title')}</p>
                 {status.error_message && (
                   <p className="text-sm text-red-700 mt-1">{status.error_message}</p>
                 )}
                 {status.remediation_hint && (
                   <p className="text-sm text-red-600 mt-2">
-                    <strong>Hint:</strong> {status.remediation_hint}
+                    <strong>{t('content.processing.failed.hintLabel')}</strong> {status.remediation_hint}
                   </p>
                 )}
               </div>
@@ -233,7 +231,7 @@ export const ProcessingStatusCard = ({
       {progress && (
         <div className="mb-6">
           <div className="flex justify-between items-center mb-1">
-            <span className="text-sm font-medium text-gray-700">Progress</span>
+            <span className="text-sm font-medium text-gray-700">{t('content.processing.progress.label')}</span>
             <span className="text-sm text-gray-600">{progress.percentage}%</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2.5">
@@ -243,19 +241,18 @@ export const ProcessingStatusCard = ({
             />
           </div>
 
-          {/* Extraction page counter — shows as soon as the backend knows total_pages */}
           {showExtractionPages ? (
             <div className="mt-1.5 text-xs text-gray-600 font-medium">
               {pagesRead === 0 ? (
                 <span>
-                  Opening PDF — <strong>{totalPages}</strong> pages detected, reading now…
+                  {t('content.processing.pages.opening', { totalPages })}
                 </span>
               ) : (
                 <span>
-                  Pages read: <strong>{pagesRead}</strong> / <strong>{totalPages}</strong>
+                  {t('content.processing.pages.read', { read: pagesRead, total: totalPages })}
                   {elapsedSecs >= 15 && pagesRead < totalPages && (
                     <span className="text-gray-400 font-normal ml-1">
-                      — large books take several minutes, still running
+                      {t('content.processing.pages.slowHint')}
                     </span>
                   )}
                 </span>
@@ -264,8 +261,14 @@ export const ProcessingStatusCard = ({
           ) : showVectorCounts ? (
             <p className="text-xs text-gray-600 mt-1.5 font-medium">
               {currentStatus === 'indexing'
-                ? `Vectors stored: ${progress.completed} / ${progress.total}`
-                : `Chunks: ${progress.completed} / ${progress.total}`}
+                ? t('content.processing.vectors.stored', {
+                    completed: progress.completed,
+                    total: progress.total,
+                  })
+                : t('content.processing.chunks.count', {
+                    completed: progress.completed,
+                    total: progress.total,
+                  })}
             </p>
           ) : null}
         </div>

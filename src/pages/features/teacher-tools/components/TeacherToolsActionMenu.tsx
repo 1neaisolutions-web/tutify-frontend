@@ -1,4 +1,5 @@
 import { createPortal } from 'react-dom'
+import { useTranslation } from 'react-i18next'
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { MoreHorizontal } from 'lucide-react'
 
@@ -33,6 +34,7 @@ function computeMenuPosition(trigger: DOMRect, menuHeight: number): { top: numbe
 }
 
 export function TeacherToolsActionMenu({ actions }: Props) {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [coords, setCoords] = useState({ top: 0, left: 0 })
   const triggerRef = useRef<HTMLButtonElement>(null)
@@ -96,7 +98,7 @@ export function TeacherToolsActionMenu({ actions }: Props) {
         type="button"
         onClick={() => setOpen((o) => !o)}
         className="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
-        aria-label="Actions"
+        aria-label={t('teacherTools.actions')}
         aria-expanded={open}
         aria-haspopup="menu"
       >

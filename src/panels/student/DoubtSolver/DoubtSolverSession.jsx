@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -6,6 +7,7 @@ import { solveProblem } from '../api/aiApi';
 const NOTES_KEY = 'tutify_student_notes_v1';
 
 const DoubtSolverSession = () => {
+  const { t } = useTranslation();
   const { sessionId } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -49,30 +51,28 @@ const DoubtSolverSession = () => {
     <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Doubt Solver Session</h1>
+          <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.doubtSolver.session.title')}</h1>
           <p className="text-sm text-gray-600 dark:text-gray-300">{session?.subject || 'General'} • demo solution</p>
         </div>
         <button
           type="button"
           onClick={() => navigate('/student/doubt-solver')}
           className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900"
-        >
-          Back
-        </button>
+        >{t('studentPanel.common.back')}</button>
       </div>
 
       <div className="px-6 py-6 max-w-4xl space-y-4">
         <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4">
-          <h2 className="font-semibold text-gray-900 dark:text-gray-100">Problem</h2>
+          <h2 className="font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.doubtSolver.session.problem')}</h2>
           <p className="mt-2 text-sm text-gray-700 dark:text-gray-200 whitespace-pre-wrap">
             {session?.problem || 'Session not found.'}
           </p>
         </div>
 
         <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4">
-          <h2 className="font-semibold text-gray-900 dark:text-gray-100">Solution</h2>
+          <h2 className="font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.doubtSolver.session.solution')}</h2>
           {loading ? (
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">Solving…</p>
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.common.solving')}</p>
           ) : error ? (
             <p className="mt-2 text-sm text-red-600">{error}</p>
           ) : (
@@ -90,7 +90,7 @@ const DoubtSolverSession = () => {
         </div>
 
         <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4">
-          <h2 className="font-semibold text-gray-900 dark:text-gray-100">Practice</h2>
+          <h2 className="font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.doubtSolver.session.practice.title')}</h2>
           <ul className="mt-3 space-y-2">
             {(data?.practiceProblems || []).length ? (
               data.practiceProblems.map((p) => (
@@ -99,7 +99,7 @@ const DoubtSolverSession = () => {
                 </li>
               ))
             ) : (
-              <li className="text-sm text-gray-600 dark:text-gray-300">No practice problems for this demo input.</li>
+              <li className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.doubtSolver.session.practice.empty')}</li>
             )}
           </ul>
 
@@ -133,9 +133,7 @@ const DoubtSolverSession = () => {
                 }
               }}
               className="px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700"
-            >
-              Save to Notes
-            </button>
+            >{t('studentPanel.common.addToNotes')}</button>
             <button
               type="button"
               onClick={() => navigate('/student/doubts')}

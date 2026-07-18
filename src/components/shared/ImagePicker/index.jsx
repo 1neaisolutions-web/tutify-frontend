@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CrossIcon } from '../../../assets/icons';
 import { Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
@@ -11,9 +12,11 @@ export const ImagePicker = ({
   error = false,
   errorMsg = '',
   className = '',
-  placeholder = 'Upload an image',
+  placeholder,
   accept = '.jpg,.jpeg,.png,.webp',
 }) => {
+  const { t } = useTranslation();
+  const resolvedPlaceholder = placeholder ?? t('shared.imagePicker.defaultPlaceholder');
   const [imagePreview, setImagePreview] = useState(null);
 
   useEffect(() => {
@@ -59,7 +62,7 @@ export const ImagePicker = ({
           <div className='relative w-full h-full'>
             <img
               src={imagePreview}
-              alt='Preview'
+              alt={t('shared.imagePicker.previewAlt')}
               className='w-full h-full object-cover rounded'
             />
             {!disabled && (
@@ -89,7 +92,7 @@ export const ImagePicker = ({
               fontSize: '14px',
             }}
           >
-            {placeholder}
+            {resolvedPlaceholder}
           </Button>
         )}
         <input

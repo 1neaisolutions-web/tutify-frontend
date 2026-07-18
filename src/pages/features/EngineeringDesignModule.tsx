@@ -20,6 +20,7 @@ import {
   Settings,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template' | 'project'
@@ -47,6 +48,7 @@ interface EngineeringChallenge {
 }
 
 const EngineeringDesignModule = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -362,14 +364,10 @@ Authentic engineering challenges connect to real-world problems that students ca
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 2
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('engineeringDesignModule.module2')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    105 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('engineeringDesignModule.k05Min')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
                     <Star className="h-3 w-3" />
@@ -379,16 +377,14 @@ Authentic engineering challenges connect to real-world problems that students ca
                     }, 0)} / {lessons.reduce((sum, l) => sum + l.points, 0)} points
                   </span>
                 </div>
-                <h1 className="text-3xl font-bold">Engineering Design Process & Real-World Problem Solving</h1>
-                <p className="mt-2 text-orange-100">
-                  Learn to facilitate authentic engineering design challenges that engage students in solving real-world problems
-                </p>
+                <h1 className="text-3xl font-bold">{t('engineeringDesignModule.engineeringDesignProcessRealWorldProblemSolving')}</h1>
+                <p className="mt-2 text-orange-100">{t('engineeringDesignModule.learnToFacilitateAuthenticEngineeringDesignChallengesTh')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm mb-4">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4" />
-                <span>High Impact</span>
+                <span>{t('engineeringDesignModule.highImpact')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Trophy className="w-4 h-4" />
@@ -413,7 +409,7 @@ Authentic engineering challenges connect to real-world problems that students ca
         {/* Sidebar */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('engineeringDesignModule.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isActive = idx === currentLesson
@@ -473,9 +469,7 @@ Authentic engineering challenges connect to real-world problems that students ca
                 </div>
                 {completedLessons.includes(currentLessonData.id) && (
                   <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-semibold flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4" />
-                    Completed
-                  </span>
+                    <CheckCircle2 className="h-4 w-4" />{t('engineeringDesignModule.completed')}</span>
                 )}
               </div>
             </div>
@@ -495,7 +489,7 @@ Authentic engineering challenges connect to real-world problems that students ca
                 </div>
                 {currentLessonData.content.keyPoints && (
                   <div className="bg-orange-50 rounded-xl p-6 border border-orange-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Points</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('engineeringDesignModule.keyPoints')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyPoints.map((point: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -510,7 +504,7 @@ Authentic engineering challenges connect to real-world problems that students ca
                 {/* Design Cycle Steps */}
                 {currentLessonData.id === 'design-cycle' && (
                   <div className="bg-white rounded-xl p-6 border-2 border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">The Engineering Design Cycle</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('engineeringDesignModule.theEngineeringDesignCycle')}</h3>
                     <div className="space-y-4">
                       {designCycleSteps.map((step, idx) => (
                         <div key={idx} className="bg-gradient-to-br from-orange-50 to-red-50 rounded-lg p-5 border border-orange-200">
@@ -523,7 +517,7 @@ Authentic engineering challenges connect to real-world problems that students ca
                           <p className="text-sm text-gray-700 mb-3">{step.description}</p>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                              <p className="text-xs font-semibold text-gray-600 mb-1">Activities:</p>
+                              <p className="text-xs font-semibold text-gray-600 mb-1">{t('engineeringDesignModule.activities')}</p>
                               <ul className="space-y-1">
                                 {step.activities.map((activity, aIdx) => (
                                   <li key={aIdx} className="text-xs text-gray-700 flex items-start gap-1">
@@ -534,7 +528,7 @@ Authentic engineering challenges connect to real-world problems that students ca
                               </ul>
                             </div>
                             <div>
-                              <p className="text-xs font-semibold text-gray-600 mb-1">Guiding Questions:</p>
+                              <p className="text-xs font-semibold text-gray-600 mb-1">{t('engineeringDesignModule.guidingQuestions')}</p>
                               <ul className="space-y-1">
                                 {step.questions.map((question, qIdx) => (
                                   <li key={qIdx} className="text-xs text-gray-700 flex items-start gap-1">
@@ -561,7 +555,7 @@ Authentic engineering challenges connect to real-world problems that students ca
                 </div>
                 {currentLessonData.content.keyTakeaways && (
                   <div className="bg-purple-50 rounded-xl p-6 border border-purple-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Takeaways</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('engineeringDesignModule.keyTakeaways')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyTakeaways.map((takeaway: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -586,50 +580,48 @@ Authentic engineering challenges connect to real-world problems that students ca
                       onClick={() => setShowChallengeGenerator(true)}
                       className="w-full px-6 py-4 bg-orange-600 text-white rounded-xl font-semibold hover:bg-orange-700 transition flex items-center justify-center gap-2"
                     >
-                      <Zap className="h-5 w-5" />
-                      Launch Challenge Generator
-                    </button>
+                      <Zap className="h-5 w-5" />{t('engineeringDesignModule.launchChallengeGenerator')}</button>
                   ) : (
                     <div className="bg-white rounded-xl p-6 border-2 border-orange-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Engineering Challenge Generator</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('engineeringDesignModule.engineeringChallengeGenerator')}</h3>
                       <div className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('engineeringDesignModule.gradeLevel')}</label>
                             <select
                               value={challengeData.gradeLevel}
                               onChange={(e) => setChallengeData({ ...challengeData, gradeLevel: e.target.value })}
                               className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
                             >
-                              <option value="">Select grade</option>
+                              <option value="">{t('engineeringDesignModule.selectGrade')}</option>
                               <option value="Elementary">Elementary (K-5)</option>
                               <option value="Middle School">Middle School (6-8)</option>
                               <option value="High School">High School (9-12)</option>
                             </select>
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Subject Area</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">{t('engineeringDesignModule.subjectArea')}</label>
                             <select
                               value={challengeData.subject}
                               onChange={(e) => setChallengeData({ ...challengeData, subject: e.target.value })}
                               className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
                             >
-                              <option value="">Select subject</option>
-                              <option value="Science">Science</option>
-                              <option value="Math">Math</option>
-                              <option value="Technology">Technology</option>
-                              <option value="Engineering">Engineering</option>
-                              <option value="Cross-curricular">Cross-curricular</option>
+                              <option value="">{t('engineeringDesignModule.selectSubject')}</option>
+                              <option value="Science">{t('engineeringDesignModule.science')}</option>
+                              <option value="Math">{t('engineeringDesignModule.math')}</option>
+                              <option value="Technology">{t('engineeringDesignModule.technology')}</option>
+                              <option value="Engineering">{t('engineeringDesignModule.engineering')}</option>
+                              <option value="Cross-curricular">{t('engineeringDesignModule.crossCurricular')}</option>
                             </select>
                           </div>
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Problem Statement</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('engineeringDesignModule.problemStatement')}</label>
                           <textarea
                             value={challengeData.problem}
                             onChange={(e) => setChallengeData({ ...challengeData, problem: e.target.value })}
                             rows={3}
-                            placeholder="Describe the real-world problem students need to solve..."
+                            placeholder={t('engineeringDesignModule.describeTheRealWorldProblemStudentsNeedToSolve')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
                           />
                         </div>
@@ -638,9 +630,7 @@ Authentic engineering challenges connect to real-world problems that students ca
                             onClick={handleChallengeGenerate}
                             disabled={!challengeData.gradeLevel || !challengeData.problem}
                             className="flex-1 px-6 py-3 bg-orange-600 text-white rounded-lg font-semibold hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
-                          >
-                            Generate Challenge
-                          </button>
+                          >{t('engineeringDesignModule.generateChallenge')}</button>
                           <button
                             onClick={() => setShowChallengeGenerator(false)}
                             className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition"
@@ -655,7 +645,7 @@ Authentic engineering challenges connect to real-world problems that students ca
 
                 {/* Challenge Examples */}
                 <div className="bg-white rounded-xl p-6 border-2 border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Example Engineering Challenges</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('engineeringDesignModule.exampleEngineeringChallenges')}</h3>
                   <div className="space-y-4">
                     {challengeExamples.map((challenge, idx) => (
                       <div key={idx} className="bg-orange-50 rounded-lg p-5 border border-orange-200">
@@ -673,7 +663,7 @@ Authentic engineering challenges connect to real-world problems that students ca
                         <p className="text-sm text-gray-700 mb-4">{challenge.problem}</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 mb-2">Constraints:</p>
+                            <p className="text-xs font-semibold text-gray-600 mb-2">{t('engineeringDesignModule.constraints')}</p>
                             <ul className="space-y-1">
                               {challenge.constraints.map((constraint, cIdx) => (
                                 <li key={cIdx} className="text-xs text-gray-700 flex items-start gap-1">
@@ -684,7 +674,7 @@ Authentic engineering challenges connect to real-world problems that students ca
                             </ul>
                           </div>
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 mb-2">Success Criteria:</p>
+                            <p className="text-xs font-semibold text-gray-600 mb-2">{t('engineeringDesignModule.successCriteria')}</p>
                             <ul className="space-y-1">
                               {challenge.criteria.map((criterion, crIdx) => (
                                 <li key={crIdx} className="text-xs text-gray-700 flex items-start gap-1">
@@ -713,30 +703,28 @@ Authentic engineering challenges connect to real-world problems that students ca
                       onClick={() => setShowChallengeDesigner(true)}
                       className="w-full px-6 py-4 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
                     >
-                      <Rocket className="h-5 w-5" />
-                      Launch Challenge Designer
-                    </button>
+                      <Rocket className="h-5 w-5" />{t('engineeringDesignModule.launchChallengeDesigner')}</button>
                   ) : (
                     <div className="bg-white rounded-xl p-6 border-2 border-green-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Engineering Challenge Designer</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('engineeringDesignModule.engineeringChallengeDesigner')}</h3>
                       <div className="space-y-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Challenge Title</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('engineeringDesignModule.challengeTitle')}</label>
                           <input
                             type="text"
                             value={challengeData.title}
                             onChange={(e) => setChallengeData({ ...challengeData, title: e.target.value })}
-                            placeholder="e.g., Water Filtration Challenge"
+                            placeholder={t('engineeringDesignModule.eGWaterFiltrationChallenge')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Problem Statement</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">{t('engineeringDesignModule.problemStatement')}</label>
                           <textarea
                             value={challengeData.problem}
                             onChange={(e) => setChallengeData({ ...challengeData, problem: e.target.value })}
                             rows={3}
-                            placeholder="Describe the problem students need to solve..."
+                            placeholder={t('engineeringDesignModule.describeTheProblemStudentsNeedToSolve')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
@@ -746,7 +734,7 @@ Authentic engineering challenges connect to real-world problems that students ca
                             value={challengeData.constraints.join('\n')}
                             onChange={(e) => setChallengeData({ ...challengeData, constraints: e.target.value.split('\n').filter(c => c.trim()) })}
                             rows={4}
-                            placeholder="Enter constraints, one per line..."
+                            placeholder={t('engineeringDesignModule.enterConstraintsOnePerLine')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
@@ -756,7 +744,7 @@ Authentic engineering challenges connect to real-world problems that students ca
                             value={challengeData.criteria.join('\n')}
                             onChange={(e) => setChallengeData({ ...challengeData, criteria: e.target.value.split('\n').filter(c => c.trim()) })}
                             rows={4}
-                            placeholder="Enter success criteria, one per line..."
+                            placeholder={t('engineeringDesignModule.enterSuccessCriteriaOnePerLine')}
                             className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                           />
                         </div>
@@ -764,9 +752,7 @@ Authentic engineering challenges connect to real-world problems that students ca
                           <button
                             onClick={handleChallengeSubmit}
                             className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition"
-                          >
-                            Save Challenge
-                          </button>
+                          >{t('engineeringDesignModule.saveChallenge')}</button>
                           <button
                             onClick={() => setShowChallengeDesigner(false)}
                             className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition"
@@ -780,7 +766,7 @@ Authentic engineering challenges connect to real-world problems that students ca
                 </div>
 
                 <div className="bg-white rounded-xl p-6 border-2 border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Project Requirements</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('engineeringDesignModule.projectRequirements')}</h3>
                   <ol className="space-y-3">
                     {currentLessonData.content.requirements.map((req: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
@@ -802,9 +788,7 @@ Authentic engineering challenges connect to real-world problems that students ca
                 disabled={currentLesson === 0}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
-                <ArrowLeft className="h-4 w-4" />
-                Previous
-              </button>
+                <ArrowLeft className="h-4 w-4" />{t('engineeringDesignModule.previous')}</button>
 
               <button
                 onClick={() => {
@@ -817,18 +801,12 @@ Authentic engineering challenges connect to real-world problems that students ca
               >
                 {completedLessons.includes(currentLessonData.id) ? (
                   <>
-                    <CheckCircle2 className="h-4 w-4" />
-                    Marked Complete
-                  </>
+                    <CheckCircle2 className="h-4 w-4" />{t('engineeringDesignModule.markedComplete')}</>
                 ) : currentLesson === lessons.length - 1 ? (
                   <>
-                    <Trophy className="h-4 w-4" />
-                    Complete Module
-                  </>
+                    <Trophy className="h-4 w-4" />{t('engineeringDesignModule.completeModule')}</>
                 ) : (
-                  <>
-                    Complete & Next
-                    <ArrowRight className="h-4 w-4" />
+                  <>{t('engineeringDesignModule.completeNext')}<ArrowRight className="h-4 w-4" />
                   </>
                 )}
               </button>
@@ -841,7 +819,7 @@ Authentic engineering challenges connect to real-world problems that students ca
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-600 mb-4">
                 <Trophy className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Module Complete!</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('engineeringDesignModule.moduleComplete')}</h3>
               <p className="text-gray-700 mb-6">
                 You've earned {lessons.reduce((sum, l) => sum + l.points, 0)} points. Excellent work!
               </p>
@@ -852,9 +830,7 @@ Authentic engineering challenges connect to real-world problems that students ca
                 >
                   Continue to Next Module
                 </button>
-                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                  Download Certificate
-                </button>
+                <button className="rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50">{t('engineeringDesignModule.downloadCertificate')}</button>
               </div>
             </div>
           )}

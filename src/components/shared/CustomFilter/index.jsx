@@ -1,4 +1,5 @@
 // CustomFilter.js
+import { useTranslation } from 'react-i18next';
 import { CustomPopover } from '../../../components/Shared';
 import { FilterIcon } from '../../../assets/icons';
 
@@ -10,6 +11,8 @@ const CustomFilter = ({
   active,
   children,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div className={`${className}`}>
       <CustomPopover
@@ -35,12 +38,12 @@ const CustomFilter = ({
       >
         <div className='bg-white rounded-lg border border-style shadow-lg p-4 flex flex-col gap-3 min-w-[250px]'>
           <div className='flex items-center justify-between'>
-            <p className='text-sm font-semibold text-primary'>Filter Options</p>
+            <p className='text-sm font-semibold text-primary'>{t('filter.label')}</p>
             <p
               onClick={handleClear}
               className='cursor-pointer font-semibold text-sm text-danger hover:underline'
             >
-              Clear
+              {t('filter.clear')}
             </p>
           </div>
           {children && (

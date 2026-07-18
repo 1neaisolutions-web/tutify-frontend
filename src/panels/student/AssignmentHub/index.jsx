@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import { ASSIGNMENT_STATUS } from '../constants/statusTypes';
 
@@ -41,35 +42,36 @@ const assignments = [
   },
 ];
 
-const statusLabel = (s) => {
-  switch (s) {
-    case ASSIGNMENT_STATUS.NOT_STARTED:
-      return 'Not started';
-    case ASSIGNMENT_STATUS.IN_PROGRESS:
-      return 'In progress';
-    case ASSIGNMENT_STATUS.SUBMITTED:
-      return 'Submitted';
-    case ASSIGNMENT_STATUS.GRADED:
-      return 'Graded';
-    case ASSIGNMENT_STATUS.REVISION_REQUESTED:
-      return 'Revision requested';
-    default:
-      return s;
-  }
-};
-
-const deadlineTone = (dueAt) => {
-  const ms = new Date(dueAt).getTime() - Date.now();
-  const hours = ms / (1000 * 60 * 60);
-  if (hours <= 0) return { label: 'Overdue', cls: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-200' };
-  if (hours < 6) return { label: 'Due soon', cls: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-200' };
-  if (hours < 24) return { label: 'Due <24h', cls: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200' };
-  if (hours < 72) return { label: 'Due <72h', cls: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200' };
-  return { label: 'Upcoming', cls: 'bg-gray-100 text-gray-700 dark:bg-gray-900/40 dark:text-gray-200' };
-};
-
 const AssignmentHub = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const statusLabel = (s) => {
+    switch (s) {
+      case ASSIGNMENT_STATUS.NOT_STARTED:
+        return t('studentPanel.assignments.status.notStarted');
+      case ASSIGNMENT_STATUS.IN_PROGRESS:
+        return t('studentPanel.assignments.status.inProgress');
+      case ASSIGNMENT_STATUS.SUBMITTED:
+        return t('studentPanel.assignments.status.submitted');
+      case ASSIGNMENT_STATUS.GRADED:
+        return t('studentPanel.assignments.status.graded');
+      case ASSIGNMENT_STATUS.REVISION_REQUESTED:
+        return t('studentPanel.assignments.status.revisionRequested');
+      default:
+        return s;
+    }
+  };
+
+  const deadlineTone = (dueAt) => {
+    const ms = new Date(dueAt).getTime() - Date.now();
+    const hours = ms / (1000 * 60 * 60);
+    if (hours <= 0) return { label: t('studentPanel.assignments.deadline.overdue'), cls: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-200' };
+    if (hours < 6) return { label: t('studentPanel.assignments.deadline.dueSoon'), cls: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-200' };
+    if (hours < 24) return { label: t('studentPanel.assignments.deadline.due24h'), cls: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200' };
+    if (hours < 72) return { label: t('studentPanel.assignments.deadline.due72h'), cls: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200' };
+    return { label: t('studentPanel.assignments.deadline.upcoming'), cls: 'bg-gray-100 text-gray-700 dark:bg-gray-900/40 dark:text-gray-200' };
+  };
   const items = useMemo(() => assignments, []);
   const tasks = useMemo(() => {
     try {
@@ -84,8 +86,8 @@ const AssignmentHub = () => {
   return (
     <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Assignments</h1>
-        <p className="text-sm text-gray-600 dark:text-gray-300">Teacher-linked work with AI help (demo data).</p>
+        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.assignments.title')}</h1>
+        <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.assignments.subtitle')}</p>
       </div>
 
       <div className="px-6 py-6 space-y-6">
@@ -114,11 +116,11 @@ const AssignmentHub = () => {
                   {statusLabel(a.status)}
                 </span>
                 <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-primary-50 text-primary-700 dark:bg-primary-950/30 dark:text-primary-200">
-                  AI Help available
+                  {t('studentPanel.assignments.aiHelpAvailable')}
                 </span>
               </div>
 
-              <p className="mt-3 text-xs text-gray-500">Due: {new Date(a.dueAt).toLocaleString()}</p>
+              <p className="mt-3 text-xs text-gray-500">{t('studentPanel.common.due', { date: new Date(a.dueAt).toLocaleString() })}</p>
             </button>
           );
         })}
@@ -126,31 +128,31 @@ const AssignmentHub = () => {
 
         <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="font-semibold text-gray-900 dark:text-gray-100">My Tasks</h2>
+            <h2 className="font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.assignments.myTasks.title')}</h2>
             <button
               type="button"
               onClick={() => navigate('/student/tasks')}
               className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 text-sm text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900"
             >
-              Open tasks
+              {t('studentPanel.assignments.myTasks.openTasks')}
             </button>
           </div>
           <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
-            Demo integration: personal tasks live alongside teacher assignments.
+            {t('studentPanel.assignments.myTasks.integrationNote')}
           </p>
           <div className="mt-3 space-y-2">
             {tasks.length === 0 ? (
-              <p className="text-sm text-gray-600 dark:text-gray-300">No tasks yet.</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.assignments.myTasks.empty')}</p>
             ) : (
-              tasks.map((t) => (
+              tasks.map((task) => (
                 <button
-                  key={t.id}
+                  key={task.id}
                   type="button"
-                  onClick={() => navigate(`/student/tasks/${t.id}`)}
+                  onClick={() => navigate(`/student/tasks/${task.id}`)}
                   className="w-full text-left rounded-lg border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900/40 px-3 py-2"
                 >
-                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{t.title}</p>
-                  <p className="text-xs text-gray-500">{t.dueAt ? new Date(t.dueAt).toLocaleString() : 'No due date'}</p>
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{task.title}</p>
+                  <p className="text-xs text-gray-500">{task.dueAt ? new Date(task.dueAt).toLocaleString() : t('studentPanel.common.noDueDate')}</p>
                 </button>
               ))
             )}

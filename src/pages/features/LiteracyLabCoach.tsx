@@ -29,6 +29,8 @@ import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
 
+import { useTranslation } from 'react-i18next'
+import { resolveApiMessage } from '../../i18n/resolveApiMessage'
 interface TextAnalysis {
   readingLevel: string
   complexity: string
@@ -65,6 +67,7 @@ interface WritingFeedback {
 }
 
 const LiteracyLabCoach = () => {
+  const { t } = useTranslation()
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const CHATBOT_SLUG = 'literacy-lab-coach'
@@ -107,14 +110,14 @@ const LiteracyLabCoach = () => {
         else if (tab === 'guided') setGuidedReading(data as GuidedReadingStrategy)
         else setWritingFeedback(data as WritingFeedback)
       } catch {
-        toast.info('Could not restore saved output from History.')
+        toast.info(t('literacyLabCoach.couldNotRestoreSavedOutputFromHistory'))
       }
     },
   })
 
   const handleTextAnalysis = async () => {
     if (!textInput.trim()) {
-      toast.error('Please enter text to analyze')
+      toast.error(t('literacyLabCoach.pleaseEnterTextToAnalyze'))
       return
     }
     
@@ -140,16 +143,19 @@ const LiteracyLabCoach = () => {
       // Response should match TextAnalysis interface
       setAnalysis(response.result as TextAnalysis)
       pinFromResponse(response.conversation_id)
-      toast.success('Text analysis completed')
+      toast.success(t('literacyLabCoach.textAnalysisCompleted'))
     } catch (error: any) {
       if (captureApiError(error)) return
       console.error('Error analyzing text:', error)
-      const errorMessage = error?.detail || error?.message || 'Failed to analyze text'
+      const errorMessage = resolveApiMessage(
+        t,
+        error?.detail || error?.message || 'Failed to analyze text',
+      )
       toast.error(errorMessage)
       
       // Show upgrade message if premium required
       if (error?.status === 403 || errorMessage.includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('literacyLabCoach.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsAnalyzing(false)
@@ -158,7 +164,7 @@ const LiteracyLabCoach = () => {
 
   const generateGuidedReading = async () => {
     if (!textInput.trim()) {
-      toast.error('Please enter text for guided reading')
+      toast.error(t('literacyLabCoach.pleaseEnterTextForGuidedReading'))
       return
     }
     
@@ -182,15 +188,18 @@ const LiteracyLabCoach = () => {
       
       setGuidedReading(response.result as GuidedReadingStrategy)
       pinFromResponse(response.conversation_id)
-      toast.success('Guided reading strategies generated')
+      toast.success(t('literacyLabCoach.guidedReadingStrategiesGenerated'))
     } catch (error: any) {
       if (captureApiError(error)) return
       console.error('Error generating guided reading:', error)
-      const errorMessage = error?.detail || error?.message || 'Failed to generate guided reading strategies'
+      const errorMessage = resolveApiMessage(
+        t,
+        error?.detail || error?.message || 'Failed to generate guided reading',
+      )
       toast.error(errorMessage)
       
       if (error?.status === 403 || errorMessage.includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('literacyLabCoach.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsAnalyzing(false)
@@ -199,7 +208,7 @@ const LiteracyLabCoach = () => {
 
   const generateWritingFeedback = async () => {
     if (!textInput.trim()) {
-      toast.error('Please enter writing sample for feedback')
+      toast.error(t('literacyLabCoach.pleaseEnterWritingSampleForFeedback'))
       return
     }
     
@@ -223,15 +232,18 @@ const LiteracyLabCoach = () => {
       
       setWritingFeedback(response.result as WritingFeedback)
       pinFromResponse(response.conversation_id)
-      toast.success('Writing feedback generated')
+      toast.success(t('literacyLabCoach.writingFeedbackGenerated'))
     } catch (error: any) {
       if (captureApiError(error)) return
       console.error('Error generating feedback:', error)
-      const errorMessage = error?.detail || error?.message || 'Failed to generate writing feedback'
+      const errorMessage = resolveApiMessage(
+        t,
+        error?.detail || error?.message || 'Failed to generate writing feedback',
+      )
       toast.error(errorMessage)
       
       if (error?.status === 403 || errorMessage.includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('literacyLabCoach.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsAnalyzing(false)
@@ -239,11 +251,11 @@ const LiteracyLabCoach = () => {
   }
 
   const tabs = [
-    { id: 'analyze', label: 'Text Analysis', icon: FileText },
-    { id: 'guided', label: 'Guided Reading', icon: BookOpen },
-    { id: 'writing', label: 'Writing Feedback', icon: PenTool },
-    { id: 'prompts', label: 'Writing Prompts', icon: Lightbulb },
-    { id: 'vocabulary', label: 'Vocabulary Builder', icon: BookMarked },
+    { id: 'analyze', label: t('literacyLabCoach.tabs.analyze'), icon: FileText },
+    { id: 'guided', label: t('literacyLabCoach.tabs.guided'), icon: BookOpen },
+    { id: 'writing', label: t('literacyLabCoach.tabs.writing'), icon: PenTool },
+    { id: 'prompts', label: t('literacyLabCoach.tabs.prompts'), icon: Lightbulb },
+    { id: 'vocabulary', label: t('literacyLabCoach.tabs.vocabulary'), icon: BookMarked },
   ]
 
   return (
@@ -266,36 +278,32 @@ const LiteracyLabCoach = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-3xl font-bold">Literacy Lab Coach</h1>
+                  <h1 className="text-3xl font-bold">{t('literacyLabCoach.literacyLabCoach')}</h1>
                   <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
                     <Star className="h-3 w-3" /> 4.9★
                   </span>
                   <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" /> Premium
-                  </span>
+                    <Lock className="inline h-3 w-3 mr-1" />{t('literacyLabCoach.premium')}</span>
                 </div>
-                <p className="mt-2 text-blue-100">
-                  Comprehensive literacy support with text complexity analysis, guided reading strategies, 
-                  writing feedback, and vocabulary development tools.
-                </p>
+                <p className="mt-2 text-blue-100">{t('literacyLabCoach.comprehensiveLiteracySupportWithTextComplexityAnalysisG')}</p>
               </div>
             </div>
             <div className="flex flex-wrap gap-3 mt-6">
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <Target className="h-4 w-4" />
-                <span>Text Complexity Analysis</span>
+                <span>{t('literacyLabCoach.textComplexityAnalysis')}</span>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <Users className="h-4 w-4" />
-                <span>Guided Reading Strategies</span>
+                <span>{t('literacyLabCoach.guidedReadingStrategies')}</span>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <PenTool className="h-4 w-4" />
-                <span>Writing Feedback & Rubrics</span>
+                <span>{t('literacyLabCoach.writingFeedbackRubrics')}</span>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <TrendingUp className="h-4 w-4" />
-                <span>Progress Tracking</span>
+                <span>{t('literacyLabCoach.progressTracking')}</span>
               </div>
             </div>
           </div>
@@ -307,7 +315,7 @@ const LiteracyLabCoach = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Texts Analyzed</p>
+              <p className="text-sm font-medium text-gray-600">{t('literacyLabCoach.textsAnalyzed')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">247</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
@@ -318,7 +326,7 @@ const LiteracyLabCoach = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Students Supported</p>
+              <p className="text-sm font-medium text-gray-600">{t('literacyLabCoach.studentsSupported')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">1,234</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600">
@@ -329,8 +337,8 @@ const LiteracyLabCoach = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Avg. Reading Level</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">Grade 5.2</p>
+              <p className="text-sm font-medium text-gray-600">{t('literacyLabCoach.avgReadingLevel')}</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{t('literacyLabCoach.grade52')}</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600">
               <TrendingUp className="h-6 w-6" />
@@ -340,7 +348,7 @@ const LiteracyLabCoach = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Writing Score</p>
+              <p className="text-sm font-medium text-gray-600">{t('literacyLabCoach.writingScore')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">3.8/5</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
@@ -381,9 +389,7 @@ const LiteracyLabCoach = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Grade Level
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.gradeLevel')}</label>
                     <select
                       value={gradeLevel}
                       onChange={(e) => setGradeLevel(e.target.value)}
@@ -391,19 +397,17 @@ const LiteracyLabCoach = () => {
                     >
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
                         <option key={grade} value={grade}>
-                          Grade {grade}
+                          {t('common.gradeOption', { grade })}
                         </option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Paste or Type Text for Analysis
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.pasteOrTypeTextForAnalysis')}</label>
                     <textarea
                       value={textInput}
                       onChange={(e) => setTextInput(e.target.value)}
-                      placeholder="Enter the text you want to analyze for reading level, complexity, vocabulary, and more..."
+                      placeholder={t('literacyLabCoach.enterTheTextYouWantToAnalyzeForReadingLevel')}
                       rows={12}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
                     />
@@ -418,14 +422,10 @@ const LiteracyLabCoach = () => {
                       >
                         {isAnalyzing ? (
                           <>
-                            <RefreshCw className="h-4 w-4 animate-spin" />
-                            Analyzing...
-                          </>
+                            <RefreshCw className="h-4 w-4 animate-spin" />{t('literacyLabCoach.analyzing')}</>
                         ) : (
                           <>
-                            <Sparkles className="h-4 w-4" />
-                            Analyze Text
-                          </>
+                            <Sparkles className="h-4 w-4" />{t('literacyLabCoach.analyzeText')}</>
                         )}
                       </button>
                     </div>
@@ -437,37 +437,35 @@ const LiteracyLabCoach = () => {
                     <div className="space-y-4">
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <BarChart3 className="h-5 w-5 text-blue-600" />
-                          Text Complexity Analysis
-                        </h3>
+                          <BarChart3 className="h-5 w-5 text-blue-600" />{t('literacyLabCoach.textComplexityAnalysis')}</h3>
                         <div className="grid grid-cols-2 gap-4">
                           <div className="rounded-lg bg-white p-4 border border-gray-200">
-                            <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Reading Level</p>
+                            <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">{t('literacyLabCoach.readingLevel')}</p>
                             <p className="text-xl font-bold text-gray-900 mt-1">{analysis.readingLevel ?? 'N/A'}</p>
                           </div>
                           <div className="rounded-lg bg-white p-4 border border-gray-200">
-                            <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Complexity</p>
+                            <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">{t('literacyLabCoach.complexity')}</p>
                             <p className="text-xl font-bold text-gray-900 mt-1">{analysis.complexity ?? 'N/A'}</p>
                           </div>
                           <div className="rounded-lg bg-white p-4 border border-gray-200">
-                            <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Word Count</p>
+                            <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">{t('literacyLabCoach.wordCount')}</p>
                             <p className="text-xl font-bold text-gray-900 mt-1">{analysis.wordCount?.toLocaleString() ?? 0}</p>
                           </div>
                           <div className="rounded-lg bg-white p-4 border border-gray-200">
-                            <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Sentences</p>
+                            <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">{t('literacyLabCoach.sentences')}</p>
                             <p className="text-xl font-bold text-gray-900 mt-1">{analysis.sentenceCount ?? 0}</p>
                           </div>
                           <div className="rounded-lg bg-white p-4 border border-gray-200">
-                            <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Avg Words/Sentence</p>
+                            <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">{t('literacyLabCoach.avgWordsSentence')}</p>
                             <p className="text-xl font-bold text-gray-900 mt-1">{analysis.avgWordsPerSentence ?? 0}</p>
                           </div>
                           <div className="rounded-lg bg-white p-4 border border-gray-200">
-                            <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Readability Score</p>
+                            <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">{t('literacyLabCoach.readabilityScore')}</p>
                             <p className="text-xl font-bold text-gray-900 mt-1">{analysis.readabilityScore ?? 0}/100</p>
                           </div>
                         </div>
                         <div className="mt-4 rounded-lg bg-white p-4 border border-gray-200">
-                          <p className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-2">Grade Level Match</p>
+                          <p className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-2">{t('literacyLabCoach.gradeLevelMatch')}</p>
                           <div className="flex items-center gap-2">
                             <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
                               <div 
@@ -479,21 +477,17 @@ const LiteracyLabCoach = () => {
                           </div>
                         </div>
                         <div className="mt-4 rounded-lg bg-white p-4 border border-gray-200">
-                          <p className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-2">Vocabulary Level</p>
+                          <p className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-2">{t('literacyLabCoach.vocabularyLevel')}</p>
                           <p className="text-lg font-semibold text-gray-900">{analysis.vocabularyLevel ?? 'N/A'}</p>
                         </div>
                       </div>
                       <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                        <Download className="h-4 w-4" />
-                        Download Analysis Report
-                      </button>
+                        <Download className="h-4 w-4" />{t('literacyLabCoach.downloadAnalysisReport')}</button>
                     </div>
                   ) : (
                     <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
                       <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm font-medium text-gray-600">
-                        Enter text and click "Analyze Text" to see detailed complexity analysis
-                      </p>
+                      <p className="text-sm font-medium text-gray-600">{t('literacyLabCoach.enterTextAndClickAnalyzeTextToSeeDetailedComplexity')}</p>
                     </div>
                   )}
                 </div>
@@ -507,9 +501,7 @@ const LiteracyLabCoach = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Grade Level
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.gradeLevel')}</label>
                     <select
                       value={gradeLevel}
                       onChange={(e) => setGradeLevel(e.target.value)}
@@ -517,19 +509,17 @@ const LiteracyLabCoach = () => {
                     >
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
                         <option key={grade} value={grade}>
-                          Grade {grade}
+                          {t('common.gradeOption', { grade })}
                         </option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Text for Guided Reading
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.textForGuidedReading')}</label>
                     <textarea
                       value={textInput}
                       onChange={(e) => setTextInput(e.target.value)}
-                      placeholder="Enter the text you want to create guided reading strategies for..."
+                      placeholder={t('literacyLabCoach.enterTheTextYouWantToCreateGuidedReadingStrategies')}
                       rows={12}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
                     />
@@ -540,14 +530,10 @@ const LiteracyLabCoach = () => {
                     >
                       {isAnalyzing ? (
                         <>
-                          <RefreshCw className="h-4 w-4 animate-spin" />
-                          Generating...
-                        </>
+                          <RefreshCw className="h-4 w-4 animate-spin" />{t('literacyLabCoach.generating')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-4 w-4" />
-                          Generate Guided Reading Plan
-                        </>
+                          <Sparkles className="h-4 w-4" />{t('literacyLabCoach.generateGuidedReadingPlan')}</>
                       )}
                     </button>
                   </div>
@@ -558,9 +544,7 @@ const LiteracyLabCoach = () => {
                     <div className="space-y-4 max-h-[600px] overflow-y-auto">
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <BookOpen className="h-5 w-5 text-green-600" />
-                          Before Reading
-                        </h3>
+                          <BookOpen className="h-5 w-5 text-green-600" />{t('literacyLabCoach.beforeReading')}</h3>
                         <ul className="space-y-2">
                           {(guidedReading.beforeReading || []).map((strategy, idx) => (
                             <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -573,9 +557,7 @@ const LiteracyLabCoach = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <MessageSquare className="h-5 w-5 text-blue-600" />
-                          During Reading
-                        </h3>
+                          <MessageSquare className="h-5 w-5 text-blue-600" />{t('literacyLabCoach.duringReading')}</h3>
                         <ul className="space-y-2">
                           {(guidedReading.duringReading || []).map((strategy, idx) => (
                             <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -588,9 +570,7 @@ const LiteracyLabCoach = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Target className="h-5 w-5 text-purple-600" />
-                          After Reading
-                        </h3>
+                          <Target className="h-5 w-5 text-purple-600" />{t('literacyLabCoach.afterReading')}</h3>
                         <ul className="space-y-2">
                           {(guidedReading.afterReading || []).map((strategy, idx) => (
                             <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -603,9 +583,7 @@ const LiteracyLabCoach = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-amber-50 to-orange-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <BookMarked className="h-5 w-5 text-amber-600" />
-                          Key Vocabulary
-                        </h3>
+                          <BookMarked className="h-5 w-5 text-amber-600" />{t('literacyLabCoach.keyVocabulary')}</h3>
                         <ul className="space-y-2">
                           {(guidedReading.vocabulary || []).map((word, idx) => (
                             <li key={idx} className="text-sm text-gray-700">
@@ -620,12 +598,10 @@ const LiteracyLabCoach = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-white p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Lightbulb className="h-5 w-5 text-indigo-600" />
-                          Comprehension Questions
-                        </h3>
+                          <Lightbulb className="h-5 w-5 text-indigo-600" />{t('literacyLabCoach.comprehensionQuestions')}</h3>
                         <div className="space-y-4">
                           <div>
-                            <p className="text-sm font-semibold text-gray-700 mb-2">Literal Questions</p>
+                            <p className="text-sm font-semibold text-gray-700 mb-2">{t('literacyLabCoach.literalQuestions')}</p>
                             <ul className="space-y-1">
                               {(guidedReading.comprehensionQuestions?.literal || []).map((q, idx) => (
                                 <li key={idx} className="text-sm text-gray-600 flex items-start gap-2">
@@ -636,7 +612,7 @@ const LiteracyLabCoach = () => {
                             </ul>
                           </div>
                           <div>
-                            <p className="text-sm font-semibold text-gray-700 mb-2">Inferential Questions</p>
+                            <p className="text-sm font-semibold text-gray-700 mb-2">{t('literacyLabCoach.inferentialQuestions')}</p>
                             <ul className="space-y-1">
                               {(guidedReading.comprehensionQuestions?.inferential || []).map((q, idx) => (
                                 <li key={idx} className="text-sm text-gray-600 flex items-start gap-2">
@@ -647,7 +623,7 @@ const LiteracyLabCoach = () => {
                             </ul>
                           </div>
                           <div>
-                            <p className="text-sm font-semibold text-gray-700 mb-2">Evaluative Questions</p>
+                            <p className="text-sm font-semibold text-gray-700 mb-2">{t('literacyLabCoach.evaluativeQuestions')}</p>
                             <ul className="space-y-1">
                               {(guidedReading.comprehensionQuestions?.evaluative || []).map((q, idx) => (
                                 <li key={idx} className="text-sm text-gray-600 flex items-start gap-2">
@@ -661,16 +637,12 @@ const LiteracyLabCoach = () => {
                       </div>
 
                       <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                        <Download className="h-4 w-4" />
-                        Download Guided Reading Plan
-                      </button>
+                        <Download className="h-4 w-4" />{t('literacyLabCoach.downloadGuidedReadingPlan')}</button>
                     </div>
                   ) : (
                     <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
                       <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm font-medium text-gray-600">
-                        Enter text and generate a comprehensive guided reading strategy plan
-                      </p>
+                      <p className="text-sm font-medium text-gray-600">{t('literacyLabCoach.enterTextAndGenerateAComprehensiveGuidedReadingStrategy')}</p>
                     </div>
                   )}
                 </div>
@@ -684,9 +656,7 @@ const LiteracyLabCoach = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Grade Level
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.gradeLevel')}</label>
                     <select
                       value={gradeLevel}
                       onChange={(e) => setGradeLevel(e.target.value)}
@@ -694,19 +664,17 @@ const LiteracyLabCoach = () => {
                     >
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
                         <option key={grade} value={grade}>
-                          Grade {grade}
+                          {t('common.gradeOption', { grade })}
                         </option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Student Writing Sample
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.studentWritingSample')}</label>
                     <textarea
                       value={textInput}
                       onChange={(e) => setTextInput(e.target.value)}
-                      placeholder="Paste the student's writing sample here for detailed feedback and rubric scoring..."
+                      placeholder={t('literacyLabCoach.pasteStudentWritingSample')}
                       rows={12}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
                     />
@@ -717,14 +685,10 @@ const LiteracyLabCoach = () => {
                     >
                       {isAnalyzing ? (
                         <>
-                          <RefreshCw className="h-4 w-4 animate-spin" />
-                          Analyzing...
-                        </>
+                          <RefreshCw className="h-4 w-4 animate-spin" />{t('literacyLabCoach.analyzing')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-4 w-4" />
-                          Generate Writing Feedback
-                        </>
+                          <Sparkles className="h-4 w-4" />{t('literacyLabCoach.generateWritingFeedback')}</>
                       )}
                     </button>
                   </div>
@@ -735,9 +699,7 @@ const LiteracyLabCoach = () => {
                     <div className="space-y-4 max-h-[600px] overflow-y-auto">
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <CheckCircle2 className="h-5 w-5 text-green-600" />
-                          Strengths
-                        </h3>
+                          <CheckCircle2 className="h-5 w-5 text-green-600" />{t('literacyLabCoach.strengths')}</h3>
                         <ul className="space-y-2">
                           {(writingFeedback.strengths || []).map((strength, idx) => (
                             <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -750,9 +712,7 @@ const LiteracyLabCoach = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-amber-50 to-orange-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <AlertCircle className="h-5 w-5 text-amber-600" />
-                          Areas for Improvement
-                        </h3>
+                          <AlertCircle className="h-5 w-5 text-amber-600" />{t('literacyLabCoach.areasForImprovement')}</h3>
                         <ul className="space-y-2">
                           {(writingFeedback.areasForImprovement || []).map((area, idx) => (
                             <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -765,9 +725,7 @@ const LiteracyLabCoach = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Lightbulb className="h-5 w-5 text-blue-600" />
-                          Suggestions
-                        </h3>
+                          <Lightbulb className="h-5 w-5 text-blue-600" />{t('literacyLabCoach.suggestions')}</h3>
                         <ul className="space-y-2">
                           {(writingFeedback.suggestions || []).map((suggestion, idx) => (
                             <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -780,13 +738,11 @@ const LiteracyLabCoach = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-white p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Award className="h-5 w-5 text-purple-600" />
-                          Rubric Score
-                        </h3>
+                          <Award className="h-5 w-5 text-purple-600" />{t('literacyLabCoach.rubricScore')}</h3>
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <div className="flex items-center justify-between">
-                              <span className="text-sm font-medium text-gray-700">Content</span>
+                              <span className="text-sm font-medium text-gray-700">{t('literacyLabCoach.content')}</span>
                               <span className="text-sm font-bold text-gray-900">
                                 {writingFeedback.rubricScore?.content ?? 0}/5
                               </span>
@@ -800,7 +756,7 @@ const LiteracyLabCoach = () => {
                           </div>
                           <div className="space-y-2">
                             <div className="flex items-center justify-between">
-                              <span className="text-sm font-medium text-gray-700">Organization</span>
+                              <span className="text-sm font-medium text-gray-700">{t('literacyLabCoach.organization')}</span>
                               <span className="text-sm font-bold text-gray-900">
                                 {writingFeedback.rubricScore?.organization ?? 0}/5
                               </span>
@@ -814,7 +770,7 @@ const LiteracyLabCoach = () => {
                           </div>
                           <div className="space-y-2">
                             <div className="flex items-center justify-between">
-                              <span className="text-sm font-medium text-gray-700">Language</span>
+                              <span className="text-sm font-medium text-gray-700">{t('literacyLabCoach.language')}</span>
                               <span className="text-sm font-bold text-gray-900">
                                 {writingFeedback.rubricScore?.language ?? 0}/5
                               </span>
@@ -828,7 +784,7 @@ const LiteracyLabCoach = () => {
                           </div>
                           <div className="space-y-2">
                             <div className="flex items-center justify-between">
-                              <span className="text-sm font-medium text-gray-700">Conventions</span>
+                              <span className="text-sm font-medium text-gray-700">{t('literacyLabCoach.conventions')}</span>
                               <span className="text-sm font-bold text-gray-900">
                                 {writingFeedback.rubricScore?.conventions ?? 0}/5
                               </span>
@@ -843,7 +799,7 @@ const LiteracyLabCoach = () => {
                         </div>
                         <div className="mt-4 pt-4 border-t border-gray-200">
                           <div className="flex items-center justify-between">
-                            <span className="text-base font-semibold text-gray-900">Overall Score</span>
+                            <span className="text-base font-semibold text-gray-900">{t('literacyLabCoach.overallScore')}</span>
                             <span className="text-2xl font-bold text-gray-900">
                               {(
                                 ((writingFeedback.rubricScore?.content ?? 0) +
@@ -859,16 +815,12 @@ const LiteracyLabCoach = () => {
                       </div>
 
                       <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                        <Download className="h-4 w-4" />
-                        Download Feedback Report
-                      </button>
+                        <Download className="h-4 w-4" />{t('literacyLabCoach.downloadFeedbackReport')}</button>
                     </div>
                   ) : (
                     <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
                       <PenTool className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm font-medium text-gray-600">
-                        Paste student writing and get detailed feedback with rubric scoring
-                      </p>
+                      <p className="text-sm font-medium text-gray-600">{t('literacyLabCoach.pasteStudentWritingAndGetDetailedFeedbackWithRubricScor')}</p>
                     </div>
                   )}
                 </div>
@@ -881,12 +833,10 @@ const LiteracyLabCoach = () => {
             <div className="space-y-6">
               <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Lightbulb className="h-6 w-6 text-indigo-600" />
-                  Writing Prompt Generator
-                </h3>
+                  <Lightbulb className="h-6 w-6 text-indigo-600" />{t('literacyLabCoach.writingPromptGenerator')}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.gradeLevel')}</label>
                     <select
                       value={gradeLevel}
                       onChange={(e) => setGradeLevel(e.target.value)}
@@ -894,62 +844,47 @@ const LiteracyLabCoach = () => {
                     >
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
                         <option key={grade} value={grade}>
-                          Grade {grade}
+                          {t('common.gradeOption', { grade })}
                         </option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Prompt Type</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.promptType')}</label>
                     <select className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100">
-                      <option>Narrative</option>
-                      <option>Persuasive</option>
-                      <option>Expository</option>
-                      <option>Descriptive</option>
-                      <option>Creative</option>
+                      <option>{t('literacyLabCoach.narrative')}</option>
+                      <option>{t('literacyLabCoach.persuasive')}</option>
+                      <option>{t('literacyLabCoach.expository')}</option>
+                      <option>{t('literacyLabCoach.descriptive')}</option>
+                      <option>{t('literacyLabCoach.creative')}</option>
                     </select>
                   </div>
                 </div>
                 <button className="w-full rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-700 flex items-center justify-center gap-2">
-                  <Sparkles className="h-4 w-4" />
-                  Generate Writing Prompts
-                </button>
+                  <Sparkles className="h-4 w-4" />{t('literacyLabCoach.generateWritingPrompts')}</button>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[
-                  {
-                    title: 'The Time Machine',
-                    prompt: 'If you could travel to any time in history, when would you go and why? Describe your journey and what you would do there.',
-                    type: 'Narrative',
-                    grade: '5-6',
-                  },
-                  {
-                    title: 'School Uniform Debate',
-                    prompt: 'Write a persuasive essay arguing for or against school uniforms. Use evidence and examples to support your position.',
-                    type: 'Persuasive',
-                    grade: '6-8',
-                  },
-                  {
-                    title: 'My Favorite Season',
-                    prompt: 'Describe your favorite season using all five senses. What do you see, hear, smell, taste, and feel during this time?',
-                    type: 'Descriptive',
-                    grade: '3-5',
-                  },
-                ].map((prompt, idx) => (
+                {(
+                  [
+                    { id: 'timeMachine', typeKey: 'literacyLabCoach.narrative' },
+                    { id: 'schoolUniform', typeKey: 'literacyLabCoach.persuasive' },
+                    { id: 'favoriteSeason', typeKey: 'literacyLabCoach.descriptive' },
+                  ] as const
+                ).map((sample, idx) => (
                   <div key={idx} className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-xs font-semibold text-indigo-600 uppercase tracking-wide">
-                        {prompt.type}
+                        {t(sample.typeKey)}
                       </span>
-                      <span className="text-xs text-gray-500">Grade {prompt.grade}</span>
+                      <span className="text-xs text-gray-500">
+                        {t('common.gradeOption', { grade: t(`literacyLabCoach.samples.${sample.id}.grade`) })}
+                      </span>
                     </div>
-                    <h4 className="text-lg font-semibold text-gray-900 mb-2">{prompt.title}</h4>
-                    <p className="text-sm text-gray-600 mb-4">{prompt.prompt}</p>
+                    <h4 className="text-lg font-semibold text-gray-900 mb-2">{t(`literacyLabCoach.samples.${sample.id}.title`)}</h4>
+                    <p className="text-sm text-gray-600 mb-4">{t(`literacyLabCoach.samples.${sample.id}.prompt`)}</p>
                     <div className="flex gap-2">
-                      <button className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">
-                        Use Prompt
-                      </button>
+                      <button className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">{t('literacyLabCoach.usePrompt')}</button>
                       <button className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">
                         <Download className="h-4 w-4" />
                       </button>
@@ -965,12 +900,10 @@ const LiteracyLabCoach = () => {
             <div className="space-y-6">
               <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <BookMarked className="h-6 w-6 text-emerald-600" />
-                  Vocabulary Builder
-                </h3>
+                  <BookMarked className="h-6 w-6 text-emerald-600" />{t('literacyLabCoach.vocabularyBuilder')}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Grade Level</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.gradeLevel')}</label>
                     <select
                       value={gradeLevel}
                       onChange={(e) => setGradeLevel(e.target.value)}
@@ -978,24 +911,22 @@ const LiteracyLabCoach = () => {
                     >
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
                         <option key={grade} value={grade}>
-                          Grade {grade}
+                          {t('common.gradeOption', { grade })}
                         </option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Topic/Theme</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('literacyLabCoach.topicTheme')}</label>
                     <input
                       type="text"
-                      placeholder="e.g., Science, History, Literature"
+                      placeholder={t('literacyLabCoach.eGScienceHistoryLiterature')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
                     />
                   </div>
                 </div>
                 <button className="w-full rounded-lg bg-emerald-600 px-6 py-3 text-sm font-semibold text-white hover:bg-emerald-700 flex items-center justify-center gap-2">
-                  <Sparkles className="h-4 w-4" />
-                  Generate Vocabulary List
-                </button>
+                  <Sparkles className="h-4 w-4" />{t('literacyLabCoach.generateVocabularyList')}</button>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1013,16 +944,12 @@ const LiteracyLabCoach = () => {
                     </div>
                     <p className="text-sm text-gray-600 mb-3">{vocab.definition}</p>
                     <div className="rounded-lg bg-gray-50 p-3">
-                      <p className="text-xs font-medium text-gray-500 mb-1">Example:</p>
+                      <p className="text-xs font-medium text-gray-500 mb-1">{t('literacyLabCoach.example')}</p>
                       <p className="text-sm text-gray-700 italic">"{vocab.example}"</p>
                     </div>
                     <div className="mt-4 flex gap-2">
-                      <button className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">
-                        Practice
-                      </button>
-                      <button className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">
-                        Quiz
-                      </button>
+                      <button className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">{t('literacyLabCoach.practice')}</button>
+                      <button className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">{t('literacyLabCoach.quiz')}</button>
                     </div>
                   </div>
                 ))}
@@ -1034,61 +961,49 @@ const LiteracyLabCoach = () => {
 
       {/* Additional Features Section */}
       <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-6">Additional Premium Features</h2>
+        <h2 className="text-2xl font-semibold text-gray-900 mb-6">{t('literacyLabCoach.additionalPremiumFeatures')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 mb-4">
               <BarChart3 className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Progress Tracking</h3>
-            <p className="text-sm text-gray-600">
-              Monitor student reading and writing progress over time with detailed analytics and reports.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literacyLabCoach.progressTracking')}</h3>
+            <p className="text-sm text-gray-600">{t('literacyLabCoach.monitorStudentReadingAndWritingProgressOverTimeWithDeta')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600 mb-4">
               <Users className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Differentiation Tools</h3>
-            <p className="text-sm text-gray-600">
-              Automatically generate differentiated activities for students at various reading levels.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literacyLabCoach.differentiationTools')}</h3>
+            <p className="text-sm text-gray-600">{t('literacyLabCoach.automaticallyGenerateDifferentiatedActivitiesForStudent')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600 mb-4">
               <GraduationCap className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Standards Alignment</h3>
-            <p className="text-sm text-gray-600">
-              All activities and assessments align with Common Core and state-specific literacy standards.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literacyLabCoach.standardsAlignment')}</h3>
+            <p className="text-sm text-gray-600">{t('literacyLabCoach.allActivitiesAndAssessmentsAlignWithCommonCoreAndState')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-amber-50 to-orange-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 text-amber-600 mb-4">
               <Clock className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Time-Saving Templates</h3>
-            <p className="text-sm text-gray-600">
-              Access ready-to-use lesson plans, rubrics, and activity templates for common literacy tasks.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literacyLabCoach.timeSavingTemplates')}</h3>
+            <p className="text-sm text-gray-600">{t('literacyLabCoach.accessReadyToUseLessonPlansRubricsAndActivityTemplates')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-cyan-50 to-blue-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600 mb-4">
               <MessageSquare className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">AI-Powered Chat</h3>
-            <p className="text-sm text-gray-600">
-              Get instant answers to literacy questions and receive personalized teaching recommendations.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literacyLabCoach.aiPoweredChat')}</h3>
+            <p className="text-sm text-gray-600">{t('literacyLabCoach.getInstantAnswersToLiteracyQuestionsAndReceivePersonali')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 mb-4">
               <Download className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Export & Share</h3>
-            <p className="text-sm text-gray-600">
-              Export reports, lesson plans, and assessments in multiple formats for easy sharing.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('literacyLabCoach.exportShare')}</h3>
+            <p className="text-sm text-gray-600">{t('literacyLabCoach.exportReportsLessonPlansAndAssessmentsInMultipleFormats')}</p>
           </div>
         </div>
       </div>

@@ -1,9 +1,13 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../../contexts/AuthContext'
 import { GraduationCap } from 'lucide-react'
+import { LanguageSearchDropdown } from '../../components/shared/LanguageSearchDropdown'
+import { useAuthLanguage } from '../../hooks/useAuthLanguage'
 
 const Signup = () => {
+  const { t } = useTranslation()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -12,18 +16,19 @@ const Signup = () => {
   const [isLoading, setIsLoading] = useState(false)
   const { signup } = useAuth()
   const navigate = useNavigate()
+  const { selectedLanguage, handleLanguageChange } = useAuthLanguage()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match')
+      setError(t('signup.validation.passwordMismatch'))
       return
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters')
+      setError(t('signup.validation.passwordMinLength'))
       return
     }
 
@@ -31,9 +36,9 @@ const Signup = () => {
 
     try {
       await signup(name, email, password)
-      navigate('/dashboard')
-    } catch (err) {
-      setError('Failed to create account. Please try again.')
+      navigate('/login')
+    } catch {
+      setError(t('signup.validation.signupFailed'))
     } finally {
       setIsLoading(false)
     }
@@ -42,12 +47,22 @@ const Signup = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 px-4 py-12">
       <div className="max-w-md w-full">
+        <div className="flex justify-end mb-4">
+          <div className="w-64">
+            <LanguageSearchDropdown
+              value={selectedLanguage}
+              onChange={handleLanguageChange}
+              placeholder={t('signup.languageSearch')}
+            />
+          </div>
+        </div>
+
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-full mb-4">
             <GraduationCap className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h1>
-          <p className="text-gray-600">Join Teacher Assistant today</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('signup.entry.title')}</h1>
+          <p className="text-gray-600">{t('signup.entry.subtitle')}</p>
         </div>
 
         <div className="card">
@@ -60,7 +75,7 @@ const Signup = () => {
 
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                Full Name
+                {t('signup.fields.fullName')}
               </label>
               <input
                 id="name"
@@ -68,14 +83,13 @@ const Signup = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="input-field"
-                placeholder="John Doe"
                 required
               />
             </div>
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
+                {t('signup.fields.email')}
               </label>
               <input
                 id="email"
@@ -83,14 +97,14 @@ const Signup = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="input-field"
-                placeholder="you@example.com"
+                placeholder={t('login.emailPlaceholder')}
                 required
               />
             </div>
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                Password
+                {t('signup.fields.password')}
               </label>
               <input
                 id="password"
@@ -101,7 +115,6 @@ const Signup = () => {
                 placeholder="••••••••"
                 required
               />
-              <p className="mt-1 text-xs text-gray-500">Must be at least 6 characters</p>
             </div>
 
             <div>
@@ -109,7 +122,7 @@ const Signup = () => {
                 htmlFor="confirmPassword"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Confirm Password
+                {t('signup.fields.confirmPassword')}
               </label>
               <input
                 id="confirmPassword"
@@ -127,15 +140,15 @@ const Signup = () => {
               disabled={isLoading}
               className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Creating account...' : 'Create Account'}
+              {isLoading ? t('signup.creatingAccount') : t('signup.createAccount')}
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Already have an account?{' '}
+              {t('signup.entry.alreadyHaveAccount')}{' '}
               <Link to="/login" className="text-primary-600 hover:text-primary-700 font-medium">
-                Sign in
+                {t('signup.entry.signIn')}
               </Link>
             </p>
           </div>
@@ -146,6 +159,3 @@ const Signup = () => {
 }
 
 export default Signup
-
-
-

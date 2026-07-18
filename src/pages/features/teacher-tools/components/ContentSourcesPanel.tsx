@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { BookOpen, Check, ChevronRight, Layers, Search, X } from 'lucide-react'
 import type { ContentSourcesFormModel } from '../hooks/useContentSourcesForm'
 import { getBookById, getChapters, getExcerptsForSelection } from '../demo/demoContentLibrary'
@@ -12,6 +13,7 @@ export interface ContentSourcesPanelProps {
 }
 
 export function ContentSourcesPanel({ subject, grade, model }: ContentSourcesPanelProps) {
+  const { t } = useTranslation()
   const [showExcerpts, setShowExcerpts] = useState(false)
   const [topicQuery, setTopicQuery] = useState('')
   const topicOnlyMode = model.materialMode === 'none' || !model.groundingEnabled
@@ -48,7 +50,7 @@ export function ContentSourcesPanel({ subject, grade, model }: ContentSourcesPan
             className="mt-0.5 rounded border-gray-300"
           />
           <span>
-            <span className="block font-semibold text-gray-900">Use selected materials for generation</span>
+            <span className="block font-semibold text-gray-900">{t('teacherTools.groundingLabel')}</span>
             <span className="mt-0.5 block text-xs text-gray-600">
               Topic-only mode skips retrieval and only uses your scope prompt.
             </span>
@@ -90,7 +92,7 @@ export function ContentSourcesPanel({ subject, grade, model }: ContentSourcesPan
             <input
               value={model.bookSearchQuery}
               onChange={(e) => model.setBookSearchQuery(e.target.value)}
-              placeholder="Search title, author, ISBN, or topic strand…"
+              placeholder={t('teacherTools.catalogSearchPlaceholder')}
               className="w-full rounded-xl border border-gray-200 bg-gray-50/80 py-2.5 pl-10 pr-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
             />
           </div>
@@ -98,7 +100,7 @@ export function ContentSourcesPanel({ subject, grade, model }: ContentSourcesPan
           {model.filteredBooks.length === 0 && (
             <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50 p-6 text-center">
               <NoDataFound />
-              <p className="mt-2 text-xs text-gray-600">No books match this search.</p>
+              <p className="mt-2 text-xs text-gray-600">{t('teacherTools.noBooksMatch')}</p>
               <button
                 type="button"
                 onClick={() => model.setBookSearchQuery('')}
@@ -144,13 +146,13 @@ export function ContentSourcesPanel({ subject, grade, model }: ContentSourcesPan
           </div>
 
           <div className="rounded-2xl border border-gray-100 bg-slate-50/60 p-4">
-            <p className="text-sm font-semibold text-gray-900">Search & select topic strands</p>
+            <p className="text-sm font-semibold text-gray-900">{t('teacherTools.topicStrandsHeading')}</p>
             <div className="relative mt-2">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
               <input
                 value={topicQuery}
                 onChange={(e) => setTopicQuery(e.target.value)}
-                placeholder="Type to filter (e.g. fraction, word problem…) "
+                placeholder={t('teacherTools.topicFilterPlaceholder')}
                 className="w-full rounded-xl border border-gray-200 py-2.5 pl-10 pr-3 text-sm focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-100"
               />
             </div>
@@ -201,7 +203,7 @@ export function ContentSourcesPanel({ subject, grade, model }: ContentSourcesPan
                 rows={2}
                 value={model.topicRefinement}
                 onChange={(e) => model.setTopicRefinement(e.target.value)}
-                placeholder="Focus on word problems, exam-style reasoning, and common misconceptions"
+                placeholder={t('teacherTools.scopeRefinementPlaceholder')}
                 className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-100"
               />
             </label>
@@ -210,10 +212,10 @@ export function ContentSourcesPanel({ subject, grade, model }: ContentSourcesPan
       )}
 
       <div className="rounded-xl border border-gray-100 bg-white px-3 py-2 text-xs text-gray-600">
-        <span className="font-semibold text-gray-800">Generation scope:</span>{' '}
+        <span className="font-semibold text-gray-800">{t('teacherTools.generationScope')}</span>{' '}
         {topicOnlyMode
           ? `Topic-only mode (${model.topicPreset}${model.topicRefinement ? ` — ${model.topicRefinement}` : ''})`
-          : `${selectedBook ? selectedBook.title : 'No specific book selected'}${model.chapterIds.length > 0 ? ` · ${model.chapterIds.length} chapter(s)` : ''}`}
+          : `${selectedBook ? selectedBook.title : t('teacherTools.noBookSelected')}${model.chapterIds.length > 0 ? ` · ${model.chapterIds.length} chapter(s)` : ''}`}
       </div>
 
       {selectedBook && model.chapterIds.length > 0 && excerpts.length > 0 && (
@@ -223,7 +225,8 @@ export function ContentSourcesPanel({ subject, grade, model }: ContentSourcesPan
             onClick={() => setShowExcerpts((s) => !s)}
             className="text-sm font-semibold text-primary-600 hover:text-primary-500"
           >
-            {showExcerpts ? 'Hide' : 'Show'} excerpt preview
+            {showExcerpts ? t('teacherTools.hideExcerpt') : t('teacherTools.showExcerpt')}{' '}
+            {t('teacherTools.excerptPreview')}
           </button>
           {showExcerpts && (
             <ul className="mt-2 space-y-2 rounded-xl border border-gray-100 bg-gray-50 p-3 text-xs text-gray-700">

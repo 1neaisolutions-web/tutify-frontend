@@ -1,6 +1,7 @@
 export type LanguageOption = { value: string; label: string }
 export type TimezoneOption = { value: string; label: string; region: string }
 
+/** @deprecated Use useLanguageList hook / LanguageSearchDropdown instead. */
 export const LANGUAGE_OPTIONS: LanguageOption[] = [
   { value: 'en-US', label: 'English (United States)' },
   { value: 'es-ES', label: 'Español (España)' },

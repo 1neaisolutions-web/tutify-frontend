@@ -1,4 +1,5 @@
 import { clampResponseLines } from '../../demo/generationFromSources'
+import { useTranslation } from 'react-i18next'
 
 type LineStyle = 'print' | 'review'
 
@@ -20,6 +21,7 @@ export function ShortAnswerHandoutLines({
   lineStyle = 'print',
   className = 'mt-3 flex flex-col',
 }: ShortAnswerHandoutLinesProps) {
+  const { t } = useTranslation()
   const n = clampResponseLines(responseLines)
   const borderClass = lineStyle === 'print' ? 'border-b border-gray-500' : 'border-b border-gray-400'
 
@@ -51,7 +53,7 @@ export function ShortAnswerStudentResponsePreview({
 }: ShortAnswerStudentResponsePreviewProps) {
   return (
     <div className="mt-3 border-t border-gray-100 pt-3">
-      <p className="text-xs font-medium text-gray-500">Student response (handout preview)</p>
+      <p className="text-xs font-medium text-gray-500">{t('quiz.handout.studentResponsePreview')}</p>
       <div className="mt-2 flex flex-col rounded-lg border border-dashed border-gray-200 bg-gray-50/80 px-3 py-3">
         <ShortAnswerHandoutLines
           responseLines={responseLines}

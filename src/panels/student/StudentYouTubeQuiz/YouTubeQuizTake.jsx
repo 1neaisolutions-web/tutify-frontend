@@ -1,11 +1,16 @@
+import { useTranslation } from 'react-i18next';
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+
+import { useRecordGamificationEvent } from '@/features/gamification';
 
 const STORAGE_KEY = 'tutify_student_youtube_quizzes_v1';
 
 const YouTubeQuizTake = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
+  const recordGamificationEvent = useRecordGamificationEvent();
   const quiz = useMemo(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -22,7 +27,7 @@ const YouTubeQuizTake = () => {
   if (!quiz) {
     return (
       <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950 px-6 py-6">
-        <p className="text-sm text-gray-700 dark:text-gray-200">Quiz not found.</p>
+        <p className="text-sm text-gray-700 dark:text-gray-200">{t('studentPanel.quiz.take.notFound')}</p>
       </div>
     );
   }
@@ -39,6 +44,20 @@ const YouTubeQuizTake = () => {
       answers,
       completedAt: new Date().toISOString(),
     };
+    const scorePercent =
+      quiz.questions.length > 0 ? Math.round((scored / quiz.questions.length) * 100) : 0;
+    recordGamificationEvent(
+      'quiz_completed',
+      {
+        quizId: quiz.id,
+        quizTitle: quiz.title,
+        score: scored,
+        total: quiz.questions.length,
+        scorePercent,
+        completedAt: result.completedAt,
+      },
+      `youtube-quiz:${quiz.id}`,
+    );
     try {
       localStorage.setItem(`tutify_student_youtube_quiz_result_${quiz.id}`, JSON.stringify(result));
     } catch {
@@ -52,15 +71,13 @@ const YouTubeQuizTake = () => {
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between gap-4">
         <div>
           <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{quiz.title}</h1>
-          <p className="text-sm text-gray-600 dark:text-gray-300">Answer the questions and submit.</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.youtubeQuiz.take.subtitle')}</p>
         </div>
         <button
           type="button"
           onClick={() => navigate('/student/youtube-quiz')}
           className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900"
-        >
-          Back
-        </button>
+        >{t('studentPanel.common.back')}</button>
       </div>
 
       <div className="px-6 py-6 max-w-3xl space-y-4">

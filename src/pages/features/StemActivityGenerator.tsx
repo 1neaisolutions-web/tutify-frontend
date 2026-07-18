@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { FlaskConical, Sparkles, RefreshCw, Download } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 type StemSubject = 'Science' | 'Technology' | 'Engineering' | 'Mathematics'
 type ActivityType =
   | 'experiment'
@@ -107,6 +108,7 @@ const sampleActivity: StemActivityOutput = {
 }
 
 const StemActivityGenerator = () => {
+  const { t } = useTranslation()
   const [inputs, setInputs] = useState<StemActivityInputs>({
     grade: 7,
     subject: 'Science',
@@ -243,10 +245,8 @@ const StemActivityGenerator = () => {
             <FlaskConical className="w-6 h-6 text-primary-600" />
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold text-gray-900">STEM Activity Generator</h1>
-            <p className="text-sm text-gray-600 mt-0.5">
-              Craft engaging STEM challenges tailored to your classroom context
-            </p>
+            <h1 className="text-xl font-bold text-gray-900">{t('stemActivityGenerator.stemActivityGenerator')}</h1>
+            <p className="text-sm text-gray-600 mt-0.5">{t('stemActivityGenerator.craftEngagingStemChallengesTailoredToYourClassroomConte')}</p>
           </div>
         </div>
       </div>
@@ -256,13 +256,12 @@ const StemActivityGenerator = () => {
           <div className="card">
             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
               <Sparkles className="w-5 h-5 text-primary-600" />
-              <span>Activity Inputs</span>
+              <span>{t('stemActivityGenerator.activityInputs')}</span>
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Grade <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('stemActivityGenerator.grade2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -271,14 +270,13 @@ const StemActivityGenerator = () => {
                   value={inputs.grade}
                   onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
                   className="input-field"
-                  placeholder="Enter grade (1-12)"
+                  placeholder={t('common.gradePlaceholder')}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Subject <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('stemActivityGenerator.subject2')}<span className="text-red-500">*</span>
                 </label>
                 <select
                   value={inputs.subject}
@@ -288,47 +286,43 @@ const StemActivityGenerator = () => {
                   className="input-field"
                   required
                 >
-                  <option value="">Select subject</option>
-                  <option value="Science">Science</option>
-                  <option value="Technology">Technology</option>
-                  <option value="Engineering">Engineering</option>
-                  <option value="Mathematics">Mathematics</option>
+                  <option value="">{t('stemActivityGenerator.selectSubject')}</option>
+                  <option value="Science">{t('stemActivityGenerator.science')}</option>
+                  <option value="Technology">{t('stemActivityGenerator.technology')}</option>
+                  <option value="Engineering">{t('stemActivityGenerator.engineering')}</option>
+                  <option value="Mathematics">{t('stemActivityGenerator.mathematics')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Topic <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('stemActivityGenerator.topic')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   value={inputs.topic}
                   onChange={(e) => handleInputChange('topic', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., Forces and Motion"
+                  placeholder={t('stemActivityGenerator.eGForcesAndMotion')}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Duration <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('stemActivityGenerator.duration2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   value={inputs.duration}
                   onChange={(e) => handleInputChange('duration', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., PT60M"
+                  placeholder={t('stemActivityGenerator.eGPt60m')}
                   required
                 />
                 <p className="mt-1 text-xs text-gray-500">Use ISO 8601 (e.g., PT60M).</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Activity Type
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('stemActivityGenerator.activityType')}</label>
                 <select
                   value={inputs.activity_type}
                   onChange={(e) =>
@@ -340,17 +334,15 @@ const StemActivityGenerator = () => {
                   className="input-field"
                 >
                   <option value="">Select activity type (optional)</option>
-                  <option value="experiment">Experiment</option>
-                  <option value="engineering_challenge">Engineering Challenge</option>
-                  <option value="simulation">Simulation</option>
-                  <option value="investigation">Investigation</option>
+                  <option value="experiment">{t('stemActivityGenerator.experiment')}</option>
+                  <option value="engineering_challenge">{t('stemActivityGenerator.engineeringChallenge')}</option>
+                  <option value="simulation">{t('stemActivityGenerator.simulation')}</option>
+                  <option value="investigation">{t('stemActivityGenerator.investigation')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Available Materials
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('stemActivityGenerator.availableMaterials')}</label>
                 <div className="flex gap-2 mb-2">
                   <input
                     type="text"
@@ -364,7 +356,7 @@ const StemActivityGenerator = () => {
                       }
                     }}
                     className="input-field flex-1"
-                    placeholder="e.g., string, ruler, tape"
+                    placeholder={t('stemActivityGenerator.eGStringRulerTape')}
                   />
                   <button
                     type="button"
@@ -400,7 +392,7 @@ const StemActivityGenerator = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Lab Access</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('stemActivityGenerator.labAccess')}</label>
                 <select
                   value={inputs.lab_access}
                   onChange={(e) =>
@@ -412,16 +404,14 @@ const StemActivityGenerator = () => {
                   className="input-field"
                 >
                   <option value="">Select lab access (optional)</option>
-                  <option value="none">None</option>
-                  <option value="basic">Basic</option>
-                  <option value="full">Full</option>
+                  <option value="none">{t('stemActivityGenerator.none')}</option>
+                  <option value="basic">{t('stemActivityGenerator.basic')}</option>
+                  <option value="full">{t('stemActivityGenerator.full')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Safety Constraints
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('stemActivityGenerator.safetyConstraints')}</label>
                 <div className="flex gap-2 mb-2">
                   <input
                     type="text"
@@ -435,7 +425,7 @@ const StemActivityGenerator = () => {
                       }
                     }}
                     className="input-field flex-1"
-                    placeholder="e.g., no chemicals"
+                    placeholder={t('stemActivityGenerator.eGNoChemicals')}
                   />
                   <button
                     type="button"
@@ -471,9 +461,7 @@ const StemActivityGenerator = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Learning Objectives
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('stemActivityGenerator.learningObjectives')}</label>
                 <div className="flex gap-2 mb-2">
                   <input
                     type="text"
@@ -487,7 +475,7 @@ const StemActivityGenerator = () => {
                       }
                     }}
                     className="input-field flex-1"
-                    placeholder="Enter learning objective"
+                    placeholder={t('stemActivityGenerator.enterLearningObjective')}
                   />
                   <button
                     type="button"
@@ -530,9 +518,7 @@ const StemActivityGenerator = () => {
                   onChange={(e) => handleInputChange('real_world_context', e.target.checked)}
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />
-                <label htmlFor="real-world-context" className="ml-2 text-sm text-gray-700">
-                  Connect to real-world context
-                </label>
+                <label htmlFor="real-world-context" className="ml-2 text-sm text-gray-700">{t('stemActivityGenerator.connectToRealWorldContext')}</label>
               </div>
 
               <div className="flex items-center">
@@ -543,25 +529,23 @@ const StemActivityGenerator = () => {
                   onChange={(e) => handleInputChange('differentiation_needed', e.target.checked)}
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />
-                <label htmlFor="differentiation" className="ml-2 text-sm text-gray-700">
-                  Include differentiation supports
-                </label>
+                <label htmlFor="differentiation" className="ml-2 text-sm text-gray-700">{t('stemActivityGenerator.includeDifferentiationSupports')}</label>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('stemActivityGenerator.language')}</label>
                 <input
                   type="text"
                   value={inputs.language}
                   onChange={(e) => handleInputChange('language', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., en-US"
+                  placeholder={t('stemActivityGenerator.eGEnUs')}
                 />
                 <p className="mt-1 text-xs text-gray-500">BCP47 format (e.g., en-US).</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Output Format</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('stemActivityGenerator.outputFormat')}</label>
                 <select
                   value={inputs.output_format}
                   onChange={(e) =>
@@ -573,9 +557,9 @@ const StemActivityGenerator = () => {
                   className="input-field"
                 >
                   <option value="">Select output format (optional)</option>
-                  <option value="teacher_text">Teacher Text</option>
-                  <option value="markdown">Markdown</option>
-                  <option value="structured_json">Structured JSON</option>
+                  <option value="teacher_text">{t('stemActivityGenerator.teacherText')}</option>
+                  <option value="markdown">{t('stemActivityGenerator.markdown')}</option>
+                  <option value="structured_json">{t('stemActivityGenerator.structuredJson')}</option>
                 </select>
               </div>
 
@@ -587,12 +571,12 @@ const StemActivityGenerator = () => {
                 {isGenerating ? (
                   <>
                     <RefreshCw className="w-5 h-5 animate-spin" />
-                    <span>Generating...</span>
+                    <span>{t('stemActivityGenerator.generating')}</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-5 h-5" />
-                    <span>Generate STEM Activity</span>
+                    <span>{t('stemActivityGenerator.generateStemActivity')}</span>
                   </>
                 )}
               </button>
@@ -604,18 +588,18 @@ const StemActivityGenerator = () => {
           {output ? (
             <div className="card">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Generated Activity Plan</h2>
+                <h2 className="text-lg font-semibold text-gray-900">{t('stemActivityGenerator.generatedActivityPlan')}</h2>
                 <div className="flex gap-2">
                   <button className="btn-secondary flex items-center space-x-2">
                     <Download className="w-4 h-4" />
-                    <span>Download</span>
+                    <span>{t('stemActivityGenerator.download')}</span>
                   </button>
                   <button
                     onClick={() => setOutput(null)}
                     className="btn-secondary flex items-center space-x-2"
                   >
                     <RefreshCw className="w-4 h-4" />
-                    <span>Reset</span>
+                    <span>{t('stemActivityGenerator.reset')}</span>
                   </button>
                 </div>
               </div>
@@ -625,17 +609,17 @@ const StemActivityGenerator = () => {
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">{output.title}</h3>
                   <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                     <span>
-                      <strong>Grade:</strong> {output.grade}
+                      <strong>{t('stemActivityGenerator.grade')}</strong> {output.grade}
                     </span>
                     <span>
-                      <strong>Subject:</strong> {output.subject}
+                      <strong>{t('stemActivityGenerator.subject')}</strong> {output.subject}
                     </span>
                     <span>
-                      <strong>Duration:</strong> {output.duration}
+                      <strong>{t('stemActivityGenerator.duration')}</strong> {output.duration}
                     </span>
                     {output.activity_type && (
                       <span>
-                        <strong>Type:</strong> {output.activity_type}
+                        <strong>{t('stemActivityGenerator.type')}</strong> {output.activity_type}
                       </span>
                     )}
                   </div>
@@ -643,7 +627,7 @@ const StemActivityGenerator = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Setup Steps</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('stemActivityGenerator.setupSteps')}</h4>
                   <ol className="list-decimal list-inside space-y-1 text-sm text-gray-700">
                     {output.setup_steps.map((step, index) => (
                       <li key={index}>{step}</li>
@@ -652,7 +636,7 @@ const StemActivityGenerator = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Activity Flow</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('stemActivityGenerator.activityFlow')}</h4>
                   <ol className="list-decimal list-inside space-y-1 text-sm text-gray-700">
                     {output.activity_steps.map((step, index) => (
                       <li key={index}>{step}</li>
@@ -661,10 +645,10 @@ const StemActivityGenerator = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Materials</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('stemActivityGenerator.materials')}</h4>
                   <div className="space-y-3 text-sm text-gray-700">
                     <div>
-                      <h5 className="font-medium text-gray-800 mb-1">Must Have</h5>
+                      <h5 className="font-medium text-gray-800 mb-1">{t('stemActivityGenerator.mustHave')}</h5>
                       <ul className="list-disc list-inside space-y-1">
                         {output.materials.must_have.map((item, index) => (
                           <li key={index}>{item}</li>
@@ -672,7 +656,7 @@ const StemActivityGenerator = () => {
                       </ul>
                     </div>
                     <div>
-                      <h5 className="font-medium text-gray-800 mb-1">Nice to Have</h5>
+                      <h5 className="font-medium text-gray-800 mb-1">{t('stemActivityGenerator.niceToHave')}</h5>
                       <ul className="list-disc list-inside space-y-1">
                         {output.materials.nice_to_have.map((item, index) => (
                           <li key={index}>{item}</li>
@@ -683,7 +667,7 @@ const StemActivityGenerator = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Safety Notes</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('stemActivityGenerator.safetyNotes')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.safety_notes.map((note, index) => (
                       <li key={index}>{note}</li>
@@ -693,10 +677,10 @@ const StemActivityGenerator = () => {
 
                 {output.differentiation && (
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Differentiation</h4>
+                    <h4 className="font-semibold text-gray-900 mb-2">{t('stemActivityGenerator.differentiation')}</h4>
                     <div className="space-y-3 text-sm text-gray-700">
                       <div>
-                        <h5 className="font-medium text-gray-800 mb-1">Support</h5>
+                        <h5 className="font-medium text-gray-800 mb-1">{t('stemActivityGenerator.support')}</h5>
                         <ul className="list-disc list-inside space-y-1">
                           {output.differentiation.support.map((item, index) => (
                             <li key={index}>{item}</li>
@@ -704,7 +688,7 @@ const StemActivityGenerator = () => {
                         </ul>
                       </div>
                       <div>
-                        <h5 className="font-medium text-gray-800 mb-1">Extension</h5>
+                        <h5 className="font-medium text-gray-800 mb-1">{t('stemActivityGenerator.extension')}</h5>
                         <ul className="list-disc list-inside space-y-1">
                           {output.differentiation.extension.map((item, index) => (
                             <li key={index}>{item}</li>
@@ -717,16 +701,16 @@ const StemActivityGenerator = () => {
 
                 {output.real_world_connection && (
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Real-World Connection</h4>
+                    <h4 className="font-semibold text-gray-900 mb-2">{t('stemActivityGenerator.realWorldConnection')}</h4>
                     <p className="text-sm text-gray-700">{output.real_world_connection}</p>
                   </div>
                 )}
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Assessment</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('stemActivityGenerator.assessment')}</h4>
                   <div className="space-y-3 text-sm text-gray-700">
                     <div>
-                      <h5 className="font-medium text-gray-800 mb-1">Formative</h5>
+                      <h5 className="font-medium text-gray-800 mb-1">{t('stemActivityGenerator.formative')}</h5>
                       <ul className="list-disc list-inside space-y-1">
                         {output.assessment.formative.map((item, index) => (
                           <li key={index}>{item}</li>
@@ -734,7 +718,7 @@ const StemActivityGenerator = () => {
                       </ul>
                     </div>
                     <div>
-                      <h5 className="font-medium text-gray-800 mb-1">Summative</h5>
+                      <h5 className="font-medium text-gray-800 mb-1">{t('stemActivityGenerator.summative')}</h5>
                       <ul className="list-disc list-inside space-y-1">
                         {output.assessment.summative.map((item, index) => (
                           <li key={index}>{item}</li>
@@ -745,7 +729,7 @@ const StemActivityGenerator = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Extensions</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('stemActivityGenerator.extensions')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.extensions.map((item, index) => (
                       <li key={index}>{item}</li>
@@ -758,12 +742,8 @@ const StemActivityGenerator = () => {
             <div className="card">
               <div className="text-center py-12">
                 <FlaskConical className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Your STEM activity will appear here
-                </h3>
-                <p className="text-gray-600">
-                  Complete the inputs and select "Generate STEM Activity" to preview the plan.
-                </p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('stemActivityGenerator.yourStemActivityWillAppearHere')}</h3>
+                <p className="text-gray-600">{t('stemActivityGenerator.completeTheInputsAndSelectGenerateStemActivityToPreview')}</p>
               </div>
             </div>
           )}

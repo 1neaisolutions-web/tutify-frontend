@@ -8,11 +8,19 @@ module.exports = {
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs'],
   parser: '@typescript-eslint/parser',
-  plugins: ['react-refresh'],
+  plugins: ['react-refresh', 'i18next'],
   rules: {
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true },
+    ],
+    'i18next/no-literal-string': [
+      'warn',
+      {
+        markupOnly: true,
+        ignoreComponent: ['Trans'],
+        ignore: ['className', 'id', 'type', 'htmlFor', 'aria-*', 'data-*', 'key', 'role'],
+      },
     ],
   },
 }

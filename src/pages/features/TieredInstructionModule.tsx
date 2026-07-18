@@ -36,6 +36,7 @@ import {
   Layers,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template'
@@ -63,6 +64,7 @@ interface ReadinessLevel {
 }
 
 const TieredInstructionModule = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -347,19 +349,13 @@ Students who:
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 1 of 6
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('tieredInstructionModule.module1Of6')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    40 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('tieredInstructionModule.k0Min')}</span>
                 </div>
-                <h1 className="text-3xl font-bold">Tiered Instruction Frameworks</h1>
-                <p className="mt-2 text-green-100">
-                  Master the art of creating tiered lessons that challenge all students at their appropriate level
-                </p>
+                <h1 className="text-3xl font-bold">{t('tieredInstructionModule.tieredInstructionFrameworks')}</h1>
+                <p className="mt-2 text-green-100">{t('tieredInstructionModule.masterTheArtOfCreatingTieredLessonsThatChallengeAll')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm">
@@ -386,7 +382,7 @@ Students who:
         {/* Lessons Sidebar */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('tieredInstructionModule.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isCompleted = completedLessons.includes(lesson.id)
@@ -430,7 +426,7 @@ Students who:
             </div>
             <div className="mt-6 pt-6 border-t border-gray-200">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-gray-600">Progress</span>
+                <span className="text-xs text-gray-600">{t('tieredInstructionModule.progress')}</span>
                 <span className="text-xs font-semibold text-gray-900">{Math.round(moduleProgress)}%</span>
               </div>
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -453,7 +449,7 @@ Students who:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Video className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Video Lesson</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('tieredInstructionModule.videoLesson')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                   </div>
@@ -492,7 +488,7 @@ Students who:
                 </div>
 
                 <div className="bg-green-50 rounded-lg p-6 border border-green-200">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Key Points</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('tieredInstructionModule.keyPoints')}</h3>
                   <ul className="space-y-2">
                     {currentLessonData.content.keyPoints?.map((point: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -504,7 +500,7 @@ Students who:
                 </div>
 
                 <div className="bg-white rounded-lg p-6 border border-gray-200">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Transcript</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('tieredInstructionModule.transcript')}</h3>
                   <p className="text-sm text-gray-700 leading-relaxed">{currentLessonData.content.transcript}</p>
                 </div>
 
@@ -515,14 +511,10 @@ Students who:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('tieredInstructionModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('tieredInstructionModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -535,7 +527,7 @@ Students who:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <BookOpen className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Reading</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('tieredInstructionModule.reading')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                   </div>
@@ -562,7 +554,7 @@ Students who:
 
                 {currentLessonData.content.keyTakeaways && (
                   <div className="bg-green-50 rounded-lg p-6 border border-green-200">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-3">Key Takeaways</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('tieredInstructionModule.keyTakeaways')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyTakeaways.map((takeaway: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -581,14 +573,10 @@ Students who:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('tieredInstructionModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('tieredInstructionModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -601,7 +589,7 @@ Students who:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Zap className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Interactive Tool</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('tieredInstructionModule.interactiveTool')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                     <p className="mt-2 text-gray-600">{currentLessonData.content.description}</p>
@@ -612,7 +600,7 @@ Students who:
                 </div>
 
                 <div className="bg-green-50 rounded-lg p-6 border border-green-200 mb-6">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Design Steps</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('tieredInstructionModule.designSteps')}</h3>
                   <ol className="space-y-2">
                     {currentLessonData.content.steps?.map((step: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -627,9 +615,7 @@ Students who:
 
                 <div className="bg-white rounded-lg p-6 border border-gray-200 space-y-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Learning Objective *
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">{t('tieredInstructionModule.learningObjective')}</label>
                     <textarea
                       value={tieredActivity.learningObjective}
                       onChange={(e) => setTieredActivity({ ...tieredActivity, learningObjective: e.target.value })}
@@ -641,52 +627,44 @@ Students who:
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">
-                        Foundation Tier *
-                      </label>
+                      <label className="block text-sm font-semibold text-gray-900 mb-2">{t('tieredInstructionModule.foundationTier')}</label>
                       <textarea
                         value={tieredActivity.foundationTier}
                         onChange={(e) => setTieredActivity({ ...tieredActivity, foundationTier: e.target.value })}
-                        placeholder="Activity for students needing foundational support..."
+                        placeholder={t('tieredInstructionModule.activityForStudentsNeedingFoundationalSupport')}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                         rows={4}
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">
-                        Standard Tier *
-                      </label>
+                      <label className="block text-sm font-semibold text-gray-900 mb-2">{t('tieredInstructionModule.standardTier')}</label>
                       <textarea
                         value={tieredActivity.standardTier}
                         onChange={(e) => setTieredActivity({ ...tieredActivity, standardTier: e.target.value })}
-                        placeholder="Activity for students with basic understanding..."
+                        placeholder={t('tieredInstructionModule.activityForStudentsWithBasicUnderstanding')}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                         rows={4}
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">
-                        Challenge Tier
-                      </label>
+                      <label className="block text-sm font-semibold text-gray-900 mb-2">{t('tieredInstructionModule.challengeTier')}</label>
                       <textarea
                         value={tieredActivity.challengeTier}
                         onChange={(e) => setTieredActivity({ ...tieredActivity, challengeTier: e.target.value })}
-                        placeholder="Activity for students with strong understanding..."
+                        placeholder={t('tieredInstructionModule.activityForStudentsWithStrongUnderstanding')}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                         rows={4}
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">
-                        Extension Tier
-                      </label>
+                      <label className="block text-sm font-semibold text-gray-900 mb-2">{t('tieredInstructionModule.extensionTier')}</label>
                       <textarea
                         value={tieredActivity.extensionTier}
                         onChange={(e) => setTieredActivity({ ...tieredActivity, extensionTier: e.target.value })}
-                        placeholder="Activity for students with advanced understanding..."
+                        placeholder={t('tieredInstructionModule.activityForStudentsWithAdvancedUnderstanding')}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                         rows={4}
                       />
@@ -700,14 +678,14 @@ Students who:
                     <textarea
                       value={tieredActivity.assessment}
                       onChange={(e) => setTieredActivity({ ...tieredActivity, assessment: e.target.value })}
-                      placeholder="Describe how you'll assess learning across all tiers..."
+                      placeholder={t('tieredInstructionModule.assessmentAcrossTiersPlaceholder')}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                       rows={3}
                     />
                   </div>
 
                   <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                    <h4 className="text-sm font-semibold text-gray-900 mb-2">Readiness Level Guide</h4>
+                    <h4 className="text-sm font-semibold text-gray-900 mb-2">{t('tieredInstructionModule.readinessLevelGuide')}</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {readinessLevels.map((level, idx) => (
                         <div key={idx} className="bg-white rounded p-3 border border-gray-200">
@@ -727,9 +705,7 @@ Students who:
                     onClick={handleDesignSubmit}
                     className="w-full px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
                   >
-                    <CheckCircle2 className="h-5 w-5" />
-                    Save Tiered Activity Design
-                  </button>
+                    <CheckCircle2 className="h-5 w-5" />{t('tieredInstructionModule.saveTieredActivityDesign')}</button>
                 </div>
 
                 <button
@@ -739,14 +715,10 @@ Students who:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('tieredInstructionModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('tieredInstructionModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -759,7 +731,7 @@ Students who:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <FileText className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Template</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('tieredInstructionModule.template')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                     <p className="mt-2 text-gray-600">{currentLessonData.content.description}</p>
@@ -770,7 +742,7 @@ Students who:
                 </div>
 
                 <div className="bg-white rounded-lg p-6 border border-gray-200">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-4">Template Sections</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('tieredInstructionModule.templateSections')}</h3>
                   <div className="space-y-3">
                     {currentLessonData.content.sections?.map((section: string, idx: number) => (
                       <div key={idx} className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
@@ -786,18 +758,18 @@ Students who:
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <button className="p-4 bg-green-50 border-2 border-green-200 rounded-lg hover:bg-green-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-green-600" />
-                    <span className="text-sm font-semibold text-gray-900">Elementary Template</span>
-                    <span className="text-xs text-gray-600">Grades K-5</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('tieredInstructionModule.elementaryTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('tieredInstructionModule.gradesK5')}</span>
                   </button>
                   <button className="p-4 bg-green-50 border-2 border-green-200 rounded-lg hover:bg-green-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-green-600" />
-                    <span className="text-sm font-semibold text-gray-900">Middle School Template</span>
-                    <span className="text-xs text-gray-600">Grades 6-8</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('tieredInstructionModule.middleSchoolTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('tieredInstructionModule.grades68')}</span>
                   </button>
                   <button className="p-4 bg-green-50 border-2 border-green-200 rounded-lg hover:bg-green-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-green-600" />
-                    <span className="text-sm font-semibold text-gray-900">High School Template</span>
-                    <span className="text-xs text-gray-600">Grades 9-12</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('tieredInstructionModule.highSchoolTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('tieredInstructionModule.grades912')}</span>
                   </button>
                 </div>
 
@@ -808,14 +780,10 @@ Students who:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('tieredInstructionModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('tieredInstructionModule.markAsComplete')}</>
                   )}
                 </button>
               </div>

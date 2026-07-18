@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useEffect, useRef } from 'react';
 import MessageBubble from './MessageBubble';
 import AITypingIndicator from './AITypingIndicator';

@@ -54,11 +54,13 @@ import {
   mapTechIntegrationResult,
 } from '../../utils/digitalLiteracyAdapters'
 
+import { useTranslation } from 'react-i18next'
 const CHATBOT_SLUG = 'digital-literacy-advisor'
 
 type TabType = 'digital-citizenship' | 'online-safety' | 'media-literacy' | 'technology-integration' | 'standards' | 'resources'
 
 const DigitalLiteracyAdvisor = () => {
+  const { t } = useTranslation()
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const [activeTab, setActiveTab] = useState<TabType>('digital-citizenship')
@@ -140,7 +142,7 @@ const DigitalLiteracyAdvisor = () => {
           setIntegrationStrategies(mapTechIntegrationResult(raw, gradeLevel))
         }
       } catch {
-        toast.error('Could not restore saved output from History.')
+        toast.error(t('digitalLiteracyAdvisor.couldNotRestoreSavedOutputFromHistory'))
       }
     },
   })
@@ -164,13 +166,13 @@ const DigitalLiteracyAdvisor = () => {
       if (response == null) return
       setCitizenshipStandards(mapDigitalStandardsToCitizenshipList(response.result, gradeLevel))
       pinFromResponse(response.conversation_id)
-      toast.success('Standards loaded')
+      toast.success(t('digitalLiteracyAdvisor.standardsLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load standards'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('digitalLiteracyAdvisor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -195,13 +197,13 @@ const DigitalLiteracyAdvisor = () => {
       if (response == null) return
       setGeneratedLesson(mapDigitalCitizenshipLessonResult(response.result, gradeLevel))
       pinFromResponse(response.conversation_id)
-      toast.success('Lesson generated')
+      toast.success(t('digitalLiteracyAdvisor.lessonGenerated'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to generate lesson'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('digitalLiteracyAdvisor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -224,13 +226,13 @@ const DigitalLiteracyAdvisor = () => {
       if (response == null) return
       setSafetyGuidelines(mapOnlineSafetyToGuidelines(response.result, gradeLevel))
       pinFromResponse(response.conversation_id)
-      toast.success('Safety guidelines loaded')
+      toast.success(t('digitalLiteracyAdvisor.safetyGuidelinesLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load safety guidelines'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('digitalLiteracyAdvisor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -255,13 +257,13 @@ const DigitalLiteracyAdvisor = () => {
       if (response == null) return
       setGeneratedSafetyPlan(mapOnlineSafetyToPlan(response.result, topic, gradeLevel))
       pinFromResponse(response.conversation_id)
-      toast.success('Safety plan generated')
+      toast.success(t('digitalLiteracyAdvisor.safetyPlanGenerated'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to generate safety plan'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('digitalLiteracyAdvisor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -283,13 +285,13 @@ const DigitalLiteracyAdvisor = () => {
       if (response == null) return
       setMediaConcepts(mapMediaLiteracyResult(response.result, gradeLevel))
       pinFromResponse(response.conversation_id)
-      toast.success('Media literacy content loaded')
+      toast.success(t('digitalLiteracyAdvisor.mediaLiteracyContentLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load media literacy concepts'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('digitalLiteracyAdvisor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -311,13 +313,13 @@ const DigitalLiteracyAdvisor = () => {
       if (response == null) return
       setIntegrationStrategies(mapTechIntegrationResult(response.result, gradeLevel))
       pinFromResponse(response.conversation_id)
-      toast.success('Integration strategies loaded')
+      toast.success(t('digitalLiteracyAdvisor.integrationStrategiesLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load strategies'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('digitalLiteracyAdvisor.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -325,12 +327,12 @@ const DigitalLiteracyAdvisor = () => {
   }
 
   const tabs = [
-    { id: 'digital-citizenship' as TabType, label: 'Digital Citizenship', icon: Users },
-    { id: 'online-safety' as TabType, label: 'Online Safety', icon: Shield },
-    { id: 'media-literacy' as TabType, label: 'Media Literacy', icon: BookOpen },
-    { id: 'technology-integration' as TabType, label: 'Tech Integration', icon: Zap },
-    { id: 'standards' as TabType, label: 'Standards', icon: CheckCircle },
-    { id: 'resources' as TabType, label: 'Resources', icon: FileText },
+    { id: 'digital-citizenship' as TabType, label: t('digitalLiteracyAdvisor.tabs.digital-citizenship'), icon: Users },
+    { id: 'online-safety' as TabType, label: t('digitalLiteracyAdvisor.tabs.online-safety'), icon: Shield },
+    { id: 'media-literacy' as TabType, label: t('digitalLiteracyAdvisor.tabs.media-literacy'), icon: BookOpen },
+    { id: 'technology-integration' as TabType, label: t('digitalLiteracyAdvisor.tabs.technology-integration'), icon: Zap },
+    { id: 'standards' as TabType, label: t('digitalLiteracyAdvisor.tabs.standards'), icon: CheckCircle },
+    { id: 'resources' as TabType, label: t('digitalLiteracyAdvisor.tabs.resources'), icon: FileText },
   ]
 
   return (
@@ -354,29 +356,23 @@ const DigitalLiteracyAdvisor = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-3xl font-bold">Digital Literacy Advisor</h1>
+                  <h1 className="text-3xl font-bold">{t('digitalLiteracyAdvisor.digitalLiteracyAdvisor')}</h1>
                   <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
                     <Star className="h-3 w-3" /> 4.9★
                   </span>
                   <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" /> Premium
-                  </span>
+                    <Lock className="inline h-3 w-3 mr-1" />{t('digitalLiteracyAdvisor.premium')}</span>
                   <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
-                    <Globe className="inline h-3 w-3 mr-1" /> International Standards
-                  </span>
+                    <Globe className="inline h-3 w-3 mr-1" />{t('digitalLiteracyAdvisor.internationalStandards')}</span>
                 </div>
-                <p className="mt-2 text-blue-100">
-                  Comprehensive digital literacy education aligned with international standards (ISTE, UNESCO, DigComp, Common Sense Media). 
-                  Help students master digital citizenship, online safety, media literacy, and technology integration 
-                  through evidence-based strategies and global best practices.
-                </p>
+                <p className="mt-2 text-blue-100">{t('digitalLiteracyAdvisor.heroDescription')}</p>
               </div>
             </div>
             
             {/* Quick Settings */}
             <div className="flex flex-wrap gap-4 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Grade Level:</label>
+                <label className="text-sm font-medium">{t('digitalLiteracyAdvisor.gradeLevel')}</label>
                 <select
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
@@ -422,14 +418,10 @@ const DigitalLiteracyAdvisor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Users className="h-6 w-6 text-blue-600" />
-                  Digital Citizenship Education
-                </h2>
+                  <Users className="h-6 w-6 text-blue-600" />{t('digitalLiteracyAdvisor.digitalCitizenshipEducation')}</h2>
                 <div className="grid md:grid-cols-2 gap-4 mb-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Lesson Topic
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('digitalLiteracyAdvisor.lessonTopic')}</label>
                     <select
                       value={lessonTopic}
                       onChange={(e) => setLessonTopic(e.target.value)}
@@ -441,14 +433,12 @@ const DigitalLiteracyAdvisor = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Duration
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('digitalLiteracyAdvisor.duration')}</label>
                     <input
                       type="text"
                       value={lessonDuration}
                       onChange={(e) => setLessonDuration(e.target.value)}
-                      placeholder="e.g., 45 minutes"
+                      placeholder={t('digitalLiteracyAdvisor.eG45Minutes')}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
@@ -460,14 +450,10 @@ const DigitalLiteracyAdvisor = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Generating...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('digitalLiteracyAdvisor.generating')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Generate Lesson Plan
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('digitalLiteracyAdvisor.generateLessonPlan')}</>
                   )}
                 </button>
               </div>
@@ -493,7 +479,7 @@ const DigitalLiteracyAdvisor = () => {
 
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Learning Objectives</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('digitalLiteracyAdvisor.learningObjectives')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {generatedLesson.learningObjectives.map((obj, i) => (
                           <li key={i}>{obj}</li>
@@ -502,7 +488,7 @@ const DigitalLiteracyAdvisor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Activities</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">{t('digitalLiteracyAdvisor.activities')}</h4>
                       <div className="space-y-3">
                         {generatedLesson.activities.map((activity, idx) => (
                           <div key={idx} className="border-l-4 border-blue-500 pl-4">
@@ -519,7 +505,7 @@ const DigitalLiteracyAdvisor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Assessment</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('digitalLiteracyAdvisor.assessment')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {generatedLesson.assessment.map((item, i) => (
                           <li key={i}>{item}</li>
@@ -528,7 +514,7 @@ const DigitalLiteracyAdvisor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Standards Alignment</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('digitalLiteracyAdvisor.standardsAlignment')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {generatedLesson.standardsAlignment.map((standard, i) => (
                           <span key={i} className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-medium">
@@ -543,9 +529,7 @@ const DigitalLiteracyAdvisor = () => {
 
               <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-200">
                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-indigo-600" />
-                  International Standards
-                </h3>
+                  <CheckCircle className="h-5 w-5 text-indigo-600" />{t('digitalLiteracyAdvisor.internationalStandards')}</h3>
                 <button
                   onClick={handleLoadStandards}
                   disabled={isGenerating}
@@ -553,14 +537,10 @@ const DigitalLiteracyAdvisor = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('digitalLiteracyAdvisor.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load International Standards
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('digitalLiteracyAdvisor.loadInternationalStandards')}</>
                   )}
                 </button>
               </div>
@@ -592,7 +572,7 @@ const DigitalLiteracyAdvisor = () => {
                       {selectedStandard?.id === standard.id && (
                         <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Key Components</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('digitalLiteracyAdvisor.keyComponents')}</h4>
                             <div className="flex flex-wrap gap-2">
                               {standard.keyComponents.map((component, i) => (
                                 <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -603,14 +583,14 @@ const DigitalLiteracyAdvisor = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-3">Competencies</h4>
+                            <h4 className="font-semibold text-gray-900 mb-3">{t('digitalLiteracyAdvisor.competencies')}</h4>
                             <div className="space-y-3">
                               {standard.competencies.map((competency, i) => (
                                 <div key={i} className="border-l-4 border-indigo-500 pl-4">
                                   <h5 className="font-semibold text-gray-900">{competency.competency}</h5>
                                   <p className="text-sm text-gray-700 mt-1">{competency.description}</p>
                                   <div className="mt-2">
-                                    <span className="text-xs font-medium text-gray-700">Indicators:</span>
+                                    <span className="text-xs font-medium text-gray-700">{t('digitalLiteracyAdvisor.indicators')}</span>
                                     <ul className="list-disc list-inside space-y-1 text-sm text-gray-700 mt-1">
                                       {competency.indicators.map((indicator, j) => (
                                         <li key={j}>{indicator}</li>
@@ -635,13 +615,9 @@ const DigitalLiteracyAdvisor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-xl p-6 border border-red-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Shield className="h-6 w-6 text-red-600" />
-                  Online Safety Guidelines
-                </h2>
+                  <Shield className="h-6 w-6 text-red-600" />{t('digitalLiteracyAdvisor.onlineSafetyGuidelines')}</h2>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Safety Topic
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('digitalLiteracyAdvisor.safetyTopic')}</label>
                   <select
                     value={safetyTopic}
                     onChange={(e) => setSafetyTopic(e.target.value)}
@@ -659,14 +635,10 @@ const DigitalLiteracyAdvisor = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Generating...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('digitalLiteracyAdvisor.generating')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Generate Safety Plan
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('digitalLiteracyAdvisor.generateSafetyPlan')}</>
                   )}
                 </button>
               </div>
@@ -677,7 +649,7 @@ const DigitalLiteracyAdvisor = () => {
                   
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Prevention Strategies</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('digitalLiteracyAdvisor.preventionStrategies')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {generatedSafetyPlan.preventionStrategies.map((strategy, i) => (
                           <li key={i}>{strategy}</li>
@@ -686,7 +658,7 @@ const DigitalLiteracyAdvisor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Detection Methods</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('digitalLiteracyAdvisor.detectionMethods')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {generatedSafetyPlan.detectionMethods.map((method, i) => (
                           <li key={i}>{method}</li>
@@ -695,7 +667,7 @@ const DigitalLiteracyAdvisor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Response Protocol</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('digitalLiteracyAdvisor.responseProtocol')}</h4>
                       <ol className="list-decimal list-inside space-y-1 text-gray-700">
                         {generatedSafetyPlan.responseProtocol.map((step, i) => (
                           <li key={i}>{step}</li>
@@ -704,7 +676,7 @@ const DigitalLiteracyAdvisor = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Resources</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('digitalLiteracyAdvisor.resources')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {generatedSafetyPlan.resources.map((resource, i) => (
                           <li key={i}>{resource}</li>
@@ -717,9 +689,7 @@ const DigitalLiteracyAdvisor = () => {
 
               <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6 border border-orange-200">
                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5 text-orange-600" />
-                  Comprehensive Safety Guidelines
-                </h3>
+                  <AlertTriangle className="h-5 w-5 text-orange-600" />{t('digitalLiteracyAdvisor.comprehensiveSafetyGuidelines')}</h3>
                 <button
                   onClick={handleLoadSafetyGuidelines}
                   disabled={isGenerating}
@@ -727,14 +697,10 @@ const DigitalLiteracyAdvisor = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('digitalLiteracyAdvisor.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load Safety Guidelines
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('digitalLiteracyAdvisor.loadSafetyGuidelines')}</>
                   )}
                 </button>
               </div>
@@ -758,7 +724,7 @@ const DigitalLiteracyAdvisor = () => {
                       {selectedGuideline?.id === guideline.id && (
                         <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Risks</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('digitalLiteracyAdvisor.risks')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {guideline.risks.map((risk, i) => (
                                 <li key={i}>{risk}</li>
@@ -768,7 +734,7 @@ const DigitalLiteracyAdvisor = () => {
 
                           <div className="grid md:grid-cols-2 gap-4">
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Prevention Strategies</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('digitalLiteracyAdvisor.preventionStrategies')}</h4>
                               <ul className="list-disc list-inside space-y-1 text-gray-700">
                                 {guideline.preventionStrategies.map((strategy, i) => (
                                   <li key={i}>{strategy}</li>
@@ -776,7 +742,7 @@ const DigitalLiteracyAdvisor = () => {
                               </ul>
                             </div>
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Response Actions</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('digitalLiteracyAdvisor.responseActions')}</h4>
                               <ul className="list-disc list-inside space-y-1 text-gray-700">
                                 {guideline.responseActions.map((action, i) => (
                                   <li key={i}>{action}</li>
@@ -786,7 +752,7 @@ const DigitalLiteracyAdvisor = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Resources</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('digitalLiteracyAdvisor.resources')}</h4>
                             <div className="flex flex-wrap gap-2">
                               {guideline.resources.map((resource, i) => (
                                 <span key={i} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
@@ -809,9 +775,7 @@ const DigitalLiteracyAdvisor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <BookOpen className="h-6 w-6 text-purple-600" />
-                  Media Literacy Concepts
-                </h2>
+                  <BookOpen className="h-6 w-6 text-purple-600" />{t('digitalLiteracyAdvisor.mediaLiteracyConcepts')}</h2>
                 <button
                   onClick={handleLoadMediaConcepts}
                   disabled={isGenerating}
@@ -819,14 +783,10 @@ const DigitalLiteracyAdvisor = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('digitalLiteracyAdvisor.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load Media Literacy Concepts
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('digitalLiteracyAdvisor.loadMediaLiteracyConcepts')}</>
                   )}
                 </button>
               </div>
@@ -850,7 +810,7 @@ const DigitalLiteracyAdvisor = () => {
                       {selectedConcept?.id === concept.id && (
                         <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Key Skills</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('digitalLiteracyAdvisor.keySkills')}</h4>
                             <div className="flex flex-wrap gap-2">
                               {concept.keySkills.map((skill, i) => (
                                 <span key={i} className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
@@ -861,7 +821,7 @@ const DigitalLiteracyAdvisor = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Activities</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('digitalLiteracyAdvisor.activities')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {concept.activities.map((activity, i) => (
                                 <li key={i}>{activity}</li>
@@ -870,7 +830,7 @@ const DigitalLiteracyAdvisor = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Real-World Examples</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('digitalLiteracyAdvisor.realWorldExamples')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {concept.realWorldExamples.map((example, i) => (
                                 <li key={i}>{example}</li>
@@ -891,9 +851,7 @@ const DigitalLiteracyAdvisor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-xl p-6 border border-green-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Zap className="h-6 w-6 text-green-600" />
-                  Technology Integration Strategies
-                </h2>
+                  <Zap className="h-6 w-6 text-green-600" />{t('digitalLiteracyAdvisor.technologyIntegrationStrategies')}</h2>
                 <button
                   onClick={handleLoadStrategies}
                   disabled={isGenerating}
@@ -901,14 +859,10 @@ const DigitalLiteracyAdvisor = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('digitalLiteracyAdvisor.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load Integration Strategies
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('digitalLiteracyAdvisor.loadIntegrationStrategies')}</>
                   )}
                 </button>
               </div>
@@ -939,7 +893,7 @@ const DigitalLiteracyAdvisor = () => {
                       {selectedStrategy?.id === strategy.id && (
                         <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Tools</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('digitalLiteracyAdvisor.tools')}</h4>
                             <div className="flex flex-wrap gap-2">
                               {strategy.tools.map((tool, i) => (
                                 <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -950,7 +904,7 @@ const DigitalLiteracyAdvisor = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Implementation Steps</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('digitalLiteracyAdvisor.implementationSteps')}</h4>
                             <ol className="list-decimal list-inside space-y-1 text-gray-700">
                               {strategy.implementationSteps.map((step, i) => (
                                 <li key={i}>{step}</li>
@@ -960,7 +914,7 @@ const DigitalLiteracyAdvisor = () => {
 
                           <div className="grid md:grid-cols-2 gap-4">
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Benefits</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('digitalLiteracyAdvisor.benefits')}</h4>
                               <ul className="list-disc list-inside space-y-1 text-gray-700">
                                 {strategy.benefits.map((benefit, i) => (
                                   <li key={i}>{benefit}</li>
@@ -968,7 +922,7 @@ const DigitalLiteracyAdvisor = () => {
                               </ul>
                             </div>
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Best Practices</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('digitalLiteracyAdvisor.bestPractices')}</h4>
                               <ul className="list-disc list-inside space-y-1 text-gray-700">
                                 {strategy.bestPractices.map((practice, i) => (
                                   <li key={i}>{practice}</li>
@@ -990,12 +944,8 @@ const DigitalLiteracyAdvisor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 border border-indigo-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <CheckCircle className="h-6 w-6 text-indigo-600" />
-                  International Digital Literacy Standards
-                </h2>
-                <p className="text-gray-700 mb-4">
-                  Access comprehensive international standards for digital literacy education from leading organizations worldwide.
-                </p>
+                  <CheckCircle className="h-6 w-6 text-indigo-600" />{t('digitalLiteracyAdvisor.internationalDigitalLiteracyStandards')}</h2>
+                <p className="text-gray-700 mb-4">{t('digitalLiteracyAdvisor.accessComprehensiveInternationalStandardsForDigitalLite')}</p>
                 <button
                   onClick={handleLoadStandards}
                   disabled={isGenerating}
@@ -1003,14 +953,10 @@ const DigitalLiteracyAdvisor = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('digitalLiteracyAdvisor.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load All Standards
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('digitalLiteracyAdvisor.loadAllStandards')}</>
                   )}
                 </button>
               </div>
@@ -1042,7 +988,7 @@ const DigitalLiteracyAdvisor = () => {
                       {selectedStandard?.id === standard.id && (
                         <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Key Components</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('digitalLiteracyAdvisor.keyComponents')}</h4>
                             <div className="flex flex-wrap gap-2">
                               {standard.keyComponents.map((component, i) => (
                                 <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -1053,14 +999,14 @@ const DigitalLiteracyAdvisor = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-3">Competencies</h4>
+                            <h4 className="font-semibold text-gray-900 mb-3">{t('digitalLiteracyAdvisor.competencies')}</h4>
                             <div className="space-y-3">
                               {standard.competencies.map((competency, i) => (
                                 <div key={i} className="border-l-4 border-indigo-500 pl-4">
                                   <h5 className="font-semibold text-gray-900">{competency.competency}</h5>
                                   <p className="text-sm text-gray-700 mt-1">{competency.description}</p>
                                   <div className="mt-2">
-                                    <span className="text-xs font-medium text-gray-700">Indicators:</span>
+                                    <span className="text-xs font-medium text-gray-700">{t('digitalLiteracyAdvisor.indicators')}</span>
                                     <ul className="list-disc list-inside space-y-1 text-sm text-gray-700 mt-1">
                                       {competency.indicators.map((indicator, j) => (
                                         <li key={j}>{indicator}</li>
@@ -1085,111 +1031,99 @@ const DigitalLiteracyAdvisor = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl p-6 border border-gray-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <FileText className="h-6 w-6 text-gray-600" />
-                  Digital Literacy Resources
-                </h2>
-                <p className="text-gray-600">
-                  Curated resources for digital citizenship, online safety, media literacy, and technology integration.
-                </p>
+                  <FileText className="h-6 w-6 text-gray-600" />{t('digitalLiteracyAdvisor.digitalLiteracyResources')}</h2>
+                <p className="text-gray-600">{t('digitalLiteracyAdvisor.curatedResourcesForDigitalCitizenshipOnlineSafetyMediaL')}</p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <Shield className="h-5 w-5 text-blue-600" />
-                    Digital Citizenship
-                  </h3>
+                    <Shield className="h-5 w-5 text-blue-600" />{t('digitalLiteracyAdvisor.digitalCitizenship')}</h3>
                   <ul className="space-y-2 text-gray-700">
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-blue-600" />
-                      <span>ISTE Digital Citizen Resources</span>
+                      <span>{t('digitalLiteracyAdvisor.isteDigitalCitizenResources')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-blue-600" />
-                      <span>Common Sense Media Curriculum</span>
+                      <span>{t('digitalLiteracyAdvisor.commonSenseMediaCurriculum')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-blue-600" />
-                      <span>UNESCO Media Literacy Framework</span>
+                      <span>{t('digitalLiteracyAdvisor.unescoMediaLiteracyFramework')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-blue-600" />
-                      <span>DigComp Framework Resources</span>
+                      <span>{t('digitalLiteracyAdvisor.digcompFrameworkResources')}</span>
                     </li>
                   </ul>
                 </div>
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5 text-red-600" />
-                    Online Safety
-                  </h3>
+                    <AlertTriangle className="h-5 w-5 text-red-600" />{t('digitalLiteracyAdvisor.onlineSafety')}</h3>
                   <ul className="space-y-2 text-gray-700">
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-red-600" />
-                      <span>StopBullying.gov</span>
+                      <span>{t('digitalLiteracyAdvisor.stopbullyingGov')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-red-600" />
-                      <span>NetSmartz</span>
+                      <span>{t('digitalLiteracyAdvisor.netsmartz')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-red-600" />
-                      <span>StaySafeOnline.org</span>
+                      <span>{t('digitalLiteracyAdvisor.staysafeonlineOrg')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-red-600" />
-                      <span>FBI Safe Online Surfing</span>
+                      <span>{t('digitalLiteracyAdvisor.fbiSafeOnlineSurfing')}</span>
                     </li>
                   </ul>
                 </div>
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <BookOpen className="h-5 w-5 text-purple-600" />
-                    Media Literacy
-                  </h3>
+                    <BookOpen className="h-5 w-5 text-purple-600" />{t('digitalLiteracyAdvisor.mediaLiteracy')}</h3>
                   <ul className="space-y-2 text-gray-700">
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-purple-600" />
-                      <span>News Literacy Project</span>
+                      <span>{t('digitalLiteracyAdvisor.newsLiteracyProject')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-purple-600" />
-                      <span>MediaWise</span>
+                      <span>{t('digitalLiteracyAdvisor.mediawise')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-purple-600" />
-                      <span>FactCheck.org</span>
+                      <span>{t('digitalLiteracyAdvisor.factcheckOrg')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-purple-600" />
-                      <span>Snopes.com</span>
+                      <span>{t('digitalLiteracyAdvisor.snopesCom')}</span>
                     </li>
                   </ul>
                 </div>
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <Zap className="h-5 w-5 text-green-600" />
-                    Technology Integration
-                  </h3>
+                    <Zap className="h-5 w-5 text-green-600" />{t('digitalLiteracyAdvisor.technologyIntegration')}</h3>
                   <ul className="space-y-2 text-gray-700">
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-green-600" />
-                      <span>ISTE Technology Standards</span>
+                      <span>{t('digitalLiteracyAdvisor.isteTechnologyStandards')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-green-600" />
-                      <span>EdTech Integration Guides</span>
+                      <span>{t('digitalLiteracyAdvisor.edtechIntegrationGuides')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-green-600" />
-                      <span>Blended Learning Resources</span>
+                      <span>{t('digitalLiteracyAdvisor.blendedLearningResources')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-green-600" />
-                      <span>PBL Technology Tools</span>
+                      <span>{t('digitalLiteracyAdvisor.pblTechnologyTools')}</span>
                     </li>
                   </ul>
                 </div>

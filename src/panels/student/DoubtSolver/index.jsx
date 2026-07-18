@@ -1,7 +1,9 @@
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const DoubtSolver = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [problem, setProblem] = useState('');
   const [subject, setSubject] = useState('Math');
@@ -25,32 +27,32 @@ const DoubtSolver = () => {
   return (
     <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">AI Doubt Solver</h1>
-        <p className="text-sm text-gray-600 dark:text-gray-300">Step-by-step solution + practice (demo).</p>
+        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.doubtSolver.title')}</h1>
+        <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.doubtSolver.subtitle')}</p>
       </div>
 
       <div className="px-6 py-6 max-w-3xl">
         <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4 space-y-4">
           <label className="block">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Subject</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{t('studentPanel.doubtSolver.fields.subject')}</span>
             <select
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               className="mt-1 w-full rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 px-3 py-2 text-sm text-gray-900 dark:text-gray-100"
             >
-              <option>Math</option>
-              <option>Science</option>
-              <option>English</option>
-              <option>History</option>
+              <option>{t('studentPanel.doubtSolver.subjects.math')}</option>
+              <option>{t('studentPanel.doubtSolver.subjects.science')}</option>
+              <option>{t('studentPanel.doubtSolver.subjects.english')}</option>
+              <option>{t('studentPanel.doubtSolver.subjects.history')}</option>
             </select>
           </label>
           <label className="block">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Your question / problem</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{t('studentPanel.doubtSolver.fields.question')}</span>
             <textarea
               value={problem}
               onChange={(e) => setProblem(e.target.value)}
               className="mt-1 w-full min-h-[140px] rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 px-3 py-2 text-sm text-gray-900 dark:text-gray-100"
-              placeholder="Paste the problem statement…"
+              placeholder={t('studentPanel.doubtSolver.placeholder')}
             />
           </label>
           <button

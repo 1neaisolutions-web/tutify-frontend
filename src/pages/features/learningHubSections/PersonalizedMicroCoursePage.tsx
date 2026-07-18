@@ -1,11 +1,13 @@
 import { Navigate, useLocation, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { getSectionItemBySlug } from '../../../features/learningHub'
 import { useLearningHubRouteScrollToTop } from '../../../features/learningHub/useLearningHubScrollToTop'
 import PersonalizedMicroCourseRenderer from './PersonalizedMicroCourseRenderer'
 import axiosInstance from '../../../redux/http'
 
 const PersonalizedMicroCoursePage = () => {
+  const { t } = useTranslation()
   useLearningHubRouteScrollToTop()
   const { slug } = useParams()
   const location = useLocation()
@@ -37,7 +39,7 @@ const PersonalizedMicroCoursePage = () => {
             subtitle: data.subtitle,
             duration: data.estimated_duration_min ? `${data.estimated_duration_min} min` : undefined,
             sectionKey: 'personalized-micro-courses',
-            ctaLabel: 'Start',
+            ctaLabel: t('learningHubSections.start'),
             personalizedMicroCourseContent: micro,
           })
         }
@@ -51,12 +53,12 @@ const PersonalizedMicroCoursePage = () => {
     return () => {
       mounted = false
     }
-  }, [assignmentId, contentId, slug])
+  }, [assignmentId, contentId, slug, t])
 
   const item = backendItem || getSectionItemBySlug('personalized-micro-courses', slug)
 
   if (loading) {
-    return <div className='p-6 text-sm text-gray-500'>Loading personalized course...</div>
+    return <div className='p-6 text-sm text-gray-500'>{t('learningHubSections.loadingCourse')}</div>
   }
 
   if (!item || !item.personalizedMicroCourseContent) {

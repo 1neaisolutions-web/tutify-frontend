@@ -25,6 +25,7 @@ import {
   Circle,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface RestorativePractice {
   practice: string
   description: string
@@ -44,6 +45,7 @@ interface SELCompetency {
 const SEL_SLUG = 'sel-behavior-research'
 
 function SELBehaviorResearchInner() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [activeSection, setActiveSection] = useState<'overview' | 'restorative' | 'sel' | 'implementation' | 'tools'>('overview')
 
@@ -253,35 +255,29 @@ function SELBehaviorResearchInner() {
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Research Insight
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('sELBehaviorResearch.researchInsight')}</span>
                   <span className="text-white/80">•</span>
-                  <span className="text-white/80 text-sm">SEL & Behavior</span>
+                  <span className="text-white/80 text-sm">{t('sELBehaviorResearch.selBehavior')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    8 min read
-                  </span>
+                    <Clock className="h-3 w-3" />{t('sELBehaviorResearch.kMinRead')}</span>
                 </div>
-                <h1 className="text-3xl font-bold">SEL & Behavior: Restorative Practices</h1>
-                <p className="mt-2 text-pink-100">
-                  Evidence-backed approaches to building classroom community and addressing conflicts
-                </p>
+                <h1 className="text-3xl font-bold">{t('sELBehaviorResearch.selBehaviorRestorativePractices')}</h1>
+                <p className="mt-2 text-pink-100">{t('sELBehaviorResearch.evidenceBackedApproachesToBuildingClassroomCommunityAnd')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm">
               <div className="flex items-center gap-2">
                 <Star className="w-4 h-4" />
-                <span>Evidence-Based</span>
+                <span>{t('sELBehaviorResearch.evidenceBased')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Heart className="w-4 w-4" />
-                <span>Relationship-Focused</span>
+                <span>{t('sELBehaviorResearch.relationshipFocused')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Target className="w-4 w-4" />
-                <span>High Impact</span>
+                <span>{t('sELBehaviorResearch.highImpact')}</span>
               </div>
             </div>
           </div>
@@ -303,7 +299,7 @@ function SELBehaviorResearchInner() {
         {/* Sidebar Navigation */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Sections</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('sELBehaviorResearch.sections')}</h3>
             <div className="space-y-1">
               {[
                 { id: 'overview', label: 'Overview', icon: Eye },
@@ -339,50 +335,50 @@ function SELBehaviorResearchInner() {
             {activeSection === 'overview' && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">What Are Restorative Practices?</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('sELBehaviorResearch.whatAreRestorativePractices')}</h2>
                   <p className="text-gray-700 leading-relaxed mb-4">
                     Restorative practices are a framework for building community, resolving conflicts, and addressing harm 
                     through dialogue and relationship-building. Unlike punitive approaches that focus on punishment, 
                     restorative practices focus on understanding, accountability, and repairing relationships.
                   </p>
                   <div className="bg-pink-50 rounded-xl p-6 border border-pink-200 mb-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Core Principles</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('sELBehaviorResearch.corePrinciples')}</h3>
                     <ul className="space-y-2">
                       <li className="flex items-start gap-2 text-gray-700">
                         <CheckCircle2 className="h-5 w-5 text-pink-600 mt-0.5 flex-shrink-0" />
-                        <span><strong>Relationships First:</strong> Strong relationships prevent and resolve conflicts</span>
+                        <span><strong>{t('sELBehaviorResearch.relationshipsFirst')}</strong>{t('sELBehaviorResearch.strongRelationshipsPreventAndResolveConflicts')}</span>
                       </li>
                       <li className="flex items-start gap-2 text-gray-700">
                         <CheckCircle2 className="h-5 w-5 text-pink-600 mt-0.5 flex-shrink-0" />
-                        <span><strong>Address Harm:</strong> When harm occurs, focus on repairing relationships, not punishment</span>
+                        <span><strong>{t('sELBehaviorResearch.addressHarm')}</strong>{t('sELBehaviorResearch.whenHarmOccursFocusOnRepairingRelationshipsNotPunishmen')}</span>
                       </li>
                       <li className="flex items-start gap-2 text-gray-700">
                         <CheckCircle2 className="h-5 w-5 text-pink-600 mt-0.5 flex-shrink-0" />
-                        <span><strong>Involve All Affected:</strong> Include everyone impacted by an incident in the resolution process</span>
+                        <span><strong>{t('sELBehaviorResearch.involveAllAffected')}</strong>{t('sELBehaviorResearch.includeEveryoneImpactedByAnIncidentInTheResolutionProce')}</span>
                       </li>
                       <li className="flex items-start gap-2 text-gray-700">
                         <CheckCircle2 className="h-5 w-5 text-pink-600 mt-0.5 flex-shrink-0" />
-                        <span><strong>Build Community:</strong> Create opportunities for connection and belonging</span>
+                        <span><strong>{t('sELBehaviorResearch.buildCommunity')}</strong>{t('sELBehaviorResearch.createOpportunitiesForConnectionAndBelonging')}</span>
                       </li>
                     </ul>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div className="bg-red-50 rounded-xl p-5 border border-red-200">
-                      <h4 className="text-base font-semibold text-gray-900 mb-2">Punitive Approach</h4>
+                      <h4 className="text-base font-semibold text-gray-900 mb-2">{t('sELBehaviorResearch.punitiveApproach')}</h4>
                       <ul className="space-y-1 text-sm text-gray-700">
-                        <li>• Focuses on rule-breaking</li>
-                        <li>• Assigns blame and punishment</li>
-                        <li>• Excludes those affected</li>
-                        <li>• Creates fear and resentment</li>
+                        <li>{t('sELBehaviorResearch.focusesOnRuleBreaking')}</li>
+                        <li>{t('sELBehaviorResearch.assignsBlameAndPunishment')}</li>
+                        <li>{t('sELBehaviorResearch.excludesThoseAffected')}</li>
+                        <li>{t('sELBehaviorResearch.createsFearAndResentment')}</li>
                       </ul>
                     </div>
                     <div className="bg-green-50 rounded-xl p-5 border border-green-200">
-                      <h4 className="text-base font-semibold text-gray-900 mb-2">Restorative Approach</h4>
+                      <h4 className="text-base font-semibold text-gray-900 mb-2">{t('sELBehaviorResearch.restorativeApproach')}</h4>
                       <ul className="space-y-1 text-sm text-gray-700">
-                        <li>• Focuses on harm and relationships</li>
-                        <li>• Promotes accountability and repair</li>
-                        <li>• Includes all affected parties</li>
-                        <li>• Builds understanding and connection</li>
+                        <li>{t('sELBehaviorResearch.focusesOnHarmAndRelationships')}</li>
+                        <li>{t('sELBehaviorResearch.promotesAccountabilityAndRepair')}</li>
+                        <li>{t('sELBehaviorResearch.includesAllAffectedParties')}</li>
+                        <li>{t('sELBehaviorResearch.buildsUnderstandingAndConnection')}</li>
                       </ul>
                     </div>
                   </div>
@@ -396,7 +392,7 @@ function SELBehaviorResearchInner() {
                         <p className="text-xs text-gray-600 mb-2 italic">{evidence.source}</p>
                         <p className="text-sm text-gray-700 mb-3">{evidence.evidence}</p>
                         <div className="bg-white rounded-lg p-3 border border-blue-200">
-                          <p className="text-xs font-semibold text-blue-700 mb-1">Practical Tip:</p>
+                          <p className="text-xs font-semibold text-blue-700 mb-1">{t('sELBehaviorResearch.practicalTip')}</p>
                           <p className="text-xs text-gray-700">{evidence.practicalTip}</p>
                         </div>
                       </div>
@@ -410,10 +406,8 @@ function SELBehaviorResearchInner() {
             {activeSection === 'restorative' && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Restorative Practices</h2>
-                  <p className="text-gray-700 mb-6">
-                    These practices provide structured ways to build community, prevent conflicts, and address harm when it occurs.
-                  </p>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('sELBehaviorResearch.restorativePractices')}</h2>
+                  <p className="text-gray-700 mb-6">{t('sELBehaviorResearch.thesePracticesProvideStructuredWaysToBuildCommunityPrev')}</p>
                   <div className="space-y-4">
                     {restorativePractices.map((practice, idx) => (
                       <div key={idx} className="bg-pink-50 rounded-xl p-6 border-2 border-pink-200">
@@ -421,7 +415,7 @@ function SELBehaviorResearchInner() {
                         <p className="text-gray-700 mb-4">{practice.description}</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                           <div className="bg-white rounded-lg p-4 border border-pink-100">
-                            <h4 className="text-sm font-semibold text-gray-900 mb-2">Implementation Steps:</h4>
+                            <h4 className="text-sm font-semibold text-gray-900 mb-2">{t('sELBehaviorResearch.implementationSteps')}</h4>
                             <ol className="space-y-2">
                               {practice.steps.map((step, stepIdx) => (
                                 <li key={stepIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -434,7 +428,7 @@ function SELBehaviorResearchInner() {
                             </ol>
                           </div>
                           <div className="bg-white rounded-lg p-4 border border-pink-100">
-                            <h4 className="text-sm font-semibold text-gray-900 mb-2">Benefits:</h4>
+                            <h4 className="text-sm font-semibold text-gray-900 mb-2">{t('sELBehaviorResearch.benefits')}</h4>
                             <ul className="space-y-2">
                               {practice.benefits.map((benefit, benIdx) => (
                                 <li key={benIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -446,7 +440,7 @@ function SELBehaviorResearchInner() {
                           </div>
                         </div>
                         <div className="bg-white rounded-lg p-4 border border-pink-100">
-                          <h4 className="text-sm font-semibold text-gray-900 mb-2">When to Use:</h4>
+                          <h4 className="text-sm font-semibold text-gray-900 mb-2">{t('sELBehaviorResearch.whenToUse')}</h4>
                           <div className="flex flex-wrap gap-2">
                             {practice.examples.map((example, exIdx) => (
                               <span key={exIdx} className="px-3 py-1 rounded-full bg-pink-100 text-pink-700 text-xs font-medium">
@@ -466,10 +460,8 @@ function SELBehaviorResearchInner() {
             {activeSection === 'sel' && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Social-Emotional Learning Competencies</h2>
-                  <p className="text-gray-700 mb-6">
-                    CASEL's framework identifies five core SEL competencies that support student success in school and life.
-                  </p>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('sELBehaviorResearch.socialEmotionalLearningCompetencies')}</h2>
+                  <p className="text-gray-700 mb-6">{t('sELBehaviorResearch.caselSFrameworkIdentifiesFiveCoreSelCompetenciesThatSup')}</p>
                   <div className="space-y-4">
                     {selCompetencies.map((competency, idx) => (
                       <div key={idx} className="bg-pink-50 rounded-xl p-6 border-2 border-pink-200">
@@ -477,7 +469,7 @@ function SELBehaviorResearchInner() {
                         <p className="text-gray-700 mb-4">{competency.description}</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                           <div className="bg-white rounded-lg p-4 border border-pink-100">
-                            <h4 className="text-sm font-semibold text-gray-900 mb-2">Indicators:</h4>
+                            <h4 className="text-sm font-semibold text-gray-900 mb-2">{t('sELBehaviorResearch.indicators')}</h4>
                             <ul className="space-y-1">
                               {competency.indicators.map((indicator, indIdx) => (
                                 <li key={indIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -488,7 +480,7 @@ function SELBehaviorResearchInner() {
                             </ul>
                           </div>
                           <div className="bg-white rounded-lg p-4 border border-pink-100">
-                            <h4 className="text-sm font-semibold text-gray-900 mb-2">Classroom Strategies:</h4>
+                            <h4 className="text-sm font-semibold text-gray-900 mb-2">{t('sELBehaviorResearch.classroomStrategies')}</h4>
                             <ul className="space-y-1">
                               {competency.classroomStrategies.map((strategy, stratIdx) => (
                                 <li key={stratIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -500,7 +492,7 @@ function SELBehaviorResearchInner() {
                           </div>
                         </div>
                         <div className="bg-white rounded-lg p-4 border border-pink-100">
-                          <p className="text-sm font-semibold text-gray-900 mb-1">Research Evidence:</p>
+                          <p className="text-sm font-semibold text-gray-900 mb-1">{t('sELBehaviorResearch.researchEvidence')}</p>
                           <p className="text-sm text-gray-700">{competency.researchEvidence}</p>
                         </div>
                       </div>
@@ -514,93 +506,81 @@ function SELBehaviorResearchInner() {
             {activeSection === 'implementation' && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Implementation Guide</h2>
-                  <p className="text-gray-700 mb-6">
-                    Successfully implementing restorative practices and SEL requires a shift in mindset and consistent practice.
-                  </p>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('sELBehaviorResearch.implementationGuide')}</h2>
+                  <p className="text-gray-700 mb-6">{t('sELBehaviorResearch.successfullyImplementingRestorativePracticesAndSelRequi')}</p>
                   
                   <div className="bg-pink-50 rounded-xl p-6 border border-pink-200 mb-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Getting Started</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('sELBehaviorResearch.gettingStarted')}</h3>
                     <div className="space-y-4">
                       <div className="bg-white rounded-lg p-4 border border-pink-100">
-                        <h4 className="font-semibold text-gray-900 mb-2">1. Build Relationships First</h4>
-                        <p className="text-sm text-gray-700">
-                          Start with community-building activities. Strong relationships prevent conflicts and make restorative practices more effective.
-                        </p>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('sELBehaviorResearch.kBuildRelationshipsFirst')}</h4>
+                        <p className="text-sm text-gray-700">{t('sELBehaviorResearch.startWithCommunityBuildingActivitiesStrongRelationships')}</p>
                       </div>
                       <div className="bg-white rounded-lg p-4 border border-pink-100">
-                        <h4 className="font-semibold text-gray-900 mb-2">2. Start with Proactive Practices</h4>
-                        <p className="text-sm text-gray-700">
-                          Begin with community circles and relationship-building before moving to conflict resolution. Prevention is easier than repair.
-                        </p>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('sELBehaviorResearch.kStartWithProactivePractices')}</h4>
+                        <p className="text-sm text-gray-700">{t('sELBehaviorResearch.beginWithCommunityCirclesAndRelationshipBuildingBeforeM')}</p>
                       </div>
                       <div className="bg-white rounded-lg p-4 border border-pink-100">
-                        <h4 className="font-semibold text-gray-900 mb-2">3. Model Restorative Language</h4>
-                        <p className="text-sm text-gray-700">
-                          Use "I" statements, ask "what happened?" instead of "why did you do that?", and focus on impact rather than intent.
-                        </p>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('sELBehaviorResearch.kModelRestorativeLanguage')}</h4>
+                        <p className="text-sm text-gray-700">{t('sELBehaviorResearch.useIStatementsAskWhatHappenedInsteadOfWhyDid')}</p>
                       </div>
                       <div className="bg-white rounded-lg p-4 border border-pink-100">
-                        <h4 className="font-semibold text-gray-900 mb-2">4. Integrate SEL into Academics</h4>
-                        <p className="text-sm text-gray-700">
-                          Don't treat SEL as separate. Embed social-emotional learning into your regular instruction and activities.
-                        </p>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('sELBehaviorResearch.kIntegrateSelIntoAcademics')}</h4>
+                        <p className="text-sm text-gray-700">{t('sELBehaviorResearch.donTTreatSelAsSeparateEmbedSocialEmotionalLearning')}</p>
                       </div>
                       <div className="bg-white rounded-lg p-4 border border-pink-100">
-                        <h4 className="font-semibold text-gray-900 mb-2">5. Be Patient and Consistent</h4>
-                        <p className="text-sm text-gray-700">
-                          Building a restorative culture takes time. Consistency is key - use practices regularly, not just when problems arise.
-                        </p>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('sELBehaviorResearch.kBePatientAndConsistent')}</h4>
+                        <p className="text-sm text-gray-700">{t('sELBehaviorResearch.buildingARestorativeCultureTakesTimeConsistencyIsKeyUse')}</p>
                       </div>
                     </div>
                   </div>
 
                   <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Restorative Language Examples</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('sELBehaviorResearch.restorativeLanguageExamples')}</h3>
                     <div className="space-y-3">
                       <div className="bg-white rounded-lg p-4 border border-blue-100">
-                        <p className="text-sm font-semibold text-gray-900 mb-1">Instead of:</p>
-                        <p className="text-sm text-red-600 italic mb-2">"Why did you do that?"</p>
-                        <p className="text-sm font-semibold text-gray-900 mb-1">Try:</p>
-                        <p className="text-sm text-green-600">"What happened?" or "Help me understand what led to this."</p>
+                        <p className="text-sm font-semibold text-gray-900 mb-1">{t('sELBehaviorResearch.insteadOf')}</p>
+                        <p className="text-sm text-red-600 italic mb-2">{t('sELBehaviorResearch.whyDidYouDoThat')}</p>
+                        <p className="text-sm font-semibold text-gray-900 mb-1">{t('sELBehaviorResearch.try')}</p>
+                        <p className="text-sm text-green-600">{t('sELBehaviorResearch.whatHappenedOrHelpMeUnderstandWhatLedToThis')}</p>
                       </div>
                       <div className="bg-white rounded-lg p-4 border border-blue-100">
-                        <p className="text-sm font-semibold text-gray-900 mb-1">Instead of:</p>
-                        <p className="text-sm text-red-600 italic mb-2">"You need to apologize."</p>
-                        <p className="text-sm font-semibold text-gray-900 mb-1">Try:</p>
+                        <p className="text-sm font-semibold text-gray-900 mb-1">{t('sELBehaviorResearch.insteadOf')}</p>
+                        <p className="text-sm text-red-600 italic mb-2">{t('sELBehaviorResearch.youNeedToApologize')}</p>
+                        <p className="text-sm font-semibold text-gray-900 mb-1">{t('sELBehaviorResearch.try')}</p>
                         <p className="text-sm text-green-600">"How do you think [person] felt? What can we do to make things right?"</p>
                       </div>
                       <div className="bg-white rounded-lg p-4 border border-blue-100">
-                        <p className="text-sm font-semibold text-gray-900 mb-1">Instead of:</p>
-                        <p className="text-sm text-red-600 italic mb-2">"That was wrong."</p>
-                        <p className="text-sm font-semibold text-gray-900 mb-1">Try:</p>
-                        <p className="text-sm text-green-600">"Who was affected by what happened? How were they affected?"</p>
+                        <p className="text-sm font-semibold text-gray-900 mb-1">{t('sELBehaviorResearch.insteadOf')}</p>
+                        <p className="text-sm text-red-600 italic mb-2">{t('sELBehaviorResearch.thatWasWrong')}</p>
+                        <p className="text-sm font-semibold text-gray-900 mb-1">{t('sELBehaviorResearch.try')}</p>
+                        <p className="text-sm text-green-600">{t('sELBehaviorResearch.whoWasAffectedByWhatHappenedHowWereTheyAffected')}</p>
                       </div>
                     </div>
                   </div>
 
                   <div className="bg-purple-50 rounded-xl p-6 border border-purple-200 mt-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Action Steps</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('sELBehaviorResearch.quickActionSteps')}</h3>
                     <ol className="space-y-3">
                       <li className="flex items-start gap-3 text-gray-700">
                         <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center text-sm font-bold">1</span>
-                        <span>Start each day with a brief check-in circle to build community</span>
+                        <span>{t('sELBehaviorResearch.startEachDayWithABriefCheckInCircleTo')}</span>
                       </li>
                       <li className="flex items-start gap-3 text-gray-700">
                         <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center text-sm font-bold">2</span>
-                        <span>Teach students one SEL skill explicitly each week</span>
+                        <span>{t('sELBehaviorResearch.teachStudentsOneSelSkillExplicitlyEachWeek')}</span>
                       </li>
                       <li className="flex items-start gap-3 text-gray-700">
                         <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center text-sm font-bold">3</span>
-                        <span>Use restorative conversations instead of traditional discipline when possible</span>
+                        <span>{t('sELBehaviorResearch.useRestorativeConversationsInsteadOfTraditionalDiscipli')}</span>
                       </li>
                       <li className="flex items-start gap-3 text-gray-700">
                         <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center text-sm font-bold">4</span>
-                        <span>Create classroom agreements together with students</span>
+                        <span>{t('sELBehaviorResearch.createClassroomAgreementsTogetherWithStudents')}</span>
                       </li>
                       <li className="flex items-start gap-3 text-gray-700">
                         <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center text-sm font-bold">5</span>
-                        <span>Reflect regularly on what's working and what needs adjustment</span>
+                        <span>{t('sELBehaviorResearch.reflectRegularlyOnWhatSWorkingAndWhatNeedsAdjustment')}</span>
                       </li>
                     </ol>
                   </div>
@@ -612,50 +592,48 @@ function SELBehaviorResearchInner() {
             {activeSection === 'tools' && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Tools & Resources</h2>
-                  <p className="text-gray-700 mb-6">
-                    Practical tools and frameworks to support implementation of restorative practices and SEL in your classroom.
-                  </p>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('sELBehaviorResearch.toolsResources')}</h2>
+                  <p className="text-gray-700 mb-6">{t('sELBehaviorResearch.practicalToolsAndFrameworksToSupportImplementationOfRes')}</p>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div className="bg-pink-50 rounded-xl p-6 border border-pink-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3">Circle Questions</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('sELBehaviorResearch.circleQuestions')}</h3>
                       <ul className="space-y-2 text-sm text-gray-700">
-                        <li>• "What's one thing you're grateful for today?"</li>
-                        <li>• "What's a challenge you're facing?"</li>
-                        <li>• "How can we support each other this week?"</li>
-                        <li>• "What did you learn about yourself today?"</li>
+                        <li>{t('sELBehaviorResearch.whatSOneThingYouReGratefulForToday')}</li>
+                        <li>{t('sELBehaviorResearch.whatSAChallengeYouReFacing')}</li>
+                        <li>{t('sELBehaviorResearch.howCanWeSupportEachOtherThisWeek')}</li>
+                        <li>{t('sELBehaviorResearch.whatDidYouLearnAboutYourselfToday')}</li>
                       </ul>
                     </div>
                     <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3">Restorative Questions</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('sELBehaviorResearch.restorativeQuestions')}</h3>
                       <ul className="space-y-2 text-sm text-gray-700">
-                        <li>• "What happened?"</li>
-                        <li>• "What were you thinking at the time?"</li>
-                        <li>• "Who has been affected?"</li>
-                        <li>• "What needs to happen to make things right?"</li>
+                        <li>{t('sELBehaviorResearch.whatHappened')}</li>
+                        <li>{t('sELBehaviorResearch.whatWereYouThinkingAtTheTime')}</li>
+                        <li>{t('sELBehaviorResearch.whoHasBeenAffected')}</li>
+                        <li>{t('sELBehaviorResearch.whatNeedsToHappenToMakeThingsRight')}</li>
                       </ul>
                     </div>
                   </div>
 
                   <div className="bg-green-50 rounded-xl p-6 border border-green-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">SEL Integration Ideas</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('sELBehaviorResearch.selIntegrationIdeas')}</h3>
                     <div className="space-y-3">
                       <div className="bg-white rounded-lg p-4 border border-green-100">
-                        <h4 className="font-semibold text-gray-900 mb-2">Morning Meetings</h4>
-                        <p className="text-sm text-gray-700">Start each day with a brief check-in that builds SEL skills and community.</p>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('sELBehaviorResearch.morningMeetings')}</h4>
+                        <p className="text-sm text-gray-700">{t('sELBehaviorResearch.startEachDayWithABriefCheckInThatBuilds')}</p>
                       </div>
                       <div className="bg-white rounded-lg p-4 border border-green-100">
-                        <h4 className="font-semibold text-gray-900 mb-2">Academic Integration</h4>
-                        <p className="text-sm text-gray-700">Use literature, history, and science to explore emotions, relationships, and decision-making.</p>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('sELBehaviorResearch.academicIntegration')}</h4>
+                        <p className="text-sm text-gray-700">{t('sELBehaviorResearch.useLiteratureHistoryAndScienceToExploreEmotionsRelation')}</p>
                       </div>
                       <div className="bg-white rounded-lg p-4 border border-green-100">
-                        <h4 className="font-semibold text-gray-900 mb-2">Conflict Resolution</h4>
-                        <p className="text-sm text-gray-700">Teach students to use "I" statements and active listening when conflicts arise.</p>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('sELBehaviorResearch.conflictResolution')}</h4>
+                        <p className="text-sm text-gray-700">{t('sELBehaviorResearch.teachStudentsToUseIStatementsAndActiveListeningWhen')}</p>
                       </div>
                       <div className="bg-white rounded-lg p-4 border border-green-100">
-                        <h4 className="font-semibold text-gray-900 mb-2">Reflection Activities</h4>
-                        <p className="text-sm text-gray-700">Build in time for students to reflect on their learning, emotions, and relationships.</p>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('sELBehaviorResearch.reflectionActivities')}</h4>
+                        <p className="text-sm text-gray-700">{t('sELBehaviorResearch.buildInTimeForStudentsToReflectOnTheirLearning')}</p>
                       </div>
                     </div>
                   </div>

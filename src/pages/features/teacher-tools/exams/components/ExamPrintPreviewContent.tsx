@@ -1,4 +1,5 @@
 import type { HandoutLayoutOpts } from '../../quiz/config/handoutLayoutConfig'
+import { useTranslation } from 'react-i18next'
 import type { ExamSectionStub } from '../../demo/generationFromSources'
 import type { ExamPaperConfig } from '../config/examPaperConfig'
 import { deriveExamPaperMarks } from '../config/examPaperConfig'
@@ -48,6 +49,7 @@ export function ExamPrintPreviewContent({
   reviewShorts,
   reviewLongs,
 }: Props) {
+  const { t } = useTranslation()
   const { partA, partB1, partB2, grand } = deriveExamPaperMarks(paper)
   const shortM = shortPoolSize(paper)
   const longM = longPoolSize(paper)
@@ -58,7 +60,7 @@ export function ExamPrintPreviewContent({
   const useShorts = reviewShorts && reviewShorts.length === shortM
   const useLongs = reviewLongs && reviewLongs.length === longM
 
-  const negLine = paper.objNegative ? ' Negative marking: −0.25 per wrong answer.' : ''
+  const negLine = paper.objNegative ? t('exam.printPreview.negativeMarking') : ''
 
   const objGap = draftLayout.questionGapPx
   const subjGap = Math.min(objGap, 16)
@@ -68,15 +70,15 @@ export function ExamPrintPreviewContent({
       {/* Print page 1 — Objective (MCQ only) */}
       <div className={`${pageShell} print:break-after-page`}>
         <header className="border-b border-gray-200 pb-4 print:border-gray-300">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-500">Examination paper</p>
-          <h3 className="mt-1 text-xl font-bold tracking-tight text-gray-900">{title || 'Untitled exam'}</h3>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-500">{t('exam.printPreview.examinationPaper')}</p>
+          <h3 className="mt-1 text-xl font-bold tracking-tight text-gray-900">{title || t('exam.printPreview.untitledExam')}</h3>
           <p className="mt-1.5 text-xs text-gray-600">
             {subject} · {grade} · {examType} · {durationMinutes} min · {fmtWindow(scheduleStartIso)}
           </p>
         </header>
 
         <div className="mt-5">
-          <h4 className="text-sm font-bold text-gray-900">Part A — Objective</h4>
+          <h4 className="text-sm font-bold text-gray-900">{t('exam.printPreview.partAObjective')}</h4>
           <p className="mt-1 text-xs leading-relaxed text-gray-600">
             Multiple choice. Each question carries {paper.objMarksPer} mark{paper.objMarksPer === 1 ? '' : 's'}.
             {negLine}
@@ -141,13 +143,13 @@ export function ExamPrintPreviewContent({
       {/* Print page 2 — Subjective (short + long, no ruled answer space) */}
       <div className={`${pageShell} print:break-before-page`}>
         <header className="border-b border-gray-200 pb-4 print:border-gray-300 print:pb-3">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-500">Examination paper (continued)</p>
-          <h3 className="mt-1 text-lg font-bold text-gray-900">{title || 'Untitled exam'}</h3>
-          <p className="mt-1 text-xs text-gray-600">Part B — Subjective</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-500">{t('exam.printPreview.examinationPaperContinued')}</p>
+          <h3 className="mt-1 text-lg font-bold text-gray-900">{title || t('exam.printPreview.untitledExam')}</h3>
+          <p className="mt-1 text-xs text-gray-600">{t('exam.printPreview.partBSubjective')}</p>
         </header>
 
         <section className="mt-5">
-          <h4 className="text-sm font-bold text-gray-900">Part B1 — Short questions</h4>
+          <h4 className="text-sm font-bold text-gray-900">{t('exam.printPreview.partB1Short')}</h4>
           <p className="mt-1 text-xs leading-relaxed text-gray-600">
             {paper.shortRule === 'pickNM'
               ? `Attempt any ${paper.shortN} out of ${paper.shortM} questions. Each question carries ${paper.shortMarksPer} marks.`
@@ -185,11 +187,11 @@ export function ExamPrintPreviewContent({
                 )
               })}
           </ul>
-          <p className="mt-3 text-xs font-medium text-gray-600">Part B1 — maximum marks: {partB1}</p>
+          <p className="mt-3 text-xs font-medium text-gray-600">{t('exam.printPreview.partB1MaxMarks', { count: partB1 })}</p>
         </section>
 
         <section className="mt-8 border-t border-gray-100 pt-6 print:border-gray-200 print:pt-5">
-          <h4 className="text-sm font-bold text-gray-900">Part B2 — Long questions</h4>
+          <h4 className="text-sm font-bold text-gray-900">{t('exam.printPreview.partB2Long')}</h4>
           <p className="mt-1 text-xs leading-relaxed text-gray-600">
             {paper.longRule === 'pickNM'
               ? `Attempt any ${paper.longN} out of ${paper.longM} questions. Each question carries ${paper.longMarksPer} marks.`
@@ -246,7 +248,7 @@ export function ExamPrintPreviewContent({
                 )
               })}
           </div>
-          <p className="mt-3 text-xs font-medium text-gray-600">Part B2 — maximum marks: {partB2}</p>
+          <p className="mt-3 text-xs font-medium text-gray-600">{t('exam.printPreview.partB2MaxMarks', { count: partB2 })}</p>
         </section>
 
         <p className="mt-8 border-t border-gray-200 pt-3 text-sm font-semibold text-gray-900 print:border-gray-300">
@@ -256,12 +258,12 @@ export function ExamPrintPreviewContent({
 
       {/* On-screen teacher reference only — hidden when printing */}
       <div className="rounded-xl border border-gray-200 bg-gray-50 p-6 print:hidden">
-        <p className="text-xs font-bold uppercase tracking-wide text-gray-600">Mark allocation (teacher)</p>
+        <p className="text-xs font-bold uppercase tracking-wide text-gray-600">{t('exam.printPreview.markAllocationTeacher')}</p>
         <div className="mt-4 space-y-2 font-mono text-sm">
-          <p>Part A (objective): {partA}</p>
-          <p>Part B1 (short): {partB1}</p>
-          <p>Part B2 (long): {partB2}</p>
-          <p className="border-t border-gray-300 pt-2 font-bold text-gray-900">Grand total: {grand}</p>
+          <p>{t('exam.printPreview.partAObjectiveLabel', { count: partA })}</p>
+          <p>{t('exam.printPreview.partB1ShortLabel', { count: partB1 })}</p>
+          <p>{t('exam.printPreview.partB2LongLabel', { count: partB2 })}</p>
+          <p className="border-t border-gray-300 pt-2 font-bold text-gray-900">{t('exam.printPreview.grandTotal', { count: grand })}</p>
         </div>
         <p className="mt-4 text-xs text-gray-500">
           Topic structure reference: {sections.map((s) => s.title).join(' · ') || '—'}

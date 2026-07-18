@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const STORAGE_KEY = 'tutify_student_tasks_v1';
 
 const TaskEdit = () => {
+  const { t } = useTranslation();
   const { taskId } = useParams();
   const navigate = useNavigate();
 
@@ -48,20 +50,16 @@ const TaskEdit = () => {
     <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Edit Task</h1>
-          <p className="text-sm text-gray-600 dark:text-gray-300">Demo edit flow.</p>
+          <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.tasks.edit.title')}</h1>
+          <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.tasks.edit.subtitle')}</p>
         </div>
         <div className="flex gap-2">
           <button
             type="button"
             onClick={() => navigate(`/student/tasks/${taskId}`)}
             className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900"
-          >
-            Cancel
-          </button>
-          <button type="button" onClick={save} className="px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700">
-            Save
-          </button>
+          >{t('studentPanel.common.cancel')}</button>
+          <button type="button" onClick={save} className="px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700">{t('studentPanel.common.save')}</button>
         </div>
       </div>
 
@@ -69,7 +67,7 @@ const TaskEdit = () => {
         {task ? (
           <>
             <label className="block">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Title</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{t('studentPanel.tasks.fields.title')}</span>
               <input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -77,7 +75,7 @@ const TaskEdit = () => {
               />
             </label>
             <label className="block">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Description</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{t('studentPanel.tasks.fields.description')}</span>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -85,7 +83,7 @@ const TaskEdit = () => {
               />
             </label>
             <label className="block">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Due date (optional)</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{t('studentPanel.tasks.fields.dueDate')}</span>
               <input
                 type="datetime-local"
                 value={dueAt}
@@ -95,7 +93,7 @@ const TaskEdit = () => {
             </label>
           </>
         ) : (
-          <p className="text-sm text-gray-700 dark:text-gray-200">Task not found.</p>
+          <p className="text-sm text-gray-700 dark:text-gray-200">{t('studentPanel.tasks.notFound')}</p>
         )}
       </div>
     </div>

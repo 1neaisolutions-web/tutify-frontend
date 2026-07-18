@@ -1,4 +1,5 @@
 import type { ContentSourcesFormModel } from '../../hooks/useContentSourcesForm'
+import { useTranslation } from 'react-i18next'
 import { ContentSourcesPanel } from '../../components'
 import { DIFFICULTY_OPTIONS, QUESTION_COUNT } from '../config/quizCreationConfig'
 import type { QuestionMixMode, QuizDifficultyId } from '../../demo/generationFromSources'
@@ -85,29 +86,28 @@ export function QuizBuildSection({
   sources,
   validationErrors,
 }: Props) {
+  const { t } = useTranslation()
   const customTotal = countMcq + countTf + countShort
 
   return (
     <div className="space-y-8">
       <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         <div className="border-b border-gray-100 pb-4">
-          <h2 className="text-base font-semibold text-gray-900">Quiz details</h2>
-          <p className="mt-1 text-sm text-gray-600">
-            Name your assessment and set instructions students will see at the start (shown after publish).
-          </p>
+          <h2 className="text-base font-semibold text-gray-900">{t('quiz.build.detailsTitle')}</h2>
+          <p className="mt-1 text-sm text-gray-600">{t('quiz.build.detailsSubtitle')}</p>
         </div>
         <div className="mt-5 grid gap-4 md:grid-cols-2">
           <label className="md:col-span-2 block text-sm font-medium text-gray-700">
-            Quiz title <span className="text-red-500">*</span>
+            {t('teacherTools.title')} <span className="text-red-500">*</span>
             <input
               value={title}
               onChange={(e) => onTitleChange(e.target.value)}
-              placeholder="e.g. Photosynthesis checkpoint — Grade 10"
+              placeholder={t('quiz.build.titlePlaceholder')}
               className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm ring-primary-500/20 focus:border-primary-400 focus:outline-none focus:ring-4"
             />
           </label>
           <label className="block text-sm font-medium text-gray-700">
-            Subject
+            {t('teacherTools.subject')}
             <select
               value={subject}
               onChange={(e) => onSubjectChange(e.target.value)}
@@ -121,7 +121,7 @@ export function QuizBuildSection({
             </select>
           </label>
           <label className="block text-sm font-medium text-gray-700">
-            Grade / cohort
+            {t('teacherTools.gradeCohort')}
             <select
               value={grade}
               onChange={(e) => onGradeChange(e.target.value)}
@@ -135,39 +135,35 @@ export function QuizBuildSection({
             </select>
           </label>
           <label className="md:col-span-2 block text-sm font-medium text-gray-700">
-            Student instructions
+            {t('teacherTools.studentInstructions')}
             <textarea
               rows={3}
               value={studentInstructions}
               onChange={(e) => onStudentInstructionsChange(e.target.value)}
-              placeholder="Answer all questions. Show working where appropriate."
+              placeholder={t('quiz.defaultInstructions')}
               className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
             />
-            <span className="mt-1 block text-xs text-gray-500">Displayed on the student start screen when the quiz is assigned.</span>
+            <span className="mt-1 block text-xs text-gray-500">{t('quiz.build.instructionsHint')}</span>
           </label>
         </div>
       </section>
 
       <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         <div className="border-b border-gray-100 pb-4">
-          <h2 className="text-base font-semibold text-gray-900">Generation</h2>
-          <p className="mt-1 text-sm text-gray-600">
-            These parameters drive question generation. In production they are sent to your curriculum + RAG pipeline.
-          </p>
+          <h2 className="text-base font-semibold text-gray-900">{t('quiz.build.generationTitle')}</h2>
+          <p className="mt-1 text-sm text-gray-600">{t('quiz.build.generationSubtitle')}</p>
         </div>
         <div className="mt-5 grid gap-5 md:grid-cols-2">
           <div className="md:col-span-2 rounded-xl border border-gray-100 bg-gray-50/80 p-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <p className="text-sm font-semibold text-gray-900">Question volume</p>
-                <p className="mt-0.5 text-xs text-gray-600">
-                  Use a single total with a balanced mix, or set exact counts per format.
-                </p>
+                <p className="text-sm font-semibold text-gray-900">{t('quiz.rag.questionVolume')}</p>
+                <p className="mt-0.5 text-xs text-gray-600">{t('quiz.build.questionVolumeHintCheckout')}</p>
               </div>
               <div
                 className="inline-flex rounded-xl border border-gray-200 bg-white p-1 shadow-sm"
                 role="group"
-                aria-label="Question mix mode"
+                aria-label={t('teacherTools.questionMixMode')}
               >
                 <button
                   type="button"
@@ -176,7 +172,7 @@ export function QuizBuildSection({
                     mixMode === 'balanced' ? 'bg-indigo-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
-                  Balanced mix
+                  {t('teacherTools.balancedMix')}
                 </button>
                 <button
                   type="button"
@@ -185,7 +181,7 @@ export function QuizBuildSection({
                     mixMode === 'custom' ? 'bg-indigo-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
-                  Per-type counts
+                  {t('teacherTools.perTypeCounts')}
                 </button>
               </div>
             </div>
@@ -193,7 +189,7 @@ export function QuizBuildSection({
             {mixMode === 'balanced' ? (
               <div className="mt-4 grid gap-4 md:grid-cols-2">
                 <label className="block text-sm font-medium text-gray-700">
-                  Total questions
+                  {t('teacherTools.totalQuestions')}
                   <input
                     type="number"
                     min={QUESTION_COUNT.min}
@@ -207,25 +203,20 @@ export function QuizBuildSection({
                     className="mt-1 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm"
                   />
                   <span className="mt-1 block text-xs text-gray-500">
-                    {QUESTION_COUNT.min}–{QUESTION_COUNT.max} items, distributed evenly across the types you select below.
+                    {t('quiz.build.balancedRangeHint', { min: QUESTION_COUNT.min, max: QUESTION_COUNT.max })}
                   </span>
                 </label>
                 <div className="rounded-xl border border-dashed border-gray-200 bg-white px-3 py-2 text-xs text-gray-600 md:mt-7">
-                  <p className="font-medium text-gray-800">How balanced mix works</p>
-                  <p className="mt-1 leading-relaxed">
-                    Example: 10 questions with MCQ + T/F + short answer selected cycles MCQ → T/F → short → repeat until the
-                    total is reached.
-                  </p>
+                  <p className="font-medium text-gray-800">{t('quiz.build.balancedMixTitle')}</p>
+                  <p className="mt-1 leading-relaxed">{t('quiz.build.balancedMixBody')}</p>
                 </div>
               </div>
             ) : (
               <div className="mt-4 space-y-3">
-                <p className="text-xs text-gray-600">
-                  Set how many of each item type to generate. Order is shuffled for variety while keeping your counts.
-                </p>
+                <p className="text-xs text-gray-600">{t('quiz.build.customCountsHint')}</p>
                 <div className="grid gap-3 sm:grid-cols-3">
                   <label className="block text-sm font-medium text-gray-700">
-                    Multiple choice
+                    {t('teacherTools.multipleChoice')}
                     <input
                       type="number"
                       min={0}
@@ -236,7 +227,7 @@ export function QuizBuildSection({
                     />
                   </label>
                   <label className="block text-sm font-medium text-gray-700">
-                    True / false
+                    {t('teacherTools.trueFalse')}
                     <input
                       type="number"
                       min={0}
@@ -247,7 +238,7 @@ export function QuizBuildSection({
                     />
                   </label>
                   <label className="block text-sm font-medium text-gray-700">
-                    Short answer
+                    {t('teacherTools.shortAnswer')}
                     <input
                       type="number"
                       min={0}
@@ -260,15 +251,17 @@ export function QuizBuildSection({
                 </div>
                 <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm">
                   <span className="text-gray-700">
-                    Total in quiz:{' '}
+                    {t('teacherTools.totalInQuiz')}{' '}
                     <span className="font-semibold text-gray-900">{customTotal}</span>
-                    <span className="text-gray-500"> / {QUESTION_COUNT.max} max</span>
+                    <span className="text-gray-500"> {t('quiz.build.maxSuffix', { max: QUESTION_COUNT.max })}</span>
                   </span>
                   {customTotal < QUESTION_COUNT.min && (
-                    <span className="text-xs font-medium text-amber-700">Minimum {QUESTION_COUNT.min} questions required.</span>
+                    <span className="text-xs font-medium text-amber-700">
+                      {t('teacherTools.minimumQuestionsRequired', { min: QUESTION_COUNT.min })}
+                    </span>
                   )}
                   {customTotal > QUESTION_COUNT.max && (
-                    <span className="text-xs font-medium text-red-700">Reduce counts to stay within the limit.</span>
+                    <span className="text-xs font-medium text-red-700">{t('teacherTools.reduceCountsLimit')}</span>
                   )}
                 </div>
               </div>
@@ -276,7 +269,7 @@ export function QuizBuildSection({
           </div>
 
           <label className="block text-sm font-medium text-gray-700">
-            Time limit (minutes)
+            {t('quiz.build.timeLimitMinutes')}
             <input
               type="number"
               min={5}
@@ -289,7 +282,7 @@ export function QuizBuildSection({
           <div className="hidden md:block" aria-hidden />
 
           <fieldset className="md:col-span-2">
-            <legend className="text-sm font-medium text-gray-800">Difficulty</legend>
+            <legend className="text-sm font-medium text-gray-800">{t('teacherTools.difficultyProfile')}</legend>
             <div className="mt-2 grid gap-2 sm:grid-cols-3">
               {DIFFICULTY_OPTIONS.map((d) => (
                 <label
@@ -305,8 +298,8 @@ export function QuizBuildSection({
                     checked={difficulty === d.id}
                     onChange={() => onDifficultyChange(d.id)}
                   />
-                  <span className="font-semibold text-gray-900">{d.label}</span>
-                  <span className="mt-1 block text-xs text-gray-600">{d.hint}</span>
+                  <span className="font-semibold text-gray-900">{t(`quiz.difficulty.${d.id}.label`)}</span>
+                  <span className="mt-1 block text-xs text-gray-600">{t(`quiz.difficulty.${d.id}.hint`)}</span>
                 </label>
               ))}
             </div>
@@ -315,15 +308,15 @@ export function QuizBuildSection({
           {mixMode === 'balanced' ? (
             <fieldset className="md:col-span-2">
               <legend className="text-sm font-medium text-gray-800">
-                Include in the mix <span className="text-red-500">*</span>
+                {t('quiz.build.includeInMix')} <span className="text-red-500">*</span>
               </legend>
-              <p className="mt-1 text-xs text-gray-500">At least one type. The total above is split across selected types in order.</p>
+              <p className="mt-1 text-xs text-gray-500">{t('quiz.build.includeInMixHint')}</p>
               <div className="mt-2 flex flex-wrap gap-3">
                 {(
                   [
-                    ['mcq', 'Multiple choice', includeMcq, onToggleMcq],
-                    ['tf', 'True / false', includeTf, onToggleTf],
-                    ['short', 'Short answer', includeShort, onToggleShort],
+                    ['mcq', t('teacherTools.multipleChoice'), includeMcq, onToggleMcq],
+                    ['tf', t('teacherTools.trueFalse'), includeTf, onToggleTf],
+                    ['short', t('teacherTools.shortAnswer'), includeShort, onToggleShort],
                   ] as const
                 ).map(([key, label, on, set]) => (
                   <label
@@ -340,43 +333,41 @@ export function QuizBuildSection({
             </fieldset>
           ) : (
             <div className="md:col-span-2 rounded-xl border border-gray-100 bg-slate-50/60 px-4 py-3 text-sm text-gray-700">
-              <span className="font-medium text-gray-900">Types included:</span> counts above — use zero to omit a format.
+              <span className="font-medium text-gray-900">{t('quiz.build.typesIncludedCounts')}</span> {t('quiz.build.typesIncludedHint')}
             </div>
           )}
 
           <label className="md:col-span-2 block text-sm font-medium text-gray-700">
-            Instructions for generation (optional)
+            {t('quiz.build.generatorInstructions')}
             <textarea
               rows={2}
               value={teacherNotes}
               onChange={(e) => onTeacherNotesChange(e.target.value)}
-              placeholder="e.g. Emphasise misconceptions from last lesson; include one practical lab scenario."
+              placeholder={t('quiz.build.generatorPlaceholder')}
               className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm"
             />
-            <span className="mt-1 block text-xs text-gray-500">
-              Combined with your topic and sources — similar to an “AI brief” for the generator.
-            </span>
+            <span className="mt-1 block text-xs text-gray-500">{t('quiz.build.generatorHint')}</span>
           </label>
         </div>
       </section>
 
       <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
         <div className="border-b border-gray-100 pb-4">
-          <h2 className="text-base font-semibold text-gray-900">Delivery defaults</h2>
-          <p className="mt-1 text-sm text-gray-600">Applied when students take this quiz (saved with the quiz).</p>
+          <h2 className="text-base font-semibold text-gray-900">{t('quiz.rag.stepDeliveryKicker')}</h2>
+          <p className="mt-1 text-sm text-gray-600">{t('quiz.build.deliverySubtitle')}</p>
         </div>
         <div className="mt-5 flex flex-wrap gap-4">
           <label className="inline-flex items-center gap-2 text-sm text-gray-800">
             <input type="checkbox" checked={shuffleQuestions} onChange={(e) => onShuffleQuestions(e.target.checked)} />
-            Shuffle question order
+            {t('quiz.build.shuffleQuestionOrder')}
           </label>
           <label className="inline-flex items-center gap-2 text-sm text-gray-800">
             <input type="checkbox" checked={shuffleAnswers} onChange={(e) => onShuffleAnswers(e.target.checked)} />
-            Shuffle MCQ options
+            {t('quiz.build.shuffleMcqOptions')}
           </label>
           <label className="inline-flex items-center gap-2 text-sm text-gray-800">
             <input type="checkbox" checked={negativeMarking} onChange={(e) => onNegativeMarking(e.target.checked)} />
-            Negative marking
+            {t('quiz.rag.negativeMarking')}
           </label>
         </div>
       </section>
@@ -387,7 +378,7 @@ export function QuizBuildSection({
 
       {validationErrors.length > 0 && (
         <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-          <p className="font-semibold">Before you generate:</p>
+          <p className="font-semibold">{t('teacherTools.beforeGenerate')}</p>
           <ul className="mt-2 list-inside list-disc space-y-1">
             {validationErrors.map((e) => (
               <li key={e}>{e}</li>

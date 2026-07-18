@@ -1,4 +1,8 @@
-const StatusBadge = ({ label = 'Status', tone = 'gray' }) => {
+import { useTranslation } from 'react-i18next';
+
+const StatusBadge = ({ label, tone = 'gray' }) => {
+  const { t } = useTranslation();
+  const resolvedLabel = label ?? t('student.badge.statusDefault');
   const tones = {
     gray: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200',
     green: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-200',
@@ -10,10 +14,9 @@ const StatusBadge = ({ label = 'Status', tone = 'gray' }) => {
 
   return (
     <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${tones[tone] || tones.gray}`}>
-      {label}
+      {resolvedLabel}
     </span>
   );
 };
 
 export default StatusBadge;
-

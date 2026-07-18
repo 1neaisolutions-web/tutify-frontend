@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Download, X, FileText, File, Code, Globe } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { ExportFormat } from '../../types/premium'
 import { Message } from '../../pages/features/GeneralTeachingAssistantChat'
 import { exportToMarkdown, exportToHTML, downloadExport } from '../../utils/premiumExportUtils'
@@ -10,6 +11,7 @@ interface ExportDialogProps {
 }
 
 const ExportDialog = ({ messages, onClose }: ExportDialogProps) => {
+  const { t } = useTranslation()
   const [format, setFormat] = useState<ExportFormat['type']>('pdf')
   const [includeMetadata, setIncludeMetadata] = useState(true)
   const [includeImages, setIncludeImages] = useState(true)
@@ -33,18 +35,15 @@ const ExportDialog = ({ messages, onClose }: ExportDialogProps) => {
         downloadExport(html, `gpt4-conversation-${Date.now()}.html`, 'text/html')
         break
       case 'pdf':
-        // PDF export would use jsPDF in production
         const pdfContent = exportToMarkdown(messages, exportOptions)
         downloadExport(pdfContent, `gpt4-conversation-${Date.now()}.txt`, 'text/plain')
         break
       case 'word':
-        // Word export would use docx library in production
         const wordContent = exportToMarkdown(messages, exportOptions)
         downloadExport(wordContent, `gpt4-conversation-${Date.now()}.txt`, 'text/plain')
         break
       case 'google-docs':
-        // Google Docs export would use API in production
-        alert('Google Docs export requires API integration')
+        alert(t('premium.export.googleDocsAlert'))
         break
     }
 
@@ -52,25 +51,24 @@ const ExportDialog = ({ messages, onClose }: ExportDialogProps) => {
   }
 
   const formatOptions = [
-    { value: 'pdf', label: 'PDF', icon: FileText, description: 'Professional PDF document' },
-    { value: 'word', label: 'Word Document', icon: File, description: 'Microsoft Word (.docx)' },
-    { value: 'markdown', label: 'Markdown', icon: Code, description: 'Markdown format' },
-    { value: 'html', label: 'HTML', icon: Globe, description: 'Web page format' },
-    { value: 'google-docs', label: 'Google Docs', icon: FileText, description: 'Google Docs format' },
-  ]
+    { value: 'pdf', labelKey: 'premium.export.format.pdf', icon: FileText },
+    { value: 'word', labelKey: 'premium.export.format.word', icon: File },
+    { value: 'markdown', labelKey: 'premium.export.format.markdown', icon: Code },
+    { value: 'html', labelKey: 'premium.export.format.html', icon: Globe },
+    { value: 'google-docs', labelKey: 'premium.export.format.googleDocs', icon: FileText },
+  ] as const
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl">
-        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-amber-50 to-yellow-50">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-amber-600">
               <Download className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Export Conversation</h2>
-              <p className="text-sm text-gray-600">{messages.length} messages</p>
+              <h2 className="text-xl font-bold text-gray-900">{t('premium.export.title')}</h2>
+              <p className="text-sm text-gray-600">{t('premium.export.messageCount', { count: messages.length })}</p>
             </div>
           </div>
           <button
@@ -81,11 +79,9 @@ const ExportDialog = ({ messages, onClose }: ExportDialogProps) => {
           </button>
         </div>
 
-        {/* Content */}
         <div className="p-6 space-y-6">
-          {/* Format Selection */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-3">Export Format</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-3">{t('premium.export.format.label')}</label>
             <div className="grid grid-cols-2 gap-3">
               {formatOptions.map((option) => {
                 const Icon = option.icon
@@ -102,8 +98,7 @@ const ExportDialog = ({ messages, onClose }: ExportDialogProps) => {
                     <div className="flex items-start gap-3">
                       <Icon className={`h-5 w-5 mt-0.5 ${format === option.value ? 'text-amber-600' : 'text-gray-400'}`} />
                       <div>
-                        <div className="font-semibold text-gray-900">{option.label}</div>
-                        <div className="text-xs text-gray-500 mt-1">{option.description}</div>
+                        <div className="font-semibold text-gray-900">{t(option.labelKey)}</div>
                       </div>
                     </div>
                   </button>
@@ -112,9 +107,8 @@ const ExportDialog = ({ messages, onClose }: ExportDialogProps) => {
             </div>
           </div>
 
-          {/* Options */}
           <div className="space-y-3">
-            <label className="block text-sm font-semibold text-gray-700">Export Options</label>
+            <label className="block text-sm font-semibold text-gray-700">{t('premium.export.options.label')}</label>
             <label className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer">
               <input
                 type="checkbox"
@@ -123,8 +117,8 @@ const ExportDialog = ({ messages, onClose }: ExportDialogProps) => {
                 className="h-4 w-4 text-amber-600 focus:ring-amber-500"
               />
               <div>
-                <div className="font-medium text-gray-900">Include Metadata</div>
-                <div className="text-xs text-gray-500">Timestamps, dates, and conversation info</div>
+                <div className="font-medium text-gray-900">{t('premium.export.options.metadata.label')}</div>
+                <div className="text-xs text-gray-500">{t('premium.export.options.metadata.description')}</div>
               </div>
             </label>
             <label className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer">
@@ -135,15 +129,14 @@ const ExportDialog = ({ messages, onClose }: ExportDialogProps) => {
                 className="h-4 w-4 text-amber-600 focus:ring-amber-500"
               />
               <div>
-                <div className="font-medium text-gray-900">Include Images</div>
-                <div className="text-xs text-gray-500">Embed uploaded images in export</div>
+                <div className="font-medium text-gray-900">{t('premium.export.options.images.label')}</div>
+                <div className="text-xs text-gray-500">{t('premium.export.options.images.description')}</div>
               </div>
             </label>
           </div>
 
-          {/* Formatting */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-3">Formatting Style</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-3">{t('premium.export.formatting.label')}</label>
             <div className="flex gap-3">
               {(['professional', 'simple', 'custom'] as const).map((style) => (
                 <button
@@ -155,27 +148,26 @@ const ExportDialog = ({ messages, onClose }: ExportDialogProps) => {
                       : 'border-gray-200 text-gray-700 hover:border-amber-300'
                   }`}
                 >
-                  {style.charAt(0).toUpperCase() + style.slice(1)}
+                  {t(`premium.export.formatting.${style}`)}
                 </button>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Footer */}
         <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50">
           <button
             onClick={onClose}
             className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 transition"
           >
-            Cancel
+            {t('common.cancel')}
           </button>
           <button
             onClick={handleExport}
             className="px-6 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-lg hover:from-amber-600 hover:to-amber-700 transition shadow-md flex items-center gap-2"
           >
             <Download className="h-4 w-4" />
-            Export
+            {t('premium.export.action')}
           </button>
         </div>
       </div>
@@ -184,4 +176,3 @@ const ExportDialog = ({ messages, onClose }: ExportDialogProps) => {
 }
 
 export default ExportDialog
-

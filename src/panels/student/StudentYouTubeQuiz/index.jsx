@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,6 +20,7 @@ const makeQuiz = (url) => {
 };
 
 const StudentYouTubeQuiz = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
@@ -46,19 +48,19 @@ const StudentYouTubeQuiz = () => {
   return (
     <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">YouTube Quiz</h1>
-        <p className="text-sm text-gray-600 dark:text-gray-300">Paste a YouTube URL → generate a quiz (demo).</p>
+        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.youtubeQuiz.title')}</h1>
+        <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.youtubeQuiz.subtitle')}</p>
       </div>
 
       <div className="px-6 py-6 max-w-2xl">
         <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4 space-y-4">
           <label className="block">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">YouTube URL</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{t('studentPanel.youtubeQuiz.urlLabel')}</span>
             <input
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               className="mt-1 w-full rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 px-3 py-2 text-sm text-gray-900 dark:text-gray-100"
-              placeholder="https://www.youtube.com/watch?v=..."
+              placeholder={t('studentPanel.youtubeQuiz.urlPlaceholder')}
             />
           </label>
           <button

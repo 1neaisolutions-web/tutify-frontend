@@ -45,6 +45,7 @@ import {
   Download,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface CourseModule {
   id: string
   title: string
@@ -87,6 +88,7 @@ interface EngineeringDesignChallenge {
 }
 
 const STEMMasteryCourse = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [activeModule, setActiveModule] = useState<string | null>(null)
   // Load completed modules from localStorage
@@ -485,24 +487,16 @@ const STEMMasteryCourse = () => {
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Specialist Track
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('sTEMMasteryCourse.specialistTrack')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    12 hours
-                  </span>
+                    <Clock className="h-3 w-3" />{t('sTEMMasteryCourse.k2Hours')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Layers className="h-3 w-3" />
-                    8 modules
-                  </span>
+                    <Layers className="h-3 w-3" />{t('sTEMMasteryCourse.kModules')}</span>
                 </div>
-                <h1 className="text-3xl font-bold">STEM Mastery</h1>
-                <p className="mt-2 text-indigo-100">
-                  NGSS alignment, engineering design, computational thinking, and lab safety protocols
-                </p>
+                <h1 className="text-3xl font-bold">{t('sTEMMasteryCourse.stemMastery')}</h1>
+                <p className="mt-2 text-indigo-100">{t('sTEMMasteryCourse.ngssAlignmentEngineeringDesignComputationalThinkingAndL')}</p>
               </div>
             </div>
             {enrolled && (
@@ -536,7 +530,7 @@ const STEMMasteryCourse = () => {
                 <button
                   onClick={() => setShowModuleMenu(!showModuleMenu)}
                   className="p-3 bg-white/20 hover:bg-white/30 rounded-full transition flex items-center justify-center relative"
-                  title="Access Module Content"
+                  title={t('sTEMMasteryCourse.accessModuleContent')}
                 >
                   <Trophy className="h-6 w-6 text-yellow-300" />
                   {showModuleMenu && (
@@ -549,9 +543,9 @@ const STEMMasteryCourse = () => {
                     <div className="p-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
                       <div className="flex items-center gap-2 mb-1">
                         <Trophy className="h-5 w-5 text-yellow-300" />
-                        <h3 className="font-bold text-sm">Course Completed!</h3>
+                        <h3 className="font-bold text-sm">{t('sTEMMasteryCourse.courseCompleted')}</h3>
                       </div>
-                      <p className="text-xs text-indigo-100">Access module content</p>
+                      <p className="text-xs text-indigo-100">{t('sTEMMasteryCourse.accessModuleContent2')}</p>
                     </div>
                     <div className="max-h-96 overflow-y-auto">
                       {courseModules.map((module, idx) => {
@@ -611,9 +605,7 @@ const STEMMasteryCourse = () => {
                 onClick={handleEnroll}
                 className="px-6 py-3 bg-white text-indigo-600 rounded-full font-semibold hover:bg-indigo-50 transition flex items-center gap-2"
               >
-                <GraduationCap className="h-5 w-5" />
-                Enroll Now
-              </button>
+                <GraduationCap className="h-5 w-5" />{t('sTEMMasteryCourse.enrollNow')}</button>
             )}
           </div>
         </div>
@@ -653,7 +645,7 @@ const STEMMasteryCourse = () => {
           {currentTab === 'overview' && (
             <div className="space-y-8">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Course Overview</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('sTEMMasteryCourse.courseOverview')}</h2>
                 <p className="text-gray-700 leading-relaxed mb-6">
                   This comprehensive specialist track equips you with the knowledge, skills, and tools needed to excel
                   in STEM education. Through eight carefully designed modules, you'll master NGSS alignment, engineering
@@ -663,30 +655,24 @@ const STEMMasteryCourse = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                   <div className="bg-indigo-50 rounded-xl p-6 border border-indigo-200">
                     <GraduationCap className="h-8 w-8 text-indigo-600 mb-3" />
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">International Standards</h3>
-                    <p className="text-sm text-gray-700">
-                      Aligned with NGSS, ISTE, and international STEM education frameworks
-                    </p>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('sTEMMasteryCourse.internationalStandards')}</h3>
+                    <p className="text-sm text-gray-700">{t('sTEMMasteryCourse.alignedWithNgssIsteAndInternationalStemEducationFramewo')}</p>
                   </div>
                   <div className="bg-purple-50 rounded-xl p-6 border border-purple-200">
                     <Sparkles className="h-8 w-8 text-purple-600 mb-3" />
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">AI-Powered Tools</h3>
-                    <p className="text-sm text-gray-700">
-                      Access AI-assisted lesson planning, NGSS alignment, and assessment generation
-                    </p>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('sTEMMasteryCourse.aiPoweredTools')}</h3>
+                    <p className="text-sm text-gray-700">{t('sTEMMasteryCourse.accessAiAssistedLessonPlanningNgssAlignmentAndAssessmen')}</p>
                   </div>
                   <div className="bg-pink-50 rounded-xl p-6 border border-pink-200">
                     <Trophy className="h-8 w-8 text-pink-600 mb-3" />
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Certification</h3>
-                    <p className="text-sm text-gray-700">
-                      Earn a professional certificate recognized by educational institutions worldwide
-                    </p>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('sTEMMasteryCourse.certification')}</h3>
+                    <p className="text-sm text-gray-700">{t('sTEMMasteryCourse.earnAProfessionalCertificateRecognizedByEducationalInst')}</p>
                   </div>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">What You'll Master</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">{t('sTEMMasteryCourse.whatYouLlMaster')}</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {[
                     {
@@ -733,7 +719,7 @@ const STEMMasteryCourse = () => {
               </div>
 
               <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-200">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Learning Outcomes</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">{t('sTEMMasteryCourse.learningOutcomes')}</h3>
                 <ul className="space-y-2">
                   {[
                     'Design and implement NGSS-aligned three-dimensional lessons',
@@ -759,25 +745,21 @@ const STEMMasteryCourse = () => {
           {currentTab === 'modules' && (
             <div className="space-y-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Course Modules</h2>
+                <h2 className="text-2xl font-bold text-gray-900">{t('sTEMMasteryCourse.courseModules')}</h2>
                 {enrolled && (
-                  <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-semibold">
-                    Enrolled
-                  </span>
+                  <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 text-sm font-semibold">{t('sTEMMasteryCourse.enrolled')}</span>
                 )}
               </div>
 
               {!enrolled ? (
                 <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
                   <GraduationCap className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Enroll to Access Modules</h3>
-                  <p className="text-gray-600 mb-6">Click "Enroll Now" in the header to begin your STEM Mastery journey</p>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('sTEMMasteryCourse.enrollToAccessModules')}</h3>
+                  <p className="text-gray-600 mb-6">{t('sTEMMasteryCourse.clickEnrollNowInTheHeaderToBeginYourStem')}</p>
                   <button
                     onClick={handleEnroll}
                     className="px-6 py-3 bg-indigo-600 text-white rounded-full font-semibold hover:bg-indigo-700 transition"
-                  >
-                    Enroll Now
-                  </button>
+                  >{t('sTEMMasteryCourse.enrollNow')}</button>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -824,7 +806,7 @@ const STEMMasteryCourse = () => {
 
                             {module.learningOutcomes && module.learningOutcomes.length > 0 && (
                               <div className="ml-12 mb-4">
-                                <p className="text-sm font-semibold text-gray-900 mb-2">Learning Outcomes</p>
+                                <p className="text-sm font-semibold text-gray-900 mb-2">{t('sTEMMasteryCourse.learningOutcomes')}</p>
                                 <ul className="space-y-1">
                                   {module.learningOutcomes.map((outcome, outIdx) => (
                                     <li key={outIdx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -840,7 +822,7 @@ const STEMMasteryCourse = () => {
                           <>
                             {module.content && Array.isArray(module.content) && module.content.length > 0 && (
                               <div className="ml-12 mb-4 bg-white rounded-lg p-5 border border-indigo-200">
-                              <p className="text-sm font-semibold text-gray-900 mb-3">Module Content</p>
+                              <p className="text-sm font-semibold text-gray-900 mb-3">{t('sTEMMasteryCourse.moduleContent')}</p>
                               <div className="space-y-3">
                                 {module.content.map((item, itemIdx) => {
                                 const ContentIcon =
@@ -878,7 +860,7 @@ const STEMMasteryCourse = () => {
                             </div>
                             {module.assessment && (
                               <div className="mt-4 pt-4 border-t border-gray-200">
-                                <p className="text-sm font-semibold text-gray-900 mb-2">Assessment</p>
+                                <p className="text-sm font-semibold text-gray-900 mb-2">{t('sTEMMasteryCourse.assessment')}</p>
                                 <div className="bg-purple-50 rounded-lg p-3 border border-purple-200">
                                   <p className="text-sm font-medium text-gray-900 mb-1">{module.assessment.type}</p>
                                   <p className="text-xs text-gray-700">{module.assessment.description}</p>
@@ -890,7 +872,7 @@ const STEMMasteryCourse = () => {
                             )}
                             {module.realWorldApplication && (
                               <div className="mt-4 pt-4 border-t border-gray-200">
-                                <p className="text-sm font-semibold text-gray-900 mb-2">Real-World Application</p>
+                                <p className="text-sm font-semibold text-gray-900 mb-2">{t('sTEMMasteryCourse.realWorldApplication')}</p>
                                 <p className="text-sm text-gray-700 bg-blue-50 rounded-lg p-3 border border-blue-200">
                                   {module.realWorldApplication}
                                 </p>
@@ -907,9 +889,7 @@ const STEMMasteryCourse = () => {
                               disabled
                               className="px-4 py-2 rounded-lg bg-gray-200 text-gray-500 text-sm font-semibold cursor-not-allowed flex items-center gap-2"
                             >
-                              <Lock className="h-4 w-4" />
-                              Complete previous modules
-                            </button>
+                              <Lock className="h-4 w-4" />{t('sTEMMasteryCourse.completePreviousModules')}</button>
                           ) : isCompleted ? (
                             <>
                               <button
@@ -922,14 +902,10 @@ const STEMMasteryCourse = () => {
                               >
                                 {isActive ? (
                                   <>
-                                    <Eye className="h-4 w-4" />
-                                    Hide Details
-                                  </>
+                                    <Eye className="h-4 w-4" />{t('sTEMMasteryCourse.hideDetails')}</>
                                 ) : (
                                   <>
-                                    <Eye className="h-4 w-4" />
-                                    Review Module
-                                  </>
+                                    <Eye className="h-4 w-4" />{t('sTEMMasteryCourse.reviewModule')}</>
                                 )}
                               </button>
                               {(() => {
@@ -949,15 +925,11 @@ const STEMMasteryCourse = () => {
                                     to={route}
                                     className="px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 flex items-center gap-2"
                                   >
-                                    <Play className="h-4 w-4" />
-                                    Preview Content
-                                  </Link>
+                                    <Play className="h-4 w-4" />{t('sTEMMasteryCourse.previewContent')}</Link>
                                 ) : null
                               })()}
                               <button className="px-4 py-2 rounded-lg border-2 border-green-600 text-green-600 text-sm font-semibold hover:bg-green-50 flex items-center gap-2">
-                                <Download className="h-4 w-4" />
-                                Download Certificate
-                              </button>
+                                <Download className="h-4 w-4" />{t('sTEMMasteryCourse.downloadCertificate')}</button>
                             </>
                           ) : (
                             <>
@@ -980,9 +952,7 @@ const STEMMasteryCourse = () => {
                                     to={route}
                                     className="px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 flex items-center gap-2"
                                   >
-                                    <Play className="h-4 w-4" />
-                                    Start Module
-                                  </Link>
+                                    <Play className="h-4 w-4" />{t('sTEMMasteryCourse.startModule')}</Link>
                                 ) : (
                                   <button
                                     onClick={() => setActiveModule(isActive ? null : module.id)}
@@ -990,14 +960,10 @@ const STEMMasteryCourse = () => {
                                   >
                                     {isActive ? (
                                       <>
-                                        <Eye className="h-4 w-4" />
-                                        Hide Details
-                                      </>
+                                        <Eye className="h-4 w-4" />{t('sTEMMasteryCourse.hideDetails')}</>
                                     ) : (
                                       <>
-                                        <Play className="h-4 w-4" />
-                                        Start Module
-                                      </>
+                                        <Play className="h-4 w-4" />{t('sTEMMasteryCourse.startModule')}</>
                                     )}
                                   </button>
                                 )
@@ -1006,9 +972,7 @@ const STEMMasteryCourse = () => {
                                 onClick={() => handleModuleComplete(module.id)}
                                 className="px-4 py-2 rounded-lg border-2 border-green-600 text-green-600 text-sm font-semibold hover:bg-green-50 flex items-center gap-2"
                               >
-                                <CheckCircle2 className="h-4 w-4" />
-                                Mark Complete
-                              </button>
+                                <CheckCircle2 className="h-4 w-4" />{t('sTEMMasteryCourse.markComplete')}</button>
                             </>
                           )}
                         </div>
@@ -1023,7 +987,7 @@ const STEMMasteryCourse = () => {
           {/* NGSS Tools Tab */}
           {currentTab === 'ngss' && (
             <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-gray-900">NGSS Alignment Tools</h2>
+              <h2 className="text-2xl font-bold text-gray-900">{t('sTEMMasteryCourse.ngssAlignmentTools')}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {ngssStandards.map((standard, idx) => (
                   <div key={idx} className="bg-white rounded-xl p-6 border-2 border-indigo-200">
@@ -1036,7 +1000,7 @@ const STEMMasteryCourse = () => {
                     <p className="text-sm text-gray-700 mb-4">{standard.description}</p>
                     <div className="space-y-2">
                       <div>
-                        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">DCIs</p>
+                        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('sTEMMasteryCourse.dcis')}</p>
                         {standard.dci.map((dci, dciIdx) => (
                           <p key={dciIdx} className="text-xs text-gray-700 bg-indigo-50 rounded p-2 mb-1">
                             {dci}
@@ -1044,7 +1008,7 @@ const STEMMasteryCourse = () => {
                         ))}
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">SEPs</p>
+                        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('sTEMMasteryCourse.seps')}</p>
                         {standard.sep.map((sep, sepIdx) => (
                           <p key={sepIdx} className="text-xs text-gray-700 bg-purple-50 rounded p-2 mb-1">
                             {sep}
@@ -1052,7 +1016,7 @@ const STEMMasteryCourse = () => {
                         ))}
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">CCCs</p>
+                        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('sTEMMasteryCourse.cccs')}</p>
                         {standard.ccc.map((ccc, cccIdx) => (
                           <p key={cccIdx} className="text-xs text-gray-700 bg-pink-50 rounded p-2 mb-1">
                             {ccc}
@@ -1065,7 +1029,7 @@ const STEMMasteryCourse = () => {
               </div>
 
               <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Engineering Design Challenges</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('sTEMMasteryCourse.engineeringDesignChallenges')}</h3>
                 <div className="space-y-4">
                   {engineeringChallenges.map((challenge, idx) => (
                     <div key={idx} className="bg-white rounded-lg p-5 border border-purple-200">
@@ -1078,7 +1042,7 @@ const STEMMasteryCourse = () => {
                       <p className="text-sm text-gray-700 mb-3">{challenge.problem}</p>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
-                          <p className="text-xs font-semibold text-gray-600 mb-1">Constraints</p>
+                          <p className="text-xs font-semibold text-gray-600 mb-1">{t('sTEMMasteryCourse.constraints')}</p>
                           <ul className="space-y-1">
                             {challenge.constraints.map((constraint, cIdx) => (
                               <li key={cIdx} className="text-xs text-gray-700 flex items-start gap-1">
@@ -1089,7 +1053,7 @@ const STEMMasteryCourse = () => {
                           </ul>
                         </div>
                         <div>
-                          <p className="text-xs font-semibold text-gray-600 mb-1">Success Criteria</p>
+                          <p className="text-xs font-semibold text-gray-600 mb-1">{t('sTEMMasteryCourse.successCriteria')}</p>
                           <ul className="space-y-1">
                             {challenge.criteria.map((criterion, crIdx) => (
                               <li key={crIdx} className="text-xs text-gray-700 flex items-start gap-1">
@@ -1110,7 +1074,7 @@ const STEMMasteryCourse = () => {
           {/* Resources Tab */}
           {currentTab === 'resources' && (
             <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-gray-900">Course Resources</h2>
+              <h2 className="text-2xl font-bold text-gray-900">{t('sTEMMasteryCourse.courseResources')}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {[
                   { name: 'NGSS Standards Database', icon: Target, type: 'Tool' },
@@ -1128,9 +1092,7 @@ const STEMMasteryCourse = () => {
                       </div>
                       <h3 className="text-base font-semibold text-gray-900 mb-1">{resource.name}</h3>
                       <p className="text-xs text-gray-500 mb-3">{resource.type}</p>
-                      <button className="w-full px-3 py-2 rounded-lg bg-indigo-50 text-indigo-600 text-sm font-semibold hover:bg-indigo-100 transition">
-                        Access Resource
-                      </button>
+                      <button className="w-full px-3 py-2 rounded-lg bg-indigo-50 text-indigo-600 text-sm font-semibold hover:bg-indigo-100 transition">{t('sTEMMasteryCourse.accessResource')}</button>
                     </div>
                   )
                 })}
@@ -1145,18 +1107,12 @@ const STEMMasteryCourse = () => {
         <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-8 text-white">
           <div className="text-center">
             <Trophy className="h-16 w-16 mx-auto mb-4" />
-            <h3 className="text-2xl font-bold mb-2">Congratulations!</h3>
-            <p className="text-indigo-100 mb-6">
-              You've completed the STEM Mastery specialist track. Download your certificate below.
-            </p>
+            <h3 className="text-2xl font-bold mb-2">{t('sTEMMasteryCourse.congratulations')}</h3>
+            <p className="text-indigo-100 mb-6">{t('sTEMMasteryCourse.youVeCompletedTheStemMasterySpecialistTrackDownloadYour')}</p>
             <div className="flex gap-3 justify-center">
               <button className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-indigo-600 hover:bg-indigo-50 transition flex items-center gap-2">
-                <Award className="h-4 w-4" />
-                Download Certificate
-              </button>
-              <button className="rounded-full border-2 border-white px-6 py-3 text-sm font-semibold text-white hover:bg-white/20 transition">
-                Share Achievement
-              </button>
+                <Award className="h-4 w-4" />{t('sTEMMasteryCourse.downloadCertificate')}</button>
+              <button className="rounded-full border-2 border-white px-6 py-3 text-sm font-semibold text-white hover:bg-white/20 transition">{t('sTEMMasteryCourse.shareAchievement')}</button>
             </div>
           </div>
         </div>

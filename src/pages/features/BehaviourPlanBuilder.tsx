@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Users, Sparkles, RefreshCw, Download } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 type OutputFormat = 'structured_json' | 'markdown' | 'teacher_text'
 
 interface BehaviourPlanInputs {
@@ -123,6 +124,7 @@ const samplePlan: BehaviourPlanOutput = {
 }
 
 const BehaviourPlanBuilder = () => {
+  const { t } = useTranslation()
   const [inputs, setInputs] = useState<BehaviourPlanInputs>({
     grade: 6,
     class_size: 30,
@@ -254,10 +256,8 @@ const BehaviourPlanBuilder = () => {
             <Users className="w-6 h-6 text-primary-600" />
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold text-gray-900">Behaviour Management Plan Builder</h1>
-            <p className="text-sm text-gray-600 mt-0.5">
-              Create proactive classroom behaviour plans with rules, reinforcement, and interventions
-            </p>
+            <h1 className="text-xl font-bold text-gray-900">{t('behaviourPlanBuilder.behaviourManagementPlanBuilder')}</h1>
+            <p className="text-sm text-gray-600 mt-0.5">{t('behaviourPlanBuilder.createProactiveClassroomBehaviourPlansWithRulesReinforc')}</p>
           </div>
         </div>
       </div>
@@ -267,13 +267,12 @@ const BehaviourPlanBuilder = () => {
           <div className="card">
             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
               <Sparkles className="w-5 h-5 text-primary-600" />
-              <span>Classroom Context</span>
+              <span>{t('behaviourPlanBuilder.classroomContext')}</span>
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Grade <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('behaviourPlanBuilder.grade2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -288,8 +287,7 @@ const BehaviourPlanBuilder = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Class Size <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('behaviourPlanBuilder.classSize2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -299,26 +297,24 @@ const BehaviourPlanBuilder = () => {
                     handleInputChange('class_size', Math.max(1, parseInt(e.target.value) || ''))
                   }
                   className="input-field"
-                  placeholder="Total number of students"
+                  placeholder={t('behaviourPlanBuilder.totalNumberOfStudents')}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Age Range</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('behaviourPlanBuilder.ageRange2')}</label>
                 <input
                   type="text"
                   value={inputs.age_range}
                   onChange={(e) => handleInputChange('age_range', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., 10–12"
+                  placeholder={t('behaviourPlanBuilder.eG1012')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Known Challenges
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('behaviourPlanBuilder.knownChallenges')}</label>
                 <div className="flex gap-2 mb-2">
                   <input
                     type="text"
@@ -337,9 +333,7 @@ const BehaviourPlanBuilder = () => {
                     type="button"
                     onClick={addChallenge}
                     className="btn-primary whitespace-nowrap"
-                  >
-                    Add
-                  </button>
+                  >{t('behaviourPlanBuilder.add')}</button>
                 </div>
                 {inputs.known_challenges.length > 0 && (
                   <div className="flex flex-wrap gap-2">
@@ -364,7 +358,7 @@ const BehaviourPlanBuilder = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Rules Count</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('behaviourPlanBuilder.rulesCount')}</label>
                 <input
                   type="number"
                   min="1"
@@ -372,7 +366,7 @@ const BehaviourPlanBuilder = () => {
                   value={inputs.rules_count}
                   onChange={(e) => handleInputChange('rules_count', parseInt(e.target.value) || '')}
                   className="input-field"
-                  placeholder="Number of core class expectations"
+                  placeholder={t('behaviourPlanBuilder.numberOfCoreClassExpectations')}
                 />
               </div>
 
@@ -384,9 +378,7 @@ const BehaviourPlanBuilder = () => {
                   onChange={(e) => handleInputChange('positive_reinforcement', e.target.checked)}
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />
-                <label htmlFor="positive-reinforcement" className="ml-2 text-sm text-gray-700">
-                  Include positive reinforcement ideas
-                </label>
+                <label htmlFor="positive-reinforcement" className="ml-2 text-sm text-gray-700">{t('behaviourPlanBuilder.includePositiveReinforcementIdeas')}</label>
               </div>
 
               <div className="flex items-center">
@@ -397,24 +389,22 @@ const BehaviourPlanBuilder = () => {
                   onChange={(e) => handleInputChange('parent_communication', e.target.checked)}
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />
-                <label htmlFor="parent-communication" className="ml-2 text-sm text-gray-700">
-                  Include parent communication templates
-                </label>
+                <label htmlFor="parent-communication" className="ml-2 text-sm text-gray-700">{t('behaviourPlanBuilder.includeParentCommunicationTemplates')}</label>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('behaviourPlanBuilder.language2')}</label>
                 <input
                   type="text"
                   value={inputs.language}
                   onChange={(e) => handleInputChange('language', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., en-US"
+                  placeholder={t('behaviourPlanBuilder.eGEnUs')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Output Format</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('behaviourPlanBuilder.outputFormat')}</label>
                 <select
                   value={inputs.output_format}
                   onChange={(e) =>
@@ -426,9 +416,9 @@ const BehaviourPlanBuilder = () => {
                   className="input-field"
                 >
                   <option value="">Select output format (optional)</option>
-                  <option value="teacher_text">Teacher Text</option>
-                  <option value="markdown">Markdown</option>
-                  <option value="structured_json">Structured JSON</option>
+                  <option value="teacher_text">{t('behaviourPlanBuilder.teacherText')}</option>
+                  <option value="markdown">{t('behaviourPlanBuilder.markdown')}</option>
+                  <option value="structured_json">{t('behaviourPlanBuilder.structuredJson')}</option>
                 </select>
               </div>
 
@@ -440,12 +430,12 @@ const BehaviourPlanBuilder = () => {
                 {isGenerating ? (
                   <>
                     <RefreshCw className="w-5 h-5 animate-spin" />
-                    <span>Generating...</span>
+                    <span>{t('behaviourPlanBuilder.generating')}</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-5 h-5" />
-                    <span>Generate Behaviour Plan</span>
+                    <span>{t('behaviourPlanBuilder.generateBehaviourPlan')}</span>
                   </>
                 )}
               </button>
@@ -457,18 +447,18 @@ const BehaviourPlanBuilder = () => {
           {output ? (
             <div className="card">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Generated Behaviour Plan</h2>
+                <h2 className="text-lg font-semibold text-gray-900">{t('behaviourPlanBuilder.generatedBehaviourPlan')}</h2>
                 <div className="flex gap-2">
                   <button className="btn-secondary flex items-center space-x-2">
                     <Download className="w-4 h-4" />
-                    <span>Download</span>
+                    <span>{t('behaviourPlanBuilder.download')}</span>
                   </button>
                   <button
                     onClick={() => setOutput(null)}
                     className="btn-secondary flex items-center space-x-2"
                   >
                     <RefreshCw className="w-4 h-4" />
-                    <span>Reset</span>
+                    <span>{t('behaviourPlanBuilder.reset')}</span>
                   </button>
                 </div>
               </div>
@@ -478,19 +468,19 @@ const BehaviourPlanBuilder = () => {
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">{output.title}</h3>
                   <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                     <span>
-                      <strong>Grade:</strong> {output.grade}
+                      <strong>{t('behaviourPlanBuilder.grade')}</strong> {output.grade}
                     </span>
                     <span>
-                      <strong>Class Size:</strong> {output.class_size}
+                      <strong>{t('behaviourPlanBuilder.classSize')}</strong> {output.class_size}
                     </span>
                     {output.age_range && (
                       <span>
-                        <strong>Age Range:</strong> {output.age_range}
+                        <strong>{t('behaviourPlanBuilder.ageRange')}</strong> {output.age_range}
                       </span>
                     )}
                     {output.language && (
                       <span>
-                        <strong>Language:</strong> {output.language}
+                        <strong>{t('behaviourPlanBuilder.language')}</strong> {output.language}
                       </span>
                     )}
                   </div>
@@ -498,7 +488,7 @@ const BehaviourPlanBuilder = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Priority Focus Areas</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('behaviourPlanBuilder.priorityFocusAreas')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.priorities.map((priority, index) => (
                       <li key={index}>{priority}</li>
@@ -507,7 +497,7 @@ const BehaviourPlanBuilder = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Classroom Rules</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('behaviourPlanBuilder.classroomRules')}</h4>
                   <div className="space-y-3">
                     {output.classroom_rules.map((rule, index) => (
                       <div key={index} className="bg-gray-50 rounded-lg p-4">
@@ -515,13 +505,13 @@ const BehaviourPlanBuilder = () => {
                           <h5 className="font-medium text-gray-900">Rule {index + 1}</h5>
                         </div>
                         <p className="text-sm text-gray-800">
-                          <strong>Expectation:</strong> {rule.rule}
+                          <strong>{t('behaviourPlanBuilder.expectation')}</strong> {rule.rule}
                         </p>
                         <p className="text-sm text-gray-700 mt-1">
-                          <strong>Why it matters:</strong> {rule.rationale}
+                          <strong>{t('behaviourPlanBuilder.whyItMatters')}</strong> {rule.rationale}
                         </p>
                         <p className="text-sm text-gray-700 mt-1">
-                          <strong>Reinforcement:</strong> {rule.reinforcement}
+                          <strong>{t('behaviourPlanBuilder.reinforcement')}</strong> {rule.reinforcement}
                         </p>
                       </div>
                     ))}
@@ -529,7 +519,7 @@ const BehaviourPlanBuilder = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Core Routines</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('behaviourPlanBuilder.coreRoutines')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.routines.map((routine, index) => (
                       <li key={index}>{routine}</li>
@@ -539,7 +529,7 @@ const BehaviourPlanBuilder = () => {
 
                 {output.positive_reinforcement.length > 0 && (
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Positive Reinforcement Ideas</h4>
+                    <h4 className="font-semibold text-gray-900 mb-2">{t('behaviourPlanBuilder.positiveReinforcementIdeas')}</h4>
                     <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                       {output.positive_reinforcement.map((idea, index) => (
                         <li key={index}>{idea}</li>
@@ -549,18 +539,18 @@ const BehaviourPlanBuilder = () => {
                 )}
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Intervention Strategies</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('behaviourPlanBuilder.interventionStrategies')}</h4>
                   <div className="space-y-3">
                     {output.interventions.map((intervention, index) => (
                       <div key={index} className="bg-white border border-gray-200 rounded-lg p-4">
                         <p className="text-sm text-gray-800">
-                          <strong>Trigger:</strong> {intervention.trigger}
+                          <strong>{t('behaviourPlanBuilder.trigger')}</strong> {intervention.trigger}
                         </p>
                         <p className="text-sm text-gray-700 mt-1">
-                          <strong>Proactive Strategy:</strong> {intervention.proactive_strategy}
+                          <strong>{t('behaviourPlanBuilder.proactiveStrategy')}</strong> {intervention.proactive_strategy}
                         </p>
                         <p className="text-sm text-gray-700 mt-1">
-                          <strong>Responsive Action:</strong> {intervention.responsive_action}
+                          <strong>{t('behaviourPlanBuilder.responsiveAction')}</strong> {intervention.responsive_action}
                         </p>
                       </div>
                     ))}
@@ -569,15 +559,15 @@ const BehaviourPlanBuilder = () => {
 
                 {output.parent_communication && (
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Parent Communication Templates</h4>
+                    <h4 className="font-semibold text-gray-900 mb-2">{t('behaviourPlanBuilder.parentCommunicationTemplates')}</h4>
                     <div className="space-y-3">
                       {output.parent_communication.map((template, index) => (
                         <div key={index} className="bg-gray-50 rounded-lg p-4">
                           <p className="text-sm text-gray-800">
-                            <strong>Audience:</strong> {template.audience}
+                            <strong>{t('behaviourPlanBuilder.audience')}</strong> {template.audience}
                           </p>
                           <p className="text-sm text-gray-700">
-                            <strong>Purpose:</strong> {template.purpose}
+                            <strong>{t('behaviourPlanBuilder.purpose')}</strong> {template.purpose}
                           </p>
                           <pre className="mt-2 text-sm text-gray-700 whitespace-pre-wrap bg-white border border-gray-200 rounded-lg p-3">
                             {template.template}
@@ -589,7 +579,7 @@ const BehaviourPlanBuilder = () => {
                 )}
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Monitoring Plan</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('behaviourPlanBuilder.monitoringPlan')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.monitoring_plan.map((step, index) => (
                       <li key={index}>{step}</li>
@@ -602,12 +592,8 @@ const BehaviourPlanBuilder = () => {
             <div className="card">
               <div className="text-center py-12">
                 <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Your behaviour plan will appear here
-                </h3>
-                <p className="text-gray-600">
-                  Fill in the classroom context and click "Generate Behaviour Plan" to see the recommendations.
-                </p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('behaviourPlanBuilder.yourBehaviourPlanWillAppearHere')}</h3>
+                <p className="text-gray-600">{t('behaviourPlanBuilder.fillInTheClassroomContextAndClickGenerateBehaviourPlan')}</p>
               </div>
             </div>
           )}

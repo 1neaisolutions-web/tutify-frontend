@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+
 const STATUS_STYLES: Record<string, string> = {
   draft: 'bg-gray-100 text-gray-500',
   published: 'bg-emerald-100 text-emerald-700',
@@ -11,10 +13,12 @@ const STATUS_STYLES: Record<string, string> = {
 }
 
 export function StatusPill({ status, className = '' }: { status: string; className?: string }) {
+  const { t } = useTranslation()
   const style = STATUS_STYLES[status] ?? 'bg-gray-100 text-gray-500'
+  const label = t(`status.${status}`, { defaultValue: status.replace(/_/g, ' ') })
   return (
     <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold capitalize ${style} ${className}`}>
-      {status.replace(/_/g, ' ')}
+      {label}
     </span>
   )
 }

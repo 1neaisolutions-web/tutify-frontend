@@ -1,11 +1,16 @@
+import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+
+import { useRecordGamificationEvent } from '@/features/gamification';
 
 const STORAGE_KEY = 'tutify_student_tasks_v1';
 
 const TaskDetail = () => {
+  const { t } = useTranslation();
   const { taskId } = useParams();
   const navigate = useNavigate();
+  const recordGamificationEvent = useRecordGamificationEvent();
 
   const task = useMemo(() => {
     try {
@@ -81,7 +86,20 @@ const TaskDetail = () => {
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"
-                onClick={() => update({ completed: !task.completed })}
+                onClick={() => {
+                  if (!task.completed) {
+                    recordGamificationEvent(
+                      'task_completed',
+                      {
+                        taskId: task.id,
+                        title: task.title,
+                        completedAt: new Date().toISOString(),
+                      },
+                      `task:${task.id}`,
+                    );
+                  }
+                  update({ completed: !task.completed });
+                }}
                 className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900"
               >
                 {task.completed ? 'Mark as open' : 'Mark completed'}
@@ -92,7 +110,7 @@ const TaskDetail = () => {
             </div>
           </>
         ) : (
-          <p className="text-sm text-gray-700 dark:text-gray-200">Task not found.</p>
+          <p className="text-sm text-gray-700 dark:text-gray-200">{t('studentPanel.tasks.notFound')}</p>
         )}
       </div>
     </div>

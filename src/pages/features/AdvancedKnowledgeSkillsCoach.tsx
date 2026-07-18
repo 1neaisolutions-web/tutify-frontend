@@ -46,6 +46,7 @@ import {
   XCircle,
 } from 'lucide-react';
 
+import { useTranslation } from 'react-i18next'
 interface InternationalFramework {
   name: string;
   alignment: string;
@@ -630,6 +631,7 @@ interface MethodComparison {
 }
 
 export  const AdvancedKnowledgeSkillsCoach = () => {
+  const { t } = useTranslation()
   const [activeTab, setActiveTab] = useState<
     'methods' | 'skills' | 'compare' | 'resources' | 'chat'
   >('methods');
@@ -6475,4 +6477,121 @@ The Socratic Method, while universal in principle, requires cultural adaptation 
       },
     };
   };
+
+  const tabs = [
+    { id: 'methods' as const, label: t('advancedKnowledgeSkillsCoach.tabs.methods'), icon: BookOpen },
+    { id: 'skills' as const, label: t('advancedKnowledgeSkillsCoach.tabs.skills'), icon: Brain },
+    { id: 'compare' as const, label: t('advancedKnowledgeSkillsCoach.tabs.compare'), icon: Layers },
+    { id: 'resources' as const, label: t('advancedKnowledgeSkillsCoach.tabs.resources'), icon: FileText },
+    { id: 'chat' as const, label: t('advancedKnowledgeSkillsCoach.tabs.chat'), icon: MessageSquare },
+  ];
+
+  return (
+    <div className="min-h-screen bg-gray-50 space-y-6 p-4 sm:p-6 lg:p-8">
+      <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 rounded-3xl p-8 text-white shadow-xl">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
+            <GraduationCap className="h-6 w-6" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold">{t('advancedKnowledgeSkillsCoach.title')}</h1>
+            <p className="mt-1 text-violet-100">{t('advancedKnowledgeSkillsCoach.subtitle')}</p>
+          </div>
+          <span className="ml-auto rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase">
+            <Lock className="inline h-3 w-3 mr-1" />
+            {t('advancedKnowledgeSkillsCoach.premium')}
+          </span>
+        </div>
+        <p className="text-sm text-white/90 mt-4">{t('advancedKnowledgeSkillsCoach.heroHint')}</p>
+      </div>
+
+      <div className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+        <div className="flex border-b border-gray-200 overflow-x-auto">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-6 py-4 text-sm font-semibold border-b-2 whitespace-nowrap ${
+                  activeTab === tab.id
+                    ? 'border-violet-600 text-violet-600 bg-violet-50'
+                    : 'border-transparent text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <Icon className="h-4 w-4" />
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="p-6">
+          {activeTab === 'methods' && (
+            <div className="space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {t('advancedKnowledgeSkillsCoach.selectMethod')}
+                  </label>
+                  <select
+                    value={selectedMethod}
+                    onChange={(e) => setSelectedMethod(e.target.value)}
+                    className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
+                  >
+                    <option value="">{t('advancedKnowledgeSkillsCoach.chooseOption')}</option>
+                    {modernMethods.map((m) => (
+                      <option key={m} value={m}>
+                        {m}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {t('advancedKnowledgeSkillsCoach.selectType')}
+                  </label>
+                  <select
+                    value={pedagogicalType}
+                    onChange={(e) => setPedagogicalType(e.target.value)}
+                    className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm"
+                  >
+                    <option value="">{t('advancedKnowledgeSkillsCoach.chooseOption')}</option>
+                    {pedagogicalTypes.map((p) => (
+                      <option key={p} value={p}>
+                        {p}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              {selectedMethod && pedagogicalType && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const content = getMethodContent(selectedMethod, pedagogicalType);
+                    setMethodDetails(content as PedagogicalMethod | null);
+                  }}
+                  className="rounded-xl bg-violet-600 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-500"
+                >
+                  {t('advancedKnowledgeSkillsCoach.generateDetails')}
+                </button>
+              )}
+              {methodDetails && (
+                <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-800">
+                  <p className="font-semibold text-gray-900">{methodDetails.name || selectedMethod}</p>
+                  {methodDetails.description && <p className="mt-2">{methodDetails.description}</p>}
+                </div>
+              )}
+            </div>
+          )}
+
+          {(activeTab === 'skills' || activeTab === 'compare' || activeTab === 'resources' || activeTab === 'chat') && (
+            <p className="text-gray-600">{t('advancedKnowledgeSkillsCoach.panelComingSoon')}</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };

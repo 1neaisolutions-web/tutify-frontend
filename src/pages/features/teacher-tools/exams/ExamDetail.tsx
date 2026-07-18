@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { TeacherToolsPageHeader, TeacherToolsStatusBadge } from '../components'
 import { Phase2Section, Phase2Badge } from '../components/Phase2Lock'
@@ -9,8 +10,18 @@ import { useSnackbar } from '../../../../hooks/useSnackbar'
 
 const tabs = ['Overview', 'Sections', 'Rules', 'Candidates', 'Results', 'Analytics', 'Settings'] as const
 
-function fmtDateTime(v: string | null | undefined) {
-  if (!v) return 'Not scheduled'
+const TAB_I18N: Record<(typeof tabs)[number], string> = {
+  Overview: 'exam.detail.tabs.overview',
+  Sections: 'exam.detail.tabs.sections',
+  Rules: 'exam.detail.tabs.rules',
+  Candidates: 'exam.detail.tabs.candidates',
+  Results: 'exam.detail.tabs.results',
+  Analytics: 'exam.detail.tabs.analytics',
+  Settings: 'exam.detail.tabs.settings',
+}
+
+function fmtDateTime(v: string | null | undefined, notScheduled: string) {
+  if (!v) return notScheduled
   const d = new Date(v)
   if (Number.isNaN(d.getTime())) return v
   return d.toLocaleString(undefined, {
@@ -41,6 +52,7 @@ function examSectionsFallback(e: { totalMarks: number; examType: string }) {
 }
 
 export default function ExamDetail() {
+  const { t } = useTranslation()
   const { examId } = useParams()
   const navigate = useNavigate()
   const { toast } = useSnackbar()
@@ -76,14 +88,14 @@ export default function ExamDetail() {
       try {
         const r = await examApi.duplicateExam(examId)
         if (r.ok && r.id) {
-          toast.success('Created an editable copy from the sample library')
+          toast.success(t('teacherTools.toastEditableCopy'))
           navigate(`/teacher-tools/exams/${r.id}/edit`)
           return
         }
       } catch {
         /* ignore */
       }
-      toast.error('Could not create a copy')
+      toast.error(t('teacherTools.toastCopyFailed'))
       return
     }
     navigate(`/teacher-tools/exams/${examId}/edit`)
@@ -95,7 +107,7 @@ export default function ExamDetail() {
     return (
       <div className="space-y-4 p-6">
         <div className="h-6 w-48 animate-pulse rounded bg-gray-200" />
-        <p className="text-sm text-gray-600">Loading exam…</p>
+        <p className="text-sm text-gray-600">{t('exam.detail.loading')}</p>
       </div>
     )
   }
@@ -103,9 +115,9 @@ export default function ExamDetail() {
   if (!e) {
     return (
       <div className="space-y-4 p-6">
-        <p className="text-sm text-gray-700">Exam not found.</p>
+        <p className="text-sm text-gray-700">{t('exam.detail.notFound')}</p>
         <Link to="/teacher-tools/exams" className="text-sm font-semibold text-primary-600">
-          ← Back to exams
+          {t('exam.detail.backToList')}
         </Link>
       </div>
     )
@@ -127,8 +139,8 @@ export default function ExamDetail() {
         title={e.title}
         subtitle={`${e.subject} · ${e.examType} · ${e.term}`}
         breadcrumbs={[
-          { label: 'Teacher Tools', to: '/teacher-tools' },
-          { label: 'Exams', to: '/teacher-tools/exams' },
+          { label: t('teacherTools.breadcrumbTeacherTools'), to: '/teacher-tools' },
+          { label: t('exam.breadcrumb'), to: '/teacher-tools/exams' },
           { label: e.title },
         ]}
         actions={
@@ -139,20 +151,20 @@ export default function ExamDetail() {
               onClick={() => void goEdit()}
               className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-800"
             >
-              Edit
+              {t('teacherTools.edit')}
             </button>
             <Link
               to={`/teacher-tools/exams/${e.id}/candidates`}
               className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-800"
             >
-              Candidates
+              {t('exam.detail.candidates')}
               <Phase2Badge className="ml-0.5" />
             </Link>
             <Link
               to={`/teacher-tools/exams/${e.id}/results`}
               className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-800"
             >
-              Results
+              {t('exam.detail.results')}
               <Phase2Badge className="ml-0.5" />
             </Link>
           </div>
@@ -160,23 +172,23 @@ export default function ExamDetail() {
       />
 
       <div className="flex flex-wrap gap-2">
-        {tabs.map((t) => {
-          const isLocked = LOCKED_TABS.has(t)
+        {tabs.map((tabKey) => {
+          const isLocked = LOCKED_TABS.has(tabKey)
           return (
             <button
-              key={t}
+              key={tabKey}
               type="button"
-              onClick={() => { if (!isLocked) setTab(t) }}
-              title={isLocked ? 'Available in Phase 2' : undefined}
+              onClick={() => { if (!isLocked) setTab(tabKey) }}
+              title={isLocked ? t('teacherTools.phase2Tooltip') : undefined}
               className={`rounded-full px-4 py-2 text-xs font-semibold uppercase ${
-                tab === t
+                tab === tabKey
                   ? 'bg-primary-600 text-white'
                   : isLocked
                     ? 'cursor-not-allowed bg-gray-100 text-gray-400'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
-              {t}
+              {t(TAB_I18N[tabKey])}
               {isLocked ? <span className="ml-1.5 align-middle">• P2</span> : null}
             </button>
           )
@@ -187,26 +199,26 @@ export default function ExamDetail() {
         <div className="space-y-4">
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Duration</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">{t('exam.detail.duration')}</p>
               <p className="mt-2 text-2xl font-semibold text-gray-900">{e.durationMinutes} min</p>
-              <p className="mt-1 text-xs text-gray-500">Per candidate</p>
+              <p className="mt-1 text-xs text-gray-500">{t('exam.detail.perCandidate')}</p>
             </div>
             <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Total marks</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">{t('exam.detail.totalMarks')}</p>
               <p className="mt-2 text-2xl font-semibold text-gray-900">{e.totalMarks}</p>
-              <p className="mt-1 text-xs text-gray-500">{sections.length} sections</p>
+              <p className="mt-1 text-xs text-gray-500">{t('exam.detail.sectionsCount', { count: sections.length })}</p>
             </div>
             <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Completion</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">{t('exam.detail.completion')}</p>
               <p className="mt-2 text-2xl font-semibold text-gray-900">
-                {e.status === 'completed' ? `${e.completionPct}%` : 'N/A'}
+                {e.status === 'completed' ? `${e.completionPct}%` : t('quiz.detail.na')}
               </p>
               <p className="mt-1 text-xs text-gray-500">
-                {e.status === 'completed' ? 'Candidates sat' : 'Available after exam window'}
+                {e.status === 'completed' ? t('exam.detail.candidatesSat') : t('exam.detail.completionAfterWindow')}
               </p>
             </div>
             <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Term</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">{t('exam.detail.term')}</p>
               <p className="mt-2 text-xl font-semibold text-gray-900">{e.term}</p>
               <p className="mt-1 text-xs text-gray-500">{e.examType}</p>
             </div>
@@ -214,47 +226,47 @@ export default function ExamDetail() {
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-              <h3 className="font-semibold text-gray-900">Schedule</h3>
+              <h3 className="font-semibold text-gray-900">{t('exam.detail.schedule')}</h3>
               <dl className="mt-3 space-y-2 text-sm">
                 <div className="flex items-start justify-between gap-3">
-                  <dt className="text-gray-500">Start</dt>
-                  <dd className="text-right text-gray-800">{fmtDateTime(e.scheduleStart)}</dd>
+                  <dt className="text-gray-500">{t('exam.detail.start')}</dt>
+                  <dd className="text-right text-gray-800">{fmtDateTime(e.scheduleStart, t('exam.detail.notScheduled'))}</dd>
                 </div>
                 <div className="flex items-start justify-between gap-3">
-                  <dt className="text-gray-500">End</dt>
-                  <dd className="text-right text-gray-800">{fmtDateTime(e.scheduleEnd)}</dd>
+                  <dt className="text-gray-500">{t('exam.detail.end')}</dt>
+                  <dd className="text-right text-gray-800">{fmtDateTime(e.scheduleEnd, t('exam.detail.notScheduled'))}</dd>
                 </div>
                 <div className="flex items-start justify-between gap-3">
-                  <dt className="text-gray-500">Classes</dt>
+                  <dt className="text-gray-500">{t('exam.detail.classes')}</dt>
                   <dd className="text-right text-gray-800">{e.classes.length}</dd>
                 </div>
               </dl>
               {e.status === 'draft' && (
                 <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
-                  This exam is a draft. Schedule it to make it visible to candidates.
+                  {t('exam.detail.draftScheduleHint')}
                 </div>
               )}
             </div>
 
             <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-              <h3 className="font-semibold text-gray-900">Content</h3>
+              <h3 className="font-semibold text-gray-900">{t('exam.detail.content')}</h3>
               <dl className="mt-3 space-y-2 text-sm">
                 <div className="flex items-start justify-between gap-3">
-                  <dt className="text-gray-500">Grade</dt>
+                  <dt className="text-gray-500">{t('exam.detail.grade')}</dt>
                   <dd className="text-right text-gray-800">{e.grade}</dd>
                 </div>
                 {e.sourceSummary && (
                   <div className="flex items-start justify-between gap-3">
-                    <dt className="text-gray-500">Source strategy</dt>
+                    <dt className="text-gray-500">{t('exam.detail.sourceStrategy')}</dt>
                     <dd className="text-right text-gray-800">{e.sourceSummary}</dd>
                   </div>
                 )}
                 <div className="flex items-start justify-between gap-3">
-                  <dt className="text-gray-500">Sections</dt>
+                  <dt className="text-gray-500">{t('exam.detail.tabs.sections')}</dt>
                   <dd className="text-right text-gray-800">{sections.length}</dd>
                 </div>
                 <div className="flex items-start justify-between gap-3">
-                  <dt className="text-gray-500">Total marks</dt>
+                  <dt className="text-gray-500">{t('exam.detail.totalMarks')}</dt>
                   <dd className="text-right text-gray-800">{e.totalMarks}</dd>
                 </div>
               </dl>
@@ -265,14 +277,14 @@ export default function ExamDetail() {
 
       {tab === 'Sections' && (
         <div className="space-y-3">
-          <p className="text-xs text-gray-500">Section structure is generated from the exam's topic scope. Adjust in Edit.</p>
+          <p className="text-xs text-gray-500">{t('exam.detail.sectionsHint')}</p>
           <ul className="space-y-3">
             {sections.map((s, i) => (
               <li key={i} className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold text-gray-900 text-sm">{s.title}</h3>
                   <span className="rounded-full bg-primary-50 px-3 py-1 text-xs font-bold text-primary-700">
-                    {s.marks} marks
+                    {t('exam.detail.marksLabel', { count: s.marks })}
                   </span>
                 </div>
                 <p className="mt-1.5 text-sm text-gray-600">{s.description}</p>
@@ -280,96 +292,96 @@ export default function ExamDetail() {
             ))}
           </ul>
           <div className="flex items-center justify-between rounded-xl bg-gray-50 px-4 py-2 text-sm font-semibold">
-            <span className="text-gray-700">Total</span>
-            <span className="text-gray-900">{e.totalMarks} marks</span>
+            <span className="text-gray-700">{t('exam.detail.total')}</span>
+            <span className="text-gray-900">{t('exam.detail.marksLabel', { count: e.totalMarks })}</span>
           </div>
         </div>
       )}
 
       {tab === 'Rules' && (
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm space-y-4">
-          <h3 className="font-semibold text-gray-900">Exam rules & integrity</h3>
+          <h3 className="font-semibold text-gray-900">{t('exam.detail.rulesTitle')}</h3>
           <dl className="text-sm divide-y divide-gray-100">
             <div className="flex items-center justify-between py-2.5">
-              <dt className="text-gray-500">Mode</dt>
-              <dd className="text-gray-800">Controlled (browser locked)</dd>
+              <dt className="text-gray-500">{t('exam.detail.mode')}</dt>
+              <dd className="text-gray-800">{t('exam.detail.modeControlled')}</dd>
             </div>
             <div className="flex items-center justify-between py-2.5">
-              <dt className="text-gray-500">Question order</dt>
-              <dd className="text-gray-800">Randomised per candidate</dd>
+              <dt className="text-gray-500">{t('exam.detail.questionOrder')}</dt>
+              <dd className="text-gray-800">{t('exam.detail.questionOrderRandom')}</dd>
             </div>
             <div className="flex items-center justify-between py-2.5">
-              <dt className="text-gray-500">Webcam proctoring</dt>
-              <dd className="italic text-gray-400">Preview only — Phase 2</dd>
+              <dt className="text-gray-500">{t('exam.detail.webcamProctoring')}</dt>
+              <dd className="italic text-gray-400">{t('exam.detail.webcamPhase2')}</dd>
             </div>
             <div className="flex items-center justify-between py-2.5">
-              <dt className="text-gray-500">Auto-submit</dt>
-              <dd className="text-gray-800">On time expiry</dd>
+              <dt className="text-gray-500">{t('exam.detail.autoSubmit')}</dt>
+              <dd className="text-gray-800">{t('exam.detail.autoSubmitExpiry')}</dd>
             </div>
             <div className="flex items-center justify-between py-2.5">
-              <dt className="text-gray-500">Late entry</dt>
-              <dd className="text-gray-800">Not permitted after window closes</dd>
+              <dt className="text-gray-500">{t('exam.detail.lateEntry')}</dt>
+              <dd className="text-gray-800">{t('exam.detail.lateEntryNotPermitted')}</dd>
             </div>
           </dl>
         </div>
       )}
 
       {tab === 'Candidates' && (
-        <Phase2Section title="Candidate roster (preview)">
+        <Phase2Section title={t('exam.detail.phase2CandidatesTitle')}>
           <div className="space-y-2 text-sm text-gray-700">
-            <p>Registered candidates, seating plan, check-in status, and access codes appear here.</p>
-            <p>Roster import from school information systems unlocks in Phase 2.</p>
+            <p>{t('exam.detail.candidatesBody1')}</p>
+            <p>{t('exam.detail.candidatesBody2')}</p>
             <Link
               to={`/teacher-tools/exams/${e.id}/candidates`}
               className="mt-2 inline-block font-semibold text-primary-600"
             >
-              Open candidates preview →
+              {t('exam.detail.openCandidatesPreview')}
             </Link>
           </div>
         </Phase2Section>
       )}
 
       {tab === 'Results' && (
-        <Phase2Section title="Exam results (preview)">
+        <Phase2Section title={t('exam.detail.phase2ResultsTitle')}>
           <div className="space-y-2 text-sm text-gray-700">
-            <p>Mark entry, grade boundary configuration, and results publishing appear here.</p>
-            <p>Automated marking of objective sections unlocks in Phase 2.</p>
+            <p>{t('exam.detail.resultsBody1')}</p>
+            <p>{t('exam.detail.resultsBody2')}</p>
             <Link
               to={`/teacher-tools/exams/${e.id}/results`}
               className="mt-2 inline-block font-semibold text-primary-600"
             >
-              Open results preview →
+              {t('exam.detail.openResultsPreview')}
             </Link>
           </div>
         </Phase2Section>
       )}
 
       {tab === 'Analytics' && (
-        <Phase2Section title="Exam analytics (locked)">
+        <Phase2Section title={t('exam.detail.phase2AnalyticsTitle')}>
           <div className="space-y-2 text-sm text-gray-700">
-            <p>Score distributions, grade boundary visualisations, and question item analysis appear here.</p>
-            <p>Requires candidate telemetry and result publishing in Phase 2.</p>
+            <p>{t('exam.detail.analyticsBody1')}</p>
+            <p>{t('exam.detail.analyticsBody2')}</p>
           </div>
         </Phase2Section>
       )}
 
       {tab === 'Settings' && (
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm space-y-3">
-          <h3 className="font-semibold text-gray-900">Exam settings</h3>
+          <h3 className="font-semibold text-gray-900">{t('exam.detail.settingsTitle')}</h3>
           <dl className="text-sm divide-y divide-gray-100">
             <div className="flex items-center justify-between py-2.5">
-              <dt className="text-gray-500">Visibility</dt>
+              <dt className="text-gray-500">{t('exam.detail.visibility')}</dt>
               <dd className="text-gray-800">
-                {e.status === 'draft' ? 'Hidden (draft)' : 'Visible to registered candidates'}
+                {e.status === 'draft' ? t('exam.detail.visibilityDraft') : t('exam.detail.visibilityPublished')}
               </dd>
             </div>
             <div className="flex items-center justify-between py-2.5">
-              <dt className="text-gray-500">Results release</dt>
-              <dd className="text-gray-800">Manual (teacher controlled — Phase 2)</dd>
+              <dt className="text-gray-500">{t('exam.detail.resultsRelease')}</dt>
+              <dd className="text-gray-800">{t('exam.detail.resultsReleaseManual')}</dd>
             </div>
             <div className="flex items-center justify-between py-2.5">
-              <dt className="text-gray-500">Re-sit policy</dt>
-              <dd className="text-gray-800">Configurable per candidate — Phase 2</dd>
+              <dt className="text-gray-500">{t('exam.detail.resitPolicy')}</dt>
+              <dd className="text-gray-800">{t('exam.detail.resitPolicyPhase2')}</dd>
             </div>
           </dl>
         </div>

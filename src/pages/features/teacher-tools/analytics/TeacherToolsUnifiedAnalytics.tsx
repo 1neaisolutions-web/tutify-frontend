@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { BarChart3, Download } from 'lucide-react'
 import {
   ChartSkeleton,
@@ -11,6 +12,7 @@ import { useGetStatsQuery } from '../../../../redux/features/teacherTools/stats/
 import { useSnackbar } from '../../../../hooks/useSnackbar'
 
 export default function TeacherToolsUnifiedAnalytics() {
+  const { t } = useTranslation()
   const { toast } = useSnackbar()
   const { data: stats, isLoading } = useGetStatsQuery()
   const { allQuizzes, allAssignments, allWorksheets, allExams } = useTeacherToolsDemo()
@@ -25,29 +27,30 @@ export default function TeacherToolsUnifiedAnalytics() {
     const avgScore = scoredQuizzes.length
       ? `${Math.round(scoredQuizzes.reduce((s, q) => s + q.avgScore, 0) / scoredQuizzes.length)}%`
       : '—'
-    const workload: string = drafts > 20 ? 'High' : drafts > 8 ? 'Medium' : 'Low'
+    const workload: string =
+      drafts > 20 ? t('teacherTools.workloadHigh') : drafts > 8 ? t('teacherTools.workloadMedium') : t('teacherTools.workloadLow')
     return [
-      { label: 'Content created', value: String(total) },
-      { label: 'Pending drafts', value: String(drafts) },
-      { label: 'Avg quiz score', value: avgScore },
-      { label: 'Review workload', value: workload },
+      { label: t('teacherTools.statContentCreated'), value: String(total) },
+      { label: t('teacherTools.overview.kpiPendingDrafts'), value: String(drafts) },
+      { label: t('teacherTools.overview.kpiAvgQuizScore'), value: avgScore },
+      { label: t('teacherTools.statReviewWorkload'), value: workload },
     ]
-  }, [stats, allQuizzes, allAssignments, allWorksheets, allExams])
+  }, [stats, allQuizzes, allAssignments, allWorksheets, allExams, t])
 
   const toolPoints = useMemo(() => {
     const counts = [
-      { label: 'Quiz', value: stats?.quizzes.total ?? allQuizzes.length, colorClass: 'bg-indigo-500' },
-      { label: 'Assign', value: stats?.assignments.total ?? allAssignments.length, colorClass: 'bg-violet-500' },
-      { label: 'Sheet', value: stats?.worksheets.total ?? allWorksheets.length, colorClass: 'bg-emerald-500' },
-      { label: 'Exam', value: stats?.exams.total ?? allExams.length, colorClass: 'bg-amber-500' },
+      { label: t('quiz.breadcrumb'), value: stats?.quizzes.total ?? allQuizzes.length, colorClass: 'bg-indigo-500' },
+      { label: t('teacherTools.toolAssign'), value: stats?.assignments.total ?? allAssignments.length, colorClass: 'bg-violet-500' },
+      { label: t('teacherTools.toolSheet'), value: stats?.worksheets.total ?? allWorksheets.length, colorClass: 'bg-emerald-500' },
+      { label: t('teacherTools.toolExam'), value: stats?.exams.total ?? allExams.length, colorClass: 'bg-amber-500' },
     ]
     const max = Math.max(...counts.map((c) => c.value), 1)
     return counts.map((c) => ({ ...c, max }))
-  }, [stats, allQuizzes, allAssignments, allWorksheets, allExams])
+  }, [stats, allQuizzes, allAssignments, allWorksheets, allExams, t])
 
   const handleExport = () => {
     if (!stats) {
-      toast.error('Stats not loaded yet')
+      toast.error(t('teacherTools.toastStatsNotLoaded'))
       return
     }
     const rows: (string | number)[][] = [
@@ -90,22 +93,22 @@ export default function TeacherToolsUnifiedAnalytics() {
     a.download = `teacher-tools-stats-${new Date().toISOString().slice(0, 10)}.csv`
     a.click()
     URL.revokeObjectURL(url)
-    toast.success('CSV downloaded')
+    toast.success(t('teacherTools.toastCsvDownloaded'))
   }
 
   return (
     <div className="space-y-8">
       <TeacherToolsPageHeader
-        title="Teacher Tools analytics"
-        subtitle="Cross-tool performance, grading workload, and exportable reports."
-        breadcrumbs={[{ label: 'Teacher Tools', to: '/teacher-tools' }, { label: 'Analytics' }]}
+        title={t('teacherTools.analytics.title')}
+        subtitle={t('teacherTools.analytics.subtitle')}
+        breadcrumbs={[{ label: t('teacherTools.breadcrumbTeacherTools'), to: '/teacher-tools' }, { label: t('exam.detail.tabs.analytics') }]}
         actions={
           <button
             type="button"
             onClick={handleExport}
             className="inline-flex items-center gap-2 rounded-full bg-primary-600 px-4 py-2 text-sm font-semibold text-white"
           >
-            <Download className="h-4 w-4" /> Export report
+            <Download className="h-4 w-4" /> {t('teacherTools.exportReport')}
           </button>
         }
       />
@@ -114,7 +117,7 @@ export default function TeacherToolsUnifiedAnalytics() {
 
       {!isLoading && (
         <>
-          <p className="text-xs text-gray-500">Figures below are drawn from your live content library.</p>
+          <p className="text-xs text-gray-500">{t('teacherTools.figuresNote')}</p>
 
           <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {statCards.map((k) => (
@@ -125,25 +128,20 @@ export default function TeacherToolsUnifiedAnalytics() {
             ))}
           </section>
 
-          <SimpleBarChart title="Tool library" subtitle="Total items created per tool" points={toolPoints} />
+          <SimpleBarChart title={t('teacherTools.chartToolLibrary')} subtitle={t('teacherTools.chartToolLibrarySubtitle')} points={toolPoints} />
 
           {showInsights && (
             <div className="rounded-3xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-6 shadow-sm">
               <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                <BarChart3 className="h-4 w-4" /> Productivity
+                <BarChart3 className="h-4 w-4" /> {t('teacherTools.productivity')}
               </div>
-              <p className="mt-2 text-sm text-gray-700">
-                Productivity insights will appear here once student submissions are enabled.
-              </p>
+              <p className="mt-2 text-sm text-gray-700">{t('teacherTools.productivityHint')}</p>
             </div>
           )}
 
           <div className="rounded-3xl border border-amber-100 bg-amber-50 p-5">
-            <p className="text-xs font-semibold text-amber-700">Phase 2 — coming soon</p>
-            <p className="mt-1 text-sm text-amber-800">
-              Student engagement rates, score trends, and per-class performance will appear here once the student-facing
-              submission portal is live.
-            </p>
+            <p className="text-xs font-semibold text-amber-700">{t('teacherTools.phase2ComingSoon')}</p>
+            <p className="mt-1 text-sm text-amber-800">{t('teacherTools.phase2Body')}</p>
           </div>
         </>
       )}

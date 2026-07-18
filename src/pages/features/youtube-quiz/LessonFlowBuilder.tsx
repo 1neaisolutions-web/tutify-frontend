@@ -10,6 +10,7 @@ import {
   Languages,
   CheckCircle2,
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useSnackbar } from '../../../hooks/useSnackbar'
 import { getLessonStrategies, LessonStrategySummary } from '../../../api/youtubeQuiz'
 
@@ -82,9 +83,9 @@ const prettyQuestionType = (value: string): string =>
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(' ')
 
-const formatQuestionMix = (mix: Record<string, number>): string => {
+const formatQuestionMix = (mix: Record<string, number>, emptyLabel: string): string => {
   const total = Object.values(mix).reduce((sum, value) => sum + value, 0)
-  if (!total) return 'No question mix available'
+  if (!total) return emptyLabel
   return Object.entries(mix)
     .map(([key, value]) => `${Math.round((value / total) * 100)}% ${prettyQuestionType(key)}`)
     .join(' · ')
@@ -97,6 +98,7 @@ interface Props {
 }
 
 export function LessonFlowBuilder({ onStrategyApplied, onUserInteract }: Props) {
+  const { t } = useTranslation()
   const { toast } = useSnackbar()
   const [strategies, setStrategies] = useState<LessonStrategySummary[]>([])
   const [activeId, setActiveId] = useState<string | null>(null)
@@ -112,14 +114,14 @@ export function LessonFlowBuilder({ onStrategyApplied, onUserInteract }: Props) 
       } catch (error) {
         if (cancelled) return
         console.error('Failed to load lesson strategies', error)
-        toast.error('Unable to load lesson strategies right now.')
+        toast.error(t('youtubeQuizPage.lessonFlow.loadFailed'))
       }
     }
     loadStrategies()
     return () => {
       cancelled = true
     }
-  }, [toast])
+  }, [toast, t])
 
   const strategyCards = useMemo<StrategyCard[]>(
     () =>
@@ -135,7 +137,7 @@ export function LessonFlowBuilder({ onStrategyApplied, onUserInteract }: Props) 
   const handleApply = () => {
     if (!active) return
     setAppliedId(active.id)
-    toast.success(`Strategy "${active.title}" applied to your quiz configuration.`)
+    toast.success(t('youtubeQuizPage.lessonFlow.applySuccess', { title: active.title }))
     onStrategyApplied?.(active.id, active.title)
     onUserInteract?.()
   }
@@ -149,16 +151,16 @@ export function LessonFlowBuilder({ onStrategyApplied, onUserInteract }: Props) 
         <div>
           <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
             <ListChecks className="h-5 w-5 text-red-500" />
-            Interactive Lesson Flow Builder
+            {t('youtubeQuizPage.lessonFlow.title')}
           </h3>
-          <p className="mt-1 text-sm text-gray-500">
-            Tap a card to preview, then apply — your choice updates the quiz blueprint above (we scroll you there).
-          </p>
+          <p className="mt-1 text-sm text-gray-500">{t('youtubeQuizPage.lessonFlow.hint')}</p>
         </div>
         {appliedId && (
           <div className="flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-3 py-1.5 text-xs font-semibold text-green-700">
             <CheckCircle2 className="h-3.5 w-3.5" />
-            Strategy: {strategyCards.find((s) => s.id === appliedId)?.title}
+            {t('youtubeQuizPage.lessonFlow.strategyApplied', {
+              title: strategyCards.find((s) => s.id === appliedId)?.title,
+            })}
           </div>
         )}
       </div>
@@ -195,27 +197,39 @@ export function LessonFlowBuilder({ onStrategyApplied, onUserInteract }: Props) 
         <div className="mt-5 rounded-2xl border border-gray-200 bg-gray-50 p-5 transition-all">
           <div className="mb-4 flex items-center justify-between">
             <p className="text-sm font-semibold text-gray-900">
-              Applied Strategy Preview — {active.title}
+              {t('youtubeQuizPage.lessonFlow.previewTitle', { title: active.title })}
             </p>
             <span
               className={`rounded-full px-2.5 py-0.5 text-xs font-semibold text-white ${active.badgeCls}`}
             >
-              Active
+              {t('youtubeQuizPage.lessonFlow.active')}
             </span>
           </div>
 
           <div className="grid gap-4 text-sm md:grid-cols-2">
-            <DetailField label="Teaching mode" value={active.teaching_mode} />
-            <DetailField label="Recommended quiz type" value={active.recommended_quiz_type} />
+            <DetailField label={t('youtubeQuizPage.lessonFlow.teachingMode')} value={active.teaching_mode} />
             <DetailField
-              label="Suggested question mix"
-              value={formatQuestionMix(active.base_question_mix)}
+              label={t('youtubeQuizPage.lessonFlow.recommendedQuizType')}
+              value={active.recommended_quiz_type}
+            />
+            <DetailField
+              label={t('youtubeQuizPage.lessonFlow.questionMix')}
+              value={formatQuestionMix(
+                active.base_question_mix,
+                t('youtubeQuizPage.lessonFlow.noQuestionMix')
+              )}
               wide
             />
-            <DetailField label="Estimated classroom time" value={active.estimated_classroom_time} />
-            <DetailField label="Recommended export format" value={active.recommended_export_format} />
             <DetailField
-              label="Best use case"
+              label={t('youtubeQuizPage.lessonFlow.classroomTime')}
+              value={active.estimated_classroom_time}
+            />
+            <DetailField
+              label={t('youtubeQuizPage.lessonFlow.exportFormat')}
+              value={active.recommended_export_format}
+            />
+            <DetailField
+              label={t('youtubeQuizPage.lessonFlow.bestUseCase')}
               value={active.best_use_case}
               wide
             />
@@ -223,14 +237,14 @@ export function LessonFlowBuilder({ onStrategyApplied, onUserInteract }: Props) 
 
           <div className="mt-4 rounded-xl border border-dashed border-gray-300 bg-white p-3">
             <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500">
-              Teacher prompt
+              {t('youtubeQuizPage.lessonFlow.teacherPrompt')}
             </p>
             <p className="italic text-gray-800">{active.teacher_prompt}</p>
           </div>
 
           <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3">
             <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-amber-700">
-              Differentiation note
+              {t('youtubeQuizPage.lessonFlow.differentiationNote')}
             </p>
             <p className="text-sm text-amber-900">{active.differentiation_note}</p>
           </div>
@@ -240,7 +254,7 @@ export function LessonFlowBuilder({ onStrategyApplied, onUserInteract }: Props) 
             className="mt-4 inline-flex items-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-700"
           >
             <ChevronRight className="h-4 w-4" />
-            Apply Strategy to Quiz
+            {t('youtubeQuizPage.lessonFlow.applyStrategy')}
           </button>
         </div>
       )}

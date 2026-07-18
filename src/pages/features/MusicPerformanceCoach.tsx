@@ -58,11 +58,13 @@ import {
   mapMusicStandardsList,
 } from '../../utils/musicAdapters'
 
+import { useTranslation } from 'react-i18next'
 const CHATBOT_SLUG = 'music-performance-coach'
 
 type TabType = 'theory' | 'composition' | 'performance' | 'ensemble' | 'pedagogy' | 'games' | 'standards' | 'resources'
 
 const MusicPerformanceCoach = () => {
+  const { t } = useTranslation()
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const [activeTab, setActiveTab] = useState<TabType>('theory')
@@ -140,7 +142,7 @@ const MusicPerformanceCoach = () => {
         else if (tab === 'games') setMusicGames(mapMusicGamesList(raw))
         else if (tab === 'standards') setMusicStandards(mapMusicStandardsList(raw, gradeLevel))
       } catch {
-        toast.error('Could not restore saved output from History.')
+        toast.error(t('musicPerformanceCoach.couldNotRestoreSavedOutputFromHistory'))
       }
     },
   })
@@ -169,13 +171,13 @@ const MusicPerformanceCoach = () => {
       if (response == null) return
       setMusicTheoryInfo(mapMusicTheoryResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Music theory loaded')
+      toast.success(t('musicPerformanceCoach.musicTheoryLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load music theory'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('musicPerformanceCoach.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -200,13 +202,13 @@ const MusicPerformanceCoach = () => {
       if (response == null) return
       setCompositionGuide(mapMusicCompositionResult(response.result, selectedStyle, gradeLevel))
       pinFromResponse(response.conversation_id)
-      toast.success('Composition guide loaded')
+      toast.success(t('musicPerformanceCoach.compositionGuideLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load composition guide'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('musicPerformanceCoach.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -231,13 +233,13 @@ const MusicPerformanceCoach = () => {
       if (response == null) return
       setTechniqueInfo(mapPerformanceTechniqueResult(response.result, performanceTechnique))
       pinFromResponse(response.conversation_id)
-      toast.success('Performance techniques loaded')
+      toast.success(t('musicPerformanceCoach.performanceTechniquesLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load performance techniques'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('musicPerformanceCoach.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -262,13 +264,13 @@ const MusicPerformanceCoach = () => {
       if (response == null) return
       setEnsembleGuide(mapEnsembleResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Ensemble guide loaded')
+      toast.success(t('musicPerformanceCoach.ensembleGuideLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load ensemble guide'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('musicPerformanceCoach.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -292,13 +294,13 @@ const MusicPerformanceCoach = () => {
       if (response == null) return
       setPedagogicalMethods(mapMusicPedagogyList(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Pedagogy methods loaded')
+      toast.success(t('musicPerformanceCoach.pedagogyMethodsLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load pedagogy methods'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('musicPerformanceCoach.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -323,13 +325,13 @@ const MusicPerformanceCoach = () => {
       if (response == null) return
       setMusicGames(mapMusicGamesList(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Music games loaded')
+      toast.success(t('musicPerformanceCoach.musicGamesLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load music games'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('musicPerformanceCoach.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -353,13 +355,13 @@ const MusicPerformanceCoach = () => {
       if (response == null) return
       setMusicStandards(mapMusicStandardsList(response.result, gradeLevel))
       pinFromResponse(response.conversation_id)
-      toast.success('Music standards loaded')
+      toast.success(t('musicPerformanceCoach.musicStandardsLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load music standards'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('musicPerformanceCoach.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -367,14 +369,14 @@ const MusicPerformanceCoach = () => {
   }
 
   const tabs = [
-    { id: 'theory' as TabType, label: 'Music Theory', icon: BookOpen },
-    { id: 'composition' as TabType, label: 'Composition', icon: FileMusic },
-    { id: 'performance' as TabType, label: 'Performance', icon: Mic },
-    { id: 'ensemble' as TabType, label: 'Ensemble', icon: Users },
-    { id: 'pedagogy' as TabType, label: 'Pedagogy', icon: GraduationCap },
-    { id: 'games' as TabType, label: 'Games', icon: Gamepad2 },
-    { id: 'standards' as TabType, label: 'Standards', icon: CheckCircle },
-    { id: 'resources' as TabType, label: 'Resources', icon: Music },
+    { id: 'theory' as TabType, label: t('musicPerformanceCoach.tabs.theory'), icon: BookOpen },
+    { id: 'composition' as TabType, label: t('musicPerformanceCoach.tabs.composition'), icon: FileMusic },
+    { id: 'performance' as TabType, label: t('musicPerformanceCoach.tabs.performance'), icon: Mic },
+    { id: 'ensemble' as TabType, label: t('musicPerformanceCoach.tabs.ensemble'), icon: Users },
+    { id: 'pedagogy' as TabType, label: t('musicPerformanceCoach.tabs.pedagogy'), icon: GraduationCap },
+    { id: 'games' as TabType, label: t('musicPerformanceCoach.tabs.games'), icon: Gamepad2 },
+    { id: 'standards' as TabType, label: t('musicPerformanceCoach.tabs.standards'), icon: CheckCircle },
+    { id: 'resources' as TabType, label: t('musicPerformanceCoach.tabs.resources'), icon: Music },
   ]
 
   return (
@@ -398,29 +400,23 @@ const MusicPerformanceCoach = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-3xl font-bold">Music & Performance Coach</h1>
+                  <h1 className="text-3xl font-bold">{t('musicPerformanceCoach.musicPerformanceCoach')}</h1>
                   <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
                     <Star className="h-3 w-3" /> 4.9★
                   </span>
                   <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" /> Premium
-                  </span>
+                    <Lock className="inline h-3 w-3 mr-1" />{t('musicPerformanceCoach.premium')}</span>
                   <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
-                    <Globe className="inline h-3 w-3 mr-1" /> International Standards
-                  </span>
+                    <Globe className="inline h-3 w-3 mr-1" />{t('musicPerformanceCoach.internationalStandards')}</span>
                 </div>
-                <p className="mt-2 text-purple-100">
-                  Comprehensive music education tools aligned with international standards (ISME, ISM, WIAE). 
-                  Help students learn music theory, composition, performance techniques, and ensemble coordination 
-                  through fun, engaging methods. Prepare students for global music excellence.
-                </p>
+                <p className="mt-2 text-blue-100">{t('musicPerformanceCoach.heroDescription')}</p>
               </div>
             </div>
             
             {/* Quick Settings */}
             <div className="flex flex-wrap gap-4 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Grade Level:</label>
+                <label className="text-sm font-medium">{t('musicPerformanceCoach.gradeLevel')}</label>
                 <select
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
@@ -429,11 +425,11 @@ const MusicPerformanceCoach = () => {
                   <option>Elementary (K-5)</option>
                   <option>Middle School (6-8)</option>
                   <option>High School (9-12)</option>
-                  <option>College</option>
+                  <option>{t('musicPerformanceCoach.college')}</option>
                 </select>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Instrument:</label>
+                <label className="text-sm font-medium">{t('musicPerformanceCoach.instrument')}</label>
                 <select
                   value={selectedInstrument}
                   onChange={(e) => setSelectedInstrument(e.target.value)}
@@ -445,7 +441,7 @@ const MusicPerformanceCoach = () => {
                 </select>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Style:</label>
+                <label className="text-sm font-medium">{t('musicPerformanceCoach.style')}</label>
                 <select
                   value={selectedStyle}
                   onChange={(e) => setSelectedStyle(e.target.value)}
@@ -491,14 +487,10 @@ const MusicPerformanceCoach = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <BookOpen className="h-6 w-6 text-purple-600" />
-                  Music Theory Fundamentals
-                </h2>
+                  <BookOpen className="h-6 w-6 text-purple-600" />{t('musicPerformanceCoach.musicTheoryFundamentals')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Theory Concept
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('musicPerformanceCoach.theoryConcept')}</label>
                     <select
                       value={theoryConcept}
                       onChange={(e) => setTheoryConcept(e.target.value)}
@@ -517,14 +509,10 @@ const MusicPerformanceCoach = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Loading...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('musicPerformanceCoach.loading')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Explore Concept
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('musicPerformanceCoach.exploreConcept')}</>
                       )}
                     </button>
                   </div>
@@ -549,12 +537,12 @@ const MusicPerformanceCoach = () => {
 
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Description</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.description')}</h4>
                       <p className="text-gray-700">{musicTheoryInfo.description}</p>
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Fundamentals</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.fundamentals')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {musicTheoryInfo.fundamentals.map((fundamental, i) => (
                           <li key={i}>{fundamental}</li>
@@ -563,7 +551,7 @@ const MusicPerformanceCoach = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Examples</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.examples')}</h4>
                       <div className="space-y-2">
                         {musicTheoryInfo.examples.map((example, i) => (
                           <div key={i} className="bg-gray-50 p-3 rounded-lg font-mono text-sm text-gray-700">
@@ -575,7 +563,7 @@ const MusicPerformanceCoach = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Exercises</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.exercises')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {musicTheoryInfo.exercises.map((exercise, i) => (
                             <li key={i}>{exercise}</li>
@@ -583,7 +571,7 @@ const MusicPerformanceCoach = () => {
                         </ul>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Tips</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.tips')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {musicTheoryInfo.tips.map((tip, i) => (
                             <li key={i}>{tip}</li>
@@ -593,7 +581,7 @@ const MusicPerformanceCoach = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Common Mistakes</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.commonMistakes')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {musicTheoryInfo.commonMistakes.map((mistake, i) => (
                           <span key={i} className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
@@ -613,22 +601,18 @@ const MusicPerformanceCoach = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-pink-50 to-rose-50 rounded-xl p-6 border border-pink-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <FileMusic className="h-6 w-6 text-pink-600" />
-                  Composition Tools
-                </h2>
+                  <FileMusic className="h-6 w-6 text-pink-600" />{t('musicPerformanceCoach.compositionTools')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Composition Type
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('musicPerformanceCoach.compositionType')}</label>
                     <select
                       value={compositionType}
                       onChange={(e) => setCompositionType(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500"
                     >
-                      <option value="melody">Melody Writing</option>
-                      <option value="harmony">Harmony Writing</option>
-                      <option value="rhythm">Rhythm Composition</option>
+                      <option value="melody">{t('musicPerformanceCoach.melodyWriting')}</option>
+                      <option value="harmony">{t('musicPerformanceCoach.harmonyWriting')}</option>
+                      <option value="rhythm">{t('musicPerformanceCoach.rhythmComposition')}</option>
                     </select>
                   </div>
                   <div className="flex items-end">
@@ -639,14 +623,10 @@ const MusicPerformanceCoach = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Loading...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('musicPerformanceCoach.loading')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Get Guide
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('musicPerformanceCoach.getGuide')}</>
                       )}
                     </button>
                   </div>
@@ -659,14 +639,14 @@ const MusicPerformanceCoach = () => {
                   
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Composition Elements</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">{t('musicPerformanceCoach.compositionElements')}</h4>
                       <div className="space-y-3">
                         {compositionGuide.elements.map((element, idx) => (
                           <div key={idx} className="border-l-4 border-pink-500 pl-4">
                             <h5 className="font-semibold text-gray-900 mb-1">{element.element}</h5>
                             <p className="text-gray-700 mb-2">{element.description}</p>
                             <div>
-                              <span className="text-sm font-medium text-gray-700">Techniques:</span>
+                              <span className="text-sm font-medium text-gray-700">{t('musicPerformanceCoach.techniques')}</span>
                               <div className="flex flex-wrap gap-2 mt-1">
                                 {element.techniques.map((tech, i) => (
                                   <span key={i} className="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-xs font-medium">
@@ -681,7 +661,7 @@ const MusicPerformanceCoach = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Structure</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.structure')}</h4>
                       <div className="space-y-2">
                         {compositionGuide.structure.map((step, i) => (
                           <div key={i} className="flex gap-3 p-2 bg-gray-50 rounded">
@@ -695,7 +675,7 @@ const MusicPerformanceCoach = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Exercises</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.exercises')}</h4>
                       <ul className="list-disc list-inside space-y-1 text-gray-700">
                         {compositionGuide.exercises.map((exercise, i) => (
                           <li key={i}>{exercise}</li>
@@ -713,23 +693,19 @@ const MusicPerformanceCoach = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-rose-50 to-red-50 rounded-xl p-6 border border-rose-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Mic className="h-6 w-6 text-rose-600" />
-                  Performance Techniques
-                </h2>
+                  <Mic className="h-6 w-6 text-rose-600" />{t('musicPerformanceCoach.performanceTechniques')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Technique
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('musicPerformanceCoach.technique')}</label>
                     <select
                       value={performanceTechnique}
                       onChange={(e) => setPerformanceTechnique(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500"
                     >
-                      <option value="posture">Posture & Positioning</option>
-                      <option value="breathing">Breathing Technique</option>
-                      <option value="articulation">Articulation</option>
-                      <option value="expression">Expression & Dynamics</option>
+                      <option value="posture">{t('musicPerformanceCoach.posturePositioning')}</option>
+                      <option value="breathing">{t('musicPerformanceCoach.breathingTechnique')}</option>
+                      <option value="articulation">{t('musicPerformanceCoach.articulation')}</option>
+                      <option value="expression">{t('musicPerformanceCoach.expressionDynamics')}</option>
                     </select>
                   </div>
                   <div className="flex items-end">
@@ -740,14 +716,10 @@ const MusicPerformanceCoach = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Loading...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('musicPerformanceCoach.loading')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Get Technique
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('musicPerformanceCoach.getTechnique')}</>
                       )}
                     </button>
                   </div>
@@ -775,12 +747,12 @@ const MusicPerformanceCoach = () => {
 
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Description</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.description')}</h4>
                       <p className="text-gray-700">{techniqueInfo.description}</p>
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Steps</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.steps')}</h4>
                       <div className="space-y-2">
                         {techniqueInfo.steps.map((step, i) => (
                           <div key={i} className="flex gap-3 p-2 bg-gray-50 rounded">
@@ -795,7 +767,7 @@ const MusicPerformanceCoach = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Exercises</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.exercises')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {techniqueInfo.exercises.map((exercise, i) => (
                             <li key={i}>{exercise}</li>
@@ -803,7 +775,7 @@ const MusicPerformanceCoach = () => {
                         </ul>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Tips</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.tips')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {techniqueInfo.tips.map((tip, i) => (
                             <li key={i}>{tip}</li>
@@ -814,7 +786,7 @@ const MusicPerformanceCoach = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Common Issues</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.commonIssues')}</h4>
                         <div className="flex flex-wrap gap-2">
                           {techniqueInfo.commonIssues.map((issue, i) => (
                             <span key={i} className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
@@ -824,7 +796,7 @@ const MusicPerformanceCoach = () => {
                         </div>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Solutions</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.solutions')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {techniqueInfo.solutions.map((solution, i) => (
                             <li key={i}>{solution}</li>
@@ -843,14 +815,10 @@ const MusicPerformanceCoach = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Users className="h-6 w-6 text-blue-600" />
-                  Ensemble Coordination
-                </h2>
+                  <Users className="h-6 w-6 text-blue-600" />{t('musicPerformanceCoach.ensembleCoordination')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Ensemble Type
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('musicPerformanceCoach.ensembleType')}</label>
                     <select
                       value={ensembleType}
                       onChange={(e) => setEnsembleType(e.target.value)}
@@ -869,14 +837,10 @@ const MusicPerformanceCoach = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Loading...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('musicPerformanceCoach.loading')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Get Guide
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('musicPerformanceCoach.getGuide')}</>
                       )}
                     </button>
                   </div>
@@ -889,12 +853,12 @@ const MusicPerformanceCoach = () => {
                   
                   <div className="space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Description</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.description')}</h4>
                       <p className="text-gray-700">{ensembleGuide.description}</p>
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Instrumentation</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.instrumentation')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {ensembleGuide.instrumentation.map((instrument, i) => (
                           <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -905,7 +869,7 @@ const MusicPerformanceCoach = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Roles & Responsibilities</h4>
+                      <h4 className="font-semibold text-gray-900 mb-3">{t('musicPerformanceCoach.rolesResponsibilities')}</h4>
                       <div className="space-y-3">
                         {ensembleGuide.roles.map((role, idx) => (
                           <div key={idx} className="bg-gray-50 p-4 rounded-lg">
@@ -922,7 +886,7 @@ const MusicPerformanceCoach = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Rehearsal Techniques</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.rehearsalTechniques')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {ensembleGuide.rehearsalTechniques.map((technique, i) => (
                             <li key={i}>{technique}</li>
@@ -930,7 +894,7 @@ const MusicPerformanceCoach = () => {
                         </ul>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Performance Tips</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.performanceTips')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {ensembleGuide.performanceTips.map((tip, i) => (
                             <li key={i}>{tip}</li>
@@ -941,7 +905,7 @@ const MusicPerformanceCoach = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Common Challenges</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.commonChallenges')}</h4>
                         <div className="flex flex-wrap gap-2">
                           {ensembleGuide.commonChallenges.map((challenge, i) => (
                             <span key={i} className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-medium">
@@ -951,7 +915,7 @@ const MusicPerformanceCoach = () => {
                         </div>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Solutions</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.solutions')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {ensembleGuide.solutions.map((solution, i) => (
                             <li key={i}>{solution}</li>
@@ -970,12 +934,8 @@ const MusicPerformanceCoach = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <GraduationCap className="h-6 w-6 text-indigo-600" />
-                  International Pedagogical Methods
-                </h2>
-                <p className="text-gray-600 mb-4">
-                  Explore internationally recognized music education methods used worldwide.
-                </p>
+                  <GraduationCap className="h-6 w-6 text-indigo-600" />{t('musicPerformanceCoach.internationalPedagogicalMethods')}</h2>
+                <p className="text-gray-600 mb-4">{t('musicPerformanceCoach.exploreInternationallyRecognizedMusicEducationMethodsUs')}</p>
                 <button
                   onClick={handleLoadPedagogicalMethods}
                   disabled={isGenerating}
@@ -983,14 +943,10 @@ const MusicPerformanceCoach = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('musicPerformanceCoach.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load Methods
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('musicPerformanceCoach.loadMethods')}</>
                   )}
                 </button>
               </div>
@@ -1015,7 +971,7 @@ const MusicPerformanceCoach = () => {
                       {selectedMethod?.id === method.id && (
                         <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Key Principles</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.keyPrinciples')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {method.keyPrinciples.map((principle, i) => (
                                 <li key={i}>{principle}</li>
@@ -1025,7 +981,7 @@ const MusicPerformanceCoach = () => {
 
                           <div className="grid md:grid-cols-2 gap-4">
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Teaching Strategies</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.teachingStrategies')}</h4>
                               <ul className="list-disc list-inside space-y-1 text-gray-700">
                                 {method.teachingStrategies.map((strategy, i) => (
                                   <li key={i}>{strategy}</li>
@@ -1033,7 +989,7 @@ const MusicPerformanceCoach = () => {
                               </ul>
                             </div>
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Activities</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.activities')}</h4>
                               <ul className="list-disc list-inside space-y-1 text-gray-700">
                                 {method.activities.map((activity, i) => (
                                   <li key={i}>{activity}</li>
@@ -1043,7 +999,7 @@ const MusicPerformanceCoach = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Benefits</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.benefits')}</h4>
                             <div className="flex flex-wrap gap-2">
                               {method.benefits.map((benefit, i) => (
                                 <span key={i} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
@@ -1054,7 +1010,7 @@ const MusicPerformanceCoach = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Applications</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.applications')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {method.applications.map((application, i) => (
                                 <li key={i}>{application}</li>
@@ -1075,14 +1031,10 @@ const MusicPerformanceCoach = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-xl p-6 border border-yellow-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Gamepad2 className="h-6 w-6 text-yellow-600" />
-                  Interactive Music Games
-                </h2>
+                  <Gamepad2 className="h-6 w-6 text-yellow-600" />{t('musicPerformanceCoach.interactiveMusicGames')}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Game Category
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('musicPerformanceCoach.gameCategory')}</label>
                     <select
                       value={gameCategory}
                       onChange={(e) => setGameCategory(e.target.value)}
@@ -1101,14 +1053,10 @@ const MusicPerformanceCoach = () => {
                     >
                       {isGenerating ? (
                         <>
-                          <RefreshCw className="h-5 w-5 animate-spin" />
-                          Loading...
-                        </>
+                          <RefreshCw className="h-5 w-5 animate-spin" />{t('musicPerformanceCoach.loading')}</>
                       ) : (
                         <>
-                          <Sparkles className="h-5 w-5" />
-                          Load Games
-                        </>
+                          <Sparkles className="h-5 w-5" />{t('musicPerformanceCoach.loadGames')}</>
                       )}
                     </button>
                   </div>
@@ -1143,7 +1091,7 @@ const MusicPerformanceCoach = () => {
                       <p className="text-gray-700 mb-3">{game.description}</p>
 
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-2">Objectives</h4>
+                        <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.objectives')}</h4>
                         <ul className="list-disc list-inside space-y-1 text-gray-700">
                           {game.objectives.map((obj, i) => (
                             <li key={i}>{obj}</li>
@@ -1153,9 +1101,7 @@ const MusicPerformanceCoach = () => {
 
                       <div className="mt-3">
                         <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition">
-                          <PlayCircle className="h-4 w-4" />
-                          Play Game
-                        </button>
+                          <PlayCircle className="h-4 w-4" />{t('musicPerformanceCoach.playGame')}</button>
                       </div>
                     </div>
                   ))}
@@ -1169,9 +1115,7 @@ const MusicPerformanceCoach = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-xl p-6 border border-teal-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <CheckCircle className="h-6 w-6 text-teal-600" />
-                  International Music Education Standards
-                </h2>
+                  <CheckCircle className="h-6 w-6 text-teal-600" />{t('musicPerformanceCoach.internationalMusicEducationStandards')}</h2>
                 <button
                   onClick={handleLoadStandards}
                   disabled={isGenerating}
@@ -1179,14 +1123,10 @@ const MusicPerformanceCoach = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('musicPerformanceCoach.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load Standards
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('musicPerformanceCoach.loadStandards')}</>
                   )}
                 </button>
               </div>
@@ -1218,7 +1158,7 @@ const MusicPerformanceCoach = () => {
                       {selectedStandard?.id === standard.id && (
                         <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Key Components</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.keyComponents')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {standard.keyComponents.map((component, i) => (
                                 <li key={i}>{component}</li>
@@ -1227,7 +1167,7 @@ const MusicPerformanceCoach = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Assessment Criteria</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('musicPerformanceCoach.assessmentCriteria')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {standard.assessmentCriteria.map((criteria, i) => (
                                 <li key={i}>{criteria}</li>
@@ -1248,63 +1188,47 @@ const MusicPerformanceCoach = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-violet-50 to-purple-50 rounded-xl p-6 border border-violet-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Music className="h-6 w-6 text-violet-600" />
-                  Music Resources & Repertoire
-                </h2>
-                <p className="text-gray-600">
-                  Access curated repertoire libraries, practice materials, and reference resources for music education.
-                </p>
+                  <Music className="h-6 w-6 text-violet-600" />{t('musicPerformanceCoach.musicResourcesRepertoire')}</h2>
+                <p className="text-gray-600">{t('musicPerformanceCoach.accessCuratedRepertoireLibrariesPracticeMaterialsAndRef')}</p>
               </div>
 
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <FileMusic className="h-5 w-5 text-violet-600" />
-                    Repertoire Library
-                  </h3>
-                  <p className="text-gray-700 mb-3">
-                    Grade-appropriate pieces across genres and difficulty levels
-                  </p>
+                    <FileMusic className="h-5 w-5 text-violet-600" />{t('musicPerformanceCoach.repertoireLibrary')}</h3>
+                  <p className="text-gray-700 mb-3">{t('musicPerformanceCoach.gradeAppropriatePiecesAcrossGenresAndDifficultyLevels')}</p>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-                    <li>Classical repertoire</li>
-                    <li>Popular music</li>
-                    <li>World music</li>
-                    <li>Jazz standards</li>
-                    <li>Folk songs</li>
+                    <li>{t('musicPerformanceCoach.classicalRepertoire')}</li>
+                    <li>{t('musicPerformanceCoach.popularMusic')}</li>
+                    <li>{t('musicPerformanceCoach.worldMusic')}</li>
+                    <li>{t('musicPerformanceCoach.jazzStandards')}</li>
+                    <li>{t('musicPerformanceCoach.folkSongs')}</li>
                   </ul>
                 </div>
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <BookOpen className="h-5 w-5 text-violet-600" />
-                    Practice Materials
-                  </h3>
-                  <p className="text-gray-700 mb-3">
-                    Exercises, scales, and technical studies
-                  </p>
+                    <BookOpen className="h-5 w-5 text-violet-600" />{t('musicPerformanceCoach.practiceMaterials')}</h3>
+                  <p className="text-gray-700 mb-3">{t('musicPerformanceCoach.exercisesScalesAndTechnicalStudies')}</p>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-                    <li>Scales and arpeggios</li>
-                    <li>Technical exercises</li>
-                    <li>Sight-reading materials</li>
-                    <li>Ear training exercises</li>
-                    <li>Etudes and studies</li>
+                    <li>{t('musicPerformanceCoach.scalesAndArpeggios')}</li>
+                    <li>{t('musicPerformanceCoach.technicalExercises')}</li>
+                    <li>{t('musicPerformanceCoach.sightReadingMaterials')}</li>
+                    <li>{t('musicPerformanceCoach.earTrainingExercises')}</li>
+                    <li>{t('musicPerformanceCoach.etudesAndStudies')}</li>
                   </ul>
                 </div>
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <GraduationCap className="h-5 w-5 text-violet-600" />
-                    Reference Materials
-                  </h3>
-                  <p className="text-gray-700 mb-3">
-                    Music theory, history, and style guides
-                  </p>
+                    <GraduationCap className="h-5 w-5 text-violet-600" />{t('musicPerformanceCoach.referenceMaterials')}</h3>
+                  <p className="text-gray-700 mb-3">{t('musicPerformanceCoach.musicTheoryHistoryAndStyleGuides')}</p>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-                    <li>Music theory references</li>
-                    <li>Composer biographies</li>
-                    <li>Style guides</li>
-                    <li>Historical context</li>
-                    <li>Performance practice</li>
+                    <li>{t('musicPerformanceCoach.musicTheoryReferences')}</li>
+                    <li>{t('musicPerformanceCoach.composerBiographies')}</li>
+                    <li>{t('musicPerformanceCoach.styleGuides')}</li>
+                    <li>{t('musicPerformanceCoach.historicalContext')}</li>
+                    <li>{t('musicPerformanceCoach.performancePractice')}</li>
                   </ul>
                 </div>
               </div>

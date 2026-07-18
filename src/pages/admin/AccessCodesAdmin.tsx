@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Plus,
   Copy,
@@ -23,11 +24,6 @@ import {
 } from '../../api/subscriptions'
 import { formatAccessCodeDisplay } from '../../utils/accessCodeDisplay'
 
-const CODE_TYPES = [
-  { value: 'beta', label: 'Beta', description: 'For external testers — limited uses, expires' },
-  { value: 'staff', label: 'Staff', description: 'For internal team — auto-renews, unlimited' },
-]
-
 function generateCode(type: string): string {
   const prefix = type === 'staff' ? 'STAFF' : 'BETA'
   const rand = () => Math.random().toString(36).substring(2, 6).toUpperCase()
@@ -35,30 +31,40 @@ function generateCode(type: string): string {
 }
 
 function StatusBadge({ active }: { active: boolean }) {
+  const { t } = useTranslation()
   return active ? (
     <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
-      <CheckCircle2 className="h-3 w-3" /> Active
+      <CheckCircle2 className="h-3 w-3" /> {t('admin.accessCodes.active')}
     </span>
   ) : (
     <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-500">
-      <XCircle className="h-3 w-3" /> Inactive
+      <XCircle className="h-3 w-3" /> {t('admin.accessCodes.inactive')}
     </span>
   )
 }
 
 function TypeBadge({ type }: { type: string }) {
+  const { t } = useTranslation()
   return type === 'staff' ? (
     <span className="inline-flex items-center gap-1 rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-semibold text-indigo-700">
-      <Zap className="h-3 w-3" /> Staff
+      <Zap className="h-3 w-3" /> {t('admin.accessCodes.staff')}
     </span>
   ) : (
     <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
-      <Key className="h-3 w-3" /> Beta
+      <Key className="h-3 w-3" /> {t('admin.accessCodes.beta')}
     </span>
   )
 }
 
 export default function AccessCodesAdmin() {
+  const { t } = useTranslation()
+  const codeTypes = useMemo(
+    () => [
+      { value: 'beta', label: t('admin.accessCodes.beta'), description: t('admin.accessCodes.betaDesc') },
+      { value: 'staff', label: t('admin.accessCodes.staff'), description: t('admin.accessCodes.staffDesc') },
+    ],
+    [t],
+  )
   const [codes, setCodes] = useState<AdminCode[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
@@ -84,7 +90,7 @@ export default function AccessCodesAdmin() {
       const data = await listAdminCodes()
       setCodes(data)
     } catch (e: any) {
-      setError('Failed to load codes')
+      setError(t('admin.accessCodes.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -125,7 +131,7 @@ export default function AccessCodesAdmin() {
         description: '',
       })
     } catch (e: any) {
-      setError(e.message || 'Failed to create code')
+      setError(e.message || t('admin.accessCodes.createFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -139,7 +145,7 @@ export default function AccessCodesAdmin() {
         prev.map((c) => (c.id === id ? { ...c, is_active: !current } : c))
       )
     } catch {
-      setError('Failed to update code')
+      setError(t('admin.accessCodes.updateFailed'))
     } finally {
       setToggling(null)
     }
@@ -160,7 +166,7 @@ export default function AccessCodesAdmin() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Access Codes</h1>
+          <h1 className="text-2xl font-semibold text-gray-900">{t('admin.accessCodes.title')}</h1>
           <p className="mt-1 text-sm text-gray-500">
             Create and manage credit activation codes for users
           </p>
@@ -225,22 +231,22 @@ export default function AccessCodesAdmin() {
 
           {/* Type selector */}
           <div className="grid grid-cols-2 gap-3">
-            {CODE_TYPES.map((t) => (
+            {codeTypes.map((ct) => (
               <button
-                key={t.value}
+                key={ct.value}
                 type="button"
-                onClick={() => handleTypeChange(t.value)}
+                onClick={() => handleTypeChange(ct.value)}
                 className={`rounded-xl border-2 p-4 text-left transition ${
-                  form.code_type === t.value
+                  form.code_type === ct.value
                     ? 'border-primary-500 bg-primary-50'
                     : 'border-gray-200 bg-white hover:border-gray-300'
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <TypeBadge type={t.value} />
-                  <span className="font-semibold text-gray-900 text-sm">{t.label}</span>
+                  <TypeBadge type={ct.value} />
+                  <span className="font-semibold text-gray-900 text-sm">{ct.label}</span>
                 </div>
-                <p className="mt-1 text-xs text-gray-500">{t.description}</p>
+                <p className="mt-1 text-xs text-gray-500">{ct.description}</p>
               </button>
             ))}
           </div>

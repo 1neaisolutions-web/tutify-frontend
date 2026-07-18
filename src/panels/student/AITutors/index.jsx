@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 const tutors = [
@@ -7,13 +8,14 @@ const tutors = [
 ];
 
 const AITutors = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
     <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">AI Tutors</h1>
-        <p className="text-sm text-gray-600 dark:text-gray-300">Pick a tutor for a domain-specific style.</p>
+        <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.tutors.title')}</h1>
+        <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.tutors.subtitle')}</p>
       </div>
 
       <div className="px-6 py-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -26,7 +28,7 @@ const AITutors = () => {
           >
             <h2 className="font-semibold text-gray-900 dark:text-gray-100">{t.name}</h2>
             <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">{t.tagline}</p>
-            <p className="mt-3 text-sm font-medium text-primary-700 dark:text-primary-300">Chat →</p>
+            <p className="mt-3 text-sm font-medium text-primary-700 dark:text-primary-300">{t('studentPanel.common.chat')}</p>
           </button>
         ))}
       </div>

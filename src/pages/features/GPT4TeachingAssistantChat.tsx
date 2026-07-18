@@ -66,6 +66,7 @@ import { Message } from './GeneralTeachingAssistantChat'
 import * as chatbotApi from '../../api/chatbots'
 import { useRestoreChatbotConversationFromUrl } from '../../hooks/useRestoreChatbotConversationFromUrl'
 
+import { useTranslation } from 'react-i18next'
 interface Conversation {
   id: string
   title: string
@@ -77,6 +78,7 @@ interface Conversation {
 }
 
 const GPT4TeachingAssistantChat = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [messages, setMessages] = useState<Message[]>([])
   const [inputValue, setInputValue] = useState('')
@@ -369,7 +371,7 @@ const GPT4TeachingAssistantChat = () => {
     const days = Math.floor(diff / (1000 * 60 * 60 * 24))
     
     if (days === 0) return 'Today'
-    if (days === 1) return 'Yesterday'
+    if (days === 1) return t('gPT4TeachingAssistantChat.yesterday')
     if (days < 7) return `${days} days ago`
     if (days < 30) return `${Math.floor(days / 7)} weeks ago`
     if (days < 365) return `${Math.floor(days / 30)} months ago`
@@ -411,16 +413,12 @@ const GPT4TeachingAssistantChat = () => {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold text-gray-900">GPT-4 Teaching Assistant</h1>
+                <h1 className="text-xl font-bold text-gray-900">{t('gPT4TeachingAssistantChat.gpt4TeachingAssistant')}</h1>
                 <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 text-white text-xs font-bold">
-                  <Crown className="h-3 w-3" />
-                  PREMIUM
-                </div>
+                  <Crown className="h-3 w-3" />{t('gPT4TeachingAssistantChat.premium')}</div>
               </div>
               <p className="text-xs text-gray-600 flex items-center gap-1">
-                <Sparkles className="h-3 w-3 text-amber-500" />
-                Advanced AI with multimodal capabilities
-              </p>
+                <Sparkles className="h-3 w-3 text-amber-500" />{t('gPT4TeachingAssistantChat.advancedAiWithMultimodalCapabilities')}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -432,16 +430,12 @@ const GPT4TeachingAssistantChat = () => {
                   : 'border-gray-200 text-gray-700 hover:bg-gray-50'
               }`}
             >
-              <BarChart3 className="h-4 w-4" />
-              Analytics
-            </button>
+              <BarChart3 className="h-4 w-4" />{t('gPT4TeachingAssistantChat.analytics')}</button>
             <button
               onClick={createNewConversation}
               className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
             >
-              <Plus className="h-4 w-4" />
-              New Chat
-            </button>
+              <Plus className="h-4 w-4" />{t('gPT4TeachingAssistantChat.newChat')}</button>
             <button
               onClick={() => setShowHistory(!showHistory)}
               className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition ${
@@ -469,7 +463,7 @@ const GPT4TeachingAssistantChat = () => {
           <button
             onClick={() => setShowSidebar(true)}
             className="absolute left-4 top-4 z-10 p-2 bg-white rounded-lg shadow-md border border-gray-200 hover:bg-gray-50 transition"
-            title="Show sidebar"
+            title={t('gPT4TeachingAssistantChat.showSidebar')}
           >
             <ChevronRight className="h-5 w-5 text-gray-600" />
           </button>
@@ -480,7 +474,7 @@ const GPT4TeachingAssistantChat = () => {
           <div className="w-64 border-r border-gray-200 bg-white flex flex-col">
             <div className="p-4 border-b border-gray-200">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold text-gray-900">Quick Actions</h3>
+                <h3 className="font-semibold text-gray-900">{t('gPT4TeachingAssistantChat.quickActions')}</h3>
                 <button
                   onClick={() => setShowSidebar(false)}
                   className="p-1 text-gray-400 hover:text-gray-600 rounded"
@@ -493,28 +487,22 @@ const GPT4TeachingAssistantChat = () => {
                   onClick={() => setShowStandardsBrowser(true)}
                   className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 hover:bg-amber-50 hover:border-amber-300 transition text-sm"
                 >
-                  <BookOpen className="h-4 w-4 text-amber-600" />
-                  Standards Browser
-                </button>
+                  <BookOpen className="h-4 w-4 text-amber-600" />{t('gPT4TeachingAssistantChat.standardsBrowser')}</button>
                 <button
                   onClick={() => setShowMultimodalUpload(true)}
                   className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 hover:bg-purple-50 hover:border-purple-300 transition text-sm"
                 >
-                  <Upload className="h-4 w-4 text-purple-600" />
-                  Upload Files
-                </button>
+                  <Upload className="h-4 w-4 text-purple-600" />{t('gPT4TeachingAssistantChat.uploadFiles')}</button>
                 <button
                   onClick={() => setShowCustomInstructions(true)}
                   className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 hover:bg-blue-50 hover:border-blue-300 transition text-sm"
                 >
-                  <Settings className="h-4 w-4 text-blue-600" />
-                  Custom Instructions
-                </button>
+                  <Settings className="h-4 w-4 text-blue-600" />{t('gPT4TeachingAssistantChat.customInstructions')}</button>
               </div>
             </div>
             {selectedStandards.length > 0 && (
               <div className="p-4 border-b border-gray-200">
-                <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2">Selected Standards</h4>
+                <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2">{t('gPT4TeachingAssistantChat.selectedStandards')}</h4>
                 <div className="space-y-1">
                   {selectedStandards.slice(0, 3).map((std) => (
                     <div key={std.id} className="text-xs text-gray-600 truncate">
@@ -550,19 +538,13 @@ const GPT4TeachingAssistantChat = () => {
                       </div>
                     </div>
                     <div className="mb-2 flex items-center justify-center gap-2">
-                      <h2 className="text-5xl font-bold bg-gradient-to-r from-amber-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
-                        GPT-4 Teaching Assistant
-                      </h2>
+                      <h2 className="text-5xl font-bold bg-gradient-to-r from-amber-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">{t('gPT4TeachingAssistantChat.gpt4TeachingAssistant')}</h2>
                       <div className="px-3 py-1 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 text-white text-xs font-bold flex items-center gap-1">
-                        <Crown className="h-3 w-3" />
-                        PREMIUM
-                      </div>
+                        <Crown className="h-3 w-3" />{t('gPT4TeachingAssistantChat.premium')}</div>
                     </div>
-                    <p className="text-sm font-medium text-purple-600 mb-6">Powered by OpenAI GPT-4</p>
+                    <p className="text-sm font-medium text-purple-600 mb-6">{t('gPT4TeachingAssistantChat.poweredByOpenaiGpt4')}</p>
                     <div className="max-w-2xl mx-auto mb-8">
-                      <p className="text-base text-gray-700 leading-relaxed">
-                        Experience the power of GPT-4 with advanced reasoning, multimodal AI capabilities, and deep pedagogical understanding. Upload images, analyze documents, align with standards, and create professional educational content.
-                      </p>
+                      <p className="text-base text-gray-700 leading-relaxed">{t('gPT4TeachingAssistantChat.experienceThePowerOfGpt4WithAdvancedReasoningMultimodal')}</p>
                     </div>
 
                     {/* Premium Features Showcase */}
@@ -570,26 +552,26 @@ const GPT4TeachingAssistantChat = () => {
                       {[
                         {
                           icon: Sparkles,
-                          title: 'Multimodal AI',
-                          description: 'Upload images and documents for AI analysis',
+                          title: t('gPT4TeachingAssistantChat.featureMultimodalTitle'),
+                          description: t('gPT4TeachingAssistantChat.featureMultimodalDescription'),
                           color: 'from-purple-500 to-indigo-600',
                         },
                         {
                           icon: BookOpen,
-                          title: 'Standards Alignment',
-                          description: 'Automatic alignment with Common Core, NGSS, and state standards',
+                          title: t('gPT4TeachingAssistantChat.featureStandardsTitle'),
+                          description: t('gPT4TeachingAssistantChat.featureStandardsDescription'),
                           color: 'from-amber-500 to-amber-600',
                         },
                         {
                           icon: Users,
-                          title: 'Advanced Differentiation',
-                          description: 'IEP support and tiered instruction planning',
+                          title: t('gPT4TeachingAssistantChat.featureDifferentiationTitle'),
+                          description: t('gPT4TeachingAssistantChat.featureDifferentiationDescription'),
                           color: 'from-blue-500 to-cyan-600',
                         },
                         {
                           icon: Download,
-                          title: 'Professional Export',
-                          description: 'Export to PDF, Word, Markdown, and more',
+                          title: t('gPT4TeachingAssistantChat.featureExportTitle'),
+                          description: t('gPT4TeachingAssistantChat.featureExportDescription'),
                           color: 'from-green-500 to-emerald-600',
                         },
                       ].map((feature, idx) => {
@@ -615,15 +597,13 @@ const GPT4TeachingAssistantChat = () => {
                     {/* Quick Start Templates */}
                     <div className="w-full max-w-3xl mx-auto">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                        <Lightbulb className="h-5 w-5 text-amber-500" />
-                        Quick Start Templates
-                      </h3>
+                        <Lightbulb className="h-5 w-5 text-amber-500" />{t('gPT4TeachingAssistantChat.quickStartTemplates')}</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {[
-                          'Create a standards-aligned lesson plan for 5th grade science',
-                          'Generate differentiated activities for diverse learners',
-                          'Design a rubric for project-based assessment',
-                          'Plan an IEP goal with accommodations',
+                          t('gPT4TeachingAssistantChat.promptLessonPlan'),
+                          t('gPT4TeachingAssistantChat.promptDifferentiated'),
+                          t('gPT4TeachingAssistantChat.promptRubric'),
+                          t('gPT4TeachingAssistantChat.promptIep'),
                         ].map((suggestion, idx) => (
                           <button
                             key={idx}
@@ -701,21 +681,21 @@ const GPT4TeachingAssistantChat = () => {
                                       <button
                                         onClick={() => handleCopyMessage(message.id)}
                                         className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600 transition"
-                                        title="Copy"
+                                        title={t('gPT4TeachingAssistantChat.copy')}
                                       >
                                         <Copy className="h-4 w-4" />
                                       </button>
                                       <button
                                         onClick={() => setShowExportDialog(true)}
                                         className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600 transition"
-                                        title="Export"
+                                        title={t('gPT4TeachingAssistantChat.export')}
                                       >
                                         <Download className="h-4 w-4" />
                                       </button>
                                       <button
                                         onClick={() => setMessageActionMenu(message.id)}
                                         className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600 transition"
-                                        title="More"
+                                        title={t('gPT4TeachingAssistantChat.more')}
                                       >
                                         <MoreVertical className="h-4 w-4" />
                                       </button>
@@ -746,15 +726,13 @@ const GPT4TeachingAssistantChat = () => {
                   <div className="rounded-2xl bg-white px-5 py-4 shadow-md border-2 border-gray-100">
                     <div className="flex items-center gap-3">
                       <Loader2 className="h-4 w-4 animate-spin text-amber-500" />
-                      <span className="text-sm text-gray-600 font-medium">GPT-4 is thinking...</span>
+                      <span className="text-sm text-gray-600 font-medium">{t('gPT4TeachingAssistantChat.gpt4IsThinking')}</span>
                       {canStopGeneration && (
                         <button
                           onClick={handleStopGeneration}
                           className="ml-2 flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-2.5 py-1 text-xs font-medium text-red-600 hover:bg-red-100 transition"
                         >
-                          <StopCircle className="h-3.5 w-3.5" />
-                          Stop
-                        </button>
+                          <StopCircle className="h-3.5 w-3.5" />{t('gPT4TeachingAssistantChat.stop')}</button>
                       )}
                     </div>
                   </div>
@@ -782,7 +760,7 @@ const GPT4TeachingAssistantChat = () => {
                   onChange={(e) => setGradeLevel(e.target.value)}
                   className="px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
                 >
-                  <option value="">Grade Level</option>
+                  <option value="">{t('gPT4TeachingAssistantChat.gradeLevel')}</option>
                   {['K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'].map((g) => (
                     <option key={g} value={g}>
                       Grade {g}
@@ -794,7 +772,7 @@ const GPT4TeachingAssistantChat = () => {
                   onChange={(e) => setSubject(e.target.value)}
                   className="px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
                 >
-                  <option value="">Subject</option>
+                  <option value="">{t('gPT4TeachingAssistantChat.subject')}</option>
                   {['English', 'Mathematics', 'Science', 'Social Studies', 'Arts', 'Physical Education'].map((s) => (
                     <option key={s} value={s}>
                       {s}
@@ -812,9 +790,7 @@ const GPT4TeachingAssistantChat = () => {
                   onClick={() => setShowCustomInstructions(true)}
                   className="flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
                 >
-                  <Settings className="h-4 w-4" />
-                  Instructions
-                </button>
+                  <Settings className="h-4 w-4" />{t('gPT4TeachingAssistantChat.instructions')}</button>
               </div>
 
               {/* Input Field */}
@@ -825,7 +801,7 @@ const GPT4TeachingAssistantChat = () => {
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="Ask GPT-4 anything about teaching... (Premium: Upload files, align standards, get advanced responses)"
+                    placeholder={t('gPT4TeachingAssistantChat.inputPlaceholder')}
                     rows={1}
                     className="w-full resize-none border-0 bg-transparent px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-0"
                     disabled={isLoading}
@@ -835,7 +811,7 @@ const GPT4TeachingAssistantChat = () => {
                   onClick={handleSendMessage}
                   disabled={!inputValue.trim() || isLoading}
                   className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 text-white shadow-md transition-all hover:from-amber-600 hover:to-amber-700 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                  title="Send message"
+                  title={t('gPT4TeachingAssistantChat.sendMessage')}
                 >
                   {isLoading ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
@@ -848,9 +824,7 @@ const GPT4TeachingAssistantChat = () => {
               {/* Premium Disclaimer */}
               <div className="mt-4 flex items-center justify-center gap-2 text-xs text-gray-500">
                 <Crown className="h-4 w-4 text-amber-400" />
-                <p>
-                  Premium Feature: Advanced AI reasoning, multimodal capabilities, and professional tools.
-                </p>
+                <p>{t('gPT4TeachingAssistantChat.premiumFeatureAdvancedAiReasoningMultimodalCapabilities')}</p>
               </div>
             </div>
           </div>
@@ -867,9 +841,7 @@ const GPT4TeachingAssistantChat = () => {
               <div className="border-b border-gray-200 p-4">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <History className="h-5 w-5" />
-                    Chat History
-                  </h2>
+                    <History className="h-5 w-5" />{t('gPT4TeachingAssistantChat.chatHistory')}</h2>
                   <button
                     onClick={() => setShowHistory(false)}
                     className="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition lg:hidden"
@@ -881,7 +853,7 @@ const GPT4TeachingAssistantChat = () => {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Search conversations..."
+                    placeholder={t('gPT4TeachingAssistantChat.searchConversations')}
                     value={historySearchQuery}
                     onChange={(e) => setHistorySearchQuery(e.target.value)}
                     className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
@@ -892,7 +864,7 @@ const GPT4TeachingAssistantChat = () => {
                 {filteredConversations.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
                     <History className="h-12 w-12 text-gray-300 mb-3" />
-                    <p className="text-sm text-gray-500">No conversations yet</p>
+                    <p className="text-sm text-gray-500">{t('gPT4TeachingAssistantChat.noConversationsYet')}</p>
                   </div>
                 ) : (
                   <div className="space-y-1">

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   ArrowLeft,
   ArrowRight,
@@ -70,6 +71,7 @@ const impactPill = (impact: string) => {
 }
 
 const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRendererProps) => {
+  const { t: tr } = useTranslation()
   const navigate = useNavigate()
   const content = item.aiGrowthRecommendationContent
   const [activeModule, setActiveModule] = useState<string | null>(null)
@@ -112,6 +114,31 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
   }, [content])
 
   if (!content) return null
+
+  const levelLabel = (level: string) => {
+    switch (level) {
+      case 'Beginner':
+        return tr('learningHubSections.levels.beginner')
+      case 'Intermediate':
+        return tr('learningHubSections.levels.intermediate')
+      case 'Advanced':
+        return tr('learningHubSections.levels.advanced')
+      default:
+        return level
+    }
+  }
+  const impactLabel = (impact: string) => {
+    switch (impact) {
+      case 'High':
+        return tr('learningHubSections.impact.high')
+      case 'Medium':
+        return tr('learningHubSections.impact.medium')
+      case 'Low':
+        return tr('learningHubSections.impact.low')
+      default:
+        return impact
+    }
+  }
 
   const unlockedModules = useMemo(
     () => {
@@ -193,7 +220,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                 <div className='min-w-0'>
                   <div className='flex flex-wrap items-center gap-2 mb-2'>
                     <span className='px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide'>
-                      {module.detail?.moduleLabel ?? 'Module'}
+                      {module.detail?.moduleLabel ?? tr('learningHubSections.growth.module')}
                     </span>
                     <span className='text-white/80'>•</span>
                     <span className='text-white/80 text-sm flex items-center gap-1'>
@@ -205,7 +232,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                         <span className='text-white/80'>•</span>
                         <span className='text-white/80 text-sm flex items-center gap-1'>
                           <Star className='h-3 w-3' />
-                          {earnedPoints} / {totalPoints} points
+                          {tr('learningHubSections.growth.earnedPoints', { earned: earnedPoints, total: totalPoints })}
                         </span>
                       </>
                     ) : null}
@@ -219,12 +246,12 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                   <>
                     <div className='flex items-center gap-2'>
                       <Target className='w-4 h-4 shrink-0' />
-                      <span>{module.impact} Impact</span>
+                      <span>{impactLabel(module.impact)} {tr('learningHubSections.growth.impactLabel')}</span>
                     </div>
                     <div className='flex items-center gap-2'>
                       <Trophy className='w-4 h-4 shrink-0' />
                       <span>
-                        {completedModuleLessons.length} of {lessons.length} lessons completed
+                        {tr('learningHubSections.growth.lessonsCompletedCount', { completed: completedModuleLessons.length, total: lessons.length })}
                       </span>
                     </div>
                   </>
@@ -232,13 +259,13 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                   <div className='flex items-center gap-2'>
                     <Target className='w-4 h-4 shrink-0' />
                     <span>
-                      {completedModuleLessons.length} of {lessons.length} lessons completed
+                      {tr('learningHubSections.growth.lessonsCompletedCount', { completed: completedModuleLessons.length, total: lessons.length })}
                     </span>
                   </div>
                 )}
                 <div className='flex items-center gap-2'>
                   <TrendingUp className='w-4 h-4 shrink-0' />
-                  <span>{Math.round(lessonProgress)}% Complete</span>
+                  <span>{tr('learningHubSections.growth.percentComplete', { percent: Math.round(lessonProgress) })}</span>
                 </div>
               </div>
               <div className='mt-4 h-2 bg-white/20 rounded-full overflow-hidden'>
@@ -261,7 +288,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
         <div className='grid grid-cols-1 lg:grid-cols-4 gap-6'>
           <div className='lg:col-span-1'>
             <div className='bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6'>
-              <h3 className='text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4'>Lessons</h3>
+              <h3 className='text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4'>{tr('learningHubSections.growth.lessons')}</h3>
               <div className='space-y-2'>
                 {lessons.map((lesson, idx) => {
                   const isActive = idx === currentModuleLesson
@@ -288,7 +315,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                           ) : (
                             <Circle className='h-4 w-4 text-gray-400' />
                           )}
-                          <span className='text-xs font-semibold'>Lesson {idx + 1}</span>
+                          <span className='text-xs font-semibold'>{tr('learningHubSections.growth.lessonN', { num: idx + 1 })}</span>
                         </div>
                         <div className='flex items-center gap-2 text-xs text-gray-600'>
                           <TypeIcon className='h-3 w-3 shrink-0' />
@@ -325,7 +352,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                             <p className={`text-sm font-semibold truncate ${isActive ? v.engagementTitleActive : 'text-gray-900'}`}>{lesson.title}</p>
                           </div>
                           {lesson.duration ? <p className='text-xs text-gray-500'>{lesson.duration}</p> : null}
-                          <p className='text-xs text-gray-500'>{lesson.points} points</p>
+                          <p className='text-xs text-gray-500'>{lesson.points} {tr('learningHubSections.growth.points')}</p>
                         </div>
                       </div>
                     </button>
@@ -335,7 +362,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
               {isTieredSidebar ? (
                 <div className='mt-6 pt-6 border-t border-gray-200'>
                   <div className='flex items-center justify-between mb-2'>
-                    <span className='text-xs text-gray-600'>Progress</span>
+                    <span className='text-xs text-gray-600'>{tr('learningHubSections.growth.progress')}</span>
                     <span className='text-xs font-semibold text-gray-900'>{Math.round(lessonProgress)}%</span>
                   </div>
                   <div className='h-2 bg-gray-200 rounded-full overflow-hidden'>
@@ -356,10 +383,10 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                         <div>
                           <div className='flex items-center gap-2 text-sm text-gray-600 mb-2'>
                             <span>
-                              Lesson {currentModuleLesson + 1} of {lessons.length}
+                              {tr('learningHubSections.lessonOf', { current: currentModuleLesson + 1, total: lessons.length })}
                             </span>
                             <span>•</span>
-                            <span>{currentLesson.points} points</span>
+                            <span>{currentLesson.points} {tr('learningHubSections.growth.points')}</span>
                             {currentLesson.duration ? (
                               <>
                                 <span>•</span>
@@ -372,7 +399,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                         {completedModuleLessons.includes(currentLesson.id) ? (
                           <span className={`px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 shrink-0 ml-2 ${v.completedLessonBadge}`}>
                             <CheckCircle2 className='h-4 w-4' />
-                            Completed
+                            {tr('learningHubSections.growth.completed')}
                           </span>
                         ) : null}
                       </div>
@@ -386,12 +413,12 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                           <div>
                             <div className='flex items-center gap-2 mb-2'>
                               <Video className={`h-5 w-5 ${v.lessonTypeIconClass}`} />
-                              <span className='text-sm font-semibold text-gray-600 uppercase tracking-wide'>Video Lesson</span>
+                              <span className='text-sm font-semibold text-gray-600 uppercase tracking-wide'>{tr('learningHubSections.growth.videoLesson')}</span>
                             </div>
                             <h2 className='text-2xl font-bold text-gray-900'>{currentLesson.title}</h2>
                           </div>
                           <div className='flex items-center gap-2'>
-                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${v.pointsPill}`}>{currentLesson.points} points</span>
+                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${v.pointsPill}`}>{currentLesson.points} {tr('learningHubSections.growth.points')}</span>
                             {v.showLessonHeaderShare ? (
                               <>
                                 <button type='button' className='p-2 hover:bg-gray-100 rounded-lg transition'>
@@ -456,7 +483,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
 
                       {currentLesson.content.keyPoints?.length ? (
                         <div className={v.keyPointsPanel}>
-                          <h3 className={v.blockHeadingClass}>Key Points</h3>
+                          <h3 className={v.blockHeadingClass}>{tr('learningHubSections.growth.keyPoints')}</h3>
                           <ul className='space-y-2'>
                             {currentLesson.content.keyPoints.map((point) => (
                               <li key={point} className='flex items-start gap-2 text-sm text-gray-700'>
@@ -470,7 +497,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
 
                       {currentLesson.content.transcript ? (
                         <div className={v.transcriptPanel}>
-                          <h3 className={v.blockHeadingClass}>Transcript</h3>
+                          <h3 className={v.blockHeadingClass}>{tr('learningHubSections.growth.transcript')}</h3>
                           <p className='text-sm text-gray-700 leading-relaxed'>{currentLesson.content.transcript}</p>
                         </div>
                       ) : null}
@@ -485,12 +512,12 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                           {completedModuleLessons.includes(currentLesson.id) ? (
                             <>
                               <CheckCircle2 className='h-5 w-5' />
-                              Lesson Completed
+                              {tr('learningHubSections.growth.lessonCompleted')}
                             </>
                           ) : (
                             <>
                               <CheckCircle2 className='h-5 w-5' />
-                              Mark as Complete
+                              {tr('learningHubSections.growth.markAsComplete')}
                             </>
                           )}
                         </button>
@@ -505,12 +532,12 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                           <div>
                             <div className='flex items-center gap-2 mb-2'>
                               <BookOpen className={`h-5 w-5 ${v.lessonTypeIconClass}`} />
-                              <span className='text-sm font-semibold text-gray-600 uppercase tracking-wide'>Reading</span>
+                              <span className='text-sm font-semibold text-gray-600 uppercase tracking-wide'>{tr('learningHubSections.growth.reading')}</span>
                             </div>
                             <h2 className='text-2xl font-bold text-gray-900'>{currentLesson.title}</h2>
                           </div>
                           <div className='flex items-center gap-2'>
-                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${v.pointsPill}`}>{currentLesson.points} points</span>
+                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${v.pointsPill}`}>{currentLesson.points} {tr('learningHubSections.growth.points')}</span>
                             <button type='button' className='p-2 hover:bg-gray-100 rounded-lg transition'>
                               <Download className='h-5 w-5 text-gray-400' />
                             </button>
@@ -551,7 +578,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
 
                       {currentLesson.content.keyTakeaways?.length ? (
                         <div className={v.readingTakeawaysPanel}>
-                          <h3 className={v.blockHeadingClass}>Key Takeaways</h3>
+                          <h3 className={v.blockHeadingClass}>{tr('learningHubSections.growth.keyTakeaways')}</h3>
                           <ul className='space-y-2'>
                             {currentLesson.content.keyTakeaways.map((takeaway) => (
                               <li key={takeaway} className='flex items-start gap-2 text-sm text-gray-700'>
@@ -573,12 +600,12 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                           {completedModuleLessons.includes(currentLesson.id) ? (
                             <>
                               <CheckCircle2 className='h-5 w-5' />
-                              Lesson Completed
+                              {tr('learningHubSections.growth.lessonCompleted')}
                             </>
                           ) : (
                             <>
                               <CheckCircle2 className='h-5 w-5' />
-                              Mark as Complete
+                              {tr('learningHubSections.growth.markAsComplete')}
                             </>
                           )}
                         </button>
@@ -593,17 +620,17 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                           <div>
                             <div className='flex items-center gap-2 mb-2'>
                               <Zap className={`h-5 w-5 ${v.lessonTypeIconClass}`} />
-                              <span className='text-sm font-semibold text-gray-600 uppercase tracking-wide'>Interactive Tool</span>
+                              <span className='text-sm font-semibold text-gray-600 uppercase tracking-wide'>{tr('learningHubSections.growth.interactiveTool')}</span>
                             </div>
                             <h2 className='text-2xl font-bold text-gray-900'>{currentLesson.title}</h2>
                             {currentLesson.content.description ? <p className='mt-2 text-gray-600'>{currentLesson.content.description}</p> : null}
                           </div>
-                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${v.pointsPill}`}>{currentLesson.points} points</span>
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${v.pointsPill}`}>{currentLesson.points} {tr('learningHubSections.growth.points')}</span>
                         </div>
                       ) : null}
 
                       <div className={`${v.interactiveStepsPanel}`}>
-                        <h3 className={v.blockHeadingClass}>{currentLesson.content.description ?? 'Interactive Practice'}</h3>
+                        <h3 className={v.blockHeadingClass}>{currentLesson.content.description ?? tr('learningHubSections.growth.interactivePractice')}</h3>
                         <ol className='space-y-2'>
                           {(currentLesson.content.steps ?? []).map((step, idx) => (
                             <li key={step} className='flex items-start gap-2 text-sm text-gray-700'>
@@ -628,12 +655,12 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                           {completedModuleLessons.includes(currentLesson.id) ? (
                             <>
                               <CheckCircle2 className='h-5 w-5' />
-                              Lesson Completed
+                              {tr('learningHubSections.growth.lessonCompleted')}
                             </>
                           ) : (
                             <>
                               <CheckCircle2 className='h-5 w-5' />
-                              Mark as Complete
+                              {tr('learningHubSections.growth.markAsComplete')}
                             </>
                           )}
                         </button>
@@ -648,19 +675,19 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                           <div>
                             <div className='flex items-center gap-2 mb-2'>
                               <FileText className={`h-5 w-5 ${v.lessonTypeIconClass}`} />
-                              <span className='text-sm font-semibold text-gray-600 uppercase tracking-wide'>Template</span>
+                              <span className='text-sm font-semibold text-gray-600 uppercase tracking-wide'>{tr('learningHubSections.growth.template')}</span>
                             </div>
                             <h2 className='text-2xl font-bold text-gray-900'>{currentLesson.title}</h2>
                             {currentLesson.content.description ? <p className='mt-2 text-gray-600'>{currentLesson.content.description}</p> : null}
                           </div>
-                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${v.pointsPill}`}>{currentLesson.points} points</span>
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${v.pointsPill}`}>{currentLesson.points} {tr('learningHubSections.growth.points')}</span>
                         </div>
                       ) : null}
 
                       {v.sidebarStyle === 'tiered' ? (
                         <>
                           <div className={v.templateSectionsCard}>
-                            <h3 className='text-sm font-semibold text-gray-900 mb-4'>Template Sections</h3>
+                            <h3 className='text-sm font-semibold text-gray-900 mb-4'>{tr('learningHubSections.growth.templateSections')}</h3>
                             <div className='space-y-3'>
                               {(currentLesson.content.sections ?? []).map((section, idx) => (
                                 <div key={section} className='flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200'>
@@ -675,7 +702,11 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                             </div>
                           </div>
                           <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-                            {['Elementary Template', 'Middle School Template', 'High School Template'].map((label, gIdx) => (
+                            {[
+                              tr('learningHubSections.growth.elementaryTemplate'),
+                              tr('learningHubSections.growth.middleSchoolTemplate'),
+                              tr('learningHubSections.growth.highSchoolTemplate'),
+                            ].map((label, gIdx) => (
                               <button
                                 key={label}
                                 type='button'
@@ -683,7 +714,13 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                               >
                                 <Download className={`h-6 w-6 ${v.templateDownloadIcon}`} />
                                 <span className='text-sm font-semibold text-gray-900'>{label}</span>
-                                <span className='text-xs text-gray-600'>{['Grades K-5', 'Grades 6-8', 'Grades 9-12'][gIdx]}</span>
+                                <span className='text-xs text-gray-600'>
+                                  {[
+                                    tr('learningHubSections.growth.gradesK5'),
+                                    tr('learningHubSections.growth.grades68'),
+                                    tr('learningHubSections.growth.grades912'),
+                                  ][gIdx]}
+                                </span>
                               </button>
                             ))}
                           </div>
@@ -691,8 +728,8 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                       ) : (
                         <>
                           <div className='bg-green-50 rounded-xl p-6 border border-green-200'>
-                            <h3 className='text-lg font-semibold text-gray-900 mb-3'>{currentLesson.content.description ?? 'Template Resource'}</h3>
-                            <p className='text-sm text-gray-700 mb-4'>This template includes the following sections:</p>
+                            <h3 className='text-lg font-semibold text-gray-900 mb-3'>{currentLesson.content.description ?? tr('learningHubSections.growth.templateResource')}</h3>
+                            <p className='text-sm text-gray-700 mb-4'>{tr('learningHubSections.growth.templateIncludes')}</p>
                             <ul className='space-y-2'>
                               {(currentLesson.content.sections ?? []).map((section) => (
                                 <li key={section} className='flex items-center gap-2 text-sm text-gray-700'>
@@ -703,12 +740,12 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                             </ul>
                           </div>
                           <div className='bg-white rounded-xl p-6 border-2 border-gray-200'>
-                            <h3 className='text-lg font-semibold text-gray-900 mb-4'>Template Preview</h3>
+                            <h3 className='text-lg font-semibold text-gray-900 mb-4'>{tr('learningHubSections.growth.templatePreview')}</h3>
                             <div className='space-y-4'>
                               {(currentLesson.content.sections ?? []).map((section) => (
                                 <div key={section} className='border-2 border-dashed border-gray-300 rounded-lg p-4'>
                                   <h4 className='text-sm font-semibold text-gray-900 mb-2'>{section}</h4>
-                                  <p className='text-xs text-gray-500 italic'>Your content will appear here...</p>
+                                  <p className='text-xs text-gray-500 italic'>{tr('learningHubSections.growth.contentPlaceholder')}</p>
                                 </div>
                               ))}
                             </div>
@@ -718,7 +755,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                             className='w-full px-6 py-4 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2'
                           >
                             <Download className='h-5 w-5' />
-                            Download Template
+                            {tr('learningHubSections.growth.downloadTemplate')}
                           </button>
                         </>
                       )}
@@ -733,12 +770,12 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                           {completedModuleLessons.includes(currentLesson.id) ? (
                             <>
                               <CheckCircle2 className='h-5 w-5' />
-                              Lesson Completed
+                              {tr('learningHubSections.growth.lessonCompleted')}
                             </>
                           ) : (
                             <>
                               <CheckCircle2 className='h-5 w-5' />
-                              Mark as Complete
+                              {tr('learningHubSections.growth.markAsComplete')}
                             </>
                           )}
                         </button>
@@ -755,7 +792,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                         className='flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition'
                       >
                         <ArrowLeft className='h-4 w-4' />
-                        Previous
+                        {tr('learningHubSections.previous')}
                       </button>
                       <button
                         type='button'
@@ -765,16 +802,16 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                         {completedModuleLessons.includes(currentLesson.id) ? (
                           <>
                             <CheckCircle2 className='h-4 w-4' />
-                            Marked Complete
+                            {tr('learningHubSections.growth.markedComplete')}
                           </>
                         ) : currentModuleLesson === lessons.length - 1 ? (
                           <>
                             <Trophy className='h-4 w-4' />
-                            Complete Module
+                            {tr('learningHubSections.growth.completeModule')}
                           </>
                         ) : (
                           <>
-                            Complete & Next
+                            {tr('learningHubSections.growth.completeAndNext')}
                             <ArrowRight className='h-4 w-4' />
                           </>
                         )}
@@ -783,7 +820,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                   ) : null}
                 </div>
               ) : (
-                <div className='text-sm text-gray-600'>No lesson content configured for this module yet.</div>
+                <div className='text-sm text-gray-600'>{tr('learningHubSections.growth.noLessonContent')}</div>
               )}
             </div>
 
@@ -792,14 +829,14 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                 <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 ${v.completionIconBg}`}>
                   <Trophy className='h-8 w-8 text-white' />
                 </div>
-                <h3 className='text-2xl font-bold text-gray-900 mb-2'>Module Complete!</h3>
-                <p className='text-gray-700 mb-6'>You completed all lessons in this module.</p>
+                <h3 className='text-2xl font-bold text-gray-900 mb-2'>{tr('learningHubSections.growth.moduleComplete')}</h3>
+                <p className='text-gray-700 mb-6'>{tr('learningHubSections.growth.moduleCompleteHint')}</p>
                 <button
                   type='button'
                   onClick={() => navigate(buildLearningHubSectionPath('ai-growth-recommendations', content.parentPathSlug))}
                   className={`rounded-full px-6 py-3 text-sm font-semibold text-white ${v.completionCta}`}
                 >
-                  Continue to Learning Path
+                  {tr('learningHubSections.growth.continueToLearningPath')}
                 </button>
               </div>
             ) : null}
@@ -856,7 +893,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                   <span className='text-white/80'>•</span>
                   <span className='text-white/80 text-sm flex items-center gap-1'>
                     <Clock className='h-3 w-3' />
-                    {content.estimatedTime} estimated
+                    {content.estimatedTime} {tr('learningHubSections.growth.estimated')}
                   </span>
                 </div>
                 <h1 className='text-3xl font-bold'>{item.title}</h1>
@@ -866,17 +903,17 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
             <div className='flex flex-wrap items-center gap-4 text-sm'>
               <div className='flex items-center gap-2'>
                 <Target className='w-4 h-4 shrink-0' />
-                <span>{content.impactLevel} Impact</span>
+                <span>{impactLabel(content.impactLevel)} {tr('learningHubSections.growth.impactLabel')}</span>
               </div>
               <div className='flex items-center gap-2'>
                 <Trophy className='w-4 h-4 shrink-0' />
                 <span>
-                  {completedCount} of {availableModules.length} modules completed
+                  {tr('learningHubSections.growth.modulesCompletedCount', { completed: completedCount, total: availableModules.length })}
                 </span>
               </div>
               <div className='flex items-center gap-2'>
                 <TrendingUp className='w-4 h-4 shrink-0' />
-                <span>{Math.round(progress)}% Complete</span>
+                <span>{tr('learningHubSections.growth.percentComplete', { percent: Math.round(progress) })}</span>
               </div>
             </div>
             <div className='mt-4 h-2 bg-white/20 rounded-full overflow-hidden'>
@@ -893,17 +930,17 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
           </div>
           <div className='flex-1 min-w-0'>
             <div className='flex flex-wrap items-center gap-2 mb-2'>
-              <h3 className='text-lg font-semibold text-gray-900'>AI-Powered Learning Guidance</h3>
-              <span className={t.guidancePersonalizedBadge}>Personalized</span>
+              <h3 className='text-lg font-semibold text-gray-900'>{tr('learningHubSections.growth.aiGuidance')}</h3>
+              <span className={t.guidancePersonalizedBadge}>{tr('learningHubSections.growth.personalized')}</span>
             </div>
             <p className='text-sm font-medium text-gray-900 mb-2'>{content.aiGuidance.recommendation}</p>
             <p className='text-sm text-gray-700 mb-4'>{content.aiGuidance.reason}</p>
             <div className={`bg-white rounded-lg p-4 border mb-4 ${t.guidanceTipBoxBorder}`}>
-              <p className='text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2'>Personalized Tip</p>
+              <p className='text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2'>{tr('learningHubSections.growth.personalizedTip')}</p>
               <p className='text-sm text-gray-700'>{content.aiGuidance.personalizedTip}</p>
             </div>
             <div>
-              <p className='text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2'>Your Next Steps</p>
+              <p className='text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2'>{tr('learningHubSections.growth.yourNextSteps')}</p>
               <ul className='space-y-1'>
                 {content.aiGuidance.nextSteps.map((step) => (
                   <li key={step} className='flex items-start gap-2 text-sm text-gray-700'>
@@ -921,7 +958,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
         <div className='lg:col-span-2 space-y-6'>
           <div className='bg-white rounded-2xl border border-gray-200 p-6 shadow-sm'>
             <div className='flex items-center justify-between mb-4'>
-              <h2 className='text-xl font-bold text-gray-900'>Expected Impact on Your Teaching</h2>
+              <h2 className='text-xl font-bold text-gray-900'>{tr('learningHubSections.growth.expectedImpact')}</h2>
               <TrendingUp className={`h-5 w-5 shrink-0 ${t.skillImpactHeaderIcon}`} />
             </div>
             <div className='space-y-4'>
@@ -946,7 +983,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
 
           <div className='bg-white rounded-2xl border border-gray-200 p-6 shadow-sm'>
             <div className='flex items-center justify-between mb-6'>
-              <h2 className='text-xl font-bold text-gray-900'>Learning Modules</h2>
+              <h2 className='text-xl font-bold text-gray-900'>{tr('learningHubSections.growth.learningModules')}</h2>
               <Filter className='h-5 w-5 text-gray-400 shrink-0' />
             </div>
             <div className='space-y-4'>
@@ -983,8 +1020,8 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                           <div className='flex-1 min-w-0'>
                             <div className='flex flex-wrap items-center gap-2 mb-2'>
                               <h3 className='text-lg font-semibold text-gray-900'>{module.title}</h3>
-                              <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${levelPill(module.level)}`}>{module.level}</span>
-                              <span className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${impactPill(module.impact)}`}>{module.impact} Impact</span>
+                              <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${levelPill(module.level)}`}>{levelLabel(module.level)}</span>
+                              <span className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${impactPill(module.impact)}`}>{impactLabel(module.impact)} {tr('learningHubSections.growth.impactLabel')}</span>
                             </div>
                             <p className='text-sm text-gray-600 mb-3'>{module.description}</p>
                             <div className='flex flex-wrap items-center gap-4 text-xs text-gray-500'>
@@ -994,7 +1031,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                               </span>
                               <span className='flex items-center gap-1'>
                                 <Star className='h-3 w-3' />
-                                {points} points
+                                {points} {tr('learningHubSections.growth.points')}
                               </span>
                             </div>
                           </div>
@@ -1013,7 +1050,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                           className='w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-500 text-sm font-semibold cursor-not-allowed flex items-center justify-center gap-2'
                         >
                           <Lock className='h-4 w-4' />
-                          {idx === 3 ? 'Locked - Complete first 3 modules to unlock' : 'Locked - Complete previous module to unlock'}
+                          {idx === 3 ? tr('learningHubSections.growth.lockedFirstThree') : tr('learningHubSections.growth.lockedPrevious')}
                         </button>
                       </div>
                     ) : null}
@@ -1023,7 +1060,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                         <div>
                           <h4 className='text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2'>
                             <Target className={`h-4 w-4 ${t.sectionHeadingIconClass}`} />
-                            Learning Outcomes
+                            {tr('learningHubSections.growth.learningOutcomes')}
                           </h4>
                           <ul className='space-y-2'>
                             {module.learningOutcomes.map((outcome) => (
@@ -1038,7 +1075,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                         <div>
                           <h4 className='text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2'>
                             <BookOpen className={`h-4 w-4 ${t.sectionHeadingIconClass}`} />
-                            Module Content
+                            {tr('learningHubSections.growth.moduleContent')}
                           </h4>
                           <div className='space-y-2'>
                             {module.content.map((row) => (
@@ -1052,7 +1089,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                                   <span className='text-sm text-gray-700 truncate'>{row.title}</span>
                                   {row.duration ? <span className='text-xs text-gray-500 shrink-0'>({row.duration})</span> : null}
                                 </div>
-                                {row.points ? <span className={`text-xs font-semibold shrink-0 ${t.moduleContentPointsClass}`}>{row.points} pts</span> : null}
+                                {row.points ? <span className={`text-xs font-semibold shrink-0 ${t.moduleContentPointsClass}`}>{row.points} {tr('learningHubSections.growth.pts')}</span> : null}
                               </div>
                             ))}
                           </div>
@@ -1061,17 +1098,17 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                         <div className={t.assessmentPanel}>
                           <h4 className='text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2'>
                             <Award className={`h-4 w-4 ${t.assessmentIconClass}`} />
-                            Assessment
+                            {tr('learningHubSections.growth.assessment')}
                           </h4>
                           <p className='text-sm text-gray-700 mb-1'>{module.assessment.type}</p>
                           <p className='text-sm text-gray-600'>{module.assessment.description}</p>
-                          <p className={`text-xs font-semibold mt-2 ${t.assessmentPointsClass}`}>{module.assessment.points} points</p>
+                          <p className={`text-xs font-semibold mt-2 ${t.assessmentPointsClass}`}>{module.assessment.points} {tr('learningHubSections.growth.points')}</p>
                         </div>
 
                         <div className='bg-blue-50 rounded-lg p-4 border border-blue-200'>
                           <h4 className='text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2'>
                             <Lightbulb className='h-4 w-4 text-blue-600' />
-                            Real-World Application
+                            {tr('learningHubSections.growth.realWorldApp')}
                           </h4>
                           <p className='text-sm text-gray-700'>{module.realWorldApplication}</p>
                         </div>
@@ -1084,7 +1121,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                               className={`px-4 py-2 rounded-lg text-white text-sm font-semibold transition flex items-center gap-2 ${t.button}`}
                             >
                               <Eye className='h-4 w-4' />
-                              Review Module
+                              {tr('learningHubSections.growth.reviewModule')}
                             </button>
                           ) : (
                             <>
@@ -1094,7 +1131,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                                 className={`px-4 py-2 rounded-lg text-white text-sm font-semibold transition flex items-center gap-2 ${t.button}`}
                               >
                                 <Play className='h-4 w-4' />
-                                Start Module
+                                {tr('learningHubSections.growth.startModule')}
                               </button>
                               <button
                                 type='button'
@@ -1102,7 +1139,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                                 className={`px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2 ${t.markCompleteOutlineButton}`}
                               >
                                 <CheckCircle2 className='h-4 w-4' />
-                                Mark Complete
+                                {tr('learningHubSections.growth.markComplete')}
                               </button>
                             </>
                           )}
@@ -1118,11 +1155,11 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
 
         <div className='space-y-6'>
           <div className='bg-white rounded-2xl border border-gray-200 p-6 shadow-sm'>
-            <h3 className='text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4'>Your Progress</h3>
+            <h3 className='text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4'>{tr('learningHubSections.growth.yourProgress')}</h3>
             <div className='space-y-4'>
               <div>
                 <div className='flex items-center justify-between mb-2'>
-                  <span className='text-sm text-gray-600'>Modules Completed</span>
+                  <span className='text-sm text-gray-600'>{tr('learningHubSections.growth.modulesCompleted')}</span>
                   <span className='text-lg font-bold text-gray-900'>
                     {completedCount}/{availableModules.length}
                   </span>
@@ -1132,7 +1169,7 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
                 </div>
               </div>
               <div className='pt-4 border-t border-gray-200'>
-                <p className='text-xs text-gray-500 mb-2'>Skills You&apos;ll Master</p>
+                <p className='text-xs text-gray-500 mb-2'>{tr('learningHubSections.growth.skillsMaster')}</p>
                 <div className='flex flex-wrap gap-2'>
                   {content.modules
                     .slice(0, 3)
@@ -1149,19 +1186,19 @@ const AIGrowthRecommendationRenderer = ({ item }: AIGrowthRecommendationRenderer
           </div>
 
           <div className={`bg-gradient-to-br ${t.accentBg} rounded-2xl border ${t.accentBorder} p-6`}>
-            <h3 className='text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4'>Path Overview</h3>
+            <h3 className='text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4'>{tr('learningHubSections.growth.pathOverview')}</h3>
             <div className='space-y-3'>
               <div className='flex items-center justify-between'>
-                <span className='text-sm text-gray-600'>Total Modules</span>
+                <span className='text-sm text-gray-600'>{tr('learningHubSections.growth.totalModules')}</span>
                 <span className='text-sm font-semibold text-gray-900'>{content.modules.length}</span>
               </div>
               <div className='flex items-center justify-between'>
-                <span className='text-sm text-gray-600'>Estimated Time</span>
+                <span className='text-sm text-gray-600'>{tr('learningHubSections.growth.estimatedTime')}</span>
                 <span className='text-sm font-semibold text-gray-900'>{content.estimatedTime}</span>
               </div>
               <div className='flex items-center justify-between'>
-                <span className='text-sm text-gray-600'>Impact Level</span>
-                <span className={impactOverviewBadge}>{content.impactLevel}</span>
+                <span className='text-sm text-gray-600'>{tr('learningHubSections.growth.impactLevel')}</span>
+                <span className={impactOverviewBadge}>{impactLabel(content.impactLevel)}</span>
               </div>
             </div>
           </div>

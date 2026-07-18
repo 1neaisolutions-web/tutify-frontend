@@ -48,11 +48,13 @@ import {
   mapAiStandardsResult,
 } from '../../utils/aiMlAdapters'
 
+import { useTranslation } from 'react-i18next'
 const CHATBOT_SLUG = 'ai-machine-learning-educator'
 
 type TabType = 'ai-concepts' | 'ethical-ai' | 'ml-projects' | 'standards' | 'resources'
 
 const AIMachineLearningEducator = () => {
+  const { t } = useTranslation()
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const [activeTab, setActiveTab] = useState<TabType>('ai-concepts')
@@ -124,7 +126,7 @@ const AIMachineLearningEducator = () => {
         } else if (tab === 'ml-projects') setMlProjects(mapMlProjectsResult(raw, gradeLevel))
         else if (tab === 'standards') setAiStandards(mapAiStandardsResult(raw, gradeLevel))
       } catch {
-        toast.info('Could not restore saved output from History.')
+        toast.info(t('aIMachineLearningEducator.couldNotRestoreSavedOutputFromHistory'))
       }
     },
   })
@@ -148,13 +150,13 @@ const AIMachineLearningEducator = () => {
       if (response == null) return
       setAiConcepts(mapAiConceptsResult(response.result, gradeLevel))
       pinFromResponse(response.conversation_id)
-      toast.success('AI concepts loaded')
+      toast.success(t('aIMachineLearningEducator.aiConceptsLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load AI concepts'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('aIMachineLearningEducator.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -177,13 +179,13 @@ const AIMachineLearningEducator = () => {
       if (response == null) return
       setEthicalPrinciples(mapEthicalAiToPrinciples(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Ethical principles loaded')
+      toast.success(t('aIMachineLearningEducator.ethicalPrinciplesLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load ethical principles'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('aIMachineLearningEducator.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -206,13 +208,13 @@ const AIMachineLearningEducator = () => {
       if (response == null) return
       setEthicsFrameworks(mapEthicalAiToFrameworks(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Ethics frameworks loaded')
+      toast.success(t('aIMachineLearningEducator.ethicsFrameworksLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load ethics frameworks'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('aIMachineLearningEducator.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -235,13 +237,13 @@ const AIMachineLearningEducator = () => {
       if (response == null) return
       setMlProjects(mapMlProjectsResult(response.result, gradeLevel))
       pinFromResponse(response.conversation_id)
-      toast.success('ML projects loaded')
+      toast.success(t('aIMachineLearningEducator.mlProjectsLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load ML projects'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('aIMachineLearningEducator.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -264,13 +266,13 @@ const AIMachineLearningEducator = () => {
       if (response == null) return
       setAiStandards(mapAiStandardsResult(response.result, gradeLevel))
       pinFromResponse(response.conversation_id)
-      toast.success('Standards loaded')
+      toast.success(t('aIMachineLearningEducator.standardsLoaded'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
       const msg = err?.detail || err?.message || 'Failed to load standards'
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('aIMachineLearningEducator.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -278,11 +280,11 @@ const AIMachineLearningEducator = () => {
   }
 
   const tabs = [
-    { id: 'ai-concepts' as TabType, label: 'AI Concepts', icon: Brain },
-    { id: 'ethical-ai' as TabType, label: 'Ethical AI', icon: Shield },
-    { id: 'ml-projects' as TabType, label: 'ML Projects', icon: Code },
-    { id: 'standards' as TabType, label: 'Standards', icon: CheckCircle },
-    { id: 'resources' as TabType, label: 'Resources', icon: FileText },
+    { id: 'ai-concepts' as TabType, label: t('aIMachineLearningEducator.tabs.ai-concepts'), icon: Brain },
+    { id: 'ethical-ai' as TabType, label: t('aIMachineLearningEducator.tabs.ethical-ai'), icon: Shield },
+    { id: 'ml-projects' as TabType, label: t('aIMachineLearningEducator.tabs.ml-projects'), icon: Code },
+    { id: 'standards' as TabType, label: t('aIMachineLearningEducator.tabs.standards'), icon: CheckCircle },
+    { id: 'resources' as TabType, label: t('aIMachineLearningEducator.tabs.resources'), icon: FileText },
   ]
 
   return (
@@ -306,29 +308,23 @@ const AIMachineLearningEducator = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-3xl font-bold">AI & Machine Learning Educator</h1>
+                  <h1 className="text-3xl font-bold">{t('aIMachineLearningEducator.aiMachineLearningEducator')}</h1>
                   <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
                     <Star className="h-3 w-3" /> 4.9★
                   </span>
                   <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" /> Premium
-                  </span>
+                    <Lock className="inline h-3 w-3 mr-1" />{t('aIMachineLearningEducator.premium')}</span>
                   <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
-                    <Globe className="inline h-3 w-3 mr-1" /> International Standards
-                  </span>
+                    <Globe className="inline h-3 w-3 mr-1" />{t('aIMachineLearningEducator.internationalStandards')}</span>
                 </div>
-                <p className="mt-2 text-purple-100">
-                  Comprehensive AI and ML education aligned with international standards (ISTE, CSTA, UNESCO, EU AI Act, IEEE). 
-                  Help students understand AI concepts, explore ethical implications, and build hands-on ML projects 
-                  through evidence-based pedagogy and global best practices.
-                </p>
+                <p className="mt-2 text-blue-100">{t('aIMachineLearningEducator.heroDescription')}</p>
               </div>
             </div>
             
             {/* Quick Settings */}
             <div className="flex flex-wrap gap-4 mt-6">
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Grade Level:</label>
+                <label className="text-sm font-medium">{t('aIMachineLearningEducator.gradeLevel')}</label>
                 <select
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
@@ -340,7 +336,7 @@ const AIMachineLearningEducator = () => {
                 </select>
               </div>
               <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-                <label className="text-sm font-medium">Difficulty:</label>
+                <label className="text-sm font-medium">{t('aIMachineLearningEducator.difficulty')}</label>
                 <select
                   value={difficulty}
                   onChange={(e) => setDifficulty(e.target.value)}
@@ -386,13 +382,8 @@ const AIMachineLearningEducator = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-6 border border-purple-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Brain className="h-6 w-6 text-purple-600" />
-                  AI Concepts for Students
-                </h2>
-                <p className="text-gray-700 mb-4">
-                  Explore fundamental AI concepts tailored to different grade levels. Each concept includes key points, 
-                  examples, activities, and real-world applications.
-                </p>
+                  <Brain className="h-6 w-6 text-purple-600" />{t('aIMachineLearningEducator.aiConceptsForStudents')}</h2>
+                <p className="text-gray-700 mb-4">{t('aIMachineLearningEducator.exploreFundamentalAiConceptsTailoredToDifferentGradeLev')}</p>
                 <button
                   onClick={handleLoadAIConcepts}
                   disabled={isGenerating}
@@ -400,14 +391,10 @@ const AIMachineLearningEducator = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('aIMachineLearningEducator.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load AI Concepts
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('aIMachineLearningEducator.loadAiConcepts')}</>
                   )}
                 </button>
               </div>
@@ -443,7 +430,7 @@ const AIMachineLearningEducator = () => {
                         {selectedConcept?.id === concept.id && (
                           <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Key Points</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('aIMachineLearningEducator.keyPoints')}</h4>
                               <ul className="list-disc list-inside space-y-1 text-gray-700">
                                 {concept.keyPoints.map((point, i) => (
                                   <li key={i}>{point}</li>
@@ -453,7 +440,7 @@ const AIMachineLearningEducator = () => {
 
                             <div className="grid md:grid-cols-2 gap-4">
                               <div>
-                                <h4 className="font-semibold text-gray-900 mb-2">Examples</h4>
+                                <h4 className="font-semibold text-gray-900 mb-2">{t('aIMachineLearningEducator.examples')}</h4>
                                 <ul className="list-disc list-inside space-y-1 text-gray-700">
                                   {concept.examples.map((example, i) => (
                                     <li key={i}>{example}</li>
@@ -461,7 +448,7 @@ const AIMachineLearningEducator = () => {
                                 </ul>
                               </div>
                               <div>
-                                <h4 className="font-semibold text-gray-900 mb-2">Activities</h4>
+                                <h4 className="font-semibold text-gray-900 mb-2">{t('aIMachineLearningEducator.activities')}</h4>
                                 <ul className="list-disc list-inside space-y-1 text-gray-700">
                                   {concept.activities.map((activity, i) => (
                                     <li key={i}>{activity}</li>
@@ -471,7 +458,7 @@ const AIMachineLearningEducator = () => {
                             </div>
 
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Common Misconceptions</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('aIMachineLearningEducator.commonMisconceptions')}</h4>
                               <div className="flex flex-wrap gap-2">
                                 {concept.misconceptions.map((misconception, i) => (
                                   <span key={i} className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
@@ -482,7 +469,7 @@ const AIMachineLearningEducator = () => {
                             </div>
 
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Real-World Applications</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('aIMachineLearningEducator.realWorldApplications')}</h4>
                               <ul className="list-disc list-inside space-y-1 text-gray-700">
                                 {concept.realWorldApplications.map((app, i) => (
                                   <li key={i}>{app}</li>
@@ -503,13 +490,8 @@ const AIMachineLearningEducator = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-xl p-6 border border-red-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Shield className="h-6 w-6 text-red-600" />
-                  Ethical AI Discussions
-                </h2>
-                <p className="text-gray-700 mb-4">
-                  Explore ethical principles, frameworks, and case studies to help students understand the 
-                  social and ethical implications of AI systems.
-                </p>
+                  <Shield className="h-6 w-6 text-red-600" />{t('aIMachineLearningEducator.ethicalAiDiscussions')}</h2>
+                <p className="text-gray-700 mb-4">{t('aIMachineLearningEducator.exploreEthicalPrinciplesFrameworksAndCaseStudiesToHelpS')}</p>
                 <div className="flex gap-4">
                   <button
                     onClick={handleLoadEthicalPrinciples}
@@ -518,14 +500,10 @@ const AIMachineLearningEducator = () => {
                   >
                     {isGenerating ? (
                       <>
-                        <RefreshCw className="h-5 w-5 animate-spin" />
-                        Loading...
-                      </>
+                        <RefreshCw className="h-5 w-5 animate-spin" />{t('aIMachineLearningEducator.loading')}</>
                     ) : (
                       <>
-                        <Sparkles className="h-5 w-5" />
-                        Load Ethical Principles
-                      </>
+                        <Sparkles className="h-5 w-5" />{t('aIMachineLearningEducator.loadEthicalPrinciples')}</>
                     )}
                   </button>
                   <button
@@ -535,14 +513,10 @@ const AIMachineLearningEducator = () => {
                   >
                     {isGenerating ? (
                       <>
-                        <RefreshCw className="h-5 w-5 animate-spin" />
-                        Loading...
-                      </>
+                        <RefreshCw className="h-5 w-5 animate-spin" />{t('aIMachineLearningEducator.loading')}</>
                     ) : (
                       <>
-                        <Sparkles className="h-5 w-5" />
-                        Load Ethics Frameworks
-                      </>
+                        <Sparkles className="h-5 w-5" />{t('aIMachineLearningEducator.loadEthicsFrameworks')}</>
                     )}
                   </button>
                 </div>
@@ -550,7 +524,7 @@ const AIMachineLearningEducator = () => {
 
               {ethicalPrinciples.length > 0 && (
                 <div className="space-y-4">
-                  <h3 className="text-lg font-bold text-gray-900">Ethical Principles</h3>
+                  <h3 className="text-lg font-bold text-gray-900">{t('aIMachineLearningEducator.ethicalPrinciples')}</h3>
                   {ethicalPrinciples.map((principle, idx) => (
                     <div
                       key={idx}
@@ -564,12 +538,12 @@ const AIMachineLearningEducator = () => {
                         <Eye className="h-5 w-5 text-gray-400" />
                       </div>
                       <p className="text-gray-700">{principle.description}</p>
-                      <p className="text-sm text-gray-600 mt-2"><strong>Importance:</strong> {principle.importance}</p>
+                      <p className="text-sm text-gray-600 mt-2"><strong>{t('aIMachineLearningEducator.importance')}</strong> {principle.importance}</p>
 
                       {selectedPrinciple?.id === principle.id && (
                         <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Examples</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('aIMachineLearningEducator.examples')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {principle.examples.map((example, i) => (
                                 <li key={i}>{example}</li>
@@ -578,7 +552,7 @@ const AIMachineLearningEducator = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Discussion Questions</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('aIMachineLearningEducator.discussionQuestions')}</h4>
                             <ul className="list-disc list-inside space-y-1 text-gray-700">
                               {principle.discussionQuestions.map((question, i) => (
                                 <li key={i}>{question}</li>
@@ -587,7 +561,7 @@ const AIMachineLearningEducator = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Case Studies</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('aIMachineLearningEducator.caseStudies')}</h4>
                             <div className="flex flex-wrap gap-2">
                               {principle.caseStudies.map((study, i) => (
                                 <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -598,7 +572,7 @@ const AIMachineLearningEducator = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Standards Alignment</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('aIMachineLearningEducator.standardsAlignment')}</h4>
                             <div className="flex flex-wrap gap-2">
                               {principle.standardsAlignment.map((standard, i) => (
                                 <span key={i} className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-medium">
@@ -616,7 +590,7 @@ const AIMachineLearningEducator = () => {
 
               {ethicsFrameworks.length > 0 && (
                 <div className="space-y-4 mt-6">
-                  <h3 className="text-lg font-bold text-gray-900">Ethics Frameworks</h3>
+                  <h3 className="text-lg font-bold text-gray-900">{t('aIMachineLearningEducator.ethicsFrameworks')}</h3>
                   {ethicsFrameworks.map((framework, idx) => (
                     <div
                       key={idx}
@@ -635,7 +609,7 @@ const AIMachineLearningEducator = () => {
                       {selectedFramework?.id === framework.id && (
                         <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-3">Principles</h4>
+                            <h4 className="font-semibold text-gray-900 mb-3">{t('aIMachineLearningEducator.principles')}</h4>
                             {framework.principles.map((principle, i) => (
                               <div key={i} className="border-l-4 border-orange-500 pl-4 mb-3">
                                 <h5 className="font-semibold text-gray-900">{principle.principle}</h5>
@@ -662,13 +636,8 @@ const AIMachineLearningEducator = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-xl p-6 border border-green-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Code className="h-6 w-6 text-green-600" />
-                  Hands-On ML Projects
-                </h2>
-                <p className="text-gray-700 mb-4">
-                  Step-by-step machine learning projects from beginner to advanced. Each project includes 
-                  learning objectives, tools, datasets, and assessment criteria.
-                </p>
+                  <Code className="h-6 w-6 text-green-600" />{t('aIMachineLearningEducator.handsOnMlProjects')}</h2>
+                <p className="text-gray-700 mb-4">{t('aIMachineLearningEducator.stepByStepMachineLearningProjectsFromBeginnerToAdvanced')}</p>
                 <button
                   onClick={handleLoadMLProjects}
                   disabled={isGenerating}
@@ -676,14 +645,10 @@ const AIMachineLearningEducator = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('aIMachineLearningEducator.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load ML Projects
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('aIMachineLearningEducator.loadMlProjects')}</>
                   )}
                 </button>
               </div>
@@ -725,7 +690,7 @@ const AIMachineLearningEducator = () => {
                         {selectedProject?.id === project.id && (
                           <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Learning Objectives</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('aIMachineLearningEducator.learningObjectives')}</h4>
                               <ul className="list-disc list-inside space-y-1 text-gray-700">
                                 {project.learningObjectives.map((obj, i) => (
                                   <li key={i}>{obj}</li>
@@ -735,7 +700,7 @@ const AIMachineLearningEducator = () => {
 
                             <div className="grid md:grid-cols-2 gap-4">
                               <div>
-                                <h4 className="font-semibold text-gray-900 mb-2">Tools</h4>
+                                <h4 className="font-semibold text-gray-900 mb-2">{t('aIMachineLearningEducator.tools')}</h4>
                                 <div className="flex flex-wrap gap-2">
                                   {project.tools.map((tool, i) => (
                                     <span key={i} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
@@ -745,7 +710,7 @@ const AIMachineLearningEducator = () => {
                                 </div>
                               </div>
                               <div>
-                                <h4 className="font-semibold text-gray-900 mb-2">Datasets</h4>
+                                <h4 className="font-semibold text-gray-900 mb-2">{t('aIMachineLearningEducator.datasets')}</h4>
                                 <ul className="list-disc list-inside space-y-1 text-gray-700">
                                   {project.datasets.map((dataset, i) => (
                                     <li key={i}>{dataset}</li>
@@ -755,7 +720,7 @@ const AIMachineLearningEducator = () => {
                             </div>
 
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-3">Project Steps</h4>
+                              <h4 className="font-semibold text-gray-900 mb-3">{t('aIMachineLearningEducator.projectSteps')}</h4>
                               <div className="space-y-3">
                                 {project.steps.map((step, idx) => (
                                   <div key={idx} className="border-l-4 border-green-500 pl-4">
@@ -772,12 +737,12 @@ const AIMachineLearningEducator = () => {
                             </div>
 
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Real-World Connection</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('aIMachineLearningEducator.realWorldConnection')}</h4>
                               <p className="text-gray-700">{project.realWorldConnection}</p>
                             </div>
 
                             <div>
-                              <h4 className="font-semibold text-gray-900 mb-2">Extensions</h4>
+                              <h4 className="font-semibold text-gray-900 mb-2">{t('aIMachineLearningEducator.extensions')}</h4>
                               <ul className="list-disc list-inside space-y-1 text-gray-700">
                                 {project.extensions.map((extension, i) => (
                                   <li key={i}>{extension}</li>
@@ -798,12 +763,8 @@ const AIMachineLearningEducator = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-6 border border-indigo-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <CheckCircle className="h-6 w-6 text-indigo-600" />
-                  International AI Education Standards
-                </h2>
-                <p className="text-gray-700 mb-4">
-                  Access comprehensive international standards for AI education from leading organizations worldwide.
-                </p>
+                  <CheckCircle className="h-6 w-6 text-indigo-600" />{t('aIMachineLearningEducator.internationalAiEducationStandards')}</h2>
+                <p className="text-gray-700 mb-4">{t('aIMachineLearningEducator.accessComprehensiveInternationalStandardsForAiEducation')}</p>
                 <button
                   onClick={handleLoadStandards}
                   disabled={isGenerating}
@@ -811,14 +772,10 @@ const AIMachineLearningEducator = () => {
                 >
                   {isGenerating ? (
                     <>
-                      <RefreshCw className="h-5 w-5 animate-spin" />
-                      Loading...
-                    </>
+                      <RefreshCw className="h-5 w-5 animate-spin" />{t('aIMachineLearningEducator.loading')}</>
                   ) : (
                     <>
-                      <Sparkles className="h-5 w-5" />
-                      Load All Standards
-                    </>
+                      <Sparkles className="h-5 w-5" />{t('aIMachineLearningEducator.loadAllStandards')}</>
                   )}
                 </button>
               </div>
@@ -850,7 +807,7 @@ const AIMachineLearningEducator = () => {
                       {selectedStandard?.id === standard.id && (
                         <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-2">Key Components</h4>
+                            <h4 className="font-semibold text-gray-900 mb-2">{t('aIMachineLearningEducator.keyComponents')}</h4>
                             <div className="flex flex-wrap gap-2">
                               {standard.keyComponents.map((component, i) => (
                                 <span key={i} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
@@ -861,14 +818,14 @@ const AIMachineLearningEducator = () => {
                           </div>
 
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-3">Competencies</h4>
+                            <h4 className="font-semibold text-gray-900 mb-3">{t('aIMachineLearningEducator.competencies')}</h4>
                             <div className="space-y-3">
                               {standard.competencies.map((competency, i) => (
                                 <div key={i} className="border-l-4 border-indigo-500 pl-4">
                                   <h5 className="font-semibold text-gray-900">{competency.competency}</h5>
                                   <p className="text-sm text-gray-700 mt-1">{competency.description}</p>
                                   <div className="mt-2">
-                                    <span className="text-xs font-medium text-gray-700">Indicators:</span>
+                                    <span className="text-xs font-medium text-gray-700">{t('aIMachineLearningEducator.indicators')}</span>
                                     <ul className="list-disc list-inside space-y-1 text-sm text-gray-700 mt-1">
                                       {competency.indicators.map((indicator, j) => (
                                         <li key={j}>{indicator}</li>
@@ -893,111 +850,99 @@ const AIMachineLearningEducator = () => {
             <div className="space-y-6">
               <div className="bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl p-6 border border-gray-200">
                 <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <FileText className="h-6 w-6 text-gray-600" />
-                  AI & ML Education Resources
-                </h2>
-                <p className="text-gray-600">
-                  Curated resources for AI concepts, ethical AI, machine learning projects, and standards.
-                </p>
+                  <FileText className="h-6 w-6 text-gray-600" />{t('aIMachineLearningEducator.aiMlEducationResources')}</h2>
+                <p className="text-gray-600">{t('aIMachineLearningEducator.curatedResourcesForAiConceptsEthicalAiMachineLearningPr')}</p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <Brain className="h-5 w-5 text-purple-600" />
-                    AI Concepts & Learning
-                  </h3>
+                    <Brain className="h-5 w-5 text-purple-600" />{t('aIMachineLearningEducator.aiConceptsLearning')}</h3>
                   <ul className="space-y-2 text-gray-700">
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-purple-600" />
-                      <span>AI4K12.org - AI Education Guidelines</span>
+                      <span>{t('aIMachineLearningEducator.ai4k12OrgAiEducationGuidelines')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-purple-600" />
-                      <span>Machine Learning for Kids</span>
+                      <span>{t('aIMachineLearningEducator.machineLearningForKids')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-purple-600" />
-                      <span>Teachable Machine</span>
+                      <span>{t('aIMachineLearningEducator.teachableMachine')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-purple-600" />
-                      <span>Scratch for ML</span>
+                      <span>{t('aIMachineLearningEducator.scratchForMl')}</span>
                     </li>
                   </ul>
                 </div>
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <Shield className="h-5 w-5 text-red-600" />
-                    Ethical AI Resources
-                  </h3>
+                    <Shield className="h-5 w-5 text-red-600" />{t('aIMachineLearningEducator.ethicalAiResources')}</h3>
                   <ul className="space-y-2 text-gray-700">
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-red-600" />
-                      <span>Partnership on AI</span>
+                      <span>{t('aIMachineLearningEducator.partnershipOnAi')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-red-600" />
-                      <span>Algorithmic Justice League</span>
+                      <span>{t('aIMachineLearningEducator.algorithmicJusticeLeague')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-red-600" />
-                      <span>AI Fairness 360 Toolkit</span>
+                      <span>{t('aIMachineLearningEducator.aiFairness360Toolkit')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-red-600" />
-                      <span>UNESCO AI Ethics</span>
+                      <span>{t('aIMachineLearningEducator.unescoAiEthics')}</span>
                     </li>
                   </ul>
                 </div>
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <Code className="h-5 w-5 text-green-600" />
-                    ML Projects & Tools
-                  </h3>
+                    <Code className="h-5 w-5 text-green-600" />{t('aIMachineLearningEducator.mlProjectsTools')}</h3>
                   <ul className="space-y-2 text-gray-700">
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-green-600" />
-                      <span>Google Colab</span>
+                      <span>{t('aIMachineLearningEducator.googleColab')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-green-600" />
-                      <span>Kaggle Learn</span>
+                      <span>{t('aIMachineLearningEducator.kaggleLearn')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-green-600" />
-                      <span>TensorFlow Playground</span>
+                      <span>{t('aIMachineLearningEducator.tensorflowPlayground')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-green-600" />
-                      <span>Fast.ai</span>
+                      <span>{t('aIMachineLearningEducator.fastAi')}</span>
                     </li>
                   </ul>
                 </div>
 
                 <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
                   <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <CheckCircle className="h-5 w-5 text-indigo-600" />
-                    Standards & Frameworks
-                  </h3>
+                    <CheckCircle className="h-5 w-5 text-indigo-600" />{t('aIMachineLearningEducator.standardsFrameworks')}</h3>
                   <ul className="space-y-2 text-gray-700">
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-indigo-600" />
-                      <span>ISTE AI Standards</span>
+                      <span>{t('aIMachineLearningEducator.isteAiStandards')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-indigo-600" />
-                      <span>CSTA Computer Science Standards</span>
+                      <span>{t('aIMachineLearningEducator.cstaComputerScienceStandards')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-indigo-600" />
-                      <span>EU AI Act</span>
+                      <span>{t('aIMachineLearningEducator.euAiAct')}</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <ExternalLink className="h-4 w-4 text-indigo-600" />
-                      <span>IEEE Ethically Aligned Design</span>
+                      <span>{t('aIMachineLearningEducator.ieeeEthicallyAlignedDesign')}</span>
                     </li>
                   </ul>
                 </div>

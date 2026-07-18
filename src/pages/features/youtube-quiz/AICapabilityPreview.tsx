@@ -1,4 +1,4 @@
-import { useState, type ElementType } from 'react'
+import { useMemo, useState, type ElementType } from 'react'
 import {
   Clock,
   Sparkles,
@@ -8,6 +8,7 @@ import {
   FileText,
   ListChecks,
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 type CapabilityStatus = 'demo' | 'future'
 
@@ -23,102 +24,111 @@ interface Capability {
   isActiveMvp?: boolean
 }
 
-// TODO: Replace with backend API response later.
-const CAPABILITIES: Capability[] = [
-  {
-    id: 'adaptive-difficulty',
-    title: 'Adaptive difficulty',
-    Icon: Sparkles,
-    tagline: 'Controls how easy or challenging generated quiz questions should be.',
-    whatItIs: 'Controls how easy or challenging the generated quiz questions are.',
-    purpose: 'Helps teachers match quiz difficulty to student readiness.',
-    howToUse: 'Choose Easy, Medium, or Challenging before generating the quiz.',
-    status: 'demo',
-    isActiveMvp: true,
-  },
-  {
-    id: 'curriculum-tagging',
-    title: 'Curriculum tagging engine',
-    Icon: BookOpen,
-    tagline: 'Maps each question to district standards — NGSS, Common Core, TEKS, and custom frameworks.',
-    whatItIs: 'Maps questions to standards and curriculum frameworks.',
-    purpose: 'Reduces manual alignment overhead for teachers.',
-    howToUse: 'This capability is currently hidden from the MVP interface.',
-    status: 'demo',
-  },
-  {
-    id: 'playlist-analytics',
-    title: 'Student playlist analytics',
-    Icon: GraduationCap,
-    tagline: 'Track mastery by clip, regroup learners, and export insight dashboards.',
-    whatItIs: 'Tracks mastery patterns across playlist content.',
-    purpose: 'Helps teachers identify struggling students and segments.',
-    howToUse: 'This capability is currently hidden from the MVP interface.',
-    status: 'future',
-  },
-  {
-    id: 'accessibility',
-    title: 'Accessibility assistant',
-    Icon: ShieldCheck,
-    tagline: 'Simplifies question wording so quizzes are easier to read.',
-    whatItIs: 'Simplifies question wording for easier reading.',
-    purpose: 'Makes quizzes clearer for students who need accessible language.',
-    howToUse: 'Turn Accessibility Mode ON before generating the quiz.',
-    status: 'demo',
-    isActiveMvp: true,
-  },
-  {
-    id: 'lesson-plan',
-    title: 'Auto-generated lesson plan',
-    Icon: FileText,
-    tagline: 'Converts your quiz into a full 60-minute lesson plan with warm-up, activities, and closure.',
-    whatItIs: 'Builds complete lesson plans from generated quizzes.',
-    purpose: 'Accelerates lesson planning and pacing.',
-    howToUse: 'This capability is currently hidden from the MVP interface.',
-    status: 'future',
-  },
-  {
-    id: 'worksheet-from-quiz',
-    title: 'Worksheet from quiz',
-    Icon: ListChecks,
-    tagline: 'Converts a generated quiz into a printable worksheet and answer key.',
-    whatItIs: 'Converts the generated quiz into a printable student worksheet.',
-    purpose: 'Lets teachers use the quiz offline or in class.',
-    howToUse: 'Generate the quiz first, then click Generate Worksheet/export.',
-    status: 'demo',
-    isActiveMvp: true,
-  },
-]
-
-const STATUS_CONFIG: Record<CapabilityStatus, { label: string; badgeCls: string }> = {
-  demo: {
-    label: 'Preview capability',
-    badgeCls: 'border-amber-400 bg-amber-100 text-amber-800',
-  },
-  future: {
-    label: 'Backend-ready concept',
-    badgeCls: 'border-gray-400 bg-gray-200 text-gray-700',
-  },
-}
-
 export function AICapabilityPreview() {
+  const { t } = useTranslation()
   const [activeId, setActiveId] = useState<string | null>(null)
-  const visibleCapabilities = CAPABILITIES.filter((cap) => cap.isActiveMvp)
+
+  const statusConfig = useMemo(
+    () =>
+      ({
+        demo: {
+          label: t('youtubeQuizPage.capabilities.previewBadge'),
+          badgeCls: 'border-amber-400 bg-amber-100 text-amber-800',
+        },
+        future: {
+          label: t('youtubeQuizPage.capabilities.futureBadge'),
+          badgeCls: 'border-gray-400 bg-gray-200 text-gray-700',
+        },
+      }) satisfies Record<CapabilityStatus, { label: string; badgeCls: string }>,
+    [t]
+  )
+
+  const capabilities = useMemo<Capability[]>(
+    () => [
+      {
+        id: 'adaptive-difficulty',
+        title: t('youtubeQuizPage.capabilities.adaptiveDifficulty.title'),
+        Icon: Sparkles,
+        tagline: t('youtubeQuizPage.capabilities.adaptiveDifficulty.tagline'),
+        whatItIs: t('youtubeQuizPage.capabilities.adaptiveDifficulty.whatItIs'),
+        purpose: t('youtubeQuizPage.capabilities.adaptiveDifficulty.purpose'),
+        howToUse: t('youtubeQuizPage.capabilities.adaptiveDifficulty.howToUse'),
+        status: 'demo',
+        isActiveMvp: true,
+      },
+      {
+        id: 'curriculum-tagging',
+        title: t('youtubeQuizPage.capabilities.curriculumTagging.title'),
+        Icon: BookOpen,
+        tagline: t('youtubeQuizPage.capabilities.curriculumTagging.tagline'),
+        whatItIs: t('youtubeQuizPage.capabilities.curriculumTagging.whatItIs'),
+        purpose: t('youtubeQuizPage.capabilities.curriculumTagging.purpose'),
+        howToUse: t('youtubeQuizPage.capabilities.curriculumTagging.howToUse'),
+        status: 'demo',
+      },
+      {
+        id: 'playlist-analytics',
+        title: t('youtubeQuizPage.capabilities.playlistAnalytics.title'),
+        Icon: GraduationCap,
+        tagline: t('youtubeQuizPage.capabilities.playlistAnalytics.tagline'),
+        whatItIs: t('youtubeQuizPage.capabilities.playlistAnalytics.whatItIs'),
+        purpose: t('youtubeQuizPage.capabilities.playlistAnalytics.purpose'),
+        howToUse: t('youtubeQuizPage.capabilities.playlistAnalytics.howToUse'),
+        status: 'future',
+      },
+      {
+        id: 'accessibility',
+        title: t('youtubeQuizPage.capabilities.accessibility.title'),
+        Icon: ShieldCheck,
+        tagline: t('youtubeQuizPage.capabilities.accessibility.tagline'),
+        whatItIs: t('youtubeQuizPage.capabilities.accessibility.whatItIs'),
+        purpose: t('youtubeQuizPage.capabilities.accessibility.purpose'),
+        howToUse: t('youtubeQuizPage.capabilities.accessibility.howToUse'),
+        status: 'demo',
+        isActiveMvp: true,
+      },
+      {
+        id: 'lesson-plan',
+        title: t('youtubeQuizPage.capabilities.lessonPlan.title'),
+        Icon: FileText,
+        tagline: t('youtubeQuizPage.capabilities.lessonPlan.tagline'),
+        whatItIs: t('youtubeQuizPage.capabilities.lessonPlan.whatItIs'),
+        purpose: t('youtubeQuizPage.capabilities.lessonPlan.purpose'),
+        howToUse: t('youtubeQuizPage.capabilities.lessonPlan.howToUse'),
+        status: 'future',
+      },
+      {
+        id: 'worksheet-from-quiz',
+        title: t('youtubeQuizPage.capabilities.worksheetFromQuiz.title'),
+        Icon: ListChecks,
+        tagline: t('youtubeQuizPage.capabilities.worksheetFromQuiz.tagline'),
+        whatItIs: t('youtubeQuizPage.capabilities.worksheetFromQuiz.whatItIs'),
+        purpose: t('youtubeQuizPage.capabilities.worksheetFromQuiz.purpose'),
+        howToUse: t('youtubeQuizPage.capabilities.worksheetFromQuiz.howToUse'),
+        status: 'demo',
+        isActiveMvp: true,
+      },
+    ],
+    [t]
+  )
+
+  const visibleCapabilities = useMemo(
+    () => capabilities.filter((cap) => cap.isActiveMvp),
+    [capabilities]
+  )
 
   return (
     <div className="rounded-3xl border border-gray-200 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-6 text-white shadow-md">
       <h3 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-white/70">
         <Clock className="h-4 w-4 text-amber-300" />
-        AI Capability Preview
+        {t('youtubeQuizPage.capabilities.title')}
       </h3>
-      <p className="mt-1 text-xs text-white/50">
-        Click any capability to explore what it does and how it will work.
-      </p>
+      <p className="mt-1 text-xs text-white/50">{t('youtubeQuizPage.capabilities.hint')}</p>
 
       <ul className="mt-4 space-y-2 text-sm">
         {visibleCapabilities.map((cap) => {
           const isActive = activeId === cap.id
-          const cfg = STATUS_CONFIG[cap.status]
+          const cfg = statusConfig[cap.status]
           const Icon = cap.Icon
           return (
             <li key={cap.id}>
@@ -145,15 +155,21 @@ export function AICapabilityPreview() {
               {isActive && (
                 <div className="mt-2 rounded-xl bg-white/10 p-4 text-xs space-y-3">
                   <div>
-                    <p className="mb-1 font-semibold text-amber-300">What it is</p>
+                    <p className="mb-1 font-semibold text-amber-300">
+                      {t('youtubeQuizPage.capabilities.whatItIs')}
+                    </p>
                     <p className="text-white/80 leading-relaxed">{cap.whatItIs}</p>
                   </div>
                   <div>
-                    <p className="mb-1 font-semibold text-amber-300">Purpose</p>
+                    <p className="mb-1 font-semibold text-amber-300">
+                      {t('youtubeQuizPage.capabilities.purpose')}
+                    </p>
                     <p className="text-white/80 leading-relaxed">{cap.purpose}</p>
                   </div>
                   <div>
-                    <p className="mb-1 font-semibold text-amber-300">How to use</p>
+                    <p className="mb-1 font-semibold text-amber-300">
+                      {t('youtubeQuizPage.capabilities.howToUse')}
+                    </p>
                     <p className="text-white/80 leading-relaxed">{cap.howToUse}</p>
                   </div>
                   <span

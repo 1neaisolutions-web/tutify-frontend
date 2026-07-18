@@ -145,6 +145,7 @@ import NoteDetail from '../panels/student/SmartNotes/NoteDetail';
 import SubjectStudyRoom from '../panels/student/SubjectStudyRoom';
 import StudyRoomDetail from '../panels/student/SubjectStudyRoom/StudyRoomDetail';
 import StudyTimeTracker from '../panels/student/StudyTimeTracker';
+import Gamification from '../panels/student/Gamification';
 import GradeCalculator from '../panels/student/GradeCalculator';
 import TeacherHub from '../panels/student/TeacherHub';
 import TeacherDetail from '../panels/student/TeacherHub/TeacherDetail';
@@ -894,6 +895,7 @@ export const teacherRoutes = [
       {
         path: '/administration/reporting',
         moduleName: 'Reporting',
+        i18nKey: 'nav.reporting',
         element: (
           <DashboardLayout>
             <Reporting />
@@ -903,6 +905,7 @@ export const teacherRoutes = [
       {
         path: '/administration/assessment',
         moduleName: 'Assessment',
+        i18nKey: 'nav.assessment',
         element: (
           <DashboardLayout>
             <Assessment />
@@ -912,6 +915,7 @@ export const teacherRoutes = [
       {
         path: '/admin/content-packs',
         moduleName: 'Content Management',
+        i18nKey: 'nav.contentManagement',
         element: (
           <DashboardLayout>
             <ContentPacksManagement />
@@ -921,6 +925,7 @@ export const teacherRoutes = [
           {
             path: '/admin/content-packs/:id',
             moduleName: 'Content Pack Details',
+            i18nKey: 'nav.contentPacks',
             element: (
               <DashboardLayout>
                 <ContentPackDetail />
@@ -973,6 +978,7 @@ export const superAdminRoutes = [
       {
         path: '/admin/content-packs',
         moduleName: 'Content Management',
+        i18nKey: 'nav.contentManagement',
         element: (
           <DashboardLayout>
             <ContentPacksManagement />
@@ -982,6 +988,7 @@ export const superAdminRoutes = [
           {
             path: '/admin/content-packs/:id',
             moduleName: 'Content Pack Details',
+            i18nKey: 'nav.contentPacks',
             element: (
               <DashboardLayout>
                 <ContentPackDetail />
@@ -1025,6 +1032,7 @@ export const orgAdminRoutes = [
   {
     path: '/admin/content-packs',
     moduleName: 'Content Packs',
+    i18nKey: 'nav.contentPacks',
     element: (
       <DashboardLayout>
         <ContentPacksManagement />
@@ -1034,6 +1042,7 @@ export const orgAdminRoutes = [
       {
         path: '/admin/content-packs/:id',
         moduleName: 'Content Pack Details',
+        i18nKey: 'nav.contentPacks',
         element: (
           <DashboardLayout>
             <ContentPackDetail />
@@ -1095,6 +1104,7 @@ export const schoolAdminRoutes = [
   {
     path: '/admin/content-packs',
     moduleName: 'Content Packs',
+    i18nKey: 'nav.contentPacks',
     element: (
       <DashboardLayout>
         <ContentPacksManagement />
@@ -1104,6 +1114,7 @@ export const schoolAdminRoutes = [
       {
         path: '/admin/content-packs/:id',
         moduleName: 'Content Pack Details',
+        i18nKey: 'nav.contentPacks',
         element: (
           <DashboardLayout>
             <ContentPackDetail />
@@ -1226,6 +1237,7 @@ export const studentRoutes = [
     child: [{ path: '/student/subjects/:id/room', element: withDashboardLayout(<StudyRoomDetail />) }],
   },
   { path: '/student/study-time', moduleName: 'Study Time', element: withDashboardLayout(<StudyTimeTracker />) },
+  { path: '/student/gamification', moduleName: 'Gamification', element: withDashboardLayout(<Gamification />) },
   { path: '/student/grade-calculator', moduleName: 'Grade Calculator', element: withDashboardLayout(<GradeCalculator />) },
   // Teachers + Doubts
   {

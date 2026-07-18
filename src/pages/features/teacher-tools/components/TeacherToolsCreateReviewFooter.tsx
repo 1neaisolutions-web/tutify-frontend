@@ -1,4 +1,5 @@
 import { ArrowLeft } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import {
   TeacherToolsReviewPublishDock,
   type TeacherToolsReviewPublishDockProps,
@@ -17,6 +18,7 @@ export function TeacherToolsCreateReviewFooter({
   onEditRequirements,
   publish,
 }: Props) {
+  const { t } = useTranslation()
   return (
     <div>
       <TeacherToolsReviewPublishDock {...publish} />
@@ -35,7 +37,7 @@ export function TeacherToolsCreateReviewFooter({
           onClick={onEditRequirements}
           className="rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs font-semibold text-gray-800 hover:bg-gray-50"
         >
-          Edit requirements
+          {t('teacherTools.editRequirements')}
         </button>
       </div>
     </div>

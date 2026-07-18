@@ -21,6 +21,7 @@ import {
   X,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template'
@@ -41,6 +42,7 @@ interface AITool {
 }
 
 const AIAssessmentIntroModule = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -288,19 +290,13 @@ AI systems that analyze student responses:
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 1 of 5
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('aIAssessmentIntroModule.module1Of5')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    25 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('aIAssessmentIntroModule.k5Min')}</span>
                 </div>
-                <h1 className="text-3xl font-bold">Introduction to AI in Assessment</h1>
-                <p className="mt-2 text-indigo-100">
-                  Understand how AI can enhance assessment design and improve learning outcomes
-                </p>
+                <h1 className="text-3xl font-bold">{t('aIAssessmentIntroModule.introductionToAiInAssessment')}</h1>
+                <p className="mt-2 text-indigo-100">{t('aIAssessmentIntroModule.understandHowAiCanEnhanceAssessmentDesignAndImproveLear')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm">
@@ -327,7 +323,7 @@ AI systems that analyze student responses:
         {/* Lessons Sidebar */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('aIAssessmentIntroModule.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isCompleted = completedLessons.includes(lesson.id)
@@ -371,7 +367,7 @@ AI systems that analyze student responses:
             </div>
             <div className="mt-6 pt-6 border-t border-gray-200">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-gray-600">Progress</span>
+                <span className="text-xs text-gray-600">{t('aIAssessmentIntroModule.progress')}</span>
                 <span className="text-xs font-semibold text-gray-900">{Math.round(moduleProgress)}%</span>
               </div>
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -394,7 +390,7 @@ AI systems that analyze student responses:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Video className="h-5 w-5 text-indigo-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Video Lesson</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('aIAssessmentIntroModule.videoLesson')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                   </div>
@@ -418,7 +414,7 @@ AI systems that analyze student responses:
                 </div>
 
                 <div className="bg-indigo-50 rounded-lg p-6 border border-indigo-200">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Key Points</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('aIAssessmentIntroModule.keyPoints')}</h3>
                   <ul className="space-y-2">
                     {currentLessonData.content.keyPoints?.map((point: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -436,14 +432,10 @@ AI systems that analyze student responses:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('aIAssessmentIntroModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('aIAssessmentIntroModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -456,7 +448,7 @@ AI systems that analyze student responses:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <BookOpen className="h-5 w-5 text-indigo-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Reading</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('aIAssessmentIntroModule.reading')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                   </div>
@@ -478,7 +470,7 @@ AI systems that analyze student responses:
 
                 {currentLessonData.content.keyTakeaways && (
                   <div className="bg-indigo-50 rounded-lg p-6 border border-indigo-200">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-3">Key Takeaways</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('aIAssessmentIntroModule.keyTakeaways')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyTakeaways.map((takeaway: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -497,14 +489,10 @@ AI systems that analyze student responses:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('aIAssessmentIntroModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('aIAssessmentIntroModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -517,7 +505,7 @@ AI systems that analyze student responses:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Zap className="h-5 w-5 text-indigo-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Interactive Tool</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('aIAssessmentIntroModule.interactiveTool')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                     <p className="mt-2 text-gray-600">{currentLessonData.content.description}</p>
@@ -528,7 +516,7 @@ AI systems that analyze student responses:
                 </div>
 
                 <div className="bg-indigo-50 rounded-lg p-6 border border-indigo-200 mb-6">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Exploration Steps</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('aIAssessmentIntroModule.explorationSteps')}</h3>
                   <ol className="space-y-2">
                     {currentLessonData.content.steps?.map((step: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -543,23 +531,21 @@ AI systems that analyze student responses:
 
                 <div className="bg-white rounded-lg p-6 border border-gray-200 space-y-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Search AI Tools
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">{t('aIAssessmentIntroModule.searchAiTools')}</label>
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                       <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search by name, category, or description..."
+                        placeholder={t('aIAssessmentIntroModule.searchByNameCategoryOrDescription')}
                         className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-900 mb-4">Available AI Tools</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('aIAssessmentIntroModule.availableAiTools')}</h3>
                     <div className="space-y-4">
                       {filteredTools.map((tool, idx) => (
                         <div key={idx} className="border border-gray-200 rounded-lg p-4 hover:border-indigo-300 transition">
@@ -573,16 +559,14 @@ AI systems that analyze student responses:
                                 onClick={() => handleAddTool(tool)}
                                 className="px-3 py-1 bg-indigo-600 text-white rounded-lg text-xs font-semibold hover:bg-indigo-700 transition flex items-center gap-1"
                               >
-                                <Plus className="h-3 w-3" />
-                                Add
-                              </button>
+                                <Plus className="h-3 w-3" />{t('aIAssessmentIntroModule.add')}</button>
                             )}
                           </div>
                           <p className="text-sm text-gray-600 mb-2">{tool.description}</p>
                           <p className="text-xs text-gray-500 mb-3">Use case: {tool.useCase}</p>
                           <div className="grid grid-cols-2 gap-3 text-xs">
                             <div>
-                              <p className="font-semibold text-green-700 mb-1">Pros:</p>
+                              <p className="font-semibold text-green-700 mb-1">{t('aIAssessmentIntroModule.pros')}</p>
                               <ul className="space-y-1">
                                 {tool.pros.map((pro, pIdx) => (
                                   <li key={pIdx} className="text-gray-600">• {pro}</li>
@@ -590,7 +574,7 @@ AI systems that analyze student responses:
                               </ul>
                             </div>
                             <div>
-                              <p className="font-semibold text-amber-700 mb-1">Cons:</p>
+                              <p className="font-semibold text-amber-700 mb-1">{t('aIAssessmentIntroModule.cons')}</p>
                               <ul className="space-y-1">
                                 {tool.cons.map((con, cIdx) => (
                                   <li key={cIdx} className="text-gray-600">• {con}</li>
@@ -631,9 +615,7 @@ AI systems that analyze student responses:
                         }}
                         className="mt-4 w-full px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition flex items-center justify-center gap-2"
                       >
-                        <CheckCircle2 className="h-5 w-5" />
-                        Save Tool Selection
-                      </button>
+                        <CheckCircle2 className="h-5 w-5" />{t('aIAssessmentIntroModule.saveToolSelection')}</button>
                     </div>
                   )}
                 </div>
@@ -645,14 +627,10 @@ AI systems that analyze student responses:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('aIAssessmentIntroModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('aIAssessmentIntroModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -665,7 +643,7 @@ AI systems that analyze student responses:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <FileText className="h-5 w-5 text-indigo-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Template</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('aIAssessmentIntroModule.template')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                     <p className="mt-2 text-gray-600">{currentLessonData.content.description}</p>
@@ -676,7 +654,7 @@ AI systems that analyze student responses:
                 </div>
 
                 <div className="bg-white rounded-lg p-6 border border-gray-200">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-4">Template Sections</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('aIAssessmentIntroModule.templateSections')}</h3>
                   <div className="space-y-3">
                     {currentLessonData.content.sections?.map((section: string, idx: number) => (
                       <div key={idx} className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
@@ -692,18 +670,18 @@ AI systems that analyze student responses:
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <button className="p-4 bg-indigo-50 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-indigo-600" />
-                    <span className="text-sm font-semibold text-gray-900">Elementary Template</span>
-                    <span className="text-xs text-gray-600">Grades K-5</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('aIAssessmentIntroModule.elementaryTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('aIAssessmentIntroModule.gradesK5')}</span>
                   </button>
                   <button className="p-4 bg-indigo-50 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-indigo-600" />
-                    <span className="text-sm font-semibold text-gray-900">Middle School Template</span>
-                    <span className="text-xs text-gray-600">Grades 6-8</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('aIAssessmentIntroModule.middleSchoolTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('aIAssessmentIntroModule.grades68')}</span>
                   </button>
                   <button className="p-4 bg-indigo-50 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-indigo-600" />
-                    <span className="text-sm font-semibold text-gray-900">High School Template</span>
-                    <span className="text-xs text-gray-600">Grades 9-12</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('aIAssessmentIntroModule.highSchoolTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('aIAssessmentIntroModule.grades912')}</span>
                   </button>
                 </div>
 
@@ -714,14 +692,10 @@ AI systems that analyze student responses:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('aIAssessmentIntroModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('aIAssessmentIntroModule.markAsComplete')}</>
                   )}
                 </button>
               </div>

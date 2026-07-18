@@ -11,6 +11,7 @@
  *  - Guidance message from the backend
  */
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import {
   CheckCircle2,
@@ -67,12 +68,17 @@ const SECTION_ICONS: Record<string, React.FC<{ className?: string }>> = {
   documents: FileText,
 }
 
+const SECTION_GROUP_KEYS = {
+  teachingContext: 'learningHub.profileCompletion.groupTeachingContext',
+  professionalIdentity: 'learningHub.profileCompletion.groupProfessionalIdentity',
+} as const
+
 const SECTION_GROUPS = {
-  'Teaching Context': [
+  [SECTION_GROUP_KEYS.teachingContext]: [
     'country', 'region', 'subjects', 'grade_band',
     'school_type', 'language_preference', 'years_experience',
   ],
-  'Professional Identity': [
+  [SECTION_GROUP_KEYS.professionalIdentity]: [
     'experience', 'education', 'certifications', 'achievements', 'documents',
   ],
 }
@@ -80,6 +86,7 @@ const SECTION_GROUPS = {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function ProfileCompletionGate() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [status, setStatus] = useState<ProfileCompletionStatusResponse | null>(null)
   const [loading, setLoading] = useState(true)
@@ -93,8 +100,9 @@ export function ProfileCompletionGate() {
         '/api/v1/learning-hub/profile-completion-status'
       )
       setStatus(data)
-    } catch (e: any) {
-      setError(e?.message || 'Failed to load profile status.')
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : null
+      setError(message || t('learningHub.profileCompletion.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -108,7 +116,7 @@ export function ProfileCompletionGate() {
     return (
       <div className="flex items-center justify-center rounded-3xl border border-gray-100 bg-white p-12">
         <Loader2 className="h-6 w-6 animate-spin text-amber-500" />
-        <span className="ml-3 text-sm text-gray-500">Loading profile status…</span>
+        <span className="ml-3 text-sm text-gray-500">{t('learningHub.profileCompletion.loading')}</span>
       </div>
     )
   }
@@ -117,12 +125,12 @@ export function ProfileCompletionGate() {
     return (
       <div className="rounded-3xl border border-rose-100 bg-rose-50 p-6 text-center">
         <AlertCircle className="mx-auto mb-2 h-6 w-6 text-rose-500" />
-        <p className="text-sm text-rose-700">{error || 'Unable to load profile status.'}</p>
+        <p className="text-sm text-rose-700">{error || t('learningHub.profileCompletion.unableToLoad')}</p>
         <button
           onClick={fetchStatus}
           className="mt-4 rounded-full bg-rose-100 px-4 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-200"
         >
-          Retry
+          {t('learningHub.profileCompletion.retry')}
         </button>
       </div>
     )
@@ -142,18 +150,18 @@ export function ProfileCompletionGate() {
             </div>
             <div>
               <h2 className="text-base font-semibold text-gray-900">
-                Complete your teaching profile
+                {t('learningHub.profileCompletion.headerTitle')}
               </h2>
               <p className="text-sm text-gray-600">
                 {status.missing_count > 0
-                  ? `${status.missing_count} section${status.missing_count !== 1 ? 's' : ''} still needed`
-                  : 'Your profile is ready!'}
+                  ? t('learningHub.profileCompletion.sectionsNeeded', { count: status.missing_count })
+                  : t('learningHub.profileCompletion.profileReady')}
               </p>
             </div>
           </div>
           <div className="text-right">
             <p className="text-2xl font-bold text-amber-700">{pct}%</p>
-            <p className="text-xs text-gray-500">Complete</p>
+            <p className="text-xs text-gray-500">{t('learningHub.profileCompletion.percentComplete')}</p>
           </div>
         </div>
 
@@ -176,12 +184,12 @@ export function ProfileCompletionGate() {
           onClick={() => navigate('/profile')}
           className="mt-4 inline-flex items-center gap-2 rounded-full bg-amber-500 px-5 py-2 text-sm font-semibold text-white hover:bg-amber-600 transition-colors"
         >
-          Go to profile <ChevronRight className="h-4 w-4" />
+          {t('learningHub.profileCompletion.goToProfile')} <ChevronRight className="h-4 w-4" />
         </button>
       </section>
 
       {/* ── Section checklists ──────────────────────────────────────────────── */}
-      {Object.entries(SECTION_GROUPS).map(([groupLabel, keys]) => {
+      {Object.entries(SECTION_GROUPS).map(([groupLabelKey, keys]) => {
         const groupSections = keys
           .map((k) => sectionMap[k])
           .filter(Boolean)
@@ -191,11 +199,11 @@ export function ProfileCompletionGate() {
 
         return (
           <section
-            key={groupLabel}
+            key={groupLabelKey}
             className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm"
           >
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-gray-900">{groupLabel}</h3>
+              <h3 className="text-sm font-semibold text-gray-900">{t(groupLabelKey)}</h3>
               <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
                 {groupComplete}/{groupTotal}
               </span>
@@ -265,7 +273,7 @@ export function ProfileCompletionGate() {
                     {/* CTA arrow for incomplete */}
                     {!section.complete && (
                       <div className="flex-shrink-0 flex items-center gap-1 text-xs font-semibold text-amber-600">
-                        Add <ChevronRight className="h-3.5 w-3.5" />
+                        {t('learningHub.profileCompletion.add')} <ChevronRight className="h-3.5 w-3.5" />
                       </div>
                     )}
                   </div>
@@ -278,11 +286,9 @@ export function ProfileCompletionGate() {
 
       {/* ── Why this matters ────────────────────────────────────────────────── */}
       <section className="rounded-3xl border border-purple-100 bg-purple-50 p-5">
-        <h3 className="text-sm font-semibold text-purple-900">Why this matters</h3>
+        <h3 className="text-sm font-semibold text-purple-900">{t('learningHub.profileCompletion.whyTitle')}</h3>
         <p className="mt-1 text-sm text-purple-700">
-          Your teaching profile drives the AI personalization engine — subjects, grade band,
-          experience, and certifications determine which micro-courses, growth paths, and tutorials
-          are generated specifically for you. A richer profile means more relevant content.
+          {t('learningHub.profileCompletion.whyBody')}
         </p>
       </section>
     </div>

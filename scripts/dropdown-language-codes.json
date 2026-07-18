@@ -1,0 +1,20 @@
+[
+  "en-US", "en-GB", "en-AU", "en-CA",
+  "es-ES", "es-MX", "es-AR", "es-CO",
+  "fr-FR", "fr-CA", "fr-BE",
+  "pt-BR", "pt-PT",
+  "de-DE", "de-AT", "de-CH",
+  "zh-CN", "zh-TW", "zh-HK",
+  "ja-JP", "ko-KR",
+  "ar-SA", "ar-EG", "ar-AE",
+  "hi-IN", "ru-RU", "it-IT", "nl-NL", "nl-BE", "pl-PL", "tr-TR",
+  "sv-SE", "da-DK", "nb-NO", "fi-FI", "el-GR", "cs-CZ", "sk-SK",
+  "hu-HU", "ro-RO", "bg-BG", "hr-HR", "uk-UA", "he-IL", "th-TH",
+  "vi-VN", "id-ID", "ms-MY", "fa-IR", "ur-PK", "bn-BD", "bn-IN",
+  "ta-IN", "te-IN", "mr-IN", "gu-IN", "kn-IN", "ml-IN", "pa-IN",
+  "sw-KE", "af-ZA", "am-ET", "az-AZ", "be-BY", "ca-ES", "et-EE",
+  "eu-ES", "gl-ES", "hy-AM", "is-IS", "ka-GE", "kk-KZ", "km-KH",
+  "lo-LA", "lt-LT", "lv-LV", "mk-MK", "mn-MN", "my-MM", "ne-NP",
+  "si-LK", "sl-SI", "sq-AL", "sr-RS", "tl-PH", "uz-UZ", "zu-ZA",
+  "cy-GB", "mt-MT", "ga-IE"
+]

@@ -33,6 +33,7 @@ import { useSnackbar } from '../../hooks/useSnackbar'
 import { useCapabilityCreditGate } from '../../hooks/useCapabilityCreditGate'
 import { useChatbotHistorySession } from '../../hooks/useChatbotHistorySession'
 import NoCreditsCard from '../../components/NoCreditsCard'
+import { resolveApiMessage } from '../../i18n/resolveApiMessage'
 import {
   mapDifferentiatedProblemsResult,
   mapAdaptiveLearningPathResult,
@@ -45,9 +46,11 @@ import {
   type InterventionStrategyUI as InterventionStrategy,
 } from '../../utils/adaptiveMathAdapters'
 
+import { useTranslation } from 'react-i18next'
 const CHATBOT_SLUG = 'adaptive-math-strategist'
 
 const AdaptiveMathStrategist = () => {
+  const { t } = useTranslation()
   const { toast } = useSnackbar()
   const { creditError, clearCreditError, captureApiError, runWithCredits } = useCapabilityCreditGate()
   const [activeTab, setActiveTab] = useState<'problems' | 'adaptive' | 'concepts' | 'intervention' | 'visual' | 'assessment'>('problems')
@@ -94,7 +97,7 @@ const AdaptiveMathStrategist = () => {
         else if (tab === 'concepts') setConceptualUnderstanding(mapConceptualLearningResult(raw))
         else setInterventionStrategy(mapInterventionStrategiesResult(raw))
       } catch {
-        toast.error('Could not restore saved output from History.')
+        toast.error(t('adaptiveMathStrategist.couldNotRestoreSavedOutputFromHistory'))
       }
     },
   })
@@ -119,13 +122,13 @@ const AdaptiveMathStrategist = () => {
       if (response == null) return
       setProblemSet(mapDifferentiatedProblemsResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Problem set generated')
+      toast.success(t('adaptiveMathStrategist.problemSetGenerated'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
-      const msg = err?.detail || err?.message || 'Failed to generate problem set'
+      const msg = resolveApiMessage(t, err?.detail || err?.message || 'Failed to generate problem set')
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('adaptiveMathStrategist.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -134,7 +137,7 @@ const AdaptiveMathStrategist = () => {
 
   const handleGenerateAdaptivePath = async () => {
     if (!topic.trim()) {
-      toast.error('Please enter a current topic')
+      toast.error(t('adaptiveMathStrategist.pleaseEnterACurrentTopic'))
       return
     }
     setIsGenerating(true)
@@ -152,13 +155,13 @@ const AdaptiveMathStrategist = () => {
       if (response == null) return
       setAdaptivePath(mapAdaptiveLearningPathResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Learning path generated')
+      toast.success(t('adaptiveMathStrategist.learningPathGenerated'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
-      const msg = err?.detail || err?.message || 'Failed to generate learning path'
+      const msg = resolveApiMessage(t, err?.detail || err?.message || 'Failed to generate learning path')
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('adaptiveMathStrategist.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -182,13 +185,13 @@ const AdaptiveMathStrategist = () => {
       if (response == null) return
       setConceptualUnderstanding(mapConceptualLearningResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Concept analysis ready')
+      toast.success(t('adaptiveMathStrategist.conceptAnalysisReady'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
-      const msg = err?.detail || err?.message || 'Failed to analyze concept'
+      const msg = resolveApiMessage(t, err?.detail || err?.message || 'Failed to analyze concept')
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('adaptiveMathStrategist.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -207,13 +210,13 @@ const AdaptiveMathStrategist = () => {
       if (response == null) return
       setInterventionStrategy(mapInterventionStrategiesResult(response.result))
       pinFromResponse(response.conversation_id)
-      toast.success('Intervention strategies generated')
+      toast.success(t('adaptiveMathStrategist.interventionStrategiesGenerated'))
     } catch (error: unknown) {
       const err = error as { detail?: string; message?: string; status?: number }
-      const msg = err?.detail || err?.message || 'Failed to generate intervention strategies'
+      const msg = resolveApiMessage(t, err?.detail || err?.message || 'Failed to generate intervention strategies')
       toast.error(msg)
       if (err?.status === 403 || String(msg).includes('Premium')) {
-        toast.info('Upgrade to Premium to use this feature', { duration: 5000 })
+        toast.info(t('adaptiveMathStrategist.upgradeToPremiumToUseThisFeature'), { duration: 5000 })
       }
     } finally {
       setIsGenerating(false)
@@ -221,12 +224,12 @@ const AdaptiveMathStrategist = () => {
   }
 
   const tabs = [
-    { id: 'problems', label: 'Differentiated Problems', icon: Puzzle },
-    { id: 'adaptive', label: 'Adaptive Learning Paths', icon: Compass },
-    { id: 'concepts', label: 'Conceptual Understanding', icon: Brain },
-    { id: 'intervention', label: 'Intervention Strategies', icon: Target },
-    { id: 'visual', label: 'Visual Representations', icon: Eye },
-    { id: 'assessment', label: 'Assessment Tools', icon: FileText },
+    { id: 'problems', label: t('adaptiveMathStrategist.tabs.problems'), icon: Puzzle },
+    { id: 'adaptive', label: t('adaptiveMathStrategist.tabs.adaptive'), icon: Compass },
+    { id: 'concepts', label: t('adaptiveMathStrategist.tabs.concepts'), icon: Brain },
+    { id: 'intervention', label: t('adaptiveMathStrategist.tabs.intervention'), icon: Target },
+    { id: 'visual', label: t('adaptiveMathStrategist.tabs.visual'), icon: Eye },
+    { id: 'assessment', label: t('adaptiveMathStrategist.tabs.assessment'), icon: FileText },
   ]
 
   return (
@@ -250,36 +253,32 @@ const AdaptiveMathStrategist = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-3xl font-bold">Adaptive Math Strategist</h1>
+                  <h1 className="text-3xl font-bold">{t('adaptiveMathStrategist.adaptiveMathStrategist')}</h1>
                   <span className="flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
                     <Star className="h-3 w-3" /> 4.9★
                   </span>
                   <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
-                    <Lock className="inline h-3 w-3 mr-1" /> Premium
-                  </span>
+                    <Lock className="inline h-3 w-3 mr-1" />{t('adaptiveMathStrategist.premium')}</span>
                 </div>
-                <p className="mt-2 text-green-100">
-                  AI-powered adaptive learning with differentiated problem sets, step-by-step modeling, 
-                  conceptual understanding support, and personalized intervention strategies.
-                </p>
+                <p className="mt-2 text-green-100">{t('adaptiveMathStrategist.aiPoweredAdaptiveLearningWithDifferentiatedProblemSetsS')}</p>
               </div>
             </div>
             <div className="flex flex-wrap gap-3 mt-6">
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <Target className="h-4 w-4" />
-                <span>Differentiated Problems</span>
+                <span>{t('adaptiveMathStrategist.differentiatedProblems')}</span>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <Compass className="h-4 w-4" />
-                <span>Adaptive Learning Paths</span>
+                <span>{t('adaptiveMathStrategist.adaptiveLearningPaths')}</span>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <Brain className="h-4 w-4" />
-                <span>Conceptual Understanding</span>
+                <span>{t('adaptiveMathStrategist.conceptualUnderstanding')}</span>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm">
                 <TrendingUp className="h-4 w-4" />
-                <span>Real-Time Progress</span>
+                <span>{t('adaptiveMathStrategist.realTimeProgress')}</span>
               </div>
             </div>
           </div>
@@ -291,7 +290,7 @@ const AdaptiveMathStrategist = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Problems Generated</p>
+              <p className="text-sm font-medium text-gray-600">{t('adaptiveMathStrategist.problemsGenerated')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">3,247</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600">
@@ -302,7 +301,7 @@ const AdaptiveMathStrategist = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Students Supported</p>
+              <p className="text-sm font-medium text-gray-600">{t('adaptiveMathStrategist.studentsSupported')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">1,892</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
@@ -313,7 +312,7 @@ const AdaptiveMathStrategist = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Mastery Rate</p>
+              <p className="text-sm font-medium text-gray-600">{t('adaptiveMathStrategist.masteryRate')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">87%</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-100 text-teal-600">
@@ -324,7 +323,7 @@ const AdaptiveMathStrategist = () => {
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Avg. Improvement</p>
+              <p className="text-sm font-medium text-gray-600">{t('adaptiveMathStrategist.avgImprovement')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">+23%</p>
             </div>
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600">
@@ -365,9 +364,7 @@ const AdaptiveMathStrategist = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-1 space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Grade Level
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('adaptiveMathStrategist.gradeLevel')}</label>
                     <select
                       value={gradeLevel}
                       onChange={(e) => setGradeLevel(e.target.value)}
@@ -375,20 +372,18 @@ const AdaptiveMathStrategist = () => {
                     >
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
                         <option key={grade} value={grade}>
-                          Grade {grade}
+                          {t('common.gradeOption', { grade })}
                         </option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Math Topic
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('adaptiveMathStrategist.mathTopic')}</label>
                     <input
                       type="text"
                       value={topic}
                       onChange={(e) => setTopic(e.target.value)}
-                      placeholder="e.g., Multiplication, Fractions, Algebra"
+                      placeholder={t('adaptiveMathStrategist.eGMultiplicationFractionsAlgebra')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                     />
                   </div>
@@ -400,14 +395,12 @@ const AdaptiveMathStrategist = () => {
                       type="text"
                       value={standard}
                       onChange={(e) => setStandard(e.target.value)}
-                      placeholder="e.g., CCSS.MATH.CONTENT.5.NBT.B.5"
+                      placeholder={t('adaptiveMathStrategist.eGCcssMathContent5NbtB5')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Number of Problems
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('adaptiveMathStrategist.numberOfProblems')}</label>
                     <select
                       value={problemCountOption}
                       onChange={(e) => setProblemCountOption(e.target.value)}
@@ -426,14 +419,10 @@ const AdaptiveMathStrategist = () => {
                   >
                     {isGenerating ? (
                       <>
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                        Generating...
-                      </>
+                        <RefreshCw className="h-4 w-4 animate-spin" />{t('adaptiveMathStrategist.generating')}</>
                     ) : (
                       <>
-                        <Sparkles className="h-4 w-4" />
-                        Generate Problem Set
-                      </>
+                        <Sparkles className="h-4 w-4" />{t('adaptiveMathStrategist.generateProblemSet')}</>
                     )}
                   </button>
                 </div>
@@ -443,11 +432,11 @@ const AdaptiveMathStrategist = () => {
                     <div className="space-y-6">
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6">
                         <div className="mb-4">
-                          <h3 className="text-lg font-semibold text-gray-900 mb-2">Learning Objective</h3>
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('adaptiveMathStrategist.learningObjective')}</h3>
                           <p className="text-sm text-gray-700">{problemSet.learningObjective}</p>
                         </div>
                         <div>
-                          <h3 className="text-lg font-semibold text-gray-900 mb-2">Standard</h3>
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('adaptiveMathStrategist.standard')}</h3>
                           <p className="text-sm text-gray-700 font-mono">{problemSet.standard}</p>
                         </div>
                       </div>
@@ -483,7 +472,7 @@ const AdaptiveMathStrategist = () => {
                             </div>
 
                             <div className="bg-white rounded-xl p-4 mb-4 border border-gray-200">
-                              <h4 className="text-base font-semibold text-gray-900 mb-2">Question:</h4>
+                              <h4 className="text-base font-semibold text-gray-900 mb-2">{t('adaptiveMathStrategist.question')}</h4>
                               <p className="text-gray-700 mb-3">{problem.question}</p>
                               {problem.realWorldContext && (
                                 <div className="flex items-center gap-2 text-xs text-gray-500">
@@ -494,10 +483,10 @@ const AdaptiveMathStrategist = () => {
                             </div>
 
                             <div className="bg-white rounded-xl p-4 mb-4 border border-gray-200">
-                              <h4 className="text-base font-semibold text-gray-900 mb-2">Solution:</h4>
+                              <h4 className="text-base font-semibold text-gray-900 mb-2">{t('adaptiveMathStrategist.solution')}</h4>
                               <p className="text-gray-700 font-semibold mb-3">{problem.solution}</p>
                               <div>
-                                <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Step-by-Step:</p>
+                                <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('adaptiveMathStrategist.stepByStep')}</p>
                                 <ol className="space-y-1">
                                   {problem.steps.map((step, stepIdx) => (
                                     <li key={stepIdx} className="text-sm text-gray-700 flex items-start gap-2">
@@ -515,7 +504,7 @@ const AdaptiveMathStrategist = () => {
                               <div className="bg-white rounded-xl p-4 border border-gray-200">
                                 <div className="flex items-center gap-2 text-sm text-gray-700">
                                   <Eye className="h-4 w-4 text-green-600" />
-                                  <span className="font-medium">Visual Aid:</span>
+                                  <span className="font-medium">{t('adaptiveMathStrategist.visualAid')}</span>
                                   <span>{problem.visualAid}</span>
                                 </div>
                               </div>
@@ -525,16 +514,12 @@ const AdaptiveMathStrategist = () => {
                       })}
 
                       <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                        <Download className="h-4 w-4" />
-                        Download Problem Set
-                      </button>
+                        <Download className="h-4 w-4" />{t('adaptiveMathStrategist.downloadProblemSet')}</button>
                     </div>
                   ) : (
                     <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
                       <Puzzle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm font-medium text-gray-600">
-                        Enter a math topic and generate differentiated problem sets at multiple levels
-                      </p>
+                      <p className="text-sm font-medium text-gray-600">{t('adaptiveMathStrategist.enterAMathTopicAndGenerateDifferentiatedProblemSetsAt')}</p>
                     </div>
                   )}
                 </div>
@@ -548,28 +533,24 @@ const AdaptiveMathStrategist = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-1 space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Student Level
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('adaptiveMathStrategist.studentLevel')}</label>
                     <select
                       value={studentLevel}
                       onChange={(e) => setStudentLevel(e.target.value)}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                     >
-                      <option value="emerging">Emerging</option>
-                      <option value="on-level">On-Level</option>
-                      <option value="advanced">Advanced</option>
+                      <option value="emerging">{t('adaptiveMathStrategist.emerging')}</option>
+                      <option value="on-level">{t('adaptiveMathStrategist.onLevel')}</option>
+                      <option value="advanced">{t('adaptiveMathStrategist.advanced')}</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Current Topic
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('adaptiveMathStrategist.currentTopic')}</label>
                     <input
                       type="text"
                       value={topic}
                       onChange={(e) => setTopic(e.target.value)}
-                      placeholder="e.g., Fractions, Algebra, Geometry"
+                      placeholder={t('adaptiveMathStrategist.eGFractionsAlgebraGeometry')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                     />
                   </div>
@@ -580,14 +561,10 @@ const AdaptiveMathStrategist = () => {
                   >
                     {isGenerating ? (
                       <>
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                        Generating...
-                      </>
+                        <RefreshCw className="h-4 w-4 animate-spin" />{t('adaptiveMathStrategist.generating')}</>
                     ) : (
                       <>
-                        <Sparkles className="h-4 w-4" />
-                        Generate Learning Path
-                      </>
+                        <Sparkles className="h-4 w-4" />{t('adaptiveMathStrategist.generateLearningPath')}</>
                     )}
                   </button>
                 </div>
@@ -597,16 +574,14 @@ const AdaptiveMathStrategist = () => {
                     <div className="space-y-6">
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Compass className="h-5 w-5 text-green-600" />
-                          Personalized Learning Path
-                        </h3>
+                          <Compass className="h-5 w-5 text-green-600" />{t('adaptiveMathStrategist.personalizedLearningPath')}</h3>
                         <div className="grid grid-cols-2 gap-4 mb-4">
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Student Level</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">{t('adaptiveMathStrategist.studentLevel')}</p>
                             <p className="text-base font-semibold text-gray-900 capitalize">{adaptivePath.studentLevel}</p>
                           </div>
                           <div>
-                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Current Topic</p>
+                            <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">{t('adaptiveMathStrategist.currentTopic')}</p>
                             <p className="text-base font-semibold text-gray-900">{adaptivePath.currentTopic}</p>
                           </div>
                         </div>
@@ -626,7 +601,7 @@ const AdaptiveMathStrategist = () => {
                                   <span>{step.duration}</span>
                                 </div>
                                 <div>
-                                  <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Resources:</p>
+                                  <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('adaptiveMathStrategist.resources')}</p>
                                   <ul className="space-y-1">
                                     {step.resources.map((resource, resIdx) => (
                                       <li key={resIdx} className="text-sm text-gray-700 flex items-start gap-2">
@@ -644,9 +619,7 @@ const AdaptiveMathStrategist = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Target className="h-5 w-5 text-blue-600" />
-                          Mastery Checkpoints
-                        </h3>
+                          <Target className="h-5 w-5 text-blue-600" />{t('adaptiveMathStrategist.masteryCheckpoints')}</h3>
                         <div className="space-y-3">
                           {adaptivePath.masteryCheckpoints.map((checkpoint, idx) => {
                             const statusColors = {
@@ -674,16 +647,12 @@ const AdaptiveMathStrategist = () => {
                       </div>
 
                       <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                        <Download className="h-4 w-4" />
-                        Download Learning Path
-                      </button>
+                        <Download className="h-4 w-4" />{t('adaptiveMathStrategist.downloadLearningPath')}</button>
                     </div>
                   ) : (
                     <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
                       <Compass className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm font-medium text-gray-600">
-                        Generate personalized adaptive learning paths based on student level
-                      </p>
+                      <p className="text-sm font-medium text-gray-600">{t('adaptiveMathStrategist.generatePersonalizedAdaptiveLearningPathsBasedOnStudent')}</p>
                     </div>
                   )}
                 </div>
@@ -697,21 +666,17 @@ const AdaptiveMathStrategist = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Math Concept
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('adaptiveMathStrategist.mathConcept')}</label>
                     <input
                       type="text"
                       value={topic}
                       onChange={(e) => setTopic(e.target.value)}
-                      placeholder="e.g., Fractions, Place Value, Multiplication"
+                      placeholder={t('adaptiveMathStrategist.eGFractionsPlaceValueMultiplication')}
                       className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-100"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Grade Level
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('adaptiveMathStrategist.gradeLevel')}</label>
                     <select
                       value={gradeLevel}
                       onChange={(e) => setGradeLevel(e.target.value)}
@@ -719,7 +684,7 @@ const AdaptiveMathStrategist = () => {
                     >
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((grade) => (
                         <option key={grade} value={grade}>
-                          Grade {grade}
+                          {t('common.gradeOption', { grade })}
                         </option>
                       ))}
                     </select>
@@ -731,14 +696,10 @@ const AdaptiveMathStrategist = () => {
                   >
                     {isGenerating ? (
                       <>
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                        Analyzing...
-                      </>
+                        <RefreshCw className="h-4 w-4 animate-spin" />{t('adaptiveMathStrategist.analyzing')}</>
                     ) : (
                       <>
-                        <Sparkles className="h-4 w-4" />
-                        Analyze Concept
-                      </>
+                        <Sparkles className="h-4 w-4" />{t('adaptiveMathStrategist.analyzeConcept')}</>
                     )}
                   </button>
                 </div>
@@ -756,9 +717,7 @@ const AdaptiveMathStrategist = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-white p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Eye className="h-5 w-5 text-blue-600" />
-                          Visual Representations
-                        </h3>
+                          <Eye className="h-5 w-5 text-blue-600" />{t('adaptiveMathStrategist.visualRepresentations')}</h3>
                         <div className="space-y-4">
                           {conceptualUnderstanding.visualRepresentations.map((visual, idx) => (
                             <div key={idx} className="rounded-lg border border-blue-200 bg-blue-50 p-4">
@@ -772,22 +731,20 @@ const AdaptiveMathStrategist = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-white p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <AlertCircle className="h-5 w-5 text-amber-600" />
-                          Common Misconceptions
-                        </h3>
+                          <AlertCircle className="h-5 w-5 text-amber-600" />{t('adaptiveMathStrategist.commonMisconceptions')}</h3>
                         <div className="space-y-4">
                           {conceptualUnderstanding.commonMisconceptions.map((misconception, idx) => (
                             <div key={idx} className="rounded-lg border border-amber-200 bg-amber-50 p-4">
                               <div className="mb-2">
-                                <p className="text-sm font-semibold text-red-700 mb-1">✗ Misconception:</p>
+                                <p className="text-sm font-semibold text-red-700 mb-1">{t('adaptiveMathStrategist.misconception')}</p>
                                 <p className="text-sm text-gray-700">{misconception.misconception}</p>
                               </div>
                               <div className="mb-2">
-                                <p className="text-sm font-semibold text-green-700 mb-1">✓ Correction:</p>
+                                <p className="text-sm font-semibold text-green-700 mb-1">{t('adaptiveMathStrategist.correction')}</p>
                                 <p className="text-sm text-gray-700">{misconception.correction}</p>
                               </div>
                               <div>
-                                <p className="text-sm font-semibold text-blue-700 mb-1">💡 Teaching Strategy:</p>
+                                <p className="text-sm font-semibold text-blue-700 mb-1">{t('adaptiveMathStrategist.teachingStrategy')}</p>
                                 <p className="text-sm text-gray-700">{misconception.strategy}</p>
                               </div>
                             </div>
@@ -797,9 +754,7 @@ const AdaptiveMathStrategist = () => {
 
                       <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-6">
                         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                          <Lightbulb className="h-5 w-5 text-purple-600" />
-                          Real-World Connections
-                        </h3>
+                          <Lightbulb className="h-5 w-5 text-purple-600" />{t('adaptiveMathStrategist.realWorldConnections')}</h3>
                         <ul className="space-y-2">
                           {conceptualUnderstanding.realWorldConnections.map((connection, idx) => (
                             <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -811,16 +766,12 @@ const AdaptiveMathStrategist = () => {
                       </div>
 
                       <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                        <Download className="h-4 w-4" />
-                        Download Concept Guide
-                      </button>
+                        <Download className="h-4 w-4" />{t('adaptiveMathStrategist.downloadConceptGuide')}</button>
                     </div>
                   ) : (
                     <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
                       <Brain className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm font-medium text-gray-600">
-                        Enter a math concept to explore visual representations, misconceptions, and real-world connections
-                      </p>
+                      <p className="text-sm font-medium text-gray-600">{t('adaptiveMathStrategist.enterAMathConceptToExploreVisualRepresentationsMisconce')}</p>
                     </div>
                   )}
                 </div>
@@ -835,12 +786,8 @@ const AdaptiveMathStrategist = () => {
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                      <Target className="h-6 w-6 text-red-600" />
-                      Intervention Strategy Generator
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      Generate targeted intervention strategies for students struggling with specific math concepts.
-                    </p>
+                      <Target className="h-6 w-6 text-red-600" />{t('adaptiveMathStrategist.interventionStrategyGenerator')}</h3>
+                    <p className="text-sm text-gray-600">{t('adaptiveMathStrategist.generateTargetedInterventionStrategiesForStudentsStrugg')}</p>
                   </div>
                   <button
                     onClick={handleInterventionStrategy}
@@ -849,14 +796,10 @@ const AdaptiveMathStrategist = () => {
                   >
                     {isGenerating ? (
                       <>
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                        Generating...
-                      </>
+                        <RefreshCw className="h-4 w-4 animate-spin" />{t('adaptiveMathStrategist.generating')}</>
                     ) : (
                       <>
-                        <Sparkles className="h-4 w-4" />
-                        Generate Strategy
-                      </>
+                        <Sparkles className="h-4 w-4" />{t('adaptiveMathStrategist.generateStrategy')}</>
                     )}
                   </button>
                 </div>
@@ -864,24 +807,24 @@ const AdaptiveMathStrategist = () => {
                 {interventionStrategy && (
                   <div className="space-y-6 bg-white rounded-xl p-6 border border-red-200">
                     <div>
-                      <h4 className="text-lg font-bold text-gray-900 mb-2">Area of Need</h4>
+                      <h4 className="text-lg font-bold text-gray-900 mb-2">{t('adaptiveMathStrategist.areaOfNeed')}</h4>
                       <p className="text-gray-700">{interventionStrategy.area}</p>
                     </div>
 
                     <div>
-                      <h4 className="text-lg font-bold text-gray-900 mb-2">Diagnostic Assessment</h4>
+                      <h4 className="text-lg font-bold text-gray-900 mb-2">{t('adaptiveMathStrategist.diagnosticAssessment')}</h4>
                       <p className="text-gray-700 bg-gray-50 rounded-lg p-4 border border-gray-200">{interventionStrategy.diagnostic}</p>
                     </div>
 
                     <div>
-                      <h4 className="text-lg font-bold text-gray-900 mb-4">Intervention Strategies</h4>
+                      <h4 className="text-lg font-bold text-gray-900 mb-4">{t('adaptiveMathStrategist.interventionStrategies')}</h4>
                       <div className="space-y-4">
                         {interventionStrategy.strategies.map((strategy, idx) => (
                           <div key={idx} className="rounded-lg border border-red-200 bg-red-50 p-5">
                             <h5 className="text-base font-semibold text-gray-900 mb-2">{strategy.strategy}</h5>
                             <p className="text-sm text-gray-700 mb-3">{strategy.description}</p>
                             <div>
-                              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">Activities:</p>
+                              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{t('adaptiveMathStrategist.activities')}</p>
                               <ul className="space-y-1">
                                 {strategy.activities.map((activity, actIdx) => (
                                   <li key={actIdx} className="text-sm text-gray-700 flex items-start gap-2">
@@ -897,7 +840,7 @@ const AdaptiveMathStrategist = () => {
                     </div>
 
                     <div>
-                      <h4 className="text-lg font-bold text-gray-900 mb-4">Progress Monitoring</h4>
+                      <h4 className="text-lg font-bold text-gray-900 mb-4">{t('adaptiveMathStrategist.progressMonitoring')}</h4>
                       <ul className="space-y-2">
                         {interventionStrategy.progressMonitoring.map((monitor, idx) => (
                           <li key={idx} className="flex items-start gap-2 text-sm text-gray-700 bg-gray-50 rounded-lg p-3 border border-gray-200">
@@ -909,9 +852,7 @@ const AdaptiveMathStrategist = () => {
                     </div>
 
                     <button className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2">
-                      <Download className="h-4 w-4" />
-                      Download Intervention Plan
-                    </button>
+                      <Download className="h-4 w-4" />{t('adaptiveMathStrategist.downloadInterventionPlan')}</button>
                   </div>
                 )}
               </div>
@@ -923,12 +864,8 @@ const AdaptiveMathStrategist = () => {
             <div className="space-y-6">
               <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Eye className="h-6 w-6 text-blue-600" />
-                  Visual Representation Generator
-                </h3>
-                <p className="text-sm text-gray-600 mb-6">
-                  Generate visual models, diagrams, and manipulatives to support mathematical understanding.
-                </p>
+                  <Eye className="h-6 w-6 text-blue-600" />{t('adaptiveMathStrategist.visualRepresentationGenerator')}</h3>
+                <p className="text-sm text-gray-600 mb-6">{t('adaptiveMathStrategist.generateVisualModelsDiagramsAndManipulativesToSupportMa')}</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {[
                     { type: 'Number Line', icon: LineChart, color: 'blue' },
@@ -943,9 +880,7 @@ const AdaptiveMathStrategist = () => {
                         <visual.icon className="h-6 w-6" />
                       </div>
                       <h4 className="text-base font-semibold text-gray-900 mb-2">{visual.type}</h4>
-                      <button className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">
-                        Generate
-                      </button>
+                      <button className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">{t('adaptiveMathStrategist.generate')}</button>
                     </div>
                   ))}
                 </div>
@@ -958,12 +893,8 @@ const AdaptiveMathStrategist = () => {
             <div className="space-y-6">
               <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <FileText className="h-6 w-6 text-indigo-600" />
-                  Assessment Tools
-                </h3>
-                <p className="text-sm text-gray-600 mb-6">
-                  Create formative and summative assessments aligned with learning objectives.
-                </p>
+                  <FileText className="h-6 w-6 text-indigo-600" />{t('adaptiveMathStrategist.assessmentTools')}</h3>
+                <p className="text-sm text-gray-600 mb-6">{t('adaptiveMathStrategist.createFormativeAndSummativeAssessmentsAlignedWithLearni')}</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {[
                     { type: 'Quick Check', description: '5-minute exit tickets', icon: Zap },
@@ -981,9 +912,7 @@ const AdaptiveMathStrategist = () => {
                           <p className="text-xs text-gray-600">{assessment.description}</p>
                         </div>
                       </div>
-                      <button className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">
-                        Create Assessment
-                      </button>
+                      <button className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">{t('adaptiveMathStrategist.createAssessment')}</button>
                     </div>
                   ))}
                 </div>
@@ -995,61 +924,49 @@ const AdaptiveMathStrategist = () => {
 
       {/* Additional Features Section */}
       <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-6">Advanced AI-Powered Features</h2>
+        <h2 className="text-2xl font-semibold text-gray-900 mb-6">{t('adaptiveMathStrategist.advancedAiPoweredFeatures')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600 mb-4">
               <TrendingUp className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Real-Time Progress Monitoring</h3>
-            <p className="text-sm text-gray-600">
-              Track student performance in real-time with intuitive dashboards and automated progress reports.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('adaptiveMathStrategist.realTimeProgressMonitoring')}</h3>
+            <p className="text-sm text-gray-600">{t('adaptiveMathStrategist.trackStudentPerformanceInRealTimeWithIntuitiveDashboard')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 mb-4">
               <Brain className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Adaptive Difficulty Adjustment</h3>
-            <p className="text-sm text-gray-600">
-              AI automatically adjusts problem difficulty based on student performance and mastery.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('adaptiveMathStrategist.adaptiveDifficultyAdjustment')}</h3>
+            <p className="text-sm text-gray-600">{t('adaptiveMathStrategist.aiAutomaticallyAdjustsProblemDifficultyBasedOnStudentPe')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-teal-50 to-cyan-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-100 text-teal-600 mb-4">
               <Users className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Personalized Learning Paths</h3>
-            <p className="text-sm text-gray-600">
-              Each student receives a customized learning path based on their strengths and areas for growth.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('adaptiveMathStrategist.personalizedLearningPaths')}</h3>
+            <p className="text-sm text-gray-600">{t('adaptiveMathStrategist.eachStudentReceivesACustomizedLearningPathBasedOnTheir')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-cyan-50 to-blue-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-100 text-cyan-600 mb-4">
               <Eye className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Multi-Modal Representations</h3>
-            <p className="text-sm text-gray-600">
-              Visual, auditory, and kinesthetic learning supports for diverse learning styles.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('adaptiveMathStrategist.multiModalRepresentations')}</h3>
+            <p className="text-sm text-gray-600">{t('adaptiveMathStrategist.visualAuditoryAndKinestheticLearningSupportsForDiverseL')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 mb-4">
               <Lightbulb className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Real-World Applications</h3>
-            <p className="text-sm text-gray-600">
-              Connect abstract math concepts to practical, everyday situations students can relate to.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('adaptiveMathStrategist.realWorldApplications')}</h3>
+            <p className="text-sm text-gray-600">{t('adaptiveMathStrategist.connectAbstractMathConceptsToPracticalEverydaySituation')}</p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 mb-4">
               <GraduationCap className="h-6 w-6" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Standards Alignment</h3>
-            <p className="text-sm text-gray-600">
-              All content aligned with Common Core, state standards, and international curricula.
-            </p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('adaptiveMathStrategist.standardsAlignment')}</h3>
+            <p className="text-sm text-gray-600">{t('adaptiveMathStrategist.allContentAlignedWithCommonCoreStateStandardsAndInterna')}</p>
           </div>
         </div>
       </div>

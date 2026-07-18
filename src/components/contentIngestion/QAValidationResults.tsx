@@ -2,7 +2,8 @@
  * QA Validation Results Component
  */
 import React from 'react'
-import { CheckCircle, XCircle, AlertCircle, Info } from 'lucide-react'
+import { CheckCircle, XCircle, Info } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 interface QAValidationResultsProps {
   qaResults: {
@@ -22,16 +23,12 @@ interface QAValidationResultsProps {
 }
 
 export const QAValidationResults = ({ qaResults }: QAValidationResultsProps) => {
-  const allChecksPassed =
-    qaResults.page_coverage_check &&
-    qaResults.text_density_check &&
-    qaResults.embedding_completeness_check &&
-    qaResults.vector_retrieval_check
-  
+  const { t } = useTranslation()
+
   return (
     <div className="bg-white rounded-lg shadow p-6 space-y-6">
       <div className="border-b pb-4">
-        <h3 className="text-lg font-semibold text-gray-900">QA Validation Results</h3>
+        <h3 className="text-lg font-semibold text-gray-900">{t('content.qa.title')}</h3>
         <div className={`mt-2 flex items-center space-x-2 ${
           qaResults.qa_status === 'passed' ? 'text-green-600' : 'text-red-600'
         }`}>
@@ -41,41 +38,41 @@ export const QAValidationResults = ({ qaResults }: QAValidationResultsProps) => 
             <XCircle className="w-5 h-5" />
           )}
           <span className="font-medium">
-            Status: {qaResults.qa_status.toUpperCase()}
+            {t('content.qa.status', { status: qaResults.qa_status.toUpperCase() })}
           </span>
         </div>
       </div>
-      
+
       <div className="space-y-4">
         <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50">
-          <span className="text-sm font-medium text-gray-700">Page Coverage</span>
+          <span className="text-sm font-medium text-gray-700">{t('content.qa.checks.pageCoverage')}</span>
           {qaResults.page_coverage_check ? (
             <CheckCircle className="w-5 h-5 text-green-600" />
           ) : (
             <XCircle className="w-5 h-5 text-red-600" />
           )}
         </div>
-        
+
         <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50">
-          <span className="text-sm font-medium text-gray-700">Text Density</span>
+          <span className="text-sm font-medium text-gray-700">{t('content.qa.checks.textDensity')}</span>
           {qaResults.text_density_check ? (
             <CheckCircle className="w-5 h-5 text-green-600" />
           ) : (
             <XCircle className="w-5 h-5 text-red-600" />
           )}
         </div>
-        
+
         <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50">
-          <span className="text-sm font-medium text-gray-700">Embedding Completeness</span>
+          <span className="text-sm font-medium text-gray-700">{t('content.qa.checks.embeddingCompleteness')}</span>
           {qaResults.embedding_completeness_check ? (
             <CheckCircle className="w-5 h-5 text-green-600" />
           ) : (
             <XCircle className="w-5 h-5 text-red-600" />
           )}
         </div>
-        
+
         <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50">
-          <span className="text-sm font-medium text-gray-700">Vector Retrieval</span>
+          <span className="text-sm font-medium text-gray-700">{t('content.qa.checks.vectorRetrieval')}</span>
           {qaResults.vector_retrieval_check ? (
             <CheckCircle className="w-5 h-5 text-green-600" />
           ) : (
@@ -83,10 +80,10 @@ export const QAValidationResults = ({ qaResults }: QAValidationResultsProps) => 
           )}
         </div>
       </div>
-      
+
       {qaResults.metrics && (
         <div className="border-t pt-4">
-          <h4 className="text-sm font-semibold text-gray-900 mb-3">Metrics</h4>
+          <h4 className="text-sm font-semibold text-gray-900 mb-3">{t('content.qa.metrics.title')}</h4>
           <div className="grid grid-cols-2 gap-4 text-sm">
             {Object.entries(qaResults.metrics).map(([key, value]) => (
               <div key={key}>
@@ -97,10 +94,10 @@ export const QAValidationResults = ({ qaResults }: QAValidationResultsProps) => 
           </div>
         </div>
       )}
-      
+
       {qaResults.golden_query_results && qaResults.golden_query_results.length > 0 && (
         <div className="border-t pt-4">
-          <h4 className="text-sm font-semibold text-gray-900 mb-3">Golden Query Tests</h4>
+          <h4 className="text-sm font-semibold text-gray-900 mb-3">{t('content.qa.goldenQueries.title')}</h4>
           <div className="space-y-2">
             {qaResults.golden_query_results.map((result, index) => (
               <div
@@ -113,7 +110,7 @@ export const QAValidationResults = ({ qaResults }: QAValidationResultsProps) => 
                   <div className="flex-1">
                     <p className="text-sm font-medium text-gray-900">{result.query}</p>
                     <p className="text-xs text-gray-600 mt-1">
-                      Chunks found: {result.chunks_found}
+                      {t('content.qa.goldenQueries.chunksFound', { count: result.chunks_found })}
                     </p>
                   </div>
                   {result.passed ? (
@@ -127,13 +124,13 @@ export const QAValidationResults = ({ qaResults }: QAValidationResultsProps) => 
           </div>
         </div>
       )}
-      
+
       {qaResults.qa_notes && (
         <div className="border-t pt-4">
           <div className="flex items-start space-x-2">
             <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
             <div className="flex-1">
-              <p className="text-sm font-medium text-gray-900">Notes</p>
+              <p className="text-sm font-medium text-gray-900">{t('content.qa.notes.title')}</p>
               <p className="text-sm text-gray-600 mt-1">{qaResults.qa_notes}</p>
             </div>
           </div>

@@ -1,32 +1,33 @@
+import { useTranslation } from 'react-i18next';
 import { useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import ChatThread from '../AICopilot/ChatThread';
 import ChatInput from '../AICopilot/ChatInput';
 
-const personaIntro = (tutorId) => {
+const personaIntro = (tutorId, t) => {
   switch (tutorId) {
     case 'math-mentor':
-      return "I'm your Math Mentor. I'll show worked steps and check your reasoning.";
+      return t('studentPanel.tutors.chat.intro.mathMentor');
     case 'science-guide':
-      return "I'm your Science Guide. I'll explain concepts with intuition and examples.";
+      return t('studentPanel.tutors.chat.intro.scienceGuide');
     case 'essay-coach':
-      return "I'm your Essay Coach. I'll help you structure arguments and improve clarity.";
+      return t('studentPanel.tutors.chat.intro.essayCoach');
     default:
-      return "I'm your tutor. Ask your question and I'll help.";
+      return t('studentPanel.tutors.chat.intro.default');
   }
 };
 
-const tutorName = (tutorId) => {
+const tutorName = (tutorId, t) => {
   switch (tutorId) {
     case 'math-mentor':
-      return 'Math Mentor';
+      return t('studentPanel.tutors.mathMentor.name');
     case 'science-guide':
-      return 'Science Guide';
+      return t('studentPanel.tutors.scienceGuide.name');
     case 'essay-coach':
-      return 'Essay Coach';
+      return t('studentPanel.tutors.essayCoach.name');
     default:
-      return 'AI Tutor';
+      return t('studentPanel.tutors.defaultName');
   }
 };
 
@@ -47,16 +48,17 @@ const cannedResponse = (tutorId, text) => {
 };
 
 const AITutorChat = () => {
+  const { t } = useTranslation();
   const { tutorId } = useParams();
   const navigate = useNavigate();
   const [messages, setMessages] = useState(() => [
-    { id: 'sys_1', role: 'assistant', text: personaIntro(tutorId) },
+    { id: 'sys_1', role: 'assistant', text: personaIntro(tutorId, t) },
   ]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [streamingText, setStreamingText] = useState('');
   const timerRef = useRef(null);
 
-  const title = useMemo(() => tutorName(tutorId), [tutorId]);
+  const title = useMemo(() => tutorName(tutorId, t), [tutorId, t]);
 
   const stop = () => {
     if (timerRef.current) clearTimeout(timerRef.current);
@@ -95,14 +97,14 @@ const AITutorChat = () => {
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between gap-4">
         <div>
           <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h1>
-          <p className="text-sm text-gray-600 dark:text-gray-300">Domain style chat (demo).</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.tutors.chat.subtitle')}</p>
         </div>
         <button
           type="button"
           onClick={() => navigate('/student/tutors')}
           className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900"
         >
-          Back
+          {t('studentPanel.common.back')}
         </button>
       </div>
 

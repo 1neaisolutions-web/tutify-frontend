@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { BookOpen, Sparkles, RefreshCw, Download } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 type FocusArea = 'reading' | 'writing' | 'literature' | 'language' | 'integrated'
 type AssessmentType = 'essay' | 'presentation' | 'creative_writing' | 'portfolio'
 type OutputFormat = 'structured_json' | 'teacher_text'
@@ -120,6 +121,7 @@ const sampleUnitPlan: UnitPlanOutput = {
 }
 
 const MultiLessonPlanner = () => {
+  const { t } = useTranslation()
   const [inputs, setInputs] = useState<UnitPlanInputs>({
     grade: 8,
     unit_title: 'Narrative Writing: Building Characters and Conflict',
@@ -249,10 +251,8 @@ const MultiLessonPlanner = () => {
             <BookOpen className="w-6 h-6 text-primary-600" />
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold text-gray-900">Multi-Lesson Planner</h1>
-            <p className="text-sm text-gray-600 mt-0.5">
-              Sequence a multi-week unit with objectives, weekly focus, and a culminating assessment
-            </p>
+            <h1 className="text-xl font-bold text-gray-900">{t('multiLessonPlanner.multiLessonPlanner')}</h1>
+            <p className="text-sm text-gray-600 mt-0.5">{t('multiLessonPlanner.sequenceAMultiWeekUnitWithObjectivesWeeklyFocusAnd')}</p>
           </div>
         </div>
       </div>
@@ -262,13 +262,12 @@ const MultiLessonPlanner = () => {
           <div className="card">
             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
               <Sparkles className="w-5 h-5 text-primary-600" />
-              <span>Unit Inputs</span>
+              <span>{t('multiLessonPlanner.unitInputs')}</span>
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Grade <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('multiLessonPlanner.grade2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -277,14 +276,13 @@ const MultiLessonPlanner = () => {
                   value={inputs.grade}
                   onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
                   className="input-field"
-                  placeholder="Enter grade (1-12)"
+                  placeholder={t('common.gradePlaceholder')}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Unit Title <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('multiLessonPlanner.unitTitle')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -306,14 +304,13 @@ const MultiLessonPlanner = () => {
                   value={inputs.duration_weeks}
                   onChange={(e) => handleInputChange('duration_weeks', parseInt(e.target.value) || '')}
                   className="input-field"
-                  placeholder="e.g., 3"
+                  placeholder={t('multiLessonPlanner.eG3')}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Focus Area <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('multiLessonPlanner.focusArea2')}<span className="text-red-500">*</span>
                 </label>
                 <select
                   value={inputs.focus_area}
@@ -323,19 +320,17 @@ const MultiLessonPlanner = () => {
                   className="input-field"
                   required
                 >
-                  <option value="">Select focus area</option>
-                  <option value="reading">Reading</option>
-                  <option value="writing">Writing</option>
-                  <option value="literature">Literature</option>
-                  <option value="language">Language</option>
-                  <option value="integrated">Integrated</option>
+                  <option value="">{t('multiLessonPlanner.selectFocusArea')}</option>
+                  <option value="reading">{t('multiLessonPlanner.reading')}</option>
+                  <option value="writing">{t('multiLessonPlanner.writing')}</option>
+                  <option value="literature">{t('multiLessonPlanner.literature')}</option>
+                  <option value="language">{t('multiLessonPlanner.language2')}</option>
+                  <option value="integrated">{t('multiLessonPlanner.integrated')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Learning Objectives
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('multiLessonPlanner.learningObjectives')}</label>
                 <div className="flex gap-2 mb-2">
                   <input
                     type="text"
@@ -350,9 +345,7 @@ const MultiLessonPlanner = () => {
                     className="input-field flex-1"
                     placeholder='e.g., "Use sensory language"'
                   />
-                  <button type="button" onClick={addObjective} className="btn-primary whitespace-nowrap">
-                    Add
-                  </button>
+                  <button type="button" onClick={addObjective} className="btn-primary whitespace-nowrap">{t('multiLessonPlanner.add')}</button>
                 </div>
                 {inputs.learning_objectives.length > 0 && (
                   <div className="space-y-2">
@@ -377,7 +370,7 @@ const MultiLessonPlanner = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Core Text</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('multiLessonPlanner.coreText')}</label>
                 <input
                   type="text"
                   value={inputs.core_text}
@@ -388,7 +381,7 @@ const MultiLessonPlanner = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Assessment Type</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('multiLessonPlanner.assessmentType')}</label>
                 <select
                   value={inputs.assessment_type}
                   onChange={(e) =>
@@ -400,10 +393,10 @@ const MultiLessonPlanner = () => {
                   className="input-field"
                 >
                   <option value="">Select assessment type (optional)</option>
-                  <option value="essay">Essay</option>
-                  <option value="presentation">Presentation</option>
-                  <option value="creative_writing">Creative Writing</option>
-                  <option value="portfolio">Portfolio</option>
+                  <option value="essay">{t('multiLessonPlanner.essay')}</option>
+                  <option value="presentation">{t('multiLessonPlanner.presentation')}</option>
+                  <option value="creative_writing">{t('multiLessonPlanner.creativeWriting')}</option>
+                  <option value="portfolio">{t('multiLessonPlanner.portfolio')}</option>
                 </select>
               </div>
 
@@ -415,24 +408,22 @@ const MultiLessonPlanner = () => {
                   onChange={(e) => handleInputChange('differentiation_needed', e.target.checked)}
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />
-                <label htmlFor="differentiation-needed" className="ml-2 text-sm text-gray-700">
-                  Include differentiation strategies
-                </label>
+                <label htmlFor="differentiation-needed" className="ml-2 text-sm text-gray-700">{t('multiLessonPlanner.includeDifferentiationStrategies')}</label>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('multiLessonPlanner.language2')}</label>
                 <input
                   type="text"
                   value={inputs.language}
                   onChange={(e) => handleInputChange('language', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., en-US"
+                  placeholder={t('multiLessonPlanner.eGEnUs')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Output Format</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('multiLessonPlanner.outputFormat')}</label>
                 <select
                   value={inputs.output_format}
                   onChange={(e) =>
@@ -444,8 +435,8 @@ const MultiLessonPlanner = () => {
                   className="input-field"
                 >
                   <option value="">Select output format (optional)</option>
-                  <option value="teacher_text">Teacher Text</option>
-                  <option value="structured_json">Structured JSON</option>
+                  <option value="teacher_text">{t('multiLessonPlanner.teacherText')}</option>
+                  <option value="structured_json">{t('multiLessonPlanner.structuredJson')}</option>
                 </select>
               </div>
 
@@ -457,12 +448,12 @@ const MultiLessonPlanner = () => {
                 {isGenerating ? (
                   <>
                     <RefreshCw className="w-5 h-5 animate-spin" />
-                    <span>Generating...</span>
+                    <span>{t('multiLessonPlanner.generating')}</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-5 h-5" />
-                    <span>Generate Unit Plan</span>
+                    <span>{t('multiLessonPlanner.generateUnitPlan')}</span>
                   </>
                 )}
               </button>
@@ -474,18 +465,18 @@ const MultiLessonPlanner = () => {
           {output ? (
             <div className="card">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Generated Unit Plan</h2>
+                <h2 className="text-lg font-semibold text-gray-900">{t('multiLessonPlanner.generatedUnitPlan')}</h2>
                 <div className="flex gap-2">
                   <button className="btn-secondary flex items-center space-x-2">
                     <Download className="w-4 h-4" />
-                    <span>Download</span>
+                    <span>{t('multiLessonPlanner.download')}</span>
                   </button>
                   <button
                     onClick={() => setOutput(null)}
                     className="btn-secondary flex items-center space-x-2"
                   >
                     <RefreshCw className="w-4 h-4" />
-                    <span>Reset</span>
+                    <span>{t('multiLessonPlanner.reset')}</span>
                   </button>
                 </div>
               </div>
@@ -495,35 +486,35 @@ const MultiLessonPlanner = () => {
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">{output.unit_title}</h3>
                   <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                     <span>
-                      <strong>Grade:</strong> {output.grade}
+                      <strong>{t('multiLessonPlanner.grade')}</strong> {output.grade}
                     </span>
                     <span>
-                      <strong>Focus Area:</strong> {output.focus_area}
+                      <strong>{t('multiLessonPlanner.focusArea')}</strong> {output.focus_area}
                     </span>
                     <span>
-                      <strong>Duration:</strong> {output.duration_weeks} week(s)
+                      <strong>{t('multiLessonPlanner.duration')}</strong> {output.duration_weeks} week(s)
                     </span>
                     {output.assessment_type && (
                       <span>
-                        <strong>Assessment:</strong> {output.assessment_type.replace(/_/g, ' ')}
+                        <strong>{t('multiLessonPlanner.assessment')}</strong> {output.assessment_type.replace(/_/g, ' ')}
                       </span>
                     )}
                     {output.language && (
                       <span>
-                        <strong>Language:</strong> {output.language}
+                        <strong>{t('multiLessonPlanner.language')}</strong> {output.language}
                       </span>
                     )}
                   </div>
                   <p className="mt-3 text-gray-700 text-sm">{output.overview}</p>
                   {output.anchor_text && (
                     <p className="mt-2 text-sm text-gray-700">
-                      <strong>Anchor Text:</strong> {output.anchor_text}
+                      <strong>{t('multiLessonPlanner.anchorText')}</strong> {output.anchor_text}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Learning Objectives</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('multiLessonPlanner.learningObjectives')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.learning_objectives.map((objective, index) => (
                       <li key={index}>{objective}</li>
@@ -532,7 +523,7 @@ const MultiLessonPlanner = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Weekly Sequence</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('multiLessonPlanner.weeklySequence')}</h4>
                   <div className="space-y-4">
                     {output.weekly_sequence.map((sequence) => (
                       <div key={sequence.week} className="bg-gray-50 rounded-lg p-4">
@@ -553,16 +544,16 @@ const MultiLessonPlanner = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Culminating Assessment</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('multiLessonPlanner.culminatingAssessment')}</h4>
                   <p className="text-sm text-gray-700">{output.assessment_overview}</p>
                 </div>
 
                 {output.differentiation && (
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Differentiation</h4>
+                    <h4 className="font-semibold text-gray-900 mb-2">{t('multiLessonPlanner.differentiation')}</h4>
                     <div className="space-y-3 text-sm text-gray-700">
                       <div>
-                        <h5 className="font-medium text-gray-800 mb-1">Emerging Learners</h5>
+                        <h5 className="font-medium text-gray-800 mb-1">{t('multiLessonPlanner.emergingLearners')}</h5>
                         <ul className="list-disc list-inside space-y-1">
                           {output.differentiation.emerging.map((item, index) => (
                             <li key={index}>{item}</li>
@@ -570,7 +561,7 @@ const MultiLessonPlanner = () => {
                         </ul>
                       </div>
                       <div>
-                        <h5 className="font-medium text-gray-800 mb-1">On-Level Learners</h5>
+                        <h5 className="font-medium text-gray-800 mb-1">{t('multiLessonPlanner.onLevelLearners')}</h5>
                         <ul className="list-disc list-inside space-y-1">
                           {output.differentiation.on_level.map((item, index) => (
                             <li key={index}>{item}</li>
@@ -578,7 +569,7 @@ const MultiLessonPlanner = () => {
                         </ul>
                       </div>
                       <div>
-                        <h5 className="font-medium text-gray-800 mb-1">Advanced Learners</h5>
+                        <h5 className="font-medium text-gray-800 mb-1">{t('multiLessonPlanner.advancedLearners')}</h5>
                         <ul className="list-disc list-inside space-y-1">
                           {output.differentiation.advanced.map((item, index) => (
                             <li key={index}>{item}</li>
@@ -590,7 +581,7 @@ const MultiLessonPlanner = () => {
                 )}
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Recommended Resources</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('multiLessonPlanner.recommendedResources')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.recommended_resources.map((resource, index) => (
                       <li key={index}>{resource}</li>
@@ -599,7 +590,7 @@ const MultiLessonPlanner = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Communication Highlights</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('multiLessonPlanner.communicationHighlights')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.communication_highlights.map((highlight, index) => (
                       <li key={index}>{highlight}</li>
@@ -612,12 +603,8 @@ const MultiLessonPlanner = () => {
             <div className="card">
               <div className="text-center py-12">
                 <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Your unit plan will appear here
-                </h3>
-                <p className="text-gray-600">
-                  Fill in the inputs and click "Generate Unit Plan" to view your multi-lesson sequence.
-                </p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('multiLessonPlanner.yourUnitPlanWillAppearHere')}</h3>
+                <p className="text-gray-600">{t('multiLessonPlanner.fillInTheInputsAndClickGenerateUnitPlanTo')}</p>
               </div>
             </div>
           )}

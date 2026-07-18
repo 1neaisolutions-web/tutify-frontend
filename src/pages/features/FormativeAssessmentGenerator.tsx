@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ClipboardList, Sparkles, RefreshCw, Download } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 type FormativeSubject =
   | 'Math'
   | 'Science'
@@ -86,6 +87,7 @@ const sampleFormativePlan: FormativeAssessmentOutput = {
 }
 
 const FormativeAssessmentGenerator = () => {
+  const { t } = useTranslation()
   const [inputs, setInputs] = useState<FormativeAssessmentInputs>({
     grade: 5,
     subject: 'Science',
@@ -182,10 +184,8 @@ const FormativeAssessmentGenerator = () => {
             <ClipboardList className="w-6 h-6 text-primary-600" />
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold text-gray-900">Formative Assessment Generator</h1>
-            <p className="text-sm text-gray-600 mt-0.5">
-              Create quick checks for understanding aligned to your lesson objective
-            </p>
+            <h1 className="text-xl font-bold text-gray-900">{t('formativeAssessmentGenerator.formativeAssessmentGenerator')}</h1>
+            <p className="text-sm text-gray-600 mt-0.5">{t('formativeAssessmentGenerator.createQuickChecksForUnderstandingAlignedToYourLessonObj')}</p>
           </div>
         </div>
       </div>
@@ -195,13 +195,12 @@ const FormativeAssessmentGenerator = () => {
           <div className="card">
             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
               <Sparkles className="w-5 h-5 text-primary-600" />
-              <span>Assessment Inputs</span>
+              <span>{t('formativeAssessmentGenerator.assessmentInputs')}</span>
             </h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Grade <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('formativeAssessmentGenerator.grade2')}<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -210,14 +209,13 @@ const FormativeAssessmentGenerator = () => {
                   value={inputs.grade}
                   onChange={(e) => handleInputChange('grade', parseInt(e.target.value) || '')}
                   className="input-field"
-                  placeholder="Enter grade (1-12)"
+                  placeholder={t('common.gradePlaceholder')}
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Subject <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('formativeAssessmentGenerator.subject2')}<span className="text-red-500">*</span>
                 </label>
                 <select
                   value={inputs.subject}
@@ -227,21 +225,20 @@ const FormativeAssessmentGenerator = () => {
                   className="input-field"
                   required
                 >
-                  <option value="">Select subject</option>
-                  <option value="Math">Math</option>
-                  <option value="Science">Science</option>
-                  <option value="English">English</option>
-                  <option value="Social Studies">Social Studies</option>
-                  <option value="Arts">Arts</option>
-                  <option value="Technology">Technology</option>
-                  <option value="Physical Education">Physical Education</option>
-                  <option value="Other">Other</option>
+                  <option value="">{t('formativeAssessmentGenerator.selectSubject')}</option>
+                  <option value="Math">{t('formativeAssessmentGenerator.math')}</option>
+                  <option value="Science">{t('formativeAssessmentGenerator.science')}</option>
+                  <option value="English">{t('formativeAssessmentGenerator.english')}</option>
+                  <option value="Social Studies">{t('formativeAssessmentGenerator.socialStudies')}</option>
+                  <option value="Arts">{t('formativeAssessmentGenerator.arts')}</option>
+                  <option value="Technology">{t('formativeAssessmentGenerator.technology')}</option>
+                  <option value="Physical Education">{t('formativeAssessmentGenerator.physicalEducation')}</option>
+                  <option value="Other">{t('formativeAssessmentGenerator.other')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Learning Objective <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('formativeAssessmentGenerator.learningObjective2')}<span className="text-red-500">*</span>
                 </label>
                 <textarea
                   value={inputs.learning_objective}
@@ -254,30 +251,30 @@ const FormativeAssessmentGenerator = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Context</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('formativeAssessmentGenerator.context2')}</label>
                 <input
                   type="text"
                   value={inputs.context}
                   onChange={(e) => handleInputChange('context', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., After watching a video"
+                  placeholder={t('formativeAssessmentGenerator.eGAfterWatchingAVideo')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Time Available</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('formativeAssessmentGenerator.timeAvailable')}</label>
                 <input
                   type="text"
                   value={inputs.time_available}
                   onChange={(e) => handleInputChange('time_available', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., PT10M"
+                  placeholder={t('formativeAssessmentGenerator.eGPt10m')}
                 />
                 <p className="mt-1 text-xs text-gray-500">Use ISO 8601 duration (e.g., PT10M).</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Activity Type</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('formativeAssessmentGenerator.activityType')}</label>
                 <select
                   value={inputs.activity_type}
                   onChange={(e) =>
@@ -289,21 +286,21 @@ const FormativeAssessmentGenerator = () => {
                   className="input-field"
                 >
                   <option value="">Select activity type (optional)</option>
-                  <option value="exit_ticket">Exit Ticket</option>
-                  <option value="quiz">Quiz</option>
-                  <option value="group_discussion">Group Discussion</option>
-                  <option value="reflection">Reflection</option>
+                  <option value="exit_ticket">{t('formativeAssessmentGenerator.exitTicket')}</option>
+                  <option value="quiz">{t('formativeAssessmentGenerator.quiz')}</option>
+                  <option value="group_discussion">{t('formativeAssessmentGenerator.groupDiscussion')}</option>
+                  <option value="reflection">{t('formativeAssessmentGenerator.reflection')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('formativeAssessmentGenerator.language2')}</label>
                 <input
                   type="text"
                   value={inputs.language}
                   onChange={(e) => handleInputChange('language', e.target.value)}
                   className="input-field"
-                  placeholder="e.g., en-US"
+                  placeholder={t('formativeAssessmentGenerator.eGEnUs')}
                 />
               </div>
 
@@ -315,12 +312,12 @@ const FormativeAssessmentGenerator = () => {
                 {isGenerating ? (
                   <>
                     <RefreshCw className="w-5 h-5 animate-spin" />
-                    <span>Generating...</span>
+                    <span>{t('formativeAssessmentGenerator.generating')}</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-5 h-5" />
-                    <span>Generate Formative Plan</span>
+                    <span>{t('formativeAssessmentGenerator.generateFormativePlan')}</span>
                   </>
                 )}
               </button>
@@ -332,18 +329,18 @@ const FormativeAssessmentGenerator = () => {
           {output ? (
             <div className="card">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Generated Formative Plan</h2>
+                <h2 className="text-lg font-semibold text-gray-900">{t('formativeAssessmentGenerator.generatedFormativePlan')}</h2>
                 <div className="flex gap-2">
                   <button className="btn-secondary flex items-center space-x-2">
                     <Download className="w-4 h-4" />
-                    <span>Download</span>
+                    <span>{t('formativeAssessmentGenerator.download')}</span>
                   </button>
                   <button
                     onClick={() => setOutput(null)}
                     className="btn-secondary flex items-center space-x-2"
                   >
                     <RefreshCw className="w-4 h-4" />
-                    <span>Reset</span>
+                    <span>{t('formativeAssessmentGenerator.reset')}</span>
                   </button>
                 </div>
               </div>
@@ -353,40 +350,40 @@ const FormativeAssessmentGenerator = () => {
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">{output.title}</h3>
                   <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                     <span>
-                      <strong>Grade:</strong> {output.grade}
+                      <strong>{t('formativeAssessmentGenerator.grade')}</strong> {output.grade}
                     </span>
                     <span>
-                      <strong>Subject:</strong> {output.subject}
+                      <strong>{t('formativeAssessmentGenerator.subject')}</strong> {output.subject}
                     </span>
                     {output.activity_type && (
                       <span>
-                        <strong>Type:</strong> {output.activity_type.replace(/_/g, ' ')}
+                        <strong>{t('formativeAssessmentGenerator.type')}</strong> {output.activity_type.replace(/_/g, ' ')}
                       </span>
                     )}
                     {output.time_available && (
                       <span>
-                        <strong>Time:</strong> {output.time_available}
+                        <strong>{t('formativeAssessmentGenerator.time')}</strong> {output.time_available}
                       </span>
                     )}
                     {output.language && (
                       <span>
-                        <strong>Language:</strong> {output.language}
+                        <strong>{t('formativeAssessmentGenerator.language')}</strong> {output.language}
                       </span>
                     )}
                   </div>
                   <p className="mt-2 text-sm text-gray-700">
-                    <strong>Learning Objective:</strong> {output.learning_objective}
+                    <strong>{t('formativeAssessmentGenerator.learningObjective')}</strong> {output.learning_objective}
                   </p>
                   {output.context && (
                     <p className="mt-1 text-sm text-gray-600">
-                      <strong>Context:</strong> {output.context}
+                      <strong>{t('formativeAssessmentGenerator.context')}</strong> {output.context}
                     </p>
                   )}
                   <p className="mt-3 text-gray-700 text-sm">{output.overview}</p>
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Activity Steps</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('formativeAssessmentGenerator.activitySteps')}</h4>
                   <ol className="list-decimal list-inside space-y-1 text-sm text-gray-700">
                     {output.activity_steps.map((step, index) => (
                       <li key={index}>{step}</li>
@@ -395,17 +392,17 @@ const FormativeAssessmentGenerator = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Prompts & Questions</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('formativeAssessmentGenerator.promptsQuestions')}</h4>
                   <div className="space-y-3">
                     {output.prompts.map((prompt, index) => (
                       <div key={index} className="bg-white border border-gray-200 rounded-lg p-4">
                         <p className="text-sm text-gray-800 font-medium">{prompt.question}</p>
                         <p className="mt-2 text-xs text-gray-500">
-                          <strong>Expected Response:</strong> {prompt.expected_response}
+                          <strong>{t('formativeAssessmentGenerator.expectedResponse')}</strong> {prompt.expected_response}
                         </p>
                         {prompt.differentiation && (
                           <p className="mt-1 text-xs text-gray-500">
-                            <strong>Support:</strong> {prompt.differentiation}
+                            <strong>{t('formativeAssessmentGenerator.support')}</strong> {prompt.differentiation}
                           </p>
                         )}
                       </div>
@@ -414,7 +411,7 @@ const FormativeAssessmentGenerator = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Quick Checks</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('formativeAssessmentGenerator.quickChecks')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.quick_checks.map((check, index) => (
                       <li key={index}>{check}</li>
@@ -423,7 +420,7 @@ const FormativeAssessmentGenerator = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Follow-Up Actions</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">{t('formativeAssessmentGenerator.followUpActions')}</h4>
                   <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
                     {output.follow_up_actions.map((action, index) => (
                       <li key={index}>{action}</li>
@@ -436,12 +433,8 @@ const FormativeAssessmentGenerator = () => {
             <div className="card">
               <div className="text-center py-12">
                 <ClipboardList className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Your formative plan will appear here
-                </h3>
-                <p className="text-gray-600">
-                  Fill out the inputs and click "Generate Formative Plan" to create a quick-check activity.
-                </p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('formativeAssessmentGenerator.yourFormativePlanWillAppearHere')}</h3>
+                <p className="text-gray-600">{t('formativeAssessmentGenerator.fillOutTheInputsAndClickGenerateFormativePlanTo')}</p>
               </div>
             </div>
           )}

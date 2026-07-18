@@ -1,6 +1,8 @@
 import { Sparkles } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 export function TeacherToolsExemplarReviewBanner() {
+  const { t } = useTranslation()
   return (
     <div
       role="status"
@@ -8,10 +10,11 @@ export function TeacherToolsExemplarReviewBanner() {
     >
       <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-amber-700" aria-hidden />
       <div>
-        <p className="font-semibold">Exemplar preview</p>
+        <p className="font-semibold">{t('teacherTools.exemplarTitle')}</p>
         <p className="mt-0.5 text-xs leading-relaxed text-amber-900/90">
-          Sample content only — nothing is saved until you generate or save a draft. Use{' '}
-          <span className="font-medium">Edit requirements</span> to return to configure.
+          {t('teacherTools.exemplarBody', {
+            editRequirements: t('teacherTools.editRequirements'),
+          })}
         </p>
       </div>
     </div>

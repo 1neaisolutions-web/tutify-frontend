@@ -7,7 +7,9 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { fetchDocuments, Document, fetchContentPacks, ContentPack } from '../../api/contentIngestion'
 import { useSnackbar } from '../../hooks/useSnackbar'
 
+import { useTranslation } from 'react-i18next'
 export const DocumentsList = () => {
+  const { t } = useTranslation()
   const [documents, setDocuments] = useState<Document[]>([])
   const [packs, setPacks] = useState<ContentPack[]>([])
   const [loading, setLoading] = useState(true)
@@ -91,15 +93,15 @@ export const DocumentsList = () => {
       <div className="max-w-7xl mx-auto">
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Documents</h1>
-            <p className="text-gray-600 mt-1">Manage curriculum documents</p>
+            <h1 className="text-3xl font-bold text-gray-900">{t('documentsListPage.documents')}</h1>
+            <p className="text-gray-600 mt-1">{t('documentsListPage.manageCurriculumDocuments')}</p>
           </div>
           <button
             onClick={() => navigate('/admin/documents/upload')}
             className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
             <Plus className="w-5 h-5" />
-            <span>Upload Document</span>
+            <span>{t('documentsListPage.uploadDocument')}</span>
           </button>
         </div>
         
@@ -108,7 +110,7 @@ export const DocumentsList = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               type="text"
-              placeholder="Search documents..."
+              placeholder={t('documentsListPage.searchDocuments')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
@@ -119,7 +121,7 @@ export const DocumentsList = () => {
             onChange={(e) => setPackFilter(e.target.value)}
             className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           >
-            <option value="">All Packs</option>
+            <option value="">{t('documentsListPage.allPacks')}</option>
             {packs.map((pack) => (
               <option key={pack.id} value={pack.id}>
                 {pack.name}
@@ -131,37 +133,35 @@ export const DocumentsList = () => {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           >
-            <option value="">All Status</option>
-            <option value="uploaded">Uploaded</option>
-            <option value="text_extracting">Extracting</option>
-            <option value="embedding">Embedding</option>
-            <option value="qa_validation">QA Validation</option>
-            <option value="published">Published</option>
-            <option value="failed">Failed</option>
+            <option value="">{t('documentsListPage.allStatus')}</option>
+            <option value="uploaded">{t('documentsListPage.uploaded')}</option>
+            <option value="text_extracting">{t('documentsListPage.extracting')}</option>
+            <option value="embedding">{t('documentsListPage.embedding')}</option>
+            <option value="qa_validation">{t('documentsListPage.qaValidation')}</option>
+            <option value="published">{t('documentsListPage.published')}</option>
+            <option value="failed">{t('documentsListPage.failed')}</option>
           </select>
         </div>
         
         {error ? (
           <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-            <p className="text-red-800 font-semibold">Error loading documents</p>
+            <p className="text-red-800 font-semibold">{t('documentsListPage.errorLoadingDocuments')}</p>
             <p className="text-red-600 text-sm mt-1 whitespace-pre-line">{error}</p>
             {error.includes('404') || error.includes('Not Found') ? (
               <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
-                <p className="text-yellow-800 text-sm font-semibold mb-2">Troubleshooting:</p>
+                <p className="text-yellow-800 text-sm font-semibold mb-2">{t('documentsListPage.troubleshooting')}</p>
                 <ul className="text-yellow-700 text-sm list-disc list-inside space-y-1">
                   <li>Ensure backend is running (check http://127.0.0.1:8000/health)</li>
                   <li>If testing locally, set VITE_USE_LOCAL=true in .env file</li>
-                  <li>Restart backend server to load new routes</li>
-                  <li>Check browser console for detailed error messages</li>
+                  <li>{t('documentsListPage.restartBackendServerToLoadNewRoutes')}</li>
+                  <li>{t('documentsListPage.checkBrowserConsoleForDetailedErrorMessages')}</li>
                 </ul>
               </div>
             ) : null}
             <button
               onClick={loadDocuments}
               className="mt-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-            >
-              Retry
-            </button>
+            >{t('documentsListPage.retry')}</button>
           </div>
         ) : loading ? (
           <div className="flex justify-center items-center py-12">
@@ -169,28 +169,18 @@ export const DocumentsList = () => {
           </div>
         ) : filteredDocuments.length === 0 ? (
           <div className="bg-white rounded-lg shadow p-12 text-center">
-            <p className="text-gray-600">No documents found</p>
+            <p className="text-gray-600">{t('documentsListPage.noDocumentsFound')}</p>
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow overflow-hidden">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Filename
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Pages
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Uploaded
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('documentsListPage.filename')}</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('documentsListPage.status')}</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('documentsListPage.pages')}</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('documentsListPage.uploaded')}</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">{t('documentsListPage.actions')}</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">

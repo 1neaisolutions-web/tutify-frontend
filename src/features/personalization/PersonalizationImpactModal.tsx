@@ -5,6 +5,7 @@
  * Warns the teacher that their recommendation set will be rebuilt, lists
  * the changed fields, and offers Cancel / Save and Reset actions.
  */
+import { useTranslation } from 'react-i18next'
 import { AlertTriangle, X, RefreshCw } from 'lucide-react'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -26,28 +27,6 @@ interface PersonalizationImpactModalProps {
   isSaving?: boolean
 }
 
-// ─── Field label map ──────────────────────────────────────────────────────────
-
-const FIELD_LABELS: Record<string, string> = {
-  country: 'Country',
-  region: 'Region',
-  subjects: 'Subjects',
-  grade_band: 'Grade Band',
-  school_type: 'School Type',
-  curriculum_framework: 'Curriculum Framework',
-  language_preference: 'Language Preference',
-  years_experience: 'Years of Experience',
-  professional_goals: 'Professional Goals',
-  school_name: 'School Name',
-  city: 'City',
-  postal_code: 'Postal Code',
-  identity_fingerprint: 'Professional Identity',
-}
-
-function formatField(field: string): string {
-  return FIELD_LABELS[field] ?? field.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
-}
-
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function PersonalizationImpactModal({
@@ -56,7 +35,13 @@ export function PersonalizationImpactModal({
   onCancel,
   isSaving = false,
 }: PersonalizationImpactModalProps) {
+  const { t } = useTranslation()
   const isMajor = preflight.severity === 'major_reset'
+
+  const formatField = (field: string) =>
+    t(`personalization.impactModal.fields.${field}`, {
+      defaultValue: field.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+    })
 
   return (
     // Backdrop
@@ -72,7 +57,7 @@ export function PersonalizationImpactModal({
           onClick={onCancel}
           disabled={isSaving}
           className="absolute right-4 top-4 p-1.5 rounded-full text-gray-400 hover:bg-gray-100 transition-colors"
-          aria-label="Cancel"
+          aria-label={t('personalization.impactModal.cancelAria')}
         >
           <X className="h-4 w-4" />
         </button>
@@ -94,7 +79,7 @@ export function PersonalizationImpactModal({
                 id="impact-modal-title"
                 className={`text-base font-semibold ${isMajor ? 'text-rose-900' : 'text-amber-900'}`}
               >
-                {preflight.user_display_title || 'Profile change detected'}
+                {preflight.user_display_title || t('personalization.impactModal.defaultTitle')}
               </h2>
               <p className={`mt-1 text-sm ${isMajor ? 'text-rose-700' : 'text-amber-700'}`}>
                 {preflight.user_display_body || preflight.message}
@@ -107,7 +92,7 @@ export function PersonalizationImpactModal({
         {preflight.changed_fields.length > 0 && (
           <div className="px-6 py-4 border-t border-gray-100">
             <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">
-              Fields changing
+              {t('personalization.impactModal.fieldsChanging')}
             </p>
             <div className="flex flex-wrap gap-1.5">
               {preflight.changed_fields.map((f) => (
@@ -130,8 +115,7 @@ export function PersonalizationImpactModal({
         {isMajor && (
           <div className="px-6 py-3 bg-green-50 border-t border-green-100">
             <p className="text-xs text-green-700">
-              Your completed items, certificates, and learning progress are fully preserved.
-              Only your recommendation queue will be rebuilt.
+              {t('personalization.impactModal.preservedNote')}
             </p>
           </div>
         )}
@@ -143,7 +127,7 @@ export function PersonalizationImpactModal({
             disabled={isSaving}
             className="rounded-full px-5 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 transition-colors disabled:opacity-50"
           >
-            Cancel
+            {t('personalization.impactModal.cancel')}
           </button>
           <button
             onClick={onConfirm}
@@ -157,12 +141,12 @@ export function PersonalizationImpactModal({
             {isSaving ? (
               <>
                 <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-                Saving…
+                {t('personalization.impactModal.saving')}
               </>
             ) : isMajor ? (
-              'Save and Reset Personalization'
+              t('personalization.impactModal.saveAndReset')
             ) : (
-              'Save'
+              t('personalization.impactModal.save')
             )}
           </button>
         </div>

@@ -1,14 +1,17 @@
 import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { ArrowLeft, ArrowRight, Award, BookOpen, CheckCircle2, ChevronRight, Clock, FileText, Lightbulb, Target, X } from 'lucide-react'
 import { LearningHubSectionItem, resolvePersonalizedMicroCourseTheme } from '../../../features/learningHub'
 import { useLearningHubContentScrollToTop } from '../../../features/learningHub/useLearningHubScrollToTop'
+import { resolveHubItemTitle, resolveMicroCourseContent } from '../../../i18n/resolveLocalizedContent'
 
 interface PersonalizedMicroCourseRendererProps {
   item: LearningHubSectionItem
 }
 
 const PersonalizedMicroCourseRenderer = ({ item }: PersonalizedMicroCourseRendererProps) => {
+  const { t: tr } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [currentContentIndex, setCurrentContentIndex] = useState(0)
@@ -20,23 +23,36 @@ const PersonalizedMicroCourseRenderer = ({ item }: PersonalizedMicroCourseRender
   const contentTopRef = useRef<HTMLDivElement | null>(null)
 
   const content = item.personalizedMicroCourseContent
-  const theme = useMemo(() => {
+  const localizedItem = useMemo(
+    () => ({
+      ...item,
+      title: resolveHubItemTitle(tr, item.slug, item.title),
+      difficulty: item.difficulty,
+    }),
+    [item, tr],
+  )
+  const localizedContent = useMemo(() => {
     if (!content) return null
-    return content.theme ?? resolvePersonalizedMicroCourseTheme(content.themeId)
-  }, [content])
+    return resolveMicroCourseContent(tr, item.slug, content)
+  }, [content, item.slug, tr])
 
-  if (!content || !theme) {
+  const theme = useMemo(() => {
+    if (!localizedContent) return null
+    return localizedContent.theme ?? resolvePersonalizedMicroCourseTheme(localizedContent.themeId)
+  }, [localizedContent])
+
+  if (!localizedContent || !theme) {
     return null
   }
 
-  const currentLessonData = content.lessons[currentLesson]
+  const currentLessonData = localizedContent.lessons[currentLesson]
   const currentContent = currentLessonData?.contentBlocks[currentContentIndex]
-  const progress = ((completedLessons.length + (currentLesson > 0 ? 1 : 0)) / content.lessons.length) * 100
+  const progress = ((completedLessons.length + (currentLesson > 0 ? 1 : 0)) / localizedContent.lessons.length) * 100
   const score = Object.entries(quizAnswers).filter(
-    ([qId, answer]) => content.quizQuestions[parseInt(qId, 10) - 1]?.correctAnswer === answer
+    ([qId, answer]) => localizedContent.quizQuestions[parseInt(qId, 10) - 1]?.correctAnswer === answer
   ).length
-  const percentage = content.quizQuestions.length ? (score / content.quizQuestions.length) * 100 : 0
-  const passed = percentage >= content.passingScorePercent
+  const percentage = localizedContent.quizQuestions.length ? (score / localizedContent.quizQuestions.length) * 100 : 0
+  const passed = percentage >= localizedContent.passingScorePercent
   const certificateDate = useMemo(
     () => new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
     []
@@ -61,7 +77,7 @@ const PersonalizedMicroCourseRenderer = ({ item }: PersonalizedMicroCourseRender
       setCurrentContentIndex(currentContentIndex + 1)
       return
     }
-    if (currentLesson < content.lessons.length - 1) {
+    if (currentLesson < localizedContent.lessons.length - 1) {
       markCompletedAndMove()
       setCurrentLesson(currentLesson + 1)
       setCurrentContentIndex(0)
@@ -78,7 +94,7 @@ const PersonalizedMicroCourseRenderer = ({ item }: PersonalizedMicroCourseRender
     }
     if (currentLesson > 0) {
       setCurrentLesson(currentLesson - 1)
-      setCurrentContentIndex(content.lessons[currentLesson - 1].contentBlocks.length - 1)
+      setCurrentContentIndex(localizedContent.lessons[currentLesson - 1].contentBlocks.length - 1)
     }
   }
 
@@ -91,20 +107,20 @@ const PersonalizedMicroCourseRenderer = ({ item }: PersonalizedMicroCourseRender
               <div className={`inline-flex items-center justify-center w-24 h-24 rounded-full ${theme.primaryButton.split(' ')[0]} mb-4`}>
                 <Award className='w-12 h-12 text-white' />
               </div>
-              <h1 className='text-3xl md:text-4xl font-bold text-gray-900 mb-2'>Congratulations!</h1>
-              <p className='text-lg text-gray-600'>You've completed the course</p>
+              <h1 className='text-3xl md:text-4xl font-bold text-gray-900 mb-2'>{tr('learningHubSections.congratulations')}</h1>
+              <p className='text-lg text-gray-600'>{tr('learningHubSections.courseCompleted')}</p>
             </div>
             <div className={`border-2 ${theme.primaryBorder} rounded-2xl p-8 mb-6 bg-gradient-to-br ${theme.accentBackground}`}>
-              <h2 className='text-2xl font-bold text-gray-900 mb-2'>{item.title}</h2>
+              <h2 className='text-2xl font-bold text-gray-900 mb-2'>{localizedItem.title}</h2>
               <div className='flex items-center justify-center gap-4 text-sm text-gray-600 mb-4'>
                 <span className='flex items-center gap-1'><Clock className='w-4 h-4' />{item.duration}</span>
                 <span className='flex items-center gap-1'><Target className='w-4 h-4' />{item.difficulty}</span>
               </div>
               <div className={`mt-6 pt-6 border-t ${theme.primaryBorder}`}>
-                <p className='text-sm text-gray-600 mb-2'>Certificate of Completion</p>
-                <p className='text-lg font-semibold text-gray-900'>This certifies that you have successfully completed</p>
-                <p className={`text-xl font-bold ${theme.primaryText} mt-2`}>{item.title}</p>
-                <p className='text-sm text-gray-500 mt-4'>Issued on {certificateDate}</p>
+                <p className='text-sm text-gray-600 mb-2'>{tr('learningHubSections.certificateCompletion')}</p>
+                <p className='text-lg font-semibold text-gray-900'>{tr('learningHubSections.certifiesCompleted')}</p>
+                <p className={`text-xl font-bold ${theme.primaryText} mt-2`}>{localizedItem.title}</p>
+                <p className='text-sm text-gray-500 mt-4'>{tr('learningHubSections.issuedOn', { date: certificateDate })}</p>
               </div>
             </div>
             <div className='flex flex-col sm:flex-row gap-3'>
@@ -112,13 +128,13 @@ const PersonalizedMicroCourseRenderer = ({ item }: PersonalizedMicroCourseRender
                 onClick={() => window.print()}
                 className={`flex-1 rounded-full ${theme.primaryButton} px-6 py-3 text-sm font-semibold text-white flex items-center justify-center gap-2`}
               >
-                <FileText className='w-4 h-4' /> Download Certificate
+                <FileText className='w-4 h-4' /> {tr('learningHubSections.downloadCertificate')}
               </button>
               <button
                 onClick={() => navigate('/learning-hub')}
                 className='flex-1 rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50'
               >
-                Back to Learning Hub
+                {tr('learningHubSections.backToLearningHub')}
               </button>
             </div>
           </div>
@@ -133,15 +149,15 @@ const PersonalizedMicroCourseRenderer = ({ item }: PersonalizedMicroCourseRender
         <div ref={contentTopRef} className='bg-white rounded-2xl border border-gray-200 p-6 shadow-sm'>
           <div className='flex items-center justify-between mb-6'>
             <div>
-              <h2 className='text-2xl font-bold text-gray-900'>Course Assessment</h2>
-              <p className='text-sm text-gray-600 mt-1'>{content.quizSubtitle}</p>
+              <h2 className='text-2xl font-bold text-gray-900'>{tr('learningHubSections.courseAssessment')}</h2>
+              <p className='text-sm text-gray-600 mt-1'>{localizedContent.quizSubtitle}</p>
             </div>
             <button onClick={() => navigate('/learning-hub')} className='p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100'>
               <X className='w-5 h-5' />
             </button>
           </div>
           <div className='space-y-6'>
-            {content.quizQuestions.map((question, idx) => {
+            {localizedContent.quizQuestions.map((question, idx) => {
               const userAnswer = quizAnswers[question.id]
               const isCorrect = userAnswer === question.correctAnswer
               return (
@@ -206,7 +222,7 @@ const PersonalizedMicroCourseRenderer = ({ item }: PersonalizedMicroCourseRender
                   </div>
                   {quizSubmitted && (
                     <div className={`mt-4 p-4 rounded-lg ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-amber-50 border border-amber-200'}`}>
-                      <p className={`text-sm font-semibold mb-1 ${isCorrect ? 'text-green-800' : 'text-amber-800'}`}>{isCorrect ? '✓ Correct!' : 'Explanation:'}</p>
+                      <p className={`text-sm font-semibold mb-1 ${isCorrect ? 'text-green-800' : 'text-amber-800'}`}>{isCorrect ? tr('learningHubSections.correct') : tr('learningHubSections.explanation')}</p>
                       <p className={`text-sm ${isCorrect ? 'text-green-700' : 'text-amber-700'}`}>{question.explanation}</p>
                     </div>
                   )}
@@ -220,14 +236,14 @@ const PersonalizedMicroCourseRenderer = ({ item }: PersonalizedMicroCourseRender
                 <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full ${theme.primaryButton.split(' ')[0]} mb-4`}>
                   {passed ? <Award className='w-8 h-8 text-white' /> : <Target className='w-8 h-8 text-white' />}
                 </div>
-                <h3 className='text-2xl font-bold text-gray-900 mb-2'>{passed ? 'Congratulations! You passed!' : 'Keep Learning'}</h3>
+                <h3 className='text-2xl font-bold text-gray-900 mb-2'>{passed ? tr('learningHubSections.passedTitle') : tr('learningHubSections.keepLearning')}</h3>
                 <p className={`text-lg font-semibold ${theme.primaryText} mb-2`}>
-                  Score: {score}/{content.quizQuestions.length} ({Math.round(percentage)}%)
+                  {tr('learningHubSections.scoreSummary', { score, total: localizedContent.quizQuestions.length, percent: Math.round(percentage) })}
                 </p>
-                <p className='text-sm text-gray-600 mb-4'>{passed ? content.successMessage : `Review the course materials and try again. You need ${content.passingScorePercent}% to pass.`}</p>
+                <p className='text-sm text-gray-600 mb-4'>{passed ? localizedContent.successMessage : tr('learningHubSections.quizRetryHint', { percent: localizedContent.passingScorePercent })}</p>
                 {passed ? (
                   <button onClick={() => setShowCertificate(true)} className={`rounded-full ${theme.primaryButton} px-6 py-3 text-sm font-semibold text-white flex items-center justify-center gap-2 mx-auto`}>
-                    <Award className='w-4 h-4' /> View Certificate
+                    <Award className='w-4 h-4' /> {tr('learningHubSections.viewCertificate')}
                   </button>
                 ) : (
                   <div className='flex gap-3 justify-center'>
@@ -241,10 +257,10 @@ const PersonalizedMicroCourseRenderer = ({ item }: PersonalizedMicroCourseRender
                       }}
                       className={`rounded-full ${theme.primaryButton} px-6 py-3 text-sm font-semibold text-white`}
                     >
-                      Review Course
+                      {tr('learningHubSections.reviewCourse')}
                     </button>
                     <button onClick={() => { setQuizAnswers({}); setQuizSubmitted(false) }} className='rounded-full border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50'>
-                      Retake Quiz
+                      {tr('learningHubSections.retakeQuiz')}
                     </button>
                   </div>
                 )}
@@ -254,10 +270,10 @@ const PersonalizedMicroCourseRenderer = ({ item }: PersonalizedMicroCourseRender
             <div className='mt-6 flex justify-end'>
               <button
                 onClick={() => setQuizSubmitted(true)}
-                disabled={Object.keys(quizAnswers).length < content.quizQuestions.length}
+                disabled={Object.keys(quizAnswers).length < localizedContent.quizQuestions.length}
                 className={`rounded-full ${theme.primaryButton} px-8 py-3 text-sm font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2`}
               >
-                Submit Assessment <ArrowRight className='w-4 h-4' />
+                {tr('learningHubSections.submitAssessment')} <ArrowRight className='w-4 h-4' />
               </button>
             </div>
           )}
@@ -276,11 +292,11 @@ const PersonalizedMicroCourseRenderer = ({ item }: PersonalizedMicroCourseRender
               <span className='text-white/80'>•</span><span className='text-white/80 text-sm'>{item.duration}</span>
               <span className='text-white/80'>•</span><span className='text-white/80 text-sm'>{item.difficulty}</span>
             </div>
-            <h1 className='text-3xl font-bold mb-3'>{item.title}</h1>
-            <p className='text-white/90 text-lg mb-4'>{content.description}</p>
+            <h1 className='text-3xl font-bold mb-3'>{localizedItem.title}</h1>
+            <p className='text-white/90 text-lg mb-4'>{localizedContent.description}</p>
             <div className='flex items-center gap-4 text-sm'>
-              <div className='flex items-center gap-2'><Clock className='w-4 h-4' /><span>Progress: {Math.round(progress)}%</span></div>
-              <div className='flex items-center gap-2'><BookOpen className='w-4 h-4' /><span>Lesson {currentLesson + 1} of {content.lessons.length}</span></div>
+              <div className='flex items-center gap-2'><Clock className='w-4 h-4' /><span>{tr('learningHubSections.progressPercent', { percent: Math.round(progress) })}</span></div>
+              <div className='flex items-center gap-2'><BookOpen className='w-4 h-4' /><span>{tr('learningHubSections.lessonOf', { current: currentLesson + 1, total: localizedContent.lessons.length })}</span></div>
             </div>
             <div className='mt-4 h-2 bg-white/20 rounded-full overflow-hidden'>
               <div className='h-full bg-white rounded-full transition-all duration-300' style={{ width: `${progress}%` }} />
@@ -293,9 +309,9 @@ const PersonalizedMicroCourseRenderer = ({ item }: PersonalizedMicroCourseRender
       <div className='grid grid-cols-1 lg:grid-cols-4 gap-6'>
         <div className='lg:col-span-1'>
           <div className='bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6'>
-            <h3 className='text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4'>Course Content</h3>
+            <h3 className='text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4'>{tr('learningHubSections.courseContent')}</h3>
             <div className='space-y-2'>
-              {content.lessons.map((lesson, idx) => {
+              {localizedContent.lessons.map((lesson, idx) => {
                 const isActive = idx === currentLesson
                 const isCompleted = completedLessons.includes(idx)
                 return (
@@ -323,7 +339,7 @@ const PersonalizedMicroCourseRenderer = ({ item }: PersonalizedMicroCourseRender
           <div ref={contentTopRef} className='bg-white rounded-2xl border border-gray-200 p-8 shadow-sm'>
             <div className='mb-6 pb-6 border-b border-gray-200'>
               <div className='flex items-center gap-2 text-sm text-gray-600 mb-2'>
-                <span>Lesson {currentLesson + 1} of {content.lessons.length}</span><span>•</span><span>{currentLessonData.duration}</span>
+                <span>{tr('learningHubSections.lessonOf', { current: currentLesson + 1, total: localizedContent.lessons.length })}</span><span>•</span><span>{currentLessonData.duration}</span>
               </div>
               <h2 className='text-2xl font-bold text-gray-900'>{currentLessonData.title}</h2>
             </div>
@@ -343,7 +359,7 @@ const PersonalizedMicroCourseRenderer = ({ item }: PersonalizedMicroCourseRender
                       <h3 className='text-lg font-bold text-gray-900 mb-2'>{currentContent.title}</h3>
                       <p className='text-gray-700 mb-4'>{currentContent.prompt}</p>
                       <div className={`bg-white rounded-lg p-4 border ${theme.accentBorder}`}>
-                        <p className='text-sm font-semibold text-gray-700 mb-2'>Tips:</p>
+                        <p className='text-sm font-semibold text-gray-700 mb-2'>{tr('learningHubSections.tipsColon')}</p>
                         <ul className='space-y-1'>
                           {currentContent.tips.map((tip) => (
                             <li key={tip} className='text-sm text-gray-600 flex items-start gap-2'>
@@ -360,27 +376,27 @@ const PersonalizedMicroCourseRenderer = ({ item }: PersonalizedMicroCourseRender
             </div>
             <div className='flex items-center justify-between pt-6 border-t border-gray-200'>
               <button onClick={handlePrevious} disabled={currentLesson === 0 && currentContentIndex === 0} className='flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition'>
-                <ArrowLeft className='w-4 h-4' /> Previous
+                <ArrowLeft className='w-4 h-4' /> {tr('learningHubSections.previous')}
               </button>
               <div className='flex items-center gap-2 text-sm text-gray-600'>
-                <span>Content {currentContentIndex + 1} of {currentLessonData.contentBlocks.length}</span>
+                <span>{tr('learningHubSections.contentOf', { current: currentContentIndex + 1, total: currentLessonData.contentBlocks.length })}</span>
               </div>
               <button onClick={handleNext} className={`flex items-center gap-2 px-6 py-3 ${theme.primaryButton} text-white text-sm font-semibold rounded-full transition`}>
-                {currentContentIndex === currentLessonData.contentBlocks.length - 1 && currentLesson === content.lessons.length - 1
-                  ? 'Complete Course'
+                {currentContentIndex === currentLessonData.contentBlocks.length - 1 && currentLesson === localizedContent.lessons.length - 1
+                  ? tr('learningHubSections.completeCourse')
                   : currentContentIndex === currentLessonData.contentBlocks.length - 1
-                  ? 'Next Lesson'
-                  : 'Continue'}
+                  ? tr('learningHubSections.nextLesson')
+                  : tr('learningHubSections.continue')}
                 <ArrowRight className='w-4 h-4' />
               </button>
             </div>
           </div>
           <div className={`mt-6 bg-gradient-to-br ${theme.accentBackground} rounded-2xl border ${theme.accentBorder} p-6`}>
             <h3 className='text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2'>
-              <Target className={`w-5 h-5 ${theme.accentIconText}`} /> Learning Objectives
+              <Target className={`w-5 h-5 ${theme.accentIconText}`} /> {tr('learningHubSections.learningObjectives')}
             </h3>
             <ul className='space-y-2'>
-              {content.learningObjectives.map((objective) => (
+              {localizedContent.learningObjectives.map((objective) => (
                 <li key={objective} className='flex items-start gap-2 text-sm text-gray-700'>
                   <CheckCircle2 className={`w-4 h-4 ${theme.accentIconText} mt-0.5 flex-shrink-0`} />
                   <span>{objective}</span>

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 
 type Stat = { label: string; value: string | number }
 
@@ -15,10 +16,11 @@ export function TeacherToolsReviewHeaderCompact({
   stats = [],
   actions,
 }: Props) {
+  const { t } = useTranslation()
   return (
     <div className="flex flex-col gap-2 rounded-xl border border-indigo-100 bg-indigo-50/40 px-3 py-2.5 sm:flex-row sm:items-center sm:justify-between">
       <div className="min-w-0">
-        <p className="text-[10px] font-semibold uppercase tracking-wide text-indigo-700">Review</p>
+        <p className="text-[10px] font-semibold uppercase tracking-wide text-indigo-700">{t('teacherTools.reviewKicker')}</p>
         <h2 className="text-sm font-semibold text-gray-900">{title}</h2>
         {sourceTag ? <p className="truncate text-xs text-gray-500">{sourceTag}</p> : null}
       </div>

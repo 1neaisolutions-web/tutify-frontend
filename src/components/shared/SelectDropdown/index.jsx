@@ -1,5 +1,7 @@
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
+import { useTranslation } from 'react-i18next';
+
 export const SelectDropdown = ({
   label = '',
   value = '',
@@ -8,7 +10,7 @@ export const SelectDropdown = ({
   disabled = false,
   error = false,
   errorMsg = '',
-  placeholder = 'Click to select',
+  placeholder,
   options = [],
   sx = {},
   required = false,
@@ -19,6 +21,8 @@ export const SelectDropdown = ({
   placeholderClassName,
   multiSelect = false,
 }) => {
+  const { t } = useTranslation();
+  const resolvedPlaceholder = placeholder ?? t('shared.selectDropdown.placeholder');
   const labelId = `${name}-label`;
 
   const normalizedValue = multiSelect
@@ -123,7 +127,7 @@ export const SelectDropdown = ({
                   <em
                     className={`text-input-placeholder not-italic text-[14px] font-sans ${placeholderClassName}`}
                   >
-                    {placeholder}
+                    {resolvedPlaceholder}
                   </em>
                 );
               }
@@ -141,7 +145,7 @@ export const SelectDropdown = ({
                 <em
                   className={`text-input-placeholder not-italic text-[14px] font-sans ${placeholderClassName}`}
                 >
-                  {placeholder}
+                  {resolvedPlaceholder}
                 </em>
               );
             }
@@ -216,7 +220,7 @@ export const SelectDropdown = ({
                 },
               }}
             >
-              {placeholder}
+              {resolvedPlaceholder}
             </MenuItem>
           )}
           {options.map((option) => (

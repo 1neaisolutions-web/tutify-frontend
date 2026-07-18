@@ -1,0 +1,2462 @@
+{
+  "claude.common.close": {
+    "es-ES": "Cerrar",
+    "fr-FR": "Fermer",
+    "pt-BR": "Fechar",
+    "de-DE": "Schließen"
+  },
+  "claude.common.active": {
+    "es-ES": "Activo",
+    "fr-FR": "Actif",
+    "pt-BR": "Ativo",
+    "de-DE": "Aktiv"
+  },
+  "claude.common.inactive": {
+    "es-ES": "Inactivo",
+    "fr-FR": "Inactif",
+    "pt-BR": "Inativo",
+    "de-DE": "Inaktiv"
+  },
+  "claude.common.compliant": {
+    "es-ES": "Conforme",
+    "fr-FR": "Conforme",
+    "pt-BR": "Conforme",
+    "de-DE": "Konform"
+  },
+  "claude.common.nonCompliant": {
+    "es-ES": "No conforme",
+    "fr-FR": "Non conforme",
+    "pt-BR": "Não conforme",
+    "de-DE": "Nicht konform"
+  },
+  "claude.common.recommendations": {
+    "es-ES": "Recomendaciones",
+    "fr-FR": "Recommandations",
+    "pt-BR": "Recomendações",
+    "de-DE": "Empfehlungen"
+  },
+  "claude.common.severity": {
+    "es-ES": "Gravedad:",
+    "fr-FR": "Gravité :",
+    "pt-BR": "Gravidade:",
+    "de-DE": "Schweregrad:"
+  },
+  "claude.common.location": {
+    "es-ES": "Ubicación:",
+    "fr-FR": "Emplacement :",
+    "pt-BR": "Local:",
+    "de-DE": "Ort:"
+  },
+  "claude.common.covered": {
+    "es-ES": "Cubierto",
+    "fr-FR": "Couvert",
+    "pt-BR": "Coberto",
+    "de-DE": "Abgedeckt"
+  },
+  "claude.common.notCovered": {
+    "es-ES": "No cubierto",
+    "fr-FR": "Non couvert",
+    "pt-BR": "Não coberto",
+    "de-DE": "Nicht abgedeckt"
+  },
+  "claude.common.evidence": {
+    "es-ES": "Evidencia:",
+    "fr-FR": "Preuve :",
+    "pt-BR": "Evidência:",
+    "de-DE": "Nachweis:"
+  },
+  "claude.privacy.title": {
+    "es-ES": "Privacy Compliance Checker",
+    "fr-FR": "Privacy Compliance Checker",
+    "pt-BR": "Privacy Compliance Checker",
+    "de-DE": "Privacy Compliance Checker"
+  },
+  "claude.privacy.subtitle": {
+    "es-ES": "FERPA & COPPA compliance verification",
+    "fr-FR": "FERPA & COPPA compliance verification",
+    "pt-BR": "FERPA & COPPA compliance verification",
+    "de-DE": "FERPA & COPPA compliance verification"
+  },
+  "claude.privacy.ferpa.title": {
+    "es-ES": "FERPA Compliance",
+    "fr-FR": "FERPA Compliance",
+    "pt-BR": "FERPA Compliance",
+    "de-DE": "FERPA Compliance"
+  },
+  "claude.privacy.ferpa.pass": {
+    "es-ES": "Student data is protected according to FERPA regulations",
+    "fr-FR": "Student data is protected according to FERPA regulations",
+    "pt-BR": "Student data is protected according to FERPA regulations",
+    "de-DE": "Student data is protected according to FERPA regulations"
+  },
+  "claude.privacy.ferpa.fail": {
+    "es-ES": "FERPA compliance issues detected",
+    "fr-FR": "FERPA compliance issues detected",
+    "pt-BR": "FERPA compliance issues detected",
+    "de-DE": "FERPA compliance issues detected"
+  },
+  "claude.privacy.coppa.title": {
+    "es-ES": "COPPA Compliance",
+    "fr-FR": "COPPA Compliance",
+    "pt-BR": "COPPA Compliance",
+    "de-DE": "COPPA Compliance"
+  },
+  "claude.privacy.coppa.pass": {
+    "es-ES": "Conforme with COPPA regulations for students under 13",
+    "fr-FR": "Conforme with COPPA regulations for students under 13",
+    "pt-BR": "Conforme with COPPA regulations for students under 13",
+    "de-DE": "Konform with COPPA regulations for students under 13"
+  },
+  "claude.privacy.coppa.fail": {
+    "es-ES": "COPPA compliance issues detected",
+    "fr-FR": "COPPA compliance issues detected",
+    "pt-BR": "COPPA compliance issues detected",
+    "de-DE": "COPPA compliance issues detected"
+  },
+  "claude.privacy.dataMinimization.title": {
+    "es-ES": "Data Minimization",
+    "fr-FR": "Data Minimization",
+    "pt-BR": "Data Minimization",
+    "de-DE": "Data Minimization"
+  },
+  "claude.privacy.dataMinimization.pass": {
+    "es-ES": "Only necessary data is collected",
+    "fr-FR": "Only necessary data is collected",
+    "pt-BR": "Only necessary data is collected",
+    "de-DE": "Only necessary data is collected"
+  },
+  "claude.privacy.dataMinimization.warn": {
+    "es-ES": "Consider minimizing data collection",
+    "fr-FR": "Consider minimizing data collection",
+    "pt-BR": "Consider minimizing data collection",
+    "de-DE": "Consider minimizing data collection"
+  },
+  "claude.privacy.secureHandling.title": {
+    "es-ES": "Secure Handling",
+    "fr-FR": "Secure Handling",
+    "pt-BR": "Secure Handling",
+    "de-DE": "Secure Handling"
+  },
+  "claude.privacy.secureHandling.pass": {
+    "es-ES": "Data is handled securely with encryption",
+    "fr-FR": "Data is handled securely with encryption",
+    "pt-BR": "Data is handled securely with encryption",
+    "de-DE": "Data is handled securely with encryption"
+  },
+  "claude.privacy.secureHandling.fail": {
+    "es-ES": "Security issues detected",
+    "fr-FR": "Security issues detected",
+    "pt-BR": "Security issues detected",
+    "de-DE": "Security issues detected"
+  },
+  "claude.privacy.issues.title": {
+    "es-ES": "Issues Detected",
+    "fr-FR": "Issues Detected",
+    "pt-BR": "Issues Detected",
+    "de-DE": "Issues Detected"
+  },
+  "claude.privacy.overall.compliant": {
+    "es-ES": "Conforme",
+    "fr-FR": "Conforme",
+    "pt-BR": "Conforme",
+    "de-DE": "Konform"
+  },
+  "claude.privacy.overall.reviewRequired": {
+    "es-ES": "Revisión requerida",
+    "fr-FR": "Révision requise",
+    "pt-BR": "Revisão necessária",
+    "de-DE": "Überprüfung erforderlich"
+  },
+  "claude.privacy.overall.passMessage": {
+    "es-ES": "All privacy compliance checks passed",
+    "fr-FR": "All privacy compliance checks passed",
+    "pt-BR": "All privacy compliance checks passed",
+    "de-DE": "All privacy compliance checks passed"
+  },
+  "claude.privacy.overall.failMessage": {
+    "es-ES": "Please review and address the issues above",
+    "fr-FR": "Please review and address the issues above",
+    "pt-BR": "Please review and address the issues above",
+    "de-DE": "Please review and address the issues above"
+  },
+  "claude.longDoc.title": {
+    "es-ES": "Long Document Analyzer",
+    "fr-FR": "Long Document Analyzer",
+    "pt-BR": "Long Document Analyzer",
+    "de-DE": "Long Document Analyzer"
+  },
+  "claude.longDoc.subtitle": {
+    "es-ES": "Analyze textbooks, curricula, and research papers (200K context)",
+    "fr-FR": "Analyze textbooks, curricula, and research papers (200K context)",
+    "pt-BR": "Analyze textbooks, curricula, and research papers (200K context)",
+    "de-DE": "Analyze textbooks, curricula, and research papers (200K context)"
+  },
+  "claude.longDoc.dropzone.primary": {
+    "es-ES": "Drag and drop documents here, or click to browse",
+    "fr-FR": "Drag and drop documents here, or click to browse",
+    "pt-BR": "Drag and drop documents here, or click to browse",
+    "de-DE": "Drag and drop documents here, or click to browse"
+  },
+  "claude.longDoc.dropzone.formats": {
+    "es-ES": "Supports PDF, DOC, DOCX, TXT (up to 200K tokens)",
+    "fr-FR": "Supports PDF, DOC, DOCX, TXT (up to 200K tokens)",
+    "pt-BR": "Supports PDF, DOC, DOCX, TXT (up to 200K tokens)",
+    "de-DE": "Supports PDF, DOC, DOCX, TXT (up to 200K tokens)"
+  },
+  "claude.longDoc.analyzing.title": {
+    "es-ES": "Analyzing document...",
+    "fr-FR": "Analyzing document...",
+    "pt-BR": "Analyzing document...",
+    "de-DE": "Analyzing document..."
+  },
+  "claude.longDoc.analyzing.subtitle": {
+    "es-ES": "Processing content with Claude's 200K context window",
+    "fr-FR": "Processing content with Claude's 200K context window",
+    "pt-BR": "Processing content with Claude's 200K context window",
+    "de-DE": "Processing content with Claude's 200K context window"
+  },
+  "claude.longDoc.complete.title": {
+    "es-ES": "Analysis Complete",
+    "fr-FR": "Analysis Complete",
+    "pt-BR": "Analysis Complete",
+    "de-DE": "Analysis Complete"
+  },
+  "claude.longDoc.complete.summary": {
+    "es-ES": "Processed {{tokenCount}} tokens from {{fileName}}",
+    "fr-FR": "Processed {{tokenCount}} tokens from {{fileName}}",
+    "pt-BR": "Processed {{tokenCount}} tokens from {{fileName}}",
+    "de-DE": "Processed {{tokenCount}} tokens from {{fileName}}"
+  },
+  "claude.longDoc.insights.title": {
+    "es-ES": "Key Insights",
+    "fr-FR": "Key Insights",
+    "pt-BR": "Key Insights",
+    "de-DE": "Key Insights"
+  },
+  "claude.longDoc.standards.title": {
+    "es-ES": "Standards Extracted",
+    "fr-FR": "Standards Extracted",
+    "pt-BR": "Standards Extracted",
+    "de-DE": "Standards Extracted"
+  },
+  "claude.longDoc.curriculum.title": {
+    "es-ES": "Curriculum Information",
+    "fr-FR": "Curriculum Information",
+    "pt-BR": "Curriculum Information",
+    "de-DE": "Curriculum Information"
+  },
+  "claude.longDoc.curriculum.subjects": {
+    "es-ES": "Asignaturas",
+    "fr-FR": "Matières",
+    "pt-BR": "Disciplinas",
+    "de-DE": "Fächer"
+  },
+  "claude.longDoc.curriculum.gradeLevels": {
+    "es-ES": "Grade Levels",
+    "fr-FR": "Grade Levels",
+    "pt-BR": "Grade Levels",
+    "de-DE": "Grade Levels"
+  },
+  "claude.longDoc.curriculum.topics": {
+    "es-ES": "Temas",
+    "fr-FR": "Sujets",
+    "pt-BR": "Tópicos",
+    "de-DE": "Themen"
+  },
+  "claude.longDoc.summary.title": {
+    "es-ES": "Resumen",
+    "fr-FR": "Résumé",
+    "pt-BR": "Resumo",
+    "de-DE": "Zusammenfassung"
+  },
+  "claude.guidedLearning.title": {
+    "es-ES": "Guided Learning Mode",
+    "fr-FR": "Guided Learning Mode",
+    "pt-BR": "Guided Learning Mode",
+    "de-DE": "Guided Learning Mode"
+  },
+  "claude.guidedLearning.subtitle": {
+    "es-ES": "Socratic method and step-by-step reasoning",
+    "fr-FR": "Socratic method and step-by-step reasoning",
+    "pt-BR": "Socratic method and step-by-step reasoning",
+    "de-DE": "Socratic method and step-by-step reasoning"
+  },
+  "claude.guidedLearning.mode.label": {
+    "es-ES": "Learning Mode",
+    "fr-FR": "Learning Mode",
+    "pt-BR": "Learning Mode",
+    "de-DE": "Learning Mode"
+  },
+  "claude.guidedLearning.mode.socratic": {
+    "es-ES": "Socratic",
+    "fr-FR": "Socratic",
+    "pt-BR": "Socratic",
+    "de-DE": "Socratic"
+  },
+  "claude.guidedLearning.mode.stepByStep": {
+    "es-ES": "Step by step",
+    "fr-FR": "Step by step",
+    "pt-BR": "Step by step",
+    "de-DE": "Step by step"
+  },
+  "claude.guidedLearning.mode.criticalThinking": {
+    "es-ES": "Critical thinking",
+    "fr-FR": "Critical thinking",
+    "pt-BR": "Critical thinking",
+    "de-DE": "Critical thinking"
+  },
+  "claude.guidedLearning.mode.metacognitive": {
+    "es-ES": "Metacognitive",
+    "fr-FR": "Metacognitive",
+    "pt-BR": "Metacognitive",
+    "de-DE": "Metacognitive"
+  },
+  "claude.guidedLearning.level.label": {
+    "es-ES": "Difficulty Level",
+    "fr-FR": "Difficulty Level",
+    "pt-BR": "Difficulty Level",
+    "de-DE": "Difficulty Level"
+  },
+  "claude.guidedLearning.level.beginner": {
+    "es-ES": "Principiante",
+    "fr-FR": "Débutant",
+    "pt-BR": "Iniciante",
+    "de-DE": "Anfänger"
+  },
+  "claude.guidedLearning.level.intermediate": {
+    "es-ES": "Intermedio",
+    "fr-FR": "Intermédiaire",
+    "pt-BR": "Intermediário",
+    "de-DE": "Mittelstufe"
+  },
+  "claude.guidedLearning.level.advanced": {
+    "es-ES": "Avanzado",
+    "fr-FR": "Avancé",
+    "pt-BR": "Avançado",
+    "de-DE": "Fortgeschritten"
+  },
+  "claude.guidedLearning.topic.label": {
+    "es-ES": "Topic:",
+    "fr-FR": "Topic:",
+    "pt-BR": "Topic:",
+    "de-DE": "Topic:"
+  },
+  "claude.guidedLearning.topic.empty": {
+    "es-ES": "Enter a topic to begin",
+    "fr-FR": "Enter a topic to begin",
+    "pt-BR": "Enter a topic to begin",
+    "de-DE": "Enter a topic to begin"
+  },
+  "claude.guidedLearning.actions.generateQuestions": {
+    "es-ES": "Generate Socratic Questions",
+    "fr-FR": "Generate Socratic Questions",
+    "pt-BR": "Generate Socratic Questions",
+    "de-DE": "Generate Socratic Questions"
+  },
+  "claude.guidedLearning.actions.generateHints": {
+    "es-ES": "Generate Hints",
+    "fr-FR": "Generate Hints",
+    "pt-BR": "Generate Hints",
+    "de-DE": "Generate Hints"
+  },
+  "claude.guidedLearning.questions.title": {
+    "es-ES": "Guided Questions",
+    "fr-FR": "Guided Questions",
+    "pt-BR": "Guided Questions",
+    "de-DE": "Guided Questions"
+  },
+  "claude.guidedLearning.hints.title": {
+    "es-ES": "Step-by-Step Hints",
+    "fr-FR": "Step-by-Step Hints",
+    "pt-BR": "Step-by-Step Hints",
+    "de-DE": "Step-by-Step Hints"
+  },
+  "claude.guidedLearning.hints.nextStep": {
+    "es-ES": "Next Step",
+    "fr-FR": "Next Step",
+    "pt-BR": "Next Step",
+    "de-DE": "Next Step"
+  },
+  "claude.assessment.title": {
+    "es-ES": "Ethical Assessment Review",
+    "fr-FR": "Ethical Assessment Review",
+    "pt-BR": "Ethical Assessment Review",
+    "de-DE": "Ethical Assessment Review"
+  },
+  "claude.assessment.subtitle": {
+    "es-ES": "Bias-free and culturally responsive assessment",
+    "fr-FR": "Bias-free and culturally responsive assessment",
+    "pt-BR": "Bias-free and culturally responsive assessment",
+    "de-DE": "Bias-free and culturally responsive assessment"
+  },
+  "claude.assessment.score.label": {
+    "es-ES": "Ethical Assessment Score",
+    "fr-FR": "Ethical Assessment Score",
+    "pt-BR": "Ethical Assessment Score",
+    "de-DE": "Ethical Assessment Score"
+  },
+  "claude.assessment.score.allPassed": {
+    "es-ES": "All checks passed",
+    "fr-FR": "All checks passed",
+    "pt-BR": "All checks passed",
+    "de-DE": "All checks passed"
+  },
+  "claude.assessment.score.reviewRequired": {
+    "es-ES": "Review required",
+    "fr-FR": "Review required",
+    "pt-BR": "Review required",
+    "de-DE": "Review required"
+  },
+  "claude.assessment.criteria.title": {
+    "es-ES": "Assessment Criteria",
+    "fr-FR": "Assessment Criteria",
+    "pt-BR": "Assessment Criteria",
+    "de-DE": "Assessment Criteria"
+  },
+  "claude.assessment.criteria.biasFree": {
+    "es-ES": "Bias-Free",
+    "fr-FR": "Bias-Free",
+    "pt-BR": "Bias-Free",
+    "de-DE": "Bias-Free"
+  },
+  "claude.assessment.criteria.culturallyResponsive": {
+    "es-ES": "Culturally Responsive",
+    "fr-FR": "Culturally Responsive",
+    "pt-BR": "Culturally Responsive",
+    "de-DE": "Culturally Responsive"
+  },
+  "claude.assessment.criteria.accessible": {
+    "es-ES": "Accessible",
+    "fr-FR": "Accessible",
+    "pt-BR": "Accessible",
+    "de-DE": "Accessible"
+  },
+  "claude.assessment.criteria.fair": {
+    "es-ES": "Fair & Equitable",
+    "fr-FR": "Fair & Equitable",
+    "pt-BR": "Fair & Equitable",
+    "de-DE": "Fair & Equitable"
+  },
+  "claude.assessment.biasIssues.title": {
+    "es-ES": "Bias Issues Detected",
+    "fr-FR": "Bias Issues Detected",
+    "pt-BR": "Bias Issues Detected",
+    "de-DE": "Bias Issues Detected"
+  },
+  "claude.assessment.biasIssues.type": {
+    "es-ES": "{{type}} Bias",
+    "fr-FR": "{{type}} Bias",
+    "pt-BR": "{{type}} Bias",
+    "de-DE": "{{type}} Bias"
+  },
+  "claude.assessment.biasIssues.detected": {
+    "es-ES": "Bias Detected",
+    "fr-FR": "Bias Detected",
+    "pt-BR": "Bias Detected",
+    "de-DE": "Bias Detected"
+  },
+  "claude.assessment.summary.ready": {
+    "es-ES": "Assessment Ready",
+    "fr-FR": "Assessment Ready",
+    "pt-BR": "Assessment Ready",
+    "de-DE": "Assessment Ready"
+  },
+  "claude.assessment.summary.reviewRecommended": {
+    "es-ES": "Review Recommended",
+    "fr-FR": "Review Recommended",
+    "pt-BR": "Review Recommended",
+    "de-DE": "Review Recommended"
+  },
+  "claude.assessment.summary.significantIssues": {
+    "es-ES": "Significant Issues Found",
+    "fr-FR": "Significant Issues Found",
+    "pt-BR": "Significant Issues Found",
+    "de-DE": "Significant Issues Found"
+  },
+  "claude.assessment.summary.readyMessage": {
+    "es-ES": "Your assessment meets ethical standards and is ready to use",
+    "fr-FR": "Your assessment meets ethical standards and is ready to use",
+    "pt-BR": "Your assessment meets ethical standards and is ready to use",
+    "de-DE": "Your assessment meets ethical standards and is ready to use"
+  },
+  "claude.assessment.summary.reviewMessage": {
+    "es-ES": "Please review and address the issues above before using this assessment",
+    "fr-FR": "Please review and address the issues above before using this assessment",
+    "pt-BR": "Please review and address the issues above before using this assessment",
+    "de-DE": "Please review and address the issues above before using this assessment"
+  },
+  "claude.ethicalDashboard.title": {
+    "es-ES": "Ethical IA Dashboard",
+    "fr-FR": "Ethical IA Dashboard",
+    "pt-BR": "Ethical IA Dashboard",
+    "de-DE": "Ethical KI Dashboard"
+  },
+  "claude.ethicalDashboard.subtitle": {
+    "es-ES": "Constitutional IA principles and compliance status",
+    "fr-FR": "Constitutional IA principles and compliance status",
+    "pt-BR": "Constitutional IA principles and compliance status",
+    "de-DE": "Constitutional KI principles and compliance status"
+  },
+  "claude.ethicalDashboard.principles.title": {
+    "es-ES": "Constitutional IA Principles",
+    "fr-FR": "Constitutional IA Principles",
+    "pt-BR": "Constitutional IA Principles",
+    "de-DE": "Constitutional KI Principles"
+  },
+  "claude.ethicalDashboard.bias.title": {
+    "es-ES": "Bias Detection",
+    "fr-FR": "Bias Detection",
+    "pt-BR": "Bias Detection",
+    "de-DE": "Bias Detection"
+  },
+  "claude.ethicalDashboard.bias.detected": {
+    "es-ES": "Bias Detected: {{type}}",
+    "fr-FR": "Bias Detected: {{type}}",
+    "pt-BR": "Bias Detected: {{type}}",
+    "de-DE": "Bias Detected: {{type}}"
+  },
+  "claude.ethicalDashboard.bias.none": {
+    "es-ES": "No Bias Detected",
+    "fr-FR": "No Bias Detected",
+    "pt-BR": "No Bias Detected",
+    "de-DE": "No Bias Detected"
+  },
+  "claude.ethicalDashboard.privacy.title": {
+    "es-ES": "Privacy Compliance",
+    "fr-FR": "Privacy Compliance",
+    "pt-BR": "Privacy Compliance",
+    "de-DE": "Privacy Compliance"
+  },
+  "claude.ethicalDashboard.privacy.ferpa": {
+    "es-ES": "FERPA Compliance",
+    "fr-FR": "FERPA Compliance",
+    "pt-BR": "FERPA Compliance",
+    "de-DE": "FERPA Compliance"
+  },
+  "claude.ethicalDashboard.privacy.coppa": {
+    "es-ES": "COPPA Compliance",
+    "fr-FR": "COPPA Compliance",
+    "pt-BR": "COPPA Compliance",
+    "de-DE": "COPPA Compliance"
+  },
+  "claude.alignment.title": {
+    "es-ES": "Curriculum Alignment Pro",
+    "fr-FR": "Curriculum Alignment Pro",
+    "pt-BR": "Curriculum Alignment Pro",
+    "de-DE": "Curriculum Alignment Pro"
+  },
+  "claude.alignment.subtitle": {
+    "es-ES": "Multi-standard alignment with ethical review",
+    "fr-FR": "Multi-standard alignment with ethical review",
+    "pt-BR": "Multi-standard alignment with ethical review",
+    "de-DE": "Multi-standard alignment with ethical review"
+  },
+  "claude.alignment.score.label": {
+    "es-ES": "Alignment Score",
+    "fr-FR": "Alignment Score",
+    "pt-BR": "Alignment Score",
+    "de-DE": "Alignment Score"
+  },
+  "claude.alignment.score.standardsAnalyzed": {
+    "es-ES": "{{count}} standards analyzed",
+    "fr-FR": "{{count}} standards analyzed",
+    "pt-BR": "{{count}} standards analyzed",
+    "de-DE": "{{count}} standards analyzed"
+  },
+  "claude.alignment.coverage.title": {
+    "es-ES": "Standards Coverage",
+    "fr-FR": "Standards Coverage",
+    "pt-BR": "Standards Coverage",
+    "de-DE": "Standards Coverage"
+  },
+  "claude.alignment.gaps.title": {
+    "es-ES": "Standards Gaps",
+    "fr-FR": "Standards Gaps",
+    "pt-BR": "Standards Gaps",
+    "de-DE": "Standards Gaps"
+  },
+  "claude.alignment.crossCurricular.title": {
+    "es-ES": "Cross-Curricular Connections",
+    "fr-FR": "Cross-Curricular Connections",
+    "pt-BR": "Cross-Curricular Connections",
+    "de-DE": "Cross-Curricular Connections"
+  },
+  "claude.alignment.ethical.title": {
+    "es-ES": "Ethical Review",
+    "fr-FR": "Ethical Review",
+    "pt-BR": "Ethical Review",
+    "de-DE": "Ethical Review"
+  },
+  "claude.alignment.ethical.passed": {
+    "es-ES": "Ethical Review Passed",
+    "fr-FR": "Ethical Review Passed",
+    "pt-BR": "Ethical Review Passed",
+    "de-DE": "Ethical Review Passed"
+  },
+  "claude.alignment.ethical.reviewRequired": {
+    "es-ES": "Revisión requerida",
+    "fr-FR": "Révision requise",
+    "pt-BR": "Revisão necessária",
+    "de-DE": "Überprüfung erforderlich"
+  },
+  "claude.alignment.ethical.concerns": {
+    "es-ES": "Concerns:",
+    "fr-FR": "Concerns:",
+    "pt-BR": "Concerns:",
+    "de-DE": "Concerns:"
+  },
+  "claude.alignment.ethical.recommendations": {
+    "es-ES": "Recomendaciones:",
+    "fr-FR": "Recommandations:",
+    "pt-BR": "Recomendações:",
+    "de-DE": "Empfehlungen:"
+  },
+  "claude.docCompare.title": {
+    "es-ES": "Document Comparison Tool",
+    "fr-FR": "Document Comparison Tool",
+    "pt-BR": "Document Comparison Tool",
+    "de-DE": "Document Comparison Tool"
+  },
+  "claude.docCompare.subtitle": {
+    "es-ES": "Compare multiple curriculum documents",
+    "fr-FR": "Compare multiple curriculum documents",
+    "pt-BR": "Compare multiple curriculum documents",
+    "de-DE": "Compare multiple curriculum documents"
+  },
+  "claude.docCompare.dropzone.primary": {
+    "es-ES": "Drag and drop multiple documents here, or click to browse",
+    "fr-FR": "Drag and drop multiple documents here, or click to browse",
+    "pt-BR": "Drag and drop multiple documents here, or click to browse",
+    "de-DE": "Drag and drop multiple documents here, or click to browse"
+  },
+  "claude.docCompare.dropzone.formats": {
+    "es-ES": "Subir 2 or more documents to compare (PDF, DOC, DOCX, TXT)",
+    "fr-FR": "Téléverser 2 or more documents to compare (PDF, DOC, DOCX, TXT)",
+    "pt-BR": "Enviar 2 or more documents to compare (PDF, DOC, DOCX, TXT)",
+    "de-DE": "Hochladen 2 or more documents to compare (PDF, DOC, DOCX, TXT)"
+  },
+  "claude.docCompare.filesSelected": {
+    "es-ES": "Documents Selected ({{count}})",
+    "fr-FR": "Documents Selected ({{count}})",
+    "pt-BR": "Documents Selected ({{count}})",
+    "de-DE": "Documents Selected ({{count}})"
+  },
+  "claude.docCompare.comparing.title": {
+    "es-ES": "Comparing documents...",
+    "fr-FR": "Comparing documents...",
+    "pt-BR": "Comparing documents...",
+    "de-DE": "Comparing documents..."
+  },
+  "claude.docCompare.comparing.subtitle": {
+    "es-ES": "Analyzing similarities and differences",
+    "fr-FR": "Analyzing similarities and differences",
+    "pt-BR": "Analyzing similarities and differences",
+    "de-DE": "Analyzing similarities and differences"
+  },
+  "claude.docCompare.similarities": {
+    "es-ES": "Similitudes",
+    "fr-FR": "Similitudes",
+    "pt-BR": "Semelhanças",
+    "de-DE": "Gemeinsamkeiten"
+  },
+  "claude.docCompare.differences": {
+    "es-ES": "Diferencias",
+    "fr-FR": "Différences",
+    "pt-BR": "Diferenças",
+    "de-DE": "Unterschiede"
+  },
+  "claude.docCompare.standards.title": {
+    "es-ES": "Standards Comparison",
+    "fr-FR": "Standards Comparison",
+    "pt-BR": "Standards Comparison",
+    "de-DE": "Standards Comparison"
+  },
+  "claude.docCompare.standards.common": {
+    "es-ES": "Common Standards",
+    "fr-FR": "Common Standards",
+    "pt-BR": "Common Standards",
+    "de-DE": "Common Standards"
+  },
+  "claude.docCompare.standards.unique": {
+    "es-ES": "Unique Standards",
+    "fr-FR": "Unique Standards",
+    "pt-BR": "Unique Standards",
+    "de-DE": "Unique Standards"
+  },
+  "claude.docCompare.synthesis.title": {
+    "es-ES": "Synthesis Report",
+    "fr-FR": "Synthesis Report",
+    "pt-BR": "Synthesis Report",
+    "de-DE": "Synthesis Report"
+  },
+  "claude.docCompare.mock.similarities[0]": {
+    "es-ES": "Common standards and learning objectives",
+    "fr-FR": "Common standards and learning objectives",
+    "pt-BR": "Common standards and learning objectives",
+    "de-DE": "Common standards and learning objectives"
+  },
+  "claude.docCompare.mock.similarities[1]": {
+    "es-ES": "Shared pedagogical approaches",
+    "fr-FR": "Shared pedagogical approaches",
+    "pt-BR": "Shared pedagogical approaches",
+    "de-DE": "Shared pedagogical approaches"
+  },
+  "claude.docCompare.mock.similarities[2]": {
+    "es-ES": "Similar assessment strategies",
+    "fr-FR": "Similar assessment strategies",
+    "pt-BR": "Similar assessment strategies",
+    "de-DE": "Similar assessment strategies"
+  },
+  "claude.docCompare.mock.differences[0]": {
+    "es-ES": "Different grade level focus",
+    "fr-FR": "Different grade level focus",
+    "pt-BR": "Different grade level focus",
+    "de-DE": "Different grade level focus"
+  },
+  "claude.docCompare.mock.differences[1]": {
+    "es-ES": "Varying depth of content coverage",
+    "fr-FR": "Varying depth of content coverage",
+    "pt-BR": "Varying depth of content coverage",
+    "de-DE": "Varying depth of content coverage"
+  },
+  "claude.docCompare.mock.differences[2]": {
+    "es-ES": "Different cultural perspectives",
+    "fr-FR": "Different cultural perspectives",
+    "pt-BR": "Different cultural perspectives",
+    "de-DE": "Different cultural perspectives"
+  },
+  "premium.standards.title": {
+    "es-ES": "Standards Browser Pro",
+    "fr-FR": "Standards Browser Pro",
+    "pt-BR": "Standards Browser Pro",
+    "de-DE": "Standards Browser Pro"
+  },
+  "premium.standards.subtitle": {
+    "es-ES": "Select educational standards for alignment",
+    "fr-FR": "Select educational standards for alignment",
+    "pt-BR": "Select educational standards for alignment",
+    "de-DE": "Select educational standards for alignment"
+  },
+  "premium.standards.searchPlaceholder": {
+    "es-ES": "Buscar estándares...",
+    "fr-FR": "Rechercher des normes…",
+    "pt-BR": "Buscar padrões...",
+    "de-DE": "Standards suchen…"
+  },
+  "premium.standards.allSubjects": {
+    "es-ES": "Todas las asignaturas",
+    "fr-FR": "Toutes les matières",
+    "pt-BR": "Todas as disciplinas",
+    "de-DE": "Alle Fächer"
+  },
+  "premium.standards.allGrades": {
+    "es-ES": "Todos los grados",
+    "fr-FR": "Toutes les classes",
+    "pt-BR": "Todas as séries",
+    "de-DE": "Alle Klassenstufen"
+  },
+  "premium.standards.gradeOption": {
+    "es-ES": "Grade {{grade}}",
+    "fr-FR": "Grade {{grade}}",
+    "pt-BR": "Grade {{grade}}",
+    "de-DE": "Grade {{grade}}"
+  },
+  "premium.standards.selectedCount": {
+    "es-ES": "{{count}} standard selected",
+    "fr-FR": "{{count}} standard selected",
+    "pt-BR": "{{count}} standard selected",
+    "de-DE": "{{count}} standard selected"
+  },
+  "premium.standards.selectedCount_plural": {
+    "es-ES": "{{count}} standards selected",
+    "fr-FR": "{{count}} standards selected",
+    "pt-BR": "{{count}} standards selected",
+    "de-DE": "{{count}} standards selected"
+  },
+  "premium.standards.empty": {
+    "es-ES": "No standards found matching your criteria",
+    "fr-FR": "No standards found matching your criteria",
+    "pt-BR": "No standards found matching your criteria",
+    "de-DE": "No standards found matching your criteria"
+  },
+  "premium.standards.apply": {
+    "es-ES": "Apply {{count}} Standard",
+    "fr-FR": "Apply {{count}} Standard",
+    "pt-BR": "Apply {{count}} Standard",
+    "de-DE": "Apply {{count}} Standard"
+  },
+  "premium.standards.apply_plural": {
+    "es-ES": "Apply {{count}} Standards",
+    "fr-FR": "Apply {{count}} Standards",
+    "pt-BR": "Apply {{count}} Standards",
+    "de-DE": "Apply {{count}} Standards"
+  },
+  "premium.standards.subjects.ela": {
+    "es-ES": "English Language Arts",
+    "fr-FR": "English Language Arts",
+    "pt-BR": "English Language Arts",
+    "de-DE": "English Language Arts"
+  },
+  "premium.standards.subjects.math": {
+    "es-ES": "Mathematics",
+    "fr-FR": "Mathematics",
+    "pt-BR": "Mathematics",
+    "de-DE": "Mathematics"
+  },
+  "premium.standards.subjects.science": {
+    "es-ES": "Science",
+    "fr-FR": "Science",
+    "pt-BR": "Science",
+    "de-DE": "Science"
+  },
+  "premium.instructions.title": {
+    "es-ES": "Custom Instructions",
+    "fr-FR": "Custom Instructions",
+    "pt-BR": "Custom Instructions",
+    "de-DE": "Custom Instructions"
+  },
+  "premium.instructions.subtitle": {
+    "es-ES": "Personalize GPT-4's responses to your teaching style",
+    "fr-FR": "Personnelize GPT-4's responses to your teaching style",
+    "pt-BR": "Pessoalize GPT-4's responses to your teaching style",
+    "de-DE": "Persönlichize GPT-4's responses to your teaching style"
+  },
+  "premium.instructions.teachingStyles.label": {
+    "es-ES": "Teaching Styles",
+    "fr-FR": "Teaching Styles",
+    "pt-BR": "Teaching Styles",
+    "de-DE": "Teaching Styles"
+  },
+  "premium.instructions.subjects.label": {
+    "es-ES": "Subject Expertise",
+    "fr-FR": "Subject Expertise",
+    "pt-BR": "Subject Expertise",
+    "de-DE": "Subject Expertise"
+  },
+  "premium.instructions.outputFormat.label": {
+    "es-ES": "Output Format",
+    "fr-FR": "Output Format",
+    "pt-BR": "Output Format",
+    "de-DE": "Output Format"
+  },
+  "premium.instructions.outputFormat.detailed": {
+    "es-ES": "Detailed",
+    "fr-FR": "Detailed",
+    "pt-BR": "Detailed",
+    "de-DE": "Detailed"
+  },
+  "premium.instructions.outputFormat.concise": {
+    "es-ES": "Concise",
+    "fr-FR": "Concise",
+    "pt-BR": "Concise",
+    "de-DE": "Concise"
+  },
+  "premium.instructions.outputFormat.structured": {
+    "es-ES": "Structured",
+    "fr-FR": "Structured",
+    "pt-BR": "Structured",
+    "de-DE": "Structured"
+  },
+  "premium.instructions.tone.label": {
+    "es-ES": "Tone",
+    "fr-FR": "Tone",
+    "pt-BR": "Tone",
+    "de-DE": "Tone"
+  },
+  "premium.instructions.tone.professional": {
+    "es-ES": "Professional",
+    "fr-FR": "Professional",
+    "pt-BR": "Professional",
+    "de-DE": "Professional"
+  },
+  "premium.instructions.tone.friendly": {
+    "es-ES": "Friendly",
+    "fr-FR": "Friendly",
+    "pt-BR": "Friendly",
+    "de-DE": "Friendly"
+  },
+  "premium.instructions.tone.formal": {
+    "es-ES": "Formal",
+    "fr-FR": "Formal",
+    "pt-BR": "Formal",
+    "de-DE": "Formal"
+  },
+  "premium.instructions.language.label": {
+    "es-ES": "Language",
+    "fr-FR": "Language",
+    "pt-BR": "Language",
+    "de-DE": "Language"
+  },
+  "premium.instructions.language.enUS": {
+    "es-ES": "English (US)",
+    "fr-FR": "English (US)",
+    "pt-BR": "English (US)",
+    "de-DE": "English (US)"
+  },
+  "premium.instructions.language.enUK": {
+    "es-ES": "English (UK)",
+    "fr-FR": "English (UK)",
+    "pt-BR": "English (UK)",
+    "de-DE": "English (UK)"
+  },
+  "premium.instructions.language.es": {
+    "es-ES": "Spanish",
+    "fr-FR": "Spanish",
+    "pt-BR": "Spanish",
+    "de-DE": "Spanish"
+  },
+  "premium.instructions.language.fr": {
+    "es-ES": "French",
+    "fr-FR": "French",
+    "pt-BR": "French",
+    "de-DE": "French"
+  },
+  "premium.instructions.language.de": {
+    "es-ES": "German",
+    "fr-FR": "German",
+    "pt-BR": "German",
+    "de-DE": "German"
+  },
+  "premium.instructions.save": {
+    "es-ES": "Guardar Instructions",
+    "fr-FR": "Enregistrer Instructions",
+    "pt-BR": "Salvar Instructions",
+    "de-DE": "Speichern Instructions"
+  },
+  "premium.export.title": {
+    "es-ES": "Exportar Conversation",
+    "fr-FR": "Exporter Conversation",
+    "pt-BR": "Exportar Conversation",
+    "de-DE": "Exportieren Conversation"
+  },
+  "premium.export.messageCount": {
+    "es-ES": "{{count}} messages",
+    "fr-FR": "{{count}} messages",
+    "pt-BR": "{{count}} messages",
+    "de-DE": "{{count}} messages"
+  },
+  "premium.export.format.label": {
+    "es-ES": "Exportar Format",
+    "fr-FR": "Exporter Format",
+    "pt-BR": "Exportar Format",
+    "de-DE": "Exportieren Format"
+  },
+  "premium.export.format.pdf": {
+    "es-ES": "PDF",
+    "fr-FR": "PDF",
+    "pt-BR": "PDF",
+    "de-DE": "PDF"
+  },
+  "premium.export.format.word": {
+    "es-ES": "Word Document",
+    "fr-FR": "Word Document",
+    "pt-BR": "Word Document",
+    "de-DE": "Word Document"
+  },
+  "premium.export.format.markdown": {
+    "es-ES": "Markdown",
+    "fr-FR": "Markdown",
+    "pt-BR": "Markdown",
+    "de-DE": "Markdown"
+  },
+  "premium.export.format.html": {
+    "es-ES": "HTML",
+    "fr-FR": "HTML",
+    "pt-BR": "HTML",
+    "de-DE": "HTML"
+  },
+  "premium.export.format.googleDocs": {
+    "es-ES": "Google Docs",
+    "fr-FR": "Google Docs",
+    "pt-BR": "Google Docs",
+    "de-DE": "Google Docs"
+  },
+  "premium.export.options.label": {
+    "es-ES": "Exportar Options",
+    "fr-FR": "Exporter Options",
+    "pt-BR": "Exportar Options",
+    "de-DE": "Exportieren Options"
+  },
+  "premium.export.options.metadata.label": {
+    "es-ES": "Include Metadata",
+    "fr-FR": "Include Metadata",
+    "pt-BR": "Include Metadata",
+    "de-DE": "Include Metadata"
+  },
+  "premium.export.options.metadata.description": {
+    "es-ES": "Timestamps, dates, and conversation info",
+    "fr-FR": "Timestamps, dates, and conversation info",
+    "pt-BR": "Timestamps, dates, and conversation info",
+    "de-DE": "Timestamps, dates, and conversation info"
+  },
+  "premium.export.options.images.label": {
+    "es-ES": "Include Images",
+    "fr-FR": "Include Images",
+    "pt-BR": "Include Images",
+    "de-DE": "Include Images"
+  },
+  "premium.export.options.images.description": {
+    "es-ES": "Embed uploaded images in export",
+    "fr-FR": "Embed uploaded images in export",
+    "pt-BR": "Embed uploaded images in export",
+    "de-DE": "Embed uploaded images in export"
+  },
+  "premium.export.formatting.label": {
+    "es-ES": "Formatting Style",
+    "fr-FR": "Formatting Style",
+    "pt-BR": "Formatting Style",
+    "de-DE": "Formatting Style"
+  },
+  "premium.export.formatting.professional": {
+    "es-ES": "Professional",
+    "fr-FR": "Professional",
+    "pt-BR": "Professional",
+    "de-DE": "Professional"
+  },
+  "premium.export.formatting.simple": {
+    "es-ES": "Simple",
+    "fr-FR": "Simple",
+    "pt-BR": "Simple",
+    "de-DE": "Simple"
+  },
+  "premium.export.formatting.custom": {
+    "es-ES": "Custom",
+    "fr-FR": "Custom",
+    "pt-BR": "Custom",
+    "de-DE": "Custom"
+  },
+  "premium.export.action": {
+    "es-ES": "Exportar",
+    "fr-FR": "Exporter",
+    "pt-BR": "Exportar",
+    "de-DE": "Exportieren"
+  },
+  "premium.export.googleDocsAlert": {
+    "es-ES": "Google Docs export requires API integration",
+    "fr-FR": "Google Docs export requires API integration",
+    "pt-BR": "Google Docs export requires API integration",
+    "de-DE": "Google Docs export requires API integration"
+  },
+  "premium.multimodal.title": {
+    "es-ES": "Multimodal Subir",
+    "fr-FR": "Multimodal Téléverser",
+    "pt-BR": "Multimodal Enviar",
+    "de-DE": "Multimodal Hochladen"
+  },
+  "premium.multimodal.subtitle": {
+    "es-ES": "Subir images or documents for IA analysis",
+    "fr-FR": "Téléverser images or documents for IA analysis",
+    "pt-BR": "Enviar images or documents for IA analysis",
+    "de-DE": "Hochladen images or documents for KI analysis"
+  },
+  "premium.multimodal.dropzone.primary": {
+    "es-ES": "Drag and drop files here, or click to browse",
+    "fr-FR": "Drag and drop files here, or click to browse",
+    "pt-BR": "Drag and drop files here, or click to browse",
+    "de-DE": "Drag and drop files here, or click to browse"
+  },
+  "premium.multimodal.dropzone.formats": {
+    "es-ES": "Supports images (JPG, PNG, GIF) and documents (PDF, DOC, DOCX)",
+    "fr-FR": "Supports images (JPG, PNG, GIF) and documents (PDF, DOC, DOCX)",
+    "pt-BR": "Supports images (JPG, PNG, GIF) and documents (PDF, DOC, DOCX)",
+    "de-DE": "Supports images (JPG, PNG, GIF) and documents (PDF, DOC, DOCX)"
+  },
+  "premium.multimodal.processing": {
+    "es-ES": "Procesando...",
+    "fr-FR": "Traitement…",
+    "pt-BR": "Processando...",
+    "de-DE": "Wird verarbeitet…"
+  },
+  "premium.multimodal.empty": {
+    "es-ES": "No files selected",
+    "fr-FR": "No files selected",
+    "pt-BR": "No files selected",
+    "de-DE": "No files selected"
+  },
+  "premium.multimodal.addFiles": {
+    "es-ES": "Add {{count}} File",
+    "fr-FR": "Add {{count}} File",
+    "pt-BR": "Add {{count}} File",
+    "de-DE": "Add {{count}} File"
+  },
+  "premium.multimodal.addFiles_plural": {
+    "es-ES": "Add {{count}} Files",
+    "fr-FR": "Add {{count}} Files",
+    "pt-BR": "Add {{count}} Files",
+    "de-DE": "Add {{count}} Files"
+  },
+  "content.processing.title": {
+    "es-ES": "Processing Estado",
+    "fr-FR": "Processing Statut",
+    "pt-BR": "Processing Status",
+    "de-DE": "Processing Status"
+  },
+  "content.processing.published": {
+    "es-ES": "Document Publicado Successfully!",
+    "fr-FR": "Document Publié Successfully!",
+    "pt-BR": "Document Publicado Successfully!",
+    "de-DE": "Document Veröffentlicht Successfully!"
+  },
+  "content.processing.failed.title": {
+    "es-ES": "Processing Failed",
+    "fr-FR": "Processing Failed",
+    "pt-BR": "Processing Failed",
+    "de-DE": "Processing Failed"
+  },
+  "content.processing.failed.defaultMessage": {
+    "es-ES": "Processing failed",
+    "fr-FR": "Processing failed",
+    "pt-BR": "Processing failed",
+    "de-DE": "Processing failed"
+  },
+  "content.processing.failed.hintLabel": {
+    "es-ES": "Hint:",
+    "fr-FR": "Hint:",
+    "pt-BR": "Hint:",
+    "de-DE": "Hint:"
+  },
+  "content.processing.progress.label": {
+    "es-ES": "Progreso",
+    "fr-FR": "Progression",
+    "pt-BR": "Progresso",
+    "de-DE": "Fortschritt"
+  },
+  "content.processing.connecting.connected": {
+    "es-ES": "Conectado — waiting for first status update…",
+    "fr-FR": "Connecté — waiting for first status update…",
+    "pt-BR": "Conectado — waiting for first status update…",
+    "de-DE": "Verbunden — waiting for first status update…"
+  },
+  "content.processing.connecting.pending": {
+    "es-ES": "Connecting to status stream…",
+    "fr-FR": "Connecting to status stream…",
+    "pt-BR": "Connecting to status stream…",
+    "de-DE": "Connecting to status stream…"
+  },
+  "content.processing.connecting.help": {
+    "es-ES": "If this stays on \"Connecting\", the browser never reached your API (wrong URL, CORS, or backend down). If it says \"Conectado\" but never updates, open DevTools → Network → find status/stream and confirm VITE_USE_LOCAL / VITE_API_BASE_URL point at your FastAPI host.",
+    "fr-FR": "If this stays on \"Connecting\", the browser never reached your API (wrong URL, CORS, or backend down). If it says \"Connecté\" but never updates, open DevTools → Network → find status/stream and confirm VITE_USE_LOCAL / VITE_API_BASE_URL point at your FastAPI host.",
+    "pt-BR": "If this stays on \"Connecting\", the browser never reached your API (wrong URL, CORS, or backend down). If it says \"Conectado\" but never updates, open DevTools → Network → find status/stream and confirm VITE_USE_LOCAL / VITE_API_BASE_URL point at your FastAPI host.",
+    "de-DE": "If this stays on \"Connecting\", the browser never reached your API (wrong URL, CORS, or backend down). If it says \"Verbunden\" but never updates, open DevTools → Network → find status/stream and confirm VITE_USE_LOCAL / VITE_API_BASE_URL point at your FastAPI host."
+  },
+  "content.processing.error.title": {
+    "es-ES": "Connection Error",
+    "fr-FR": "Connection Error",
+    "pt-BR": "Connection Error",
+    "de-DE": "Connection Error"
+  },
+  "content.processing.error.help": {
+    "es-ES": "The backend may still be starting up. Click Reintentar, or check DevTools → Network for details.",
+    "fr-FR": "The backend may still be starting up. Click Réessayer, or check DevTools → Network for details.",
+    "pt-BR": "The backend may still be starting up. Click Tentar novamente, or check DevTools → Network for details.",
+    "de-DE": "The backend may still be starting up. Click Erneut versuchen, or check DevTools → Network for details."
+  },
+  "content.processing.pages.opening": {
+    "es-ES": "Opening PDF — {{totalPages}} pages detected, reading now…",
+    "fr-FR": "Opening PDF — {{totalPages}} pages detected, reading now…",
+    "pt-BR": "Opening PDF — {{totalPages}} pages detected, reading now…",
+    "de-DE": "Opening PDF — {{totalPages}} pages detected, reading now…"
+  },
+  "content.processing.pages.read": {
+    "es-ES": "Pages read: {{read}} / {{total}}",
+    "fr-FR": "Pages read: {{read}} / {{total}}",
+    "pt-BR": "Pages read: {{read}} / {{total}}",
+    "de-DE": "Pages read: {{read}} / {{total}}"
+  },
+  "content.processing.pages.slowHint": {
+    "es-ES": "— large books take several minutes, still running",
+    "fr-FR": "— large books take several minutes, still running",
+    "pt-BR": "— large books take several minutes, still running",
+    "de-DE": "— large books take several minutes, still running"
+  },
+  "content.processing.vectors.stored": {
+    "es-ES": "Vectors stored: {{completed}} / {{total}}",
+    "fr-FR": "Vectors stored: {{completed}} / {{total}}",
+    "pt-BR": "Vectors stored: {{completed}} / {{total}}",
+    "de-DE": "Vectors stored: {{completed}} / {{total}}"
+  },
+  "content.processing.chunks.count": {
+    "es-ES": "Chunks: {{completed}} / {{total}}",
+    "fr-FR": "Chunks: {{completed}} / {{total}}",
+    "pt-BR": "Chunks: {{completed}} / {{total}}",
+    "de-DE": "Chunks: {{completed}} / {{total}}"
+  },
+  "content.processing.steps.uploaded": {
+    "es-ES": "Subido",
+    "fr-FR": "Téléversé",
+    "pt-BR": "Enviado",
+    "de-DE": "Hochgeladen"
+  },
+  "content.processing.steps.textExtracting": {
+    "es-ES": "Extracting Text",
+    "fr-FR": "Extracting Text",
+    "pt-BR": "Extracting Text",
+    "de-DE": "Extracting Text"
+  },
+  "content.processing.steps.ocrRunning": {
+    "es-ES": "Processing OCR (async)",
+    "fr-FR": "Processing OCR (async)",
+    "pt-BR": "Processing OCR (async)",
+    "de-DE": "Processing OCR (async)"
+  },
+  "content.processing.steps.normalizing": {
+    "es-ES": "Normalizing",
+    "fr-FR": "Normalizing",
+    "pt-BR": "Normalizing",
+    "de-DE": "Normalizing"
+  },
+  "content.processing.steps.chunking": {
+    "es-ES": "Chunking",
+    "fr-FR": "Chunking",
+    "pt-BR": "Chunking",
+    "de-DE": "Chunking"
+  },
+  "content.processing.steps.embedding": {
+    "es-ES": "Generating Embeddings",
+    "fr-FR": "Generating Embeddings",
+    "pt-BR": "Generating Embeddings",
+    "de-DE": "Generating Embeddings"
+  },
+  "content.processing.steps.indexing": {
+    "es-ES": "Indexing",
+    "fr-FR": "Indexing",
+    "pt-BR": "Indexing",
+    "de-DE": "Indexing"
+  },
+  "content.processing.steps.qaValidation": {
+    "es-ES": "QA Validation",
+    "fr-FR": "QA Validation",
+    "pt-BR": "QA Validation",
+    "de-DE": "QA Validation"
+  },
+  "content.processing.steps.published": {
+    "es-ES": "Publicado",
+    "fr-FR": "Publié",
+    "pt-BR": "Publicado",
+    "de-DE": "Veröffentlicht"
+  },
+  "content.worksheet.title": {
+    "es-ES": "Worksheet",
+    "fr-FR": "Worksheet",
+    "pt-BR": "Worksheet",
+    "de-DE": "Worksheet"
+  },
+  "content.worksheet.empty": {
+    "es-ES": "No worksheet data available",
+    "fr-FR": "No worksheet data available",
+    "pt-BR": "No worksheet data available",
+    "de-DE": "No worksheet data available"
+  },
+  "content.worksheet.difficulty.easy": {
+    "es-ES": "Easy",
+    "fr-FR": "Easy",
+    "pt-BR": "Easy",
+    "de-DE": "Easy"
+  },
+  "content.worksheet.difficulty.medium": {
+    "es-ES": "Medium",
+    "fr-FR": "Medium",
+    "pt-BR": "Medium",
+    "de-DE": "Medium"
+  },
+  "content.worksheet.difficulty.hard": {
+    "es-ES": "Hard",
+    "fr-FR": "Hard",
+    "pt-BR": "Hard",
+    "de-DE": "Hard"
+  },
+  "content.worksheet.meta.topic": {
+    "es-ES": "Topic:",
+    "fr-FR": "Topic:",
+    "pt-BR": "Topic:",
+    "de-DE": "Topic:"
+  },
+  "content.worksheet.meta.grade": {
+    "es-ES": "Grade:",
+    "fr-FR": "Grade:",
+    "pt-BR": "Grade:",
+    "de-DE": "Grade:"
+  },
+  "content.worksheet.meta.subject": {
+    "es-ES": "Subject:",
+    "fr-FR": "Subject:",
+    "pt-BR": "Subject:",
+    "de-DE": "Subject:"
+  },
+  "content.worksheet.meta.date": {
+    "es-ES": "Date:",
+    "fr-FR": "Date:",
+    "pt-BR": "Date:",
+    "de-DE": "Date:"
+  },
+  "content.worksheet.meta.generated": {
+    "es-ES": "Generated:",
+    "fr-FR": "Generated:",
+    "pt-BR": "Generated:",
+    "de-DE": "Generated:"
+  },
+  "content.worksheet.actions.copy": {
+    "es-ES": "Copiar",
+    "fr-FR": "Copier",
+    "pt-BR": "Copiar",
+    "de-DE": "Kopieren"
+  },
+  "content.worksheet.actions.exportText": {
+    "es-ES": "Exportar Text",
+    "fr-FR": "Exporter Text",
+    "pt-BR": "Exportar Text",
+    "de-DE": "Exportieren Text"
+  },
+  "content.worksheet.actions.exportPdf": {
+    "es-ES": "Exportar PDF",
+    "fr-FR": "Exporter PDF",
+    "pt-BR": "Exportar PDF",
+    "de-DE": "Exportieren PDF"
+  },
+  "content.worksheet.actions.print": {
+    "es-ES": "Imprimir",
+    "fr-FR": "Imprimer",
+    "pt-BR": "Imprimir",
+    "de-DE": "Drucken"
+  },
+  "content.worksheet.actions.edit": {
+    "es-ES": "Editar",
+    "fr-FR": "Modifier",
+    "pt-BR": "Editar",
+    "de-DE": "Bearbeiten"
+  },
+  "content.worksheet.actions.cancel": {
+    "es-ES": "Cancelar",
+    "fr-FR": "Annuler",
+    "pt-BR": "Cancelar",
+    "de-DE": "Abbrechen"
+  },
+  "content.worksheet.actions.save": {
+    "es-ES": "Guardar",
+    "fr-FR": "Enregistrer",
+    "pt-BR": "Salvar",
+    "de-DE": "Speichern"
+  },
+  "content.worksheet.toast.copySuccess": {
+    "es-ES": "Worksheet copied to clipboard!",
+    "fr-FR": "Worksheet copied to clipboard!",
+    "pt-BR": "Worksheet copied to clipboard!",
+    "de-DE": "Worksheet copied to clipboard!"
+  },
+  "content.worksheet.toast.copyFailed": {
+    "es-ES": "Failed to copy worksheet",
+    "fr-FR": "Failed to copy worksheet",
+    "pt-BR": "Failed to copy worksheet",
+    "de-DE": "Failed to copy worksheet"
+  },
+  "content.worksheet.toast.exportSuccess": {
+    "es-ES": "Worksheet exported as text file!",
+    "fr-FR": "Worksheet exported as text file!",
+    "pt-BR": "Worksheet exported as text file!",
+    "de-DE": "Worksheet exported as text file!"
+  },
+  "content.worksheet.toast.saveSuccess": {
+    "es-ES": "Worksheet saved!",
+    "fr-FR": "Worksheet saved!",
+    "pt-BR": "Worksheet saved!",
+    "de-DE": "Worksheet saved!"
+  },
+  "content.worksheet.toast.cancelled": {
+    "es-ES": "Changes cancelled",
+    "fr-FR": "Changes cancelled",
+    "pt-BR": "Changes cancelled",
+    "de-DE": "Changes cancelled"
+  },
+  "content.worksheet.edit.addQuestion": {
+    "es-ES": "Add New Question",
+    "fr-FR": "Add New Question",
+    "pt-BR": "Add New Question",
+    "de-DE": "Add New Question"
+  },
+  "content.worksheet.edit.addOption": {
+    "es-ES": "Add Option",
+    "fr-FR": "Add Option",
+    "pt-BR": "Add Option",
+    "de-DE": "Add Option"
+  },
+  "content.worksheet.edit.delete": {
+    "es-ES": "Eliminar",
+    "fr-FR": "Supprimer",
+    "pt-BR": "Excluir",
+    "de-DE": "Löschen"
+  },
+  "content.worksheet.edit.deleteConfirm": {
+    "es-ES": "Are you sure you want to delete this question?",
+    "fr-FR": "Are you sure you want to delete this question?",
+    "pt-BR": "Are you sure you want to delete this question?",
+    "de-DE": "Are you sure you want to delete this question?"
+  },
+  "content.worksheet.edit.defaultQuestion": {
+    "es-ES": "New question text",
+    "fr-FR": "New question text",
+    "pt-BR": "New question text",
+    "de-DE": "New question text"
+  },
+  "content.worksheet.edit.defaultOption": {
+    "es-ES": "New option",
+    "fr-FR": "New option",
+    "pt-BR": "New option",
+    "de-DE": "New option"
+  },
+  "content.worksheet.sections.answer": {
+    "es-ES": "Answer:",
+    "fr-FR": "Answer:",
+    "pt-BR": "Answer:",
+    "de-DE": "Answer:"
+  },
+  "content.worksheet.sections.markingScheme": {
+    "es-ES": "Marking Scheme",
+    "fr-FR": "Marking Scheme",
+    "pt-BR": "Marking Scheme",
+    "de-DE": "Marking Scheme"
+  },
+  "content.worksheet.sections.warnings": {
+    "es-ES": "Warnings",
+    "fr-FR": "Warnings",
+    "pt-BR": "Warnings",
+    "de-DE": "Warnings"
+  },
+  "content.worksheet.questionTypes.mcq": {
+    "es-ES": "MCQ",
+    "fr-FR": "MCQ",
+    "pt-BR": "MCQ",
+    "de-DE": "MCQ"
+  },
+  "content.worksheet.questionTypes.shortAnswer": {
+    "es-ES": "Short Answer",
+    "fr-FR": "Short Answer",
+    "pt-BR": "Short Answer",
+    "de-DE": "Short Answer"
+  },
+  "content.worksheet.questionTypes.longAnswer": {
+    "es-ES": "Long Answer",
+    "fr-FR": "Long Answer",
+    "pt-BR": "Long Answer",
+    "de-DE": "Long Answer"
+  },
+  "content.worksheet.points": {
+    "es-ES": "Points",
+    "fr-FR": "Points",
+    "pt-BR": "Points",
+    "de-DE": "Points"
+  },
+  "content.worksheet.marking.points": {
+    "es-ES": "{{points}} points",
+    "fr-FR": "{{points}} points",
+    "pt-BR": "{{points}} points",
+    "de-DE": "{{points}} points"
+  },
+  "content.toc.title": {
+    "es-ES": "Optional: table of contents (JSON)",
+    "fr-FR": "Optional: table of contents (JSON)",
+    "pt-BR": "Optional: table of contents (JSON)",
+    "de-DE": "Optional: table of contents (JSON)"
+  },
+  "content.toc.help": {
+    "es-ES": "Paste a JSON array of chapters with title, start_page_pdf, and end_page_pdf. Leave empty for auto-detection.",
+    "fr-FR": "Paste a JSON array of chapters with title, start_page_pdf, and end_page_pdf. Leave empty for auto-detection.",
+    "pt-BR": "Paste a JSON array of chapters with title, start_page_pdf, and end_page_pdf. Leave empty for auto-detection.",
+    "de-DE": "Paste a JSON array of chapters with title, start_page_pdf, and end_page_pdf. Leave empty for auto-detection."
+  },
+  "content.toc.placeholder": {
+    "es-ES": "Paste TOC JSON here, or leave empty for auto-detection…",
+    "fr-FR": "Paste TOC JSON here, or leave empty for auto-detection…",
+    "pt-BR": "Paste TOC JSON here, or leave empty for auto-detection…",
+    "de-DE": "Paste TOC JSON here, or leave empty for auto-detection…"
+  },
+  "content.toc.ariaLabel": {
+    "es-ES": "Optional table of contents JSON",
+    "fr-FR": "Optional table of contents JSON",
+    "pt-BR": "Optional table of contents JSON",
+    "de-DE": "Optional table of contents JSON"
+  },
+  "content.toc.example.title": {
+    "es-ES": "Example format",
+    "fr-FR": "Example format",
+    "pt-BR": "Example format",
+    "de-DE": "Example format"
+  },
+  "content.toc.errors.invalidJson": {
+    "es-ES": "Invalid JSON. Check brackets, commas, and quotes.",
+    "fr-FR": "Invalid JSON. Check brackets, commas, and quotes.",
+    "pt-BR": "Invalid JSON. Check brackets, commas, and quotes.",
+    "de-DE": "Invalid JSON. Check brackets, commas, and quotes."
+  },
+  "content.toc.errors.notArray": {
+    "es-ES": "TOC must be a JSON array of chapter objects.",
+    "fr-FR": "TOC must be a JSON array of chapter objects.",
+    "pt-BR": "TOC must be a JSON array of chapter objects.",
+    "de-DE": "TOC must be a JSON array of chapter objects."
+  },
+  "content.toc.errors.entryNotObject": {
+    "es-ES": "Entry {{n}} must be an object.",
+    "fr-FR": "Entry {{n}} must be an object.",
+    "pt-BR": "Entry {{n}} must be an object.",
+    "de-DE": "Entry {{n}} must be an object."
+  },
+  "content.toc.errors.missingTitle": {
+    "es-ES": "Entry {{n}} needs a non-empty \"title\".",
+    "fr-FR": "Entry {{n}} needs a non-empty \"title\".",
+    "pt-BR": "Entry {{n}} needs a non-empty \"title\".",
+    "de-DE": "Entry {{n}} needs a non-empty \"title\"."
+  },
+  "content.toc.errors.invalidPages": {
+    "es-ES": "Entry {{n}} needs numeric start_page_pdf and end_page_pdf.",
+    "fr-FR": "Entry {{n}} needs numeric start_page_pdf and end_page_pdf.",
+    "pt-BR": "Entry {{n}} needs numeric start_page_pdf and end_page_pdf.",
+    "de-DE": "Entry {{n}} needs numeric start_page_pdf and end_page_pdf."
+  },
+  "content.toc.errors.pageMin": {
+    "es-ES": "Entry {{n}}: page numbers must be ≥ 1.",
+    "fr-FR": "Entry {{n}}: page numbers must be ≥ 1.",
+    "pt-BR": "Entry {{n}}: page numbers must be ≥ 1.",
+    "de-DE": "Entry {{n}}: page numbers must be ≥ 1."
+  },
+  "content.toc.errors.pageOrder": {
+    "es-ES": "Entry {{n}}: end_page_pdf must be ≥ start_page_pdf.",
+    "fr-FR": "Entry {{n}}: end_page_pdf must be ≥ start_page_pdf.",
+    "pt-BR": "Entry {{n}}: end_page_pdf must be ≥ start_page_pdf.",
+    "de-DE": "Entry {{n}}: end_page_pdf must be ≥ start_page_pdf."
+  },
+  "content.toc.errors.emptyArray": {
+    "es-ES": "TOC array is empty.",
+    "fr-FR": "TOC array is empty.",
+    "pt-BR": "TOC array is empty.",
+    "de-DE": "TOC array is empty."
+  },
+  "content.upload.validation.packNameRequired": {
+    "es-ES": "Pack name is required",
+    "fr-FR": "Pack name is required",
+    "pt-BR": "Pack name is required",
+    "de-DE": "Pack name is required"
+  },
+  "content.upload.validation.selectPack": {
+    "es-ES": "Please select a content pack",
+    "fr-FR": "Please select a content pack",
+    "pt-BR": "Please select a content pack",
+    "de-DE": "Please select a content pack"
+  },
+  "content.upload.validation.selectFile": {
+    "es-ES": "Please select a file",
+    "fr-FR": "Please select a file",
+    "pt-BR": "Please select a file",
+    "de-DE": "Please select a file"
+  },
+  "content.upload.validation.failed": {
+    "es-ES": "Subir failed",
+    "fr-FR": "Téléverser failed",
+    "pt-BR": "Enviar failed",
+    "de-DE": "Hochladen failed"
+  },
+  "content.upload.progress.starting": {
+    "es-ES": "Starting upload...",
+    "fr-FR": "Starting upload...",
+    "pt-BR": "Starting upload...",
+    "de-DE": "Starting upload..."
+  },
+  "content.upload.success": {
+    "es-ES": "Document uploaded successfully! Processing started...",
+    "fr-FR": "Document uploaded successfully! Processing started...",
+    "pt-BR": "Document uploaded successfully! Processing started...",
+    "de-DE": "Document uploaded successfully! Processing started..."
+  },
+  "content.upload.pack.sectionTitle": {
+    "es-ES": "Content Pack Information",
+    "fr-FR": "Content Pack Information",
+    "pt-BR": "Content Pack Information",
+    "de-DE": "Content Pack Information"
+  },
+  "content.upload.pack.selectLabel": {
+    "es-ES": "Content Pack",
+    "fr-FR": "Content Pack",
+    "pt-BR": "Content Pack",
+    "de-DE": "Content Pack"
+  },
+  "content.upload.pack.selectPlaceholder": {
+    "es-ES": "Select a pack...",
+    "fr-FR": "Select a pack...",
+    "pt-BR": "Select a pack...",
+    "de-DE": "Select a pack..."
+  },
+  "content.upload.pack.name": {
+    "es-ES": "Pack Name",
+    "fr-FR": "Pack Name",
+    "pt-BR": "Pack Name",
+    "de-DE": "Pack Name"
+  },
+  "content.upload.pack.description": {
+    "es-ES": "Description",
+    "fr-FR": "Description",
+    "pt-BR": "Description",
+    "de-DE": "Description"
+  },
+  "content.upload.pack.subject": {
+    "es-ES": "Subject",
+    "fr-FR": "Subject",
+    "pt-BR": "Subject",
+    "de-DE": "Subject"
+  },
+  "content.upload.pack.grade": {
+    "es-ES": "Grade",
+    "fr-FR": "Grade",
+    "pt-BR": "Grade",
+    "de-DE": "Grade"
+  },
+  "content.upload.pack.curriculum": {
+    "es-ES": "Curriculum",
+    "fr-FR": "Curriculum",
+    "pt-BR": "Curriculum",
+    "de-DE": "Curriculum"
+  },
+  "content.upload.pack.placeholders.name": {
+    "es-ES": "e.g., Grade 10 Mathematics",
+    "fr-FR": "e.g., Grade 10 Mathematics",
+    "pt-BR": "e.g., Grade 10 Mathematics",
+    "de-DE": "e.g., Grade 10 Mathematics"
+  },
+  "content.upload.pack.placeholders.description": {
+    "es-ES": "Brief description of this content pack",
+    "fr-FR": "Brief description of this content pack",
+    "pt-BR": "Brief description of this content pack",
+    "de-DE": "Brief description of this content pack"
+  },
+  "content.upload.pack.placeholders.subject": {
+    "es-ES": "e.g., Mathematics",
+    "fr-FR": "e.g., Mathematics",
+    "pt-BR": "e.g., Mathematics",
+    "de-DE": "e.g., Mathematics"
+  },
+  "content.upload.pack.placeholders.grade": {
+    "es-ES": "e.g., 10",
+    "fr-FR": "e.g., 10",
+    "pt-BR": "e.g., 10",
+    "de-DE": "e.g., 10"
+  },
+  "content.upload.pack.placeholders.curriculum": {
+    "es-ES": "e.g., Common Core",
+    "fr-FR": "e.g., Common Core",
+    "pt-BR": "e.g., Common Core",
+    "de-DE": "e.g., Common Core"
+  },
+  "content.upload.file.label": {
+    "es-ES": "Document File",
+    "fr-FR": "Document File",
+    "pt-BR": "Document File",
+    "de-DE": "Document File"
+  },
+  "content.upload.file.upload": {
+    "es-ES": "Subir a file",
+    "fr-FR": "Téléverser a file",
+    "pt-BR": "Enviar a file",
+    "de-DE": "Hochladen a file"
+  },
+  "content.upload.file.dragDrop": {
+    "es-ES": "or drag and drop",
+    "fr-FR": "or drag and drop",
+    "pt-BR": "or drag and drop",
+    "de-DE": "or drag and drop"
+  },
+  "content.upload.file.formats": {
+    "es-ES": "PDF, DOCX, or images up to 50MB",
+    "fr-FR": "PDF, DOCX, or images up to 50MB",
+    "pt-BR": "PDF, DOCX, or images up to 50MB",
+    "de-DE": "PDF, DOCX, or images up to 50MB"
+  },
+  "content.upload.meta.title": {
+    "es-ES": "Document Title (optional)",
+    "fr-FR": "Document Title (optional)",
+    "pt-BR": "Document Title (optional)",
+    "de-DE": "Document Title (optional)"
+  },
+  "content.upload.meta.author": {
+    "es-ES": "Author (optional)",
+    "fr-FR": "Author (optional)",
+    "pt-BR": "Author (optional)",
+    "de-DE": "Author (optional)"
+  },
+  "content.upload.meta.titlePlaceholder": {
+    "es-ES": "Document title",
+    "fr-FR": "Document title",
+    "pt-BR": "Document title",
+    "de-DE": "Document title"
+  },
+  "content.upload.meta.authorPlaceholder": {
+    "es-ES": "Author name",
+    "fr-FR": "Author name",
+    "pt-BR": "Author name",
+    "de-DE": "Author name"
+  },
+  "content.upload.forceOcr": {
+    "es-ES": "Force OCR (even for digital PDFs)",
+    "fr-FR": "Force OCR (even for digital PDFs)",
+    "pt-BR": "Force OCR (even for digital PDFs)",
+    "de-DE": "Force OCR (even for digital PDFs)"
+  },
+  "content.upload.actions.uploading": {
+    "es-ES": "Subiring...",
+    "fr-FR": "Téléversering...",
+    "pt-BR": "Enviaring...",
+    "de-DE": "Hochladening..."
+  },
+  "content.upload.actions.uploadDocument": {
+    "es-ES": "Subir Document",
+    "fr-FR": "Téléverser Document",
+    "pt-BR": "Enviar Document",
+    "de-DE": "Hochladen Document"
+  },
+  "content.pack.untitled": {
+    "es-ES": "Untitled Pack",
+    "fr-FR": "Untitled Pack",
+    "pt-BR": "Untitled Pack",
+    "de-DE": "Untitled Pack"
+  },
+  "content.pack.documentCount": {
+    "es-ES": "{{count}} documents",
+    "fr-FR": "{{count}} documents",
+    "pt-BR": "{{count}} documents",
+    "de-DE": "{{count}} documents"
+  },
+  "content.pack.editTooltip": {
+    "es-ES": "Editar pack",
+    "fr-FR": "Modifier pack",
+    "pt-BR": "Editar pack",
+    "de-DE": "Bearbeiten pack"
+  },
+  "content.pack.deleteTooltip": {
+    "es-ES": "Eliminar pack",
+    "fr-FR": "Supprimer pack",
+    "pt-BR": "Excluir pack",
+    "de-DE": "Löschen pack"
+  },
+  "content.qa.title": {
+    "es-ES": "QA Validation Results",
+    "fr-FR": "QA Validation Results",
+    "pt-BR": "QA Validation Results",
+    "de-DE": "QA Validation Results"
+  },
+  "content.qa.status": {
+    "es-ES": "Estado: {{status}}",
+    "fr-FR": "Statut: {{status}}",
+    "pt-BR": "Status: {{status}}",
+    "de-DE": "Status: {{status}}"
+  },
+  "content.qa.checks.pageCoverage": {
+    "es-ES": "Page Coverage",
+    "fr-FR": "Page Coverage",
+    "pt-BR": "Page Coverage",
+    "de-DE": "Page Coverage"
+  },
+  "content.qa.checks.textDensity": {
+    "es-ES": "Text Density",
+    "fr-FR": "Text Density",
+    "pt-BR": "Text Density",
+    "de-DE": "Text Density"
+  },
+  "content.qa.checks.embeddingCompleteness": {
+    "es-ES": "Embedding Completeness",
+    "fr-FR": "Embedding Completeness",
+    "pt-BR": "Embedding Completeness",
+    "de-DE": "Embedding Completeness"
+  },
+  "content.qa.checks.vectorRetrieval": {
+    "es-ES": "Vector Retrieval",
+    "fr-FR": "Vector Retrieval",
+    "pt-BR": "Vector Retrieval",
+    "de-DE": "Vector Retrieval"
+  },
+  "content.qa.metrics.title": {
+    "es-ES": "Métricas",
+    "fr-FR": "Métriques",
+    "pt-BR": "Métricas",
+    "de-DE": "Metriken"
+  },
+  "content.qa.goldenQueries.title": {
+    "es-ES": "Golden Query Tests",
+    "fr-FR": "Golden Query Tests",
+    "pt-BR": "Golden Query Tests",
+    "de-DE": "Golden Query Tests"
+  },
+  "content.qa.goldenQueries.chunksFound": {
+    "es-ES": "Chunks found: {{count}}",
+    "fr-FR": "Chunks found: {{count}}",
+    "pt-BR": "Chunks found: {{count}}",
+    "de-DE": "Chunks found: {{count}}"
+  },
+  "content.qa.notes.title": {
+    "es-ES": "Notas",
+    "fr-FR": "Notes",
+    "pt-BR": "Notas",
+    "de-DE": "Notizen"
+  },
+  "workspace.fallbackName": {
+    "es-ES": "Espacio de trabajo",
+    "fr-FR": "Espace de travail",
+    "pt-BR": "Espaço de trabalho",
+    "de-DE": "Arbeitsbereich"
+  },
+  "workspace.scopeType.institution": {
+    "es-ES": "Institución",
+    "fr-FR": "Établissement",
+    "pt-BR": "Instituição",
+    "de-DE": "Institution"
+  },
+  "workspace.scopeType.organization": {
+    "es-ES": "Organización",
+    "fr-FR": "Organisation",
+    "pt-BR": "Organização",
+    "de-DE": "Organisation"
+  },
+  "workspace.scopeType.personal": {
+    "es-ES": "Personal",
+    "fr-FR": "Personnel",
+    "pt-BR": "Pessoal",
+    "de-DE": "Persönlich"
+  },
+  "workspace.switcher.title": {
+    "es-ES": "Switch Espacio de trabajo",
+    "fr-FR": "Switch Espace de travail",
+    "pt-BR": "Switch Espaço de trabalho",
+    "de-DE": "Switch Arbeitsbereich"
+  },
+  "workspace.switcher.active": {
+    "es-ES": "Activo",
+    "fr-FR": "Actif",
+    "pt-BR": "Ativo",
+    "de-DE": "Aktiv"
+  },
+  "credits.activate.title": {
+    "es-ES": "Activar créditos",
+    "fr-FR": "Actifr les crédits",
+    "pt-BR": "Ativar créditos",
+    "de-DE": "Credits aktivieren"
+  },
+  "credits.activate.subtitle": {
+    "es-ES": "Enter your access code to get started",
+    "fr-FR": "Enter your access code to get started",
+    "pt-BR": "Enter your access code to get started",
+    "de-DE": "Enter your access code to get started"
+  },
+  "credits.activate.codeLabel": {
+    "es-ES": "Access code",
+    "fr-FR": "Access code",
+    "pt-BR": "Access code",
+    "de-DE": "Access code"
+  },
+  "credits.activate.codePlaceholder": {
+    "es-ES": "XXXX-XXXX-XXXX",
+    "fr-FR": "XXXX-XXXX-XXXX",
+    "pt-BR": "XXXX-XXXX-XXXX",
+    "de-DE": "XXXX-XXXX-XXXX"
+  },
+  "credits.activate.success.title": {
+    "es-ES": "You're all set",
+    "fr-FR": "You're all set",
+    "pt-BR": "You're all set",
+    "de-DE": "You're all set"
+  },
+  "credits.activate.success.subtitle": {
+    "es-ES": "Your credits have been activated",
+    "fr-FR": "Your credits have been activated",
+    "pt-BR": "Your credits have been activated",
+    "de-DE": "Your credits have been activated"
+  },
+  "credits.activate.success.creditsAdded": {
+    "es-ES": "Credits added",
+    "fr-FR": "Credits added",
+    "pt-BR": "Credits added",
+    "de-DE": "Credits added"
+  },
+  "credits.activate.success.validUntil": {
+    "es-ES": "Valid until",
+    "fr-FR": "Valid until",
+    "pt-BR": "Valid until",
+    "de-DE": "Valid until"
+  },
+  "credits.activate.success.renewal": {
+    "es-ES": "Renewal",
+    "fr-FR": "Renewal",
+    "pt-BR": "Renewal",
+    "de-DE": "Renewal"
+  },
+  "credits.activate.success.autoRenewing": {
+    "es-ES": "Auto-renewing",
+    "fr-FR": "Auto-renewing",
+    "pt-BR": "Auto-renewing",
+    "de-DE": "Auto-renewing"
+  },
+  "credits.activate.success.cta": {
+    "es-ES": "Start using 1ne",
+    "fr-FR": "Start using 1ne",
+    "pt-BR": "Start using 1ne",
+    "de-DE": "Start using 1ne"
+  },
+  "credits.activate.errors.invalid": {
+    "es-ES": "Invalid code. Please try again.",
+    "fr-FR": "Invalid code. Please try again.",
+    "pt-BR": "Invalid code. Please try again.",
+    "de-DE": "Invalid code. Please try again."
+  },
+  "credits.activate.errors.generic": {
+    "es-ES": "Algo salió mal. Please try again.",
+    "fr-FR": "Une erreur est survenue. Please try again.",
+    "pt-BR": "Algo deu errado. Please try again.",
+    "de-DE": "Etwas ist schiefgelaufen. Please try again."
+  },
+  "credits.activate.actions.activating": {
+    "es-ES": "Activating…",
+    "fr-FR": "Activating…",
+    "pt-BR": "Activating…",
+    "de-DE": "Activating…"
+  },
+  "credits.activate.actions.activate": {
+    "es-ES": "Activate",
+    "fr-FR": "Activate",
+    "pt-BR": "Activate",
+    "de-DE": "Activate"
+  },
+  "credits.activate.noCode.prompt": {
+    "es-ES": "Don't have a code?",
+    "fr-FR": "Don't have a code?",
+    "pt-BR": "Don't have a code?",
+    "de-DE": "Don't have a code?"
+  },
+  "credits.activate.noCode.contact": {
+    "es-ES": "Contact us",
+    "fr-FR": "Contact us",
+    "pt-BR": "Contact us",
+    "de-DE": "Contact us"
+  },
+  "credits.noCredits.title.expired": {
+    "es-ES": "Credits expired",
+    "fr-FR": "Credits expired",
+    "pt-BR": "Credits expired",
+    "de-DE": "Credits expired"
+  },
+  "credits.noCredits.title.remaining": {
+    "es-ES": "No credits remaining",
+    "fr-FR": "No credits remaining",
+    "pt-BR": "No credits remaining",
+    "de-DE": "No credits remaining"
+  },
+  "credits.noCredits.body.expired": {
+    "es-ES": "Your credit balance has expired. Activate an access code to continue using IA features.",
+    "fr-FR": "Your credit balance has expired. Activate an access code to continue using IA features.",
+    "pt-BR": "Your credit balance has expired. Activate an access code to continue using IA features.",
+    "de-DE": "Your credit balance has expired. Activate an access code to continue using KI features."
+  },
+  "credits.noCredits.body.remaining": {
+    "es-ES": "You need credits to use this feature. Activate an access code to get started.",
+    "fr-FR": "You need credits to use this feature. Activate an access code to get started.",
+    "pt-BR": "You need credits to use this feature. Activate an access code to get started.",
+    "de-DE": "You need credits to use this feature. Activate an access code to get started."
+  },
+  "credits.noCredits.balance": {
+    "es-ES": "Balance:",
+    "fr-FR": "Balance:",
+    "pt-BR": "Balance:",
+    "de-DE": "Balance:"
+  },
+  "credits.noCredits.required": {
+    "es-ES": "Required:",
+    "fr-FR": "Required:",
+    "pt-BR": "Required:",
+    "de-DE": "Required:"
+  },
+  "credits.noCredits.stats.balance": {
+    "es-ES": "your balance",
+    "fr-FR": "your balance",
+    "pt-BR": "your balance",
+    "de-DE": "your balance"
+  },
+  "credits.noCredits.stats.required": {
+    "es-ES": "required",
+    "fr-FR": "required",
+    "pt-BR": "required",
+    "de-DE": "required"
+  },
+  "credits.noCredits.actions.activate": {
+    "es-ES": "Activar créditos",
+    "fr-FR": "Actifr les crédits",
+    "pt-BR": "Ativar créditos",
+    "de-DE": "Credits aktivieren"
+  },
+  "credits.noCredits.actions.viewPlan": {
+    "es-ES": "Ver plan",
+    "fr-FR": "Voir le forfait",
+    "pt-BR": "Ver plano",
+    "de-DE": "Plan anzeigen"
+  },
+  "credits.plan.yourCredits": {
+    "es-ES": "Your credits",
+    "fr-FR": "Your credits",
+    "pt-BR": "Your credits",
+    "de-DE": "Your credits"
+  },
+  "credits.plan.memberSince": {
+    "es-ES": "Member since {{date}}",
+    "fr-FR": "Member since {{date}}",
+    "pt-BR": "Member since {{date}}",
+    "de-DE": "Member since {{date}}"
+  },
+  "credits.plan.activateCode": {
+    "es-ES": "+ Activate code",
+    "fr-FR": "+ Activate code",
+    "pt-BR": "+ Activate code",
+    "de-DE": "+ Activate code"
+  },
+  "credits.plan.creditsUnit": {
+    "es-ES": "credits",
+    "fr-FR": "credits",
+    "pt-BR": "credits",
+    "de-DE": "credits"
+  },
+  "credits.plan.remaining": {
+    "es-ES": "{{pct}}% remaining",
+    "fr-FR": "{{pct}}% remaining",
+    "pt-BR": "{{pct}}% remaining",
+    "de-DE": "{{pct}}% remaining"
+  },
+  "credits.plan.expires": {
+    "es-ES": "Expires {{date}}",
+    "fr-FR": "Expires {{date}}",
+    "pt-BR": "Expires {{date}}",
+    "de-DE": "Expires {{date}}"
+  },
+  "credits.plan.autoRenewing": {
+    "es-ES": "Auto-renewing",
+    "fr-FR": "Auto-renewing",
+    "pt-BR": "Auto-renewing",
+    "de-DE": "Auto-renewing"
+  },
+  "credits.plan.noActiveCredits": {
+    "es-ES": "No active credits. Activate a code to get started.",
+    "fr-FR": "No active credits. Activate a code to get started.",
+    "pt-BR": "No active credits. Activate a code to get started.",
+    "de-DE": "No active credits. Activate a code to get started."
+  },
+  "credits.plan.activateCreditsLink": {
+    "es-ES": "Activar créditos →",
+    "fr-FR": "Actifr les crédits →",
+    "pt-BR": "Ativar créditos →",
+    "de-DE": "Credits aktivieren →"
+  },
+  "credits.plan.usageBreakdown": {
+    "es-ES": "Usage breakdown",
+    "fr-FR": "Usage breakdown",
+    "pt-BR": "Usage breakdown",
+    "de-DE": "Usage breakdown"
+  },
+  "credits.plan.last30Days": {
+    "es-ES": "Last 30 days",
+    "fr-FR": "Last 30 days",
+    "pt-BR": "Last 30 days",
+    "de-DE": "Last 30 days"
+  },
+  "credits.plan.activity": {
+    "es-ES": "Activity",
+    "fr-FR": "Activity",
+    "pt-BR": "Activity",
+    "de-DE": "Activity"
+  },
+  "credits.plan.activityFallback": {
+    "es-ES": "Activity",
+    "fr-FR": "Activity",
+    "pt-BR": "Activity",
+    "de-DE": "Activity"
+  },
+  "credits.plan.left": {
+    "es-ES": "{{count}} left",
+    "fr-FR": "{{count}} left",
+    "pt-BR": "{{count}} left",
+    "de-DE": "{{count}} left"
+  },
+  "credits.plan.creditsShort": {
+    "es-ES": "cr",
+    "fr-FR": "cr",
+    "pt-BR": "cr",
+    "de-DE": "cr"
+  },
+  "student.badge.aiDefault": {
+    "es-ES": "IA",
+    "fr-FR": "IA",
+    "pt-BR": "IA",
+    "de-DE": "KI"
+  },
+  "student.badge.statusDefault": {
+    "es-ES": "Estado",
+    "fr-FR": "Statut",
+    "pt-BR": "Status",
+    "de-DE": "Status"
+  },
+  "shared.notAvailable": {
+    "es-ES": "N/D",
+    "fr-FR": "N/D",
+    "pt-BR": "N/D",
+    "de-DE": "k. A."
+  },
+  "shared.status.unknown": {
+    "es-ES": "Desconocido",
+    "fr-FR": "Inconnu",
+    "pt-BR": "Desconhecido",
+    "de-DE": "Unbekannt"
+  },
+  "shared.filePicker.defaultPlaceholder": {
+    "es-ES": "Elegir un archivo",
+    "fr-FR": "Choisir un fichier",
+    "pt-BR": "Escolher um arquivo",
+    "de-DE": "Datei auswählen"
+  },
+  "shared.imagePicker.defaultPlaceholder": {
+    "es-ES": "Subir una imagen",
+    "fr-FR": "Téléverser une image",
+    "pt-BR": "Enviar uma imagem",
+    "de-DE": "Bild hochladen"
+  },
+  "shared.imagePicker.previewAlt": {
+    "es-ES": "Preview",
+    "fr-FR": "Preview",
+    "pt-BR": "Preview",
+    "de-DE": "Preview"
+  },
+  "shared.profilePicture.defaultLabel": {
+    "es-ES": "Foto de perfil",
+    "fr-FR": "Photo de profil",
+    "pt-BR": "Foto de perfil",
+    "de-DE": "Profilbild"
+  },
+  "shared.profilePicture.defaultUser": {
+    "es-ES": "User",
+    "fr-FR": "User",
+    "pt-BR": "User",
+    "de-DE": "User"
+  },
+  "shared.profilePicture.ariaLabel": {
+    "es-ES": "Subir profile picture",
+    "fr-FR": "Téléverser profile picture",
+    "pt-BR": "Enviar profile picture",
+    "de-DE": "Hochladen profile picture"
+  },
+  "shared.profilePicture.errors.noFile": {
+    "es-ES": "No file selected",
+    "fr-FR": "No file selected",
+    "pt-BR": "No file selected",
+    "de-DE": "No file selected"
+  },
+  "shared.profilePicture.errors.invalidType": {
+    "es-ES": "Invalid file type. Allowed formats: {{formats}}",
+    "fr-FR": "Invalid file type. Allowed formats: {{formats}}",
+    "pt-BR": "Invalid file type. Allowed formats: {{formats}}",
+    "de-DE": "Invalid file type. Allowed formats: {{formats}}"
+  },
+  "shared.profilePicture.errors.tooLarge": {
+    "es-ES": "File size exceeds {{max}}MB limit. Current size: {{current}}MB",
+    "fr-FR": "File size exceeds {{max}}MB limit. Current size: {{current}}MB",
+    "pt-BR": "File size exceeds {{max}}MB limit. Current size: {{current}}MB",
+    "de-DE": "File size exceeds {{max}}MB limit. Current size: {{current}}MB"
+  },
+  "shared.profilePicture.errors.notImage": {
+    "es-ES": "Selected file is not an image",
+    "fr-FR": "Selected file is not an image",
+    "pt-BR": "Selected file is not an image",
+    "de-DE": "Selected file is not an image"
+  },
+  "shared.profilePicture.actions.uploading": {
+    "es-ES": "Subiring...",
+    "fr-FR": "Téléversering...",
+    "pt-BR": "Enviaring...",
+    "de-DE": "Hochladening..."
+  },
+  "shared.profilePicture.actions.change": {
+    "es-ES": "Change",
+    "fr-FR": "Change",
+    "pt-BR": "Change",
+    "de-DE": "Change"
+  },
+  "shared.profilePicture.actions.upload": {
+    "es-ES": "Subir",
+    "fr-FR": "Téléverser",
+    "pt-BR": "Enviar",
+    "de-DE": "Hochladen"
+  },
+  "shared.profilePicture.actions.remove": {
+    "es-ES": "Remove",
+    "fr-FR": "Remove",
+    "pt-BR": "Remove",
+    "de-DE": "Remove"
+  },
+  "shared.calendar.allDay": {
+    "es-ES": "Todo el día",
+    "fr-FR": "Toute la journée",
+    "pt-BR": "Dia inteiro",
+    "de-DE": "Ganztägig"
+  },
+  "shared.accordion.noData": {
+    "es-ES": "No se encontraron datos",
+    "fr-FR": "Aucune donnée trouvée",
+    "pt-BR": "Nenhum dado encontrado",
+    "de-DE": "Keine Daten gefunden"
+  },
+  "shared.statsCard.vsLast30Days": {
+    "es-ES": "vs últimos 30 días",
+    "fr-FR": "vs 30 derniers jours",
+    "pt-BR": "vs últimos 30 dias",
+    "de-DE": "vs letzte 30 Tage"
+  },
+  "error.boundary.title": {
+    "es-ES": "Algo salió mal",
+    "fr-FR": "Une erreur est survenue",
+    "pt-BR": "Algo deu errado",
+    "de-DE": "Etwas ist schiefgelaufen"
+  },
+  "error.boundary.message": {
+    "es-ES": "We're sorry, but something unexpected happened. Please try refreshing the page.",
+    "fr-FR": "We're sorry, but something unexpected happened. Please try refreshing the page.",
+    "pt-BR": "We're sorry, but something unexpected happened. Please try refreshing the page.",
+    "de-DE": "We're sorry, but something unexpected happened. Please try refreshing the page."
+  },
+  "error.boundary.refresh": {
+    "es-ES": "Refresh page",
+    "fr-FR": "Refresh page",
+    "pt-BR": "Refresh page",
+    "de-DE": "Refresh page"
+  },
+  "error.boundary.goToLogin": {
+    "es-ES": "Go to Login",
+    "fr-FR": "Go to Login",
+    "pt-BR": "Go to Login",
+    "de-DE": "Go to Login"
+  },
+  "error.boundary.goToDashboard": {
+    "es-ES": "Go to Dashboard",
+    "fr-FR": "Go to Dashboard",
+    "pt-BR": "Go to Dashboard",
+    "de-DE": "Go to Dashboard"
+  },
+  "settings.general.theme.followsDevice": {
+    "es-ES": " (follows device)",
+    "fr-FR": " (follows device)",
+    "pt-BR": " (follows device)",
+    "de-DE": " (follows device)"
+  },
+  "settings.notifications.currentChannel": {
+    "es-ES": "Current channel: {{channel}}",
+    "fr-FR": "Current channel: {{channel}}",
+    "pt-BR": "Current channel: {{channel}}",
+    "de-DE": "Current channel: {{channel}}"
+  },
+  "settings.notifications.edit": {
+    "es-ES": "Editar",
+    "fr-FR": "Modifier",
+    "pt-BR": "Editar",
+    "de-DE": "Bearbeiten"
+  },
+  "settings.notifications.manageDefaults": {
+    "es-ES": "Manage notification defaults",
+    "fr-FR": "Manage notification defaults",
+    "pt-BR": "Manage notification defaults",
+    "de-DE": "Manage notification defaults"
+  },
+  "settings.integrations.title": {
+    "es-ES": "Integraciones",
+    "fr-FR": "Intégrations",
+    "pt-BR": "Integrações",
+    "de-DE": "Integrationen"
+  },
+  "settings.integrations.addNew": {
+    "es-ES": "Add new integration",
+    "fr-FR": "Add new integration",
+    "pt-BR": "Add new integration",
+    "de-DE": "Add new integration"
+  },
+  "settings.integrations.status.connected": {
+    "es-ES": "Conectado",
+    "fr-FR": "Connecté",
+    "pt-BR": "Conectado",
+    "de-DE": "Verbunden"
+  },
+  "settings.integrations.status.available": {
+    "es-ES": "Disponible",
+    "fr-FR": "Disponible",
+    "pt-BR": "Disponível",
+    "de-DE": "Verfügbar"
+  },
+  "settings.integrations.status.comingSoon": {
+    "es-ES": "Próximamente",
+    "fr-FR": "Bientôt disponible",
+    "pt-BR": "Em breve",
+    "de-DE": "Demnächst"
+  },
+  "settings.integrations.googleClassroom.name": {
+    "es-ES": "Google Classroom",
+    "fr-FR": "Google Classroom",
+    "pt-BR": "Google Classroom",
+    "de-DE": "Google Classroom"
+  },
+  "settings.integrations.googleClassroom.description": {
+    "es-ES": "Sync assignments and rosters automatically.",
+    "fr-FR": "Sync assignments and rosters automatically.",
+    "pt-BR": "Sync assignments and rosters automatically.",
+    "de-DE": "Sync assignments and rosters automatically."
+  },
+  "settings.integrations.microsoftTeams.name": {
+    "es-ES": "Microsoft Teams",
+    "fr-FR": "Microsoft Teams",
+    "pt-BR": "Microsoft Teams",
+    "de-DE": "Microsoft Teams"
+  },
+  "settings.integrations.microsoftTeams.description": {
+    "es-ES": "Enable Teams meetings and assignment syncing.",
+    "fr-FR": "Enable Teams meetings and assignment syncing.",
+    "pt-BR": "Enable Teams meetings and assignment syncing.",
+    "de-DE": "Enable Teams meetings and assignment syncing."
+  },
+  "settings.integrations.canvasLms.name": {
+    "es-ES": "Canvas LMS",
+    "fr-FR": "Canvas LMS",
+    "pt-BR": "Canvas LMS",
+    "de-DE": "Canvas LMS"
+  },
+  "settings.integrations.canvasLms.description": {
+    "es-ES": "Direct gradebook integration for Canvas users.",
+    "fr-FR": "Direct gradebook integration for Canvas users.",
+    "pt-BR": "Direct gradebook integration for Canvas users.",
+    "de-DE": "Direct gradebook integration for Canvas users."
+  },
+  "settings.developer.title": {
+    "es-ES": "API & developer access",
+    "fr-FR": "API & developer access",
+    "pt-BR": "API & developer access",
+    "de-DE": "API & developer access"
+  },
+  "settings.developer.connectedApps": {
+    "es-ES": "Conectado apps",
+    "fr-FR": "Connecté apps",
+    "pt-BR": "Conectado apps",
+    "de-DE": "Verbunden apps"
+  },
+  "settings.developer.connectedAppsDesc": {
+    "es-ES": "3 apps have access to your teaching workspace.",
+    "fr-FR": "3 apps have access to your teaching workspace.",
+    "pt-BR": "3 apps have access to your teaching workspace.",
+    "de-DE": "3 apps have access to your teaching workspace."
+  },
+  "settings.developer.manageTokens": {
+    "es-ES": "Manage API tokens",
+    "fr-FR": "Manage API tokens",
+    "pt-BR": "Manage API tokens",
+    "de-DE": "Manage API tokens"
+  },
+  "settings.export.title": {
+    "es-ES": "Exportar & backup",
+    "fr-FR": "Exporter & backup",
+    "pt-BR": "Exportar & backup",
+    "de-DE": "Exportieren & backup"
+  },
+  "settings.export.downloadData": {
+    "es-ES": "Download workspace data",
+    "fr-FR": "Download workspace data",
+    "pt-BR": "Download workspace data",
+    "de-DE": "Download workspace data"
+  },
+  "settings.export.downloadDataDesc": {
+    "es-ES": "Templates, assessments, and chat history",
+    "fr-FR": "Templates, assessments, and chat history",
+    "pt-BR": "Templates, assessments, and chat history",
+    "de-DE": "Templates, assessments, and chat history"
+  },
+  "settings.export.scheduleBackups": {
+    "es-ES": "Schedule weekly backups",
+    "fr-FR": "Schedule weekly backups",
+    "pt-BR": "Schedule weekly backups",
+    "de-DE": "Schedule weekly backups"
+  },
+  "settings.plan.yourCredits": {
+    "es-ES": "Your credits",
+    "fr-FR": "Your credits",
+    "pt-BR": "Your credits",
+    "de-DE": "Your credits"
+  },
+  "settings.plan.memberSince": {
+    "es-ES": "Member since {{date}}",
+    "fr-FR": "Member since {{date}}",
+    "pt-BR": "Member since {{date}}",
+    "de-DE": "Member since {{date}}"
+  },
+  "settings.plan.activateCode": {
+    "es-ES": "+ Activate code",
+    "fr-FR": "+ Activate code",
+    "pt-BR": "+ Activate code",
+    "de-DE": "+ Activate code"
+  },
+  "settings.plan.creditsRemaining": {
+    "es-ES": "/ {{total}} credits",
+    "fr-FR": "/ {{total}} credits",
+    "pt-BR": "/ {{total}} credits",
+    "de-DE": "/ {{total}} credits"
+  },
+  "settings.plan.remainingPct": {
+    "es-ES": "{{pct}}% remaining",
+    "fr-FR": "{{pct}}% remaining",
+    "pt-BR": "{{pct}}% remaining",
+    "de-DE": "{{pct}}% remaining"
+  },
+  "settings.plan.expires": {
+    "es-ES": "Expires {{date}}",
+    "fr-FR": "Expires {{date}}",
+    "pt-BR": "Expires {{date}}",
+    "de-DE": "Expires {{date}}"
+  },
+  "settings.plan.autoRenewing": {
+    "es-ES": "Auto-renewing",
+    "fr-FR": "Auto-renewing",
+    "pt-BR": "Auto-renewing",
+    "de-DE": "Auto-renewing"
+  },
+  "settings.plan.noActiveCredits": {
+    "es-ES": "No active credits. Activate a code to get started.",
+    "fr-FR": "No active credits. Activate a code to get started.",
+    "pt-BR": "No active credits. Activate a code to get started.",
+    "de-DE": "No active credits. Activate a code to get started."
+  },
+  "settings.plan.activateCreditsLink": {
+    "es-ES": "Activar créditos →",
+    "fr-FR": "Actifr les crédits →",
+    "pt-BR": "Ativar créditos →",
+    "de-DE": "Credits aktivieren →"
+  },
+  "settings.plan.usageBreakdown": {
+    "es-ES": "Usage breakdown",
+    "fr-FR": "Usage breakdown",
+    "pt-BR": "Usage breakdown",
+    "de-DE": "Usage breakdown"
+  },
+  "settings.plan.last30Days": {
+    "es-ES": "Last 30 days",
+    "fr-FR": "Last 30 days",
+    "pt-BR": "Last 30 days",
+    "de-DE": "Last 30 days"
+  },
+  "settings.plan.activity": {
+    "es-ES": "Activity",
+    "fr-FR": "Activity",
+    "pt-BR": "Activity",
+    "de-DE": "Activity"
+  },
+  "settings.plan.activityFallback": {
+    "es-ES": "Activity",
+    "fr-FR": "Activity",
+    "pt-BR": "Activity",
+    "de-DE": "Activity"
+  },
+  "settings.plan.left": {
+    "es-ES": "{{count}} left",
+    "fr-FR": "{{count}} left",
+    "pt-BR": "{{count}} left",
+    "de-DE": "{{count}} left"
+  }
+}

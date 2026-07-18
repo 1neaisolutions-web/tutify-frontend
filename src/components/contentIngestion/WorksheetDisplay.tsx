@@ -2,6 +2,7 @@
  * Worksheet Display Component with MathJax rendering, Print, Copy, Export, and Edit functionality
  */
 import React, { useState, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MathJax, MathJaxContext } from 'better-react-mathjax'
 import { 
   Printer, 
@@ -33,25 +34,12 @@ const mathJaxConfig = {
   },
 }
 
-const getDifficultyBadge = (difficulty: string) => {
-  const badges = {
-    easy: { emoji: '🟢', color: 'text-green-700 bg-green-100', label: 'Easy' },
-    medium: { emoji: '🟡', color: 'text-yellow-700 bg-yellow-100', label: 'Medium' },
-    hard: { emoji: '🔴', color: 'text-red-700 bg-red-100', label: 'Hard' },
-  }
-  const badge = badges[difficulty as keyof typeof badges] || badges.medium
-  return (
-    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${badge.color}`}>
-      {badge.emoji} {badge.label}
-    </span>
-  )
-}
-
 export const WorksheetDisplay = ({ 
   worksheet: initialWorksheet, 
   showAnswers = false,
   onWorksheetUpdate 
 }: WorksheetDisplayProps) => {
+  const { t } = useTranslation()
   const [worksheet, setWorksheet] = useState<Worksheet>(initialWorksheet)
   const [isEditing, setIsEditing] = useState(false)
   const [editingQuestionId, setEditingQuestionId] = useState<string | null>(null)
@@ -64,10 +52,24 @@ export const WorksheetDisplay = ({
     setWorksheet(initialWorksheet)
   }, [initialWorksheet])
 
+  const getDifficultyBadge = (difficulty: string) => {
+    const badges = {
+      easy: { emoji: '🟢', color: 'text-green-700 bg-green-100', label: t('content.worksheet.difficulty.easy') },
+      medium: { emoji: '🟡', color: 'text-yellow-700 bg-yellow-100', label: t('content.worksheet.difficulty.medium') },
+      hard: { emoji: '🔴', color: 'text-red-700 bg-red-100', label: t('content.worksheet.difficulty.hard') },
+    }
+    const badge = badges[difficulty as keyof typeof badges] || badges.medium
+    return (
+      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${badge.color}`}>
+        {badge.emoji} {badge.label}
+      </span>
+    )
+  }
+
   if (!worksheet) {
     return (
       <div className="bg-white rounded-lg shadow p-6">
-        <p className="text-gray-600">No worksheet data available</p>
+        <p className="text-gray-600">{t('content.worksheet.empty')}</p>
       </div>
     )
   }
@@ -209,7 +211,7 @@ export const WorksheetDisplay = ({
     
     try {
       await navigator.clipboard.writeText(textContent)
-      toast.success('Worksheet copied to clipboard!')
+      toast.success(t('content.worksheet.toast.copySuccess'))
     } catch (error) {
       // Fallback for older browsers
       const textArea = document.createElement('textarea')
@@ -220,9 +222,9 @@ export const WorksheetDisplay = ({
       textArea.select()
       try {
         document.execCommand('copy')
-        toast.success('Worksheet copied to clipboard!')
+        toast.success(t('content.worksheet.toast.copySuccess'))
       } catch (err) {
-        toast.error('Failed to copy worksheet')
+        toast.error(t('content.worksheet.toast.copyFailed'))
       }
       document.body.removeChild(textArea)
     }
@@ -246,7 +248,7 @@ export const WorksheetDisplay = ({
     a.click()
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
-    toast.success('Worksheet exported as text file!')
+    toast.success(t('content.worksheet.toast.exportSuccess'))
   }
 
   // Export as PDF (using browser print to PDF)
@@ -271,7 +273,7 @@ export const WorksheetDisplay = ({
     if (onWorksheetUpdate) {
       onWorksheetUpdate(worksheet)
     }
-    toast.success('Worksheet saved!')
+    toast.success(t('content.worksheet.toast.saveSuccess'))
   }
 
   const handleCancel = () => {
@@ -279,7 +281,7 @@ export const WorksheetDisplay = ({
     setIsEditing(false)
     setEditingQuestionId(null)
     setEditingField(null)
-    toast.info('Changes cancelled')
+    toast.info(t('content.worksheet.toast.cancelled'))
   }
 
   const updateQuestion = (questionId: string, field: keyof WorksheetQuestion, value: any) => {
@@ -308,7 +310,7 @@ export const WorksheetDisplay = ({
   const addNewQuestion = () => {
     const newQuestion: WorksheetQuestion = {
       id: `new-${Date.now()}`,
-      question: 'New question text',
+      question: t('content.worksheet.edit.defaultQuestion'),
       type: 'short_answer',
       difficulty: 'medium',
       points: 1,
@@ -337,7 +339,7 @@ export const WorksheetDisplay = ({
   }
 
   const deleteQuestion = (questionId: string) => {
-    if (window.confirm('Are you sure you want to delete this question?')) {
+    if (window.confirm(t('content.worksheet.edit.deleteConfirm'))) {
       setWorksheet(prev => {
         const newAnswerKey = { ...prev.answer_key }
         const newMarkingScheme = { ...prev.marking_scheme }
@@ -363,7 +365,7 @@ export const WorksheetDisplay = ({
           const letter = String.fromCharCode(65 + currentOptions.length)
           return {
             ...q,
-            options: [...currentOptions, `${letter}) New option`],
+            options: [...currentOptions, `${letter}) ${t('content.worksheet.edit.defaultOption')}`],
           }
         }
         return q
@@ -507,9 +509,9 @@ export const WorksheetDisplay = ({
         <div className="bg-white rounded-lg shadow p-6 space-y-6 worksheet-print-container worksheet-content" ref={worksheetRef}>
           {/* Print-Only Header */}
           <div className="print-only hidden print:block border-b pb-4 mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Worksheet</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('content.worksheet.title')}</h1>
             {worksheet.topic_text && (
-              <p className="text-lg text-gray-700 mb-1">Topic: {worksheet.topic_text}</p>
+              <p className="text-lg text-gray-700 mb-1">{t('content.worksheet.meta.topic')} {worksheet.topic_text}</p>
             )}
             {worksheet.grade && worksheet.subject && (
               <p className="text-base text-gray-600">
@@ -518,7 +520,7 @@ export const WorksheetDisplay = ({
             )}
             {worksheet.created_at && (
               <p className="text-sm text-gray-500 mt-2">
-                Generated: {new Date(worksheet.created_at).toLocaleDateString()}
+                {t('content.worksheet.meta.generated')} {new Date(worksheet.created_at).toLocaleDateString()}
               </p>
             )}
           </div>
@@ -526,9 +528,9 @@ export const WorksheetDisplay = ({
           {/* Action Bar */}
           <div className="flex items-center justify-between border-b pb-4 no-print action-bar print-hide">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Worksheet</h2>
+              <h2 className="text-2xl font-bold text-gray-900">{t('content.worksheet.title')}</h2>
               {worksheet.topic_text && (
-                <p className="text-gray-600 mt-1">Topic: {worksheet.topic_text}</p>
+                <p className="text-gray-600 mt-1">{t('content.worksheet.meta.topic')} {worksheet.topic_text}</p>
               )}
               {worksheet.grade && worksheet.subject && (
                 <p className="text-sm text-gray-500 mt-1">
@@ -543,42 +545,42 @@ export const WorksheetDisplay = ({
                   <button
                     onClick={handleCopy}
                     className="px-3 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-                    title="Copy to clipboard"
+                    title={t('content.worksheet.actions.copy')}
                   >
                     <Copy className="w-4 h-4" />
-                    Copy
+                    {t('content.worksheet.actions.copy')}
                   </button>
                   <button
                     onClick={handleExportText}
                     className="px-3 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-                    title="Export as text"
+                    title={t('content.worksheet.actions.exportText')}
                   >
                     <FileText className="w-4 h-4" />
-                    Export Text
+                    {t('content.worksheet.actions.exportText')}
                   </button>
                   <button
                     onClick={handleExportPDF}
                     className="px-3 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-                    title="Export as PDF"
+                    title={t('content.worksheet.actions.exportPdf')}
                   >
                     <FileDown className="w-4 h-4" />
-                    Export PDF
+                    {t('content.worksheet.actions.exportPdf')}
                   </button>
                   <button
                     onClick={handlePrint}
                     className="px-3 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-                    title="Print worksheet"
+                    title={t('content.worksheet.actions.print')}
                   >
                     <Printer className="w-4 h-4" />
-                    Print
+                    {t('content.worksheet.actions.print')}
                   </button>
                   <button
                     onClick={handleEdit}
                     className="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2"
-                    title="Edit worksheet"
+                    title={t('content.worksheet.actions.edit')}
                   >
                     <Edit2 className="w-4 h-4" />
-                    Edit
+                    {t('content.worksheet.actions.edit')}
                   </button>
                 </>
               ) : (
@@ -588,14 +590,14 @@ export const WorksheetDisplay = ({
                     className="px-3 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                   >
                     <X className="w-4 h-4" />
-                    Cancel
+                    {t('content.worksheet.actions.cancel')}
                   </button>
                   <button
                     onClick={handleSave}
                     className="px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center gap-2"
                   >
                     <Save className="w-4 h-4" />
-                    Save
+                    {t('content.worksheet.actions.save')}
                   </button>
                 </>
               )}
@@ -610,7 +612,7 @@ export const WorksheetDisplay = ({
                 className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center gap-2"
               >
                 <Plus className="w-4 h-4" />
-                Add New Question
+                {t('content.worksheet.edit.addQuestion')}
               </button>
             </div>
           )}
@@ -737,7 +739,7 @@ export const WorksheetDisplay = ({
                               className="mt-2 px-3 py-1 text-sm text-blue-600 hover:text-blue-800 border border-blue-300 rounded hover:bg-blue-50 flex items-center gap-1"
                             >
                               <Plus className="w-3 h-3" />
-                              Add Option
+                              {t('content.worksheet.edit.addOption')}
                             </button>
                           )}
                         </div>
@@ -746,7 +748,7 @@ export const WorksheetDisplay = ({
                       {/* Answer Section */}
                       {showAnswers && (
                         <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                          <p className="text-sm font-semibold text-blue-900 mb-1">Answer:</p>
+                          <p className="text-sm font-semibold text-blue-900 mb-1">{t('content.worksheet.sections.answer')}</p>
                           {isEditing && editingField === 'answer' && editingQuestionId === question.id ? (
                             <input
                               type="text"
@@ -836,18 +838,18 @@ export const WorksheetDisplay = ({
                             onChange={(e) => updateQuestion(question.id, 'type', e.target.value)}
                             className="px-2 py-1 text-sm border border-gray-300 rounded"
                           >
-                            <option value="mcq">MCQ</option>
-                            <option value="short_answer">Short Answer</option>
-                            <option value="long_answer">Long Answer</option>
+                            <option value="mcq">{t('content.worksheet.questionTypes.mcq')}</option>
+                            <option value="short_answer">{t('content.worksheet.questionTypes.shortAnswer')}</option>
+                            <option value="long_answer">{t('content.worksheet.questionTypes.longAnswer')}</option>
                           </select>
                           <select
                             value={question.difficulty}
                             onChange={(e) => updateQuestion(question.id, 'difficulty', e.target.value)}
                             className="px-2 py-1 text-sm border border-gray-300 rounded"
                           >
-                            <option value="easy">Easy</option>
-                            <option value="medium">Medium</option>
-                            <option value="hard">Hard</option>
+                            <option value="easy">{t('content.worksheet.difficulty.easy')}</option>
+                            <option value="medium">{t('content.worksheet.difficulty.medium')}</option>
+                            <option value="hard">{t('content.worksheet.difficulty.hard')}</option>
                           </select>
                           <input
                             type="number"
@@ -855,14 +857,14 @@ export const WorksheetDisplay = ({
                             onChange={(e) => updateQuestion(question.id, 'points', parseInt(e.target.value) || 1)}
                             className="w-20 px-2 py-1 text-sm border border-gray-300 rounded"
                             min="1"
-                            placeholder="Points"
+                            placeholder={t('content.worksheet.points')}
                           />
                           <button
                             onClick={() => deleteQuestion(question.id)}
                             className="px-2 py-1 text-sm text-red-600 hover:text-red-800 border border-red-300 rounded hover:bg-red-50 flex items-center gap-1"
                           >
                             <Trash2 className="w-3 h-3" />
-                            Delete
+                            {t('content.worksheet.edit.delete')}
                           </button>
                         </div>
                       )}
@@ -876,12 +878,12 @@ export const WorksheetDisplay = ({
           {/* Marking Scheme (Answers Mode) */}
           {showAnswers && worksheet.marking_scheme && (
             <div className="border-t pt-4 mt-6">
-              <h3 className="font-semibold text-gray-900 mb-3">Marking Scheme</h3>
+              <h3 className="font-semibold text-gray-900 mb-3">{t('content.worksheet.sections.markingScheme')}</h3>
               <div className="space-y-2">
                 {Object.entries(worksheet.marking_scheme || {}).map(([questionId, scheme]: [string, any]) => (
                   <div key={questionId} className="text-sm p-2 bg-gray-50 rounded">
                     <span className="font-medium">Q{questionId}:</span>{' '}
-                    <span className="text-gray-700">{scheme.points} points</span>
+                    <span className="text-gray-700">{t('content.worksheet.marking.points', { points: scheme.points })}</span>
                     {scheme.criteria && (
                       <p className="text-gray-600 mt-1 ml-4 text-xs">{scheme.criteria}</p>
                     )}
@@ -894,7 +896,7 @@ export const WorksheetDisplay = ({
           {/* Warnings */}
           {worksheet.warnings && worksheet.warnings.length > 0 && (
             <div className="border-t pt-4 mt-6">
-              <h3 className="font-semibold text-yellow-900 mb-2">Warnings</h3>
+              <h3 className="font-semibold text-yellow-900 mb-2">{t('content.worksheet.sections.warnings')}</h3>
               <div className="space-y-1">
                 {worksheet.warnings.map((warning, idx) => (
                   <p key={idx} className="text-sm text-yellow-700">{warning}</p>

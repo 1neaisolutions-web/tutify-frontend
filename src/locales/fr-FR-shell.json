@@ -1,0 +1,37 @@
+{
+  "dashboard": {
+    "greetingMorning": "Bonjour, {{name}}",
+    "greetingAfternoon": "Bon après-midi, {{name}}",
+    "greetingEvening": "Bonsoir, {{name}}",
+    "defaultName": "enseignant",
+    "workspaceReady": "Votre espace de travail est prêt.",
+    "activeContent": "{{count}} éléments actifs dans votre espace",
+    "createFirstQuiz": "Créez votre premier quiz pour commencer.",
+    "createFirstQuizCta": "Créer un quiz",
+    "totalContent": "Contenu total",
+    "thisWeek": "Cette semaine",
+    "draftBacklog": "Brouillons en attente",
+    "published": "Publié",
+    "dayStreak": "Série de jours",
+    "upcomingDeadlines": "Échéances à venir",
+    "noDeadlines": "Aucune échéance à venir",
+    "noActivity": "Aucune activité récente",
+    "draftsToFinish": "Brouillons à terminer",
+    "all": "Tout",
+    "noDrafts": "Aucun brouillon",
+    "coreWorkflows": "Flux principaux",
+    "dueToday": "Échéance aujourd'hui",
+    "dueInDays": "Échéance dans {{count}} jours",
+    "dueSoon": "Bientôt dû : {{title}}",
+    "continueDraft": "Continuer le brouillon : {{title}}",
+    "recentActivity": "Activité récente",
+    "viewAll": "Tout voir",
+    "teacherToolsOverview": "Aperçu des outils",
+    "tools": {
+      "quiz": "Quiz",
+      "assignment": "Devoir",
+      "worksheet": "Feuille de travail",
+      "exam": "Examen"
+    }
+  }
+}

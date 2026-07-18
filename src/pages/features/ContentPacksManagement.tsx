@@ -28,24 +28,26 @@ import { ContentPackCard } from '../../components/contentIngestion/ContentPackCa
 import { useSnackbar } from '../../hooks/useSnackbar'
 import { useNavigate } from 'react-router-dom'
 
+import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 // ---------------------------------------------------------------------------
 // Error helpers
 // ---------------------------------------------------------------------------
 
-function extractApiError(error: unknown): string {
+function extractApiError(error: unknown, t: TFunction): string {
   if (error && typeof error === 'object') {
     const e = error as Record<string, unknown>
     const status = e.status as number | undefined
     const message = e.message as string | undefined
 
-    if (status === 409) return 'A content pack with this name already exists.'
-    if (status === 403) return 'You do not have permission to perform this action.'
-    if (status === 404) return 'Content pack not found — it may have been deleted.'
-    if (status === 422) return message || 'Invalid input — check all required fields.'
-    if (status === 401) return 'Your session has expired. Please log in again.'
+    if (status === 409) return t('contentPacksPage.errors.duplicateName')
+    if (status === 403) return t('contentPacksPage.errors.forbidden')
+    if (status === 404) return t('contentPacksPage.errors.notFound')
+    if (status === 422) return message || t('contentPacksPage.errors.invalidInput')
+    if (status === 401) return t('contentPacksPage.errors.sessionExpired')
     if (message) return message
   }
-  return 'An unexpected error occurred. Please try again.'
+  return t('contentPacksPage.errors.unexpected')
 }
 
 // ---------------------------------------------------------------------------
@@ -103,12 +105,8 @@ const EMPTY_FORM: PackFormValues = {
   curriculum: '',
 }
 
-const MODAL_COPY = {
-  create: { title: 'Create Content Pack', button: 'Create' },
-  edit: { title: 'Update Content Pack', button: 'Update' },
-} satisfies Record<ModalMode, { title: string; button: string }>
-
 const PackFormModal = ({ mode, initialValues, onClose, onSubmit }: PackFormModalProps) => {
+  const { t } = useTranslation()
   const [values, setValues] = useState<PackFormValues>({
     ...EMPTY_FORM,
     ...initialValues,
@@ -117,7 +115,8 @@ const PackFormModal = ({ mode, initialValues, onClose, onSubmit }: PackFormModal
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
 
-  const copy = MODAL_COPY[mode]
+  const modalTitle = mode === 'create' ? t('contentPacksPage.modalCreateTitle') : t('contentPacksPage.modalEditTitle')
+  const modalButton = mode === 'create' ? t('contentPacksPage.modalCreateButton') : t('contentPacksPage.modalEditButton')
 
   const set = (field: keyof PackFormValues) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setValues((v) => ({ ...v, [field]: e.target.value }))
@@ -126,11 +125,11 @@ const PackFormModal = ({ mode, initialValues, onClose, onSubmit }: PackFormModal
     const next: PackFormErrors = {}
     const trimmedName = values.name.trim()
     if (!trimmedName) {
-      next.name = 'Name is required.'
+      next.name = t('contentPacksPage.validationNameRequired')
     } else if (trimmedName.length < 2) {
-      next.name = 'Name must be at least 2 characters.'
+      next.name = t('contentPacksPage.validationNameMinLength')
     } else if (trimmedName.length > 200) {
-      next.name = 'Name must be 200 characters or fewer.'
+      next.name = t('contentPacksPage.validationNameMaxLength')
     }
     setErrors(next)
     return Object.keys(next).length === 0
@@ -150,7 +149,7 @@ const PackFormModal = ({ mode, initialValues, onClose, onSubmit }: PackFormModal
         curriculum: values.curriculum.trim() || null,
       })
     } catch (err) {
-      setSubmitError(extractApiError(err))
+      setSubmitError(extractApiError(err, t))
     } finally {
       setIsSubmitting(false)
     }
@@ -168,11 +167,11 @@ const PackFormModal = ({ mode, initialValues, onClose, onSubmit }: PackFormModal
     >
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
         <div className="px-6 py-5 border-b border-gray-100">
-          <h2 className="text-lg font-semibold text-gray-900">{copy.title}</h2>
+          <h2 className="text-lg font-semibold text-gray-900">{modalTitle}</h2>
           <p className="text-sm text-gray-500 mt-0.5">
             {mode === 'create'
-              ? 'New packs appear in teacher quiz source selection once at least one document is published.'
-              : 'Changes are reflected in teacher quiz source selection immediately.'}
+              ? t('contentPacksPage.modalCreateSubtitle')
+              : t('contentPacksPage.modalEditSubtitle')}
           </p>
         </div>
 
@@ -186,15 +185,14 @@ const PackFormModal = ({ mode, initialValues, onClose, onSubmit }: PackFormModal
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Name <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('contentPacksPage.name')}<span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 value={values.name}
                 onChange={set('name')}
                 disabled={isSubmitting}
-                placeholder="e.g. Cambridge IGCSE Biology (Grade 10)"
+                placeholder={t('contentPacksPage.namePlaceholder')}
                 className={inputCls(errors.name)}
                 autoFocus
               />
@@ -204,12 +202,12 @@ const PackFormModal = ({ mode, initialValues, onClose, onSubmit }: PackFormModal
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('contentPacksPage.description')}</label>
               <textarea
                 value={values.description}
                 onChange={set('description')}
                 disabled={isSubmitting}
-                placeholder="Brief description for admin reference"
+                placeholder={t('contentPacksPage.briefDescriptionForAdminReference')}
                 className={`${inputCls()} resize-none`}
                 rows={2}
               />
@@ -217,42 +215,40 @@ const PackFormModal = ({ mode, initialValues, onClose, onSubmit }: PackFormModal
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('contentPacksPage.subject')}</label>
                 <input
                   type="text"
                   value={values.subject}
                   onChange={set('subject')}
                   disabled={isSubmitting}
-                  placeholder="e.g. Biology"
+                  placeholder={t('contentPacksPage.eGBiology')}
                   className={inputCls()}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Grade / Band</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('contentPacksPage.gradeBand')}</label>
                 <input
                   type="text"
                   value={values.grade}
                   onChange={set('grade')}
                   disabled={isSubmitting}
-                  placeholder="e.g. Grade 10"
+                  placeholder={t('contentPacksPage.eGGrade10')}
                   className={inputCls()}
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Curriculum / Board</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('contentPacksPage.curriculumBoard')}</label>
               <input
                 type="text"
                 value={values.curriculum}
                 onChange={set('curriculum')}
                 disabled={isSubmitting}
-                placeholder="e.g. Cambridge, IB, CCSS"
+                placeholder={t('contentPacksPage.eGCambridgeIbCcss')}
                 className={inputCls()}
               />
-              <p className="mt-1 text-xs text-gray-500">
-                Used to filter quiz source selection by curriculum.
-              </p>
+              <p className="mt-1 text-xs text-gray-500">{t('contentPacksPage.usedToFilterQuizSourceSelectionByCurriculum')}</p>
             </div>
           </div>
 
@@ -262,9 +258,7 @@ const PackFormModal = ({ mode, initialValues, onClose, onSubmit }: PackFormModal
               onClick={onClose}
               disabled={isSubmitting}
               className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Cancel
-            </button>
+            >{t('contentPacksPage.cancel')}</button>
             <button
               type="submit"
               disabled={isSubmitting}
@@ -273,10 +267,10 @@ const PackFormModal = ({ mode, initialValues, onClose, onSubmit }: PackFormModal
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Saving…</span>
+                  <span>{t('contentPacksPage.saving')}</span>
                 </>
               ) : (
-                copy.button
+                modalButton
               )}
             </button>
           </div>
@@ -296,7 +290,9 @@ interface SuccessModalProps {
   onClose: () => void
 }
 
-const SuccessModal = ({ pack, onUploadDocuments, onClose }: SuccessModalProps) => (
+const SuccessModal = ({ pack, onUploadDocuments, onClose }: SuccessModalProps) => {
+  const { t } = useTranslation()
+  return (
   <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
     <div className="bg-white rounded-xl shadow-2xl w-full max-w-md p-6">
       <div className="flex items-center gap-3 mb-4">
@@ -304,10 +300,8 @@ const SuccessModal = ({ pack, onUploadDocuments, onClose }: SuccessModalProps) =
           <CheckCircle className="w-7 h-7 text-green-600" />
         </div>
         <div>
-          <h2 className="text-lg font-semibold text-gray-900">Pack created</h2>
-          <p className="text-sm text-gray-500">
-            Upload documents to make it available for quiz generation.
-          </p>
+          <h2 className="text-lg font-semibold text-gray-900">{t('contentPacksPage.packCreated')}</h2>
+          <p className="text-sm text-gray-500">{t('contentPacksPage.uploadDocumentsToMakeItAvailableForQuizGeneration')}</p>
         </div>
       </div>
 
@@ -325,21 +319,18 @@ const SuccessModal = ({ pack, onUploadDocuments, onClose }: SuccessModalProps) =
           type="button"
           onClick={onClose}
           className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-        >
-          Done
-        </button>
+        >{t('contentPacksPage.done')}</button>
         <button
           type="button"
           onClick={onUploadDocuments}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
         >
-          <Upload className="w-4 h-4" />
-          Upload Documents
-        </button>
+          <Upload className="w-4 h-4" />{t('contentPacksPage.uploadDocuments')}</button>
       </div>
     </div>
   </div>
-)
+  )
+}
 
 // ---------------------------------------------------------------------------
 // Delete confirmation modal
@@ -352,7 +343,9 @@ interface DeleteModalProps {
   onCancel: () => void
 }
 
-const DeleteModal = ({ packName, isDeleting, onConfirm, onCancel }: DeleteModalProps) => (
+const DeleteModal = ({ packName, isDeleting, onConfirm, onCancel }: DeleteModalProps) => {
+  const { t } = useTranslation()
+  return (
   <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
     <div className="bg-white rounded-xl shadow-2xl w-full max-w-md p-6">
       <div className="flex items-center gap-3 mb-4">
@@ -360,18 +353,14 @@ const DeleteModal = ({ packName, isDeleting, onConfirm, onCancel }: DeleteModalP
           <AlertCircle className="w-6 h-6 text-red-600" />
         </div>
         <div>
-          <h3 className="text-base font-semibold text-gray-900">Delete content pack</h3>
-          <p className="text-xs text-gray-500">This action cannot be undone.</p>
+          <h3 className="text-base font-semibold text-gray-900">{t('contentPacksPage.deleteContentPack')}</h3>
+          <p className="text-xs text-gray-500">{t('contentPacksPage.thisActionCannotBeUndone')}</p>
         </div>
       </div>
 
-      <p className="text-sm text-gray-700 mb-2">
-        Delete <strong className="font-medium">"{packName}"</strong>?
+      <p className="text-sm text-gray-700 mb-2">{t('contentPacksPage.delete')}<strong className="font-medium">"{packName}"</strong>?
       </p>
-      <p className="text-xs text-gray-500 mb-6">
-        The pack will be deactivated and removed from teacher quiz source selection.
-        Associated documents are preserved but will be unlinked.
-      </p>
+      <p className="text-xs text-gray-500 mb-6">{t('contentPacksPage.thePackWillBeDeactivatedAndRemovedFromTeacherQuiz')}</p>
 
       <div className="flex justify-end gap-3">
         <button
@@ -379,9 +368,7 @@ const DeleteModal = ({ packName, isDeleting, onConfirm, onCancel }: DeleteModalP
           onClick={onCancel}
           disabled={isDeleting}
           className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Cancel
-        </button>
+        >{t('contentPacksPage.cancel')}</button>
         <button
           type="button"
           onClick={onConfirm}
@@ -391,16 +378,17 @@ const DeleteModal = ({ packName, isDeleting, onConfirm, onCancel }: DeleteModalP
           {isDeleting ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              <span>Deleting…</span>
+              <span>{t('contentPacksPage.deleting')}</span>
             </>
           ) : (
-            'Delete'
+            t('contentPacksPage.delete')
           )}
         </button>
       </div>
     </div>
   </div>
-)
+  )
+}
 
 // ---------------------------------------------------------------------------
 // Main page
@@ -414,6 +402,7 @@ type ModalState =
   | { kind: 'success'; pack: ContentPack }
 
 export const ContentPacksManagement = () => {
+  const { t } = useTranslation()
   const [packs, setPacks] = useState<ContentPack[]>([])
   const [loading, setLoading] = useState(true)
   const [listError, setListError] = useState<string | null>(null)
@@ -435,7 +424,7 @@ export const ContentPacksManagement = () => {
       const data = await fetchContentPacks({ is_active: true })
       setPacks(data ?? [])
     } catch (err) {
-      const msg = extractApiError(err)
+      const msg = extractApiError(err, t)
       setListError(msg)
       toastRef.current.error(msg)
       setPacks([])
@@ -450,7 +439,7 @@ export const ContentPacksManagement = () => {
 
   const handleCreateSubmit = async (data: ContentPackCreate) => {
     const newPack = await createContentPack(data)
-    toast.success('Content pack created.')
+    toast.success(t('contentPacksPage.contentPackCreated'))
     setModal({ kind: 'success', pack: newPack })
     await loadPacks()
   }
@@ -458,7 +447,7 @@ export const ContentPacksManagement = () => {
   const handleEditSubmit = async (data: ContentPackCreate) => {
     if (modal.kind !== 'edit') return
     await updateContentPack(modal.pack.id, data)
-    toast.success('Content pack updated.')
+    toast.success(t('contentPacksPage.contentPackUpdated'))
     setModal({ kind: 'none' })
     await loadPacks()
   }
@@ -468,11 +457,11 @@ export const ContentPacksManagement = () => {
     setIsDeleting(true)
     try {
       await deleteContentPack(modal.packId)
-      toast.success('Content pack deleted.')
+      toast.success(t('contentPacksPage.contentPackDeleted'))
       setModal({ kind: 'none' })
       await loadPacks()
     } catch (err) {
-      toast.error(extractApiError(err))
+      toast.error(extractApiError(err, t))
     } finally {
       setIsDeleting(false)
     }
@@ -510,18 +499,14 @@ export const ContentPacksManagement = () => {
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Content Packs</h1>
-            <p className="text-sm text-gray-500 mt-0.5">
-              Manage curriculum packs — these power quiz source selection for teachers.
-            </p>
+            <h1 className="text-2xl font-bold text-gray-900">{t('contentPacksPage.contentPacks')}</h1>
+            <p className="text-sm text-gray-500 mt-0.5">{t('contentPacksPage.manageCurriculumPacksThesePowerQuizSourceSelectionForTe')}</p>
           </div>
           <button
             onClick={() => setModal({ kind: 'create' })}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
           >
-            <Plus className="w-4 h-4" />
-            Create Pack
-          </button>
+            <Plus className="w-4 h-4" />{t('contentPacksPage.createPack')}</button>
         </div>
 
         {/* Search */}
@@ -530,7 +515,7 @@ export const ContentPacksManagement = () => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
             <input
               type="text"
-              placeholder="Search by name, subject, or curriculum…"
+              placeholder={t('contentPacksPage.searchByNameSubjectOrCurriculum')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -543,15 +528,13 @@ export const ContentPacksManagement = () => {
           <div className="bg-red-50 border border-red-200 rounded-xl p-6 flex items-start gap-4">
             <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-red-800">Failed to load content packs</p>
+              <p className="text-sm font-semibold text-red-800">{t('contentPacksPage.failedToLoadContentPacks')}</p>
               <p className="text-sm text-red-600 mt-1">{listError}</p>
               <button
                 onClick={() => { setListError(null); loadPacks() }}
                 className="mt-3 flex items-center gap-2 px-3 py-1.5 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors"
               >
-                <RefreshCw className="w-3.5 h-3.5" />
-                Retry
-              </button>
+                <RefreshCw className="w-3.5 h-3.5" />{t('contentPacksPage.retry')}</button>
             </div>
           </div>
         ) : loading ? (
@@ -562,21 +545,19 @@ export const ContentPacksManagement = () => {
           <div className="bg-white rounded-xl border border-dashed border-gray-300 p-12 text-center">
             <PackageOpen className="w-10 h-10 text-gray-300 mx-auto mb-3" />
             <p className="text-sm font-semibold text-gray-700">
-              {searchQuery ? 'No packs match your search' : 'No content packs yet'}
+              {searchQuery ? t('contentPacksPage.emptyNoSearchResults') : t('contentPacksPage.emptyNoPacks')}
             </p>
             <p className="text-xs text-gray-500 mt-1 max-w-xs mx-auto">
               {searchQuery
-                ? 'Try a different name, subject, or curriculum.'
-                : 'Create a pack and upload documents to enable teacher quiz generation.'}
+                ? t('contentPacksPage.emptySearchHint')
+                : t('contentPacksPage.emptyCreateHint')}
             </p>
             {!searchQuery && (
               <button
                 onClick={() => setModal({ kind: 'create' })}
                 className="mt-4 flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors mx-auto"
               >
-                <Plus className="w-4 h-4" />
-                Create your first pack
-              </button>
+                <Plus className="w-4 h-4" />{t('contentPacksPage.createYourFirstPack')}</button>
             )}
           </div>
         ) : (

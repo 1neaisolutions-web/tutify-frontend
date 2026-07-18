@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const NOTES_KEY = 'tutify_student_notes_v1';
 
 const StudyRoomDetail = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const subject = decodeURIComponent(id || '');
@@ -25,30 +27,28 @@ const StudyRoomDetail = () => {
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between gap-4">
         <div>
           <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{subject} Study Room</h1>
-          <p className="text-sm text-gray-600 dark:text-gray-300">Scoped Phase 1: static resources + notes shortcut.</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.studyRoom.detail.subtitle')}</p>
         </div>
         <button
           type="button"
           onClick={() => navigate('/student/subjects')}
           className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900"
-        >
-          Back
-        </button>
+        >{t('studentPanel.common.back')}</button>
       </div>
 
       <div className="px-6 py-6 max-w-4xl grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4">
-          <h2 className="font-semibold text-gray-900 dark:text-gray-100">Resources (demo)</h2>
+          <h2 className="font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.studyRoom.detail.resources.title')}</h2>
           <ul className="mt-3 space-y-2 text-sm text-gray-700 dark:text-gray-200">
-            <li className="rounded-lg bg-gray-50 dark:bg-gray-900/40 px-3 py-2">Key formulas / definitions</li>
-            <li className="rounded-lg bg-gray-50 dark:bg-gray-900/40 px-3 py-2">Practice set starter</li>
-            <li className="rounded-lg bg-gray-50 dark:bg-gray-900/40 px-3 py-2">AI: ask questions in Copilot or Tutors</li>
+            <li className="rounded-lg bg-gray-50 dark:bg-gray-900/40 px-3 py-2">{t('studentPanel.studyRoom.detail.resources.formulas')}</li>
+            <li className="rounded-lg bg-gray-50 dark:bg-gray-900/40 px-3 py-2">{t('studentPanel.studyRoom.detail.resources.practice')}</li>
+            <li className="rounded-lg bg-gray-50 dark:bg-gray-900/40 px-3 py-2">{t('studentPanel.studyRoom.detail.resources.aiHint')}</li>
           </ul>
         </div>
 
         <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="font-semibold text-gray-900 dark:text-gray-100">Recent notes</h2>
+            <h2 className="font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.studyRoom.detail.recentNotes')}</h2>
             <button
               type="button"
               onClick={() => navigate('/student/notes/new')}
@@ -59,7 +59,7 @@ const StudyRoomDetail = () => {
           </div>
           <div className="mt-3 space-y-2">
             {notes.length === 0 ? (
-              <p className="text-sm text-gray-600 dark:text-gray-300">No notes yet.</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.notes.empty')}</p>
             ) : (
               notes.map((n) => (
                 <button

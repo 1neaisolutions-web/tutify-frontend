@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { ArrowUpRight, Clock, Layers, Search, Sparkles } from 'lucide-react'
 
@@ -6,6 +7,7 @@ import {
   useListItemsQuery,
   type ContentRegistryItem,
 } from '../redux/features/contentRegistry/contentRegistryApiSlice'
+import { catalogCategory, catalogLabel } from '../i18n/catalogLabel'
 import { useTeacherToolsDemo } from './features/teacher-tools/TeacherToolsDemoProvider'
 
 const CONTENT_TYPE_PATHS: Record<string, string> = {
@@ -25,34 +27,60 @@ const DIFFICULTY_COLOURS: Record<string, string> = {
   challenge: 'bg-red-100   text-red-700',
 }
 
+function difficultyLabel(t: (key: string) => string, difficulty: string) {
+  const key = `exploreUseCases.difficulty.${difficulty.toLowerCase()}`
+  const translated = t(key)
+  return translated !== key ? translated : difficulty
+}
+
+function templateTitle(
+  t: (key: string) => string,
+  item: ContentRegistryItem,
+): string {
+  const id = item.content_id || item.id
+  const fromExplore = catalogLabel(t, 'exploreUseCases', id, 'title', item.title)
+  if (fromExplore !== item.title) return fromExplore
+  return catalogLabel(t, 'templatesLibrary', id, 'title', item.title)
+}
+
+function contentTypeLabel(t: (key: string) => string, contentType: string) {
+  const key = `exploreUseCases.contentTypes.${contentType.toLowerCase()}`
+  const translated = t(key)
+  return translated !== key ? translated : contentType.charAt(0).toUpperCase() + contentType.slice(1)
+}
+
 function TemplateCard({ item }: { item: ContentRegistryItem }) {
+  const { t } = useTranslation()
   return (
     <div className="flex flex-col justify-between rounded-2xl border border-gray-200 bg-white p-5 shadow-sm hover:border-primary-200 hover:shadow-md transition">
       <div className="space-y-3">
         <div className="flex items-start justify-between gap-2">
           <span className="rounded-full bg-primary-50 px-2.5 py-0.5 text-xs font-medium text-primary-700">
-            {item.category ?? item.content_type}
+            {catalogCategory(t, 'exploreUseCases', item.category) ||
+              contentTypeLabel(t, item.content_type)}
           </span>
           {item.estimated_duration_min && (
             <span className="flex items-center gap-1 text-xs text-gray-400">
               <Clock className="h-3 w-3" />
-              {item.estimated_duration_min} min
+              {t('exploreUseCases.minDuration', { count: item.estimated_duration_min })}
             </span>
           )}
         </div>
-        <h3 className="font-semibold text-gray-900 leading-snug">{item.title}</h3>
+        <h3 className="font-semibold text-gray-900 leading-snug">
+          {templateTitle(t, item)}
+        </h3>
         {item.difficulty && (
           <span
             className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
               DIFFICULTY_COLOURS[item.difficulty] ?? 'bg-gray-100 text-gray-600'
             }`}
           >
-            {item.difficulty}
+            {difficultyLabel(t, item.difficulty)}
           </span>
         )}
       </div>
       <Link to={ctaPath(item.content_type)} className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary-600 hover:text-primary-500">
-        Use this template <ArrowUpRight className="h-4 w-4" />
+        {t('exploreUseCases.useTemplate')} <ArrowUpRight className="h-4 w-4" />
       </Link>
     </div>
   )
@@ -69,6 +97,7 @@ function TemplateSkeleton() {
 }
 
 const ExploreUseCases = () => {
+  const { t } = useTranslation()
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategory] = useState('')
   const [typeFilter, setType] = useState('')
@@ -152,15 +181,15 @@ const ExploreUseCases = () => {
       <section className="rounded-3xl bg-gradient-to-r from-primary-600 via-indigo-600 to-sky-500 px-8 py-10 text-white shadow-xl">
         <div className="max-w-3xl space-y-4">
           <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-medium uppercase tracking-wide">
-            <Sparkles className="h-4 w-4" /> Explore use cases
+            <Sparkles className="h-4 w-4" /> {t('exploreUseCases.badge')}
           </div>
-          <h1 className="text-3xl font-semibold lg:text-4xl">Real templates, ready to use.</h1>
+          <h1 className="text-3xl font-semibold lg:text-4xl">{t('exploreUseCases.title')}</h1>
           <p className="text-white/80">
             {isLoading
-              ? 'Loading templates…'
+              ? t('exploreUseCases.loadingTemplates')
               : allTemplates.length > 0
-                ? `${allTemplates.length} published template${allTemplates.length > 1 ? 's' : ''} across ${categories.length} category${categories.length !== 1 ? 'ies' : ''}.`
-                : 'Browse how teachers apply AI tools across the learning journey.'}
+                ? t('exploreUseCases.publishedCount', { count: allTemplates.length, categories: categories.length })
+                : t('exploreUseCases.browseHint')}
           </p>
         </div>
       </section>
@@ -170,7 +199,7 @@ const ExploreUseCases = () => {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <input
             type="text"
-            placeholder="Search templates…"
+            placeholder={t('exploreUseCases.searchPlaceholder')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full rounded-xl border border-gray-200 bg-white py-2 pl-9 pr-4 text-sm outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
@@ -183,10 +212,10 @@ const ExploreUseCases = () => {
             onChange={(e) => setCategory(e.target.value)}
             className="rounded-xl border border-gray-200 bg-white py-2 px-3 text-sm outline-none focus:border-primary-400"
           >
-            <option value="">All categories</option>
+            <option value="">{t('exploreUseCases.allCategories')}</option>
             {categories.map((c) => (
               <option key={c} value={c}>
-                {c}
+                {catalogCategory(t, 'exploreUseCases', c)}
               </option>
             ))}
           </select>
@@ -198,10 +227,10 @@ const ExploreUseCases = () => {
             onChange={(e) => setType(e.target.value)}
             className="rounded-xl border border-gray-200 bg-white py-2 px-3 text-sm outline-none focus:border-primary-400"
           >
-            <option value="">All types</option>
-            {contentTypes.map((t) => (
-              <option key={t} value={t}>
-                {t.charAt(0).toUpperCase() + t.slice(1)}
+            <option value="">{t('exploreUseCases.allTypes')}</option>
+            {contentTypes.map((type) => (
+              <option key={type} value={type}>
+                {contentTypeLabel(t, type)}
               </option>
             ))}
           </select>
@@ -216,14 +245,16 @@ const ExploreUseCases = () => {
             }}
             className="text-sm text-primary-600 hover:text-primary-500 font-medium"
           >
-            Clear filters
+            {t('exploreUseCases.clearFilters')}
           </button>
         )}
       </div>
 
       <section>
         <h2 className="text-xl font-semibold text-gray-900 mb-4">
-          {filtered.length > 0 || isLoading ? `Platform templates${categoryFilter ? ` · ${categoryFilter}` : ''}` : 'No templates match your filters'}
+          {filtered.length > 0 || isLoading
+            ? `${t('exploreUseCases.platformTemplates')}${categoryFilter ? ` · ${categoryFilter}` : ''}`
+            : t('exploreUseCases.noTemplatesMatch')}
         </h2>
 
         {isLoading ? (
@@ -236,9 +267,7 @@ const ExploreUseCases = () => {
           <div className="rounded-2xl border border-dashed border-gray-300 py-16 text-center">
             <Layers className="h-10 w-10 text-gray-200 mx-auto mb-3" />
             <p className="text-gray-500">
-              {allTemplates.length === 0
-                ? 'Templates are coming soon. Check back after an admin publishes content.'
-                : 'No templates match your current filters.'}
+              {allTemplates.length === 0 ? t('exploreUseCases.comingSoon') : t('exploreUseCases.noFiltersMatch')}
             </p>
             {allTemplates.length > 0 && (
               <button
@@ -249,7 +278,7 @@ const ExploreUseCases = () => {
                 }}
                 className="mt-3 text-sm font-semibold text-primary-600 hover:text-primary-500"
               >
-                Clear filters
+                {t('exploreUseCases.clearFilters')}
               </button>
             )}
           </div>
@@ -264,8 +293,8 @@ const ExploreUseCases = () => {
 
       {myPatterns.length > 0 && (
         <section>
-          <h2 className="text-xl font-semibold text-gray-900 mb-1">Your proven patterns</h2>
-          <p className="text-sm text-gray-500 mb-4">Content you've published — duplicate and adapt for new classes.</p>
+          <h2 className="text-xl font-semibold text-gray-900 mb-1">{t('exploreUseCases.yourPatterns')}</h2>
+          <p className="text-sm text-gray-500 mb-4">{t('exploreUseCases.yourPatternsHint')}</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {myPatterns.map((item) => (
               <Link
@@ -282,13 +311,15 @@ const ExploreUseCases = () => {
                         : 'bg-orange-100 text-orange-700'
                   }`}
                 >
-                  {item.tool.charAt(0).toUpperCase() + item.tool.slice(1)}
+                  {t(`exploreUseCases.tools.${item.tool}`)}
                 </span>
-                <h3 className="font-semibold text-gray-900 leading-snug">{item.title}</h3>
+                <h3 className="font-semibold text-gray-900 leading-snug">
+          {templateTitle(t, item)}
+        </h3>
                 <p className="text-sm text-gray-500 mt-1">
                   {item.subject} · {item.grade}
                 </p>
-                <p className="mt-3 text-sm font-semibold text-primary-600">Duplicate & adapt →</p>
+                <p className="mt-3 text-sm font-semibold text-primary-600">{t('exploreUseCases.duplicateAdapt')}</p>
               </Link>
             ))}
           </div>

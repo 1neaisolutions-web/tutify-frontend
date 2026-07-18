@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const STORAGE_KEY = 'tutify_student_tasks_v1';
 
 const loadTasks = () => {
+  const { t } = useTranslation();
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     const parsed = raw ? JSON.parse(raw) : [];
@@ -21,8 +23,8 @@ const PersonalTaskManager = () => {
     <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">My Tasks</h1>
-          <p className="text-sm text-gray-600 dark:text-gray-300">Personal productivity tasks (Phase 1 local demo).</p>
+          <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.tasks.title')}</h1>
+          <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.tasks.subtitle')}</p>
         </div>
         <button
           type="button"
@@ -35,7 +37,7 @@ const PersonalTaskManager = () => {
 
       <div className="px-6 py-6 max-w-4xl space-y-4">
         <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4">
-          <h2 className="font-semibold text-gray-900 dark:text-gray-100">AI Suggestions (demo)</h2>
+          <h2 className="font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.tasks.suggestions.title')}</h2>
           <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
             {[
               { title: 'Review weak quiz topics', due: 'Tomorrow' },

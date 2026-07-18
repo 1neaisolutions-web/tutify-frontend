@@ -1,3 +1,6 @@
+import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 import {
   AlertCircle,
   BookMarked,
@@ -12,36 +15,6 @@ import { getBookById, type DemoBook } from '../../demo/demoContentLibrary'
 import { SUBJECTS, GRADES } from '../../types'
 import type { WorksheetBuildSubStepId } from '../config/worksheetWizardSteps'
 import { TeacherToolsPanelHeader } from '../../components/TeacherToolsPanelHeader'
-
-const STEP_META: Record<
-  WorksheetBuildSubStepId,
-  { kicker: string; title: string; subtitle: string; tone: 'indigo' | 'emerald' | 'amber' }
-> = {
-  basics: {
-    kicker: 'Worksheet identity',
-    title: 'Worksheet basics',
-    subtitle: 'Name the worksheet and set output format, subject, and cohort.',
-    tone: 'indigo',
-  },
-  sources: {
-    kicker: 'Content sources',
-    title: 'Source materials',
-    subtitle: 'Choose catalog titles or switch to topic-only generation.',
-    tone: 'emerald',
-  },
-  scope: {
-    kicker: 'Scope definition',
-    title: 'Topic strands & refinement',
-    subtitle: 'Pick strands from your materials or describe the topic focus.',
-    tone: 'amber',
-  },
-  generation: {
-    kicker: 'Generation',
-    title: 'Generation parameters',
-    subtitle: '',
-    tone: 'indigo',
-  },
-}
 
 export type WorksheetOutputFormat = 'interactive_digital' | 'printable_pdf' | 'both'
 
@@ -58,12 +31,12 @@ type Props = {
   activeStepId: WorksheetBuildSubStepId
 }
 
-function generationScopeSummary(rag: QuizRagScopeModel): string {
-  if (rag.generateWithoutSources) return 'Topic-only — catalog retrieval skipped.'
+function generationScopeSummary(rag: QuizRagScopeModel, t: TFunction): string {
+  if (rag.generateWithoutSources) return t('worksheet.rag.topicOnlyScope')
   const titles = rag.selectedBookIds
     .map((id) => getBookById(id, rag.catalog as unknown as DemoBook[])?.title)
     .filter(Boolean)
-  if (titles.length === 0) return 'No specific book selected'
+  if (titles.length === 0) return t('teacherTools.noBookSelected')
   return titles.join(' · ')
 }
 
@@ -79,6 +52,42 @@ export function WorksheetRagIdentitySection({
   onGradeChange,
   activeStepId,
 }: Props) {
+  const { t } = useTranslation()
+
+  const stepMeta = useMemo(
+    () =>
+      ({
+        basics: {
+          kicker: t('worksheet.rag.basicsKicker'),
+          title: t('worksheet.rag.basicsTitle'),
+          subtitle: t('worksheet.rag.basicsSubtitle'),
+          tone: 'indigo' as const,
+        },
+        sources: {
+          kicker: t('worksheet.rag.sourcesKicker'),
+          title: t('worksheet.rag.sourcesTitle'),
+          subtitle: t('worksheet.rag.sourcesSubtitle'),
+          tone: 'emerald' as const,
+        },
+        scope: {
+          kicker: t('worksheet.rag.scopeKicker'),
+          title: t('worksheet.rag.scopeTitle'),
+          subtitle: t('worksheet.rag.scopeSubtitle'),
+          tone: 'amber' as const,
+        },
+        generation: {
+          kicker: t('worksheet.generation.kicker'),
+          title: t('worksheet.generation.title'),
+          subtitle: t('worksheet.generation.subtitle'),
+          tone: 'indigo' as const,
+        },
+      }) satisfies Record<
+        WorksheetBuildSubStepId,
+        { kicker: string; title: string; subtitle: string; tone: 'indigo' | 'emerald' | 'amber' }
+      >,
+    [t],
+  )
+
   const selectedBooks = rag.selectedBookIds
     .map((id) => getBookById(id, rag.catalog as unknown as DemoBook[]))
     .filter(Boolean)
@@ -89,32 +98,32 @@ export function WorksheetRagIdentitySection({
     <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
       {activeStepId === 'basics' && (
         <>
-          <TeacherToolsPanelHeader {...STEP_META.basics} />
+          <TeacherToolsPanelHeader {...stepMeta.basics} />
           <div className="space-y-4 p-5">
             <label className="block text-sm font-medium text-gray-800">
-              Title <span className="text-red-500">*</span>
+              {t('teacherTools.title')} <span className="text-red-500">*</span>
               <input
                 value={title}
                 onChange={(e) => onTitleChange(e.target.value)}
-                placeholder="e.g. Photosynthesis — retrieval practice (Grade 8)"
+                placeholder={t('worksheet.rag.titlePlaceholder')}
                 className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm ring-primary-500/20 focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
               />
             </label>
             <div className="grid gap-4 md:grid-cols-2">
               <label className="block text-sm font-medium text-gray-800">
-                Output format
+                {t('worksheet.rag.outputFormat')}
                 <select
                   value={outputFormat}
                   onChange={(e) => onOutputFormatChange(e.target.value as WorksheetOutputFormat)}
                   className="mt-1.5 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
                 >
-                  <option value="interactive_digital">Interactive digital</option>
-                  <option value="printable_pdf">Print-ready PDF</option>
-                  <option value="both">Both</option>
+                  <option value="interactive_digital">{t('worksheet.rag.outputInteractive')}</option>
+                  <option value="printable_pdf">{t('worksheet.rag.outputPrintable')}</option>
+                  <option value="both">{t('worksheet.rag.outputBoth')}</option>
                 </select>
               </label>
               <label className="block text-sm font-medium text-gray-800">
-                Subject
+                {t('teacherTools.subject')}
                 <select
                   value={subject}
                   onChange={(e) => onSubjectChange(e.target.value)}
@@ -128,7 +137,7 @@ export function WorksheetRagIdentitySection({
                 </select>
               </label>
               <label className="block text-sm font-medium text-gray-800">
-                Grade / cohort
+                {t('teacherTools.gradeCohort')}
                 <select
                   value={grade}
                   onChange={(e) => onGradeChange(e.target.value)}
@@ -148,7 +157,7 @@ export function WorksheetRagIdentitySection({
 
       {activeStepId === 'sources' && (
         <>
-          <TeacherToolsPanelHeader {...STEP_META.sources} />
+          <TeacherToolsPanelHeader {...stepMeta.sources} />
           <div className="space-y-4 p-5">
             <label className="inline-flex items-start gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800">
               <input
@@ -158,10 +167,8 @@ export function WorksheetRagIdentitySection({
                 className="mt-0.5 rounded border-gray-300"
               />
               <span>
-                <span className="block font-semibold text-gray-900">Use selected materials for generation</span>
-                <span className="mt-0.5 block text-xs text-gray-600">
-                  Topic-only mode skips retrieval and only uses your scope prompt.
-                </span>
+                <span className="block font-semibold text-gray-900">{t('teacherTools.groundingLabel')}</span>
+                <span className="mt-0.5 block text-xs text-gray-600">{t('teacherTools.groundingHint')}</span>
               </span>
             </label>
             <div className="flex flex-wrap gap-2">
@@ -174,7 +181,7 @@ export function WorksheetRagIdentitySection({
                     : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
                 }`}
               >
-                Generate topic-only
+                {t('teacherTools.generateTopicOnly')}
               </button>
               <button
                 type="button"
@@ -185,7 +192,7 @@ export function WorksheetRagIdentitySection({
                     : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
                 }`}
               >
-                Generate with selected materials
+                {t('teacherTools.generateWithSources')}
               </button>
             </div>
             {!rag.generateWithoutSources ? (
@@ -195,13 +202,13 @@ export function WorksheetRagIdentitySection({
                   <input
                     value={rag.catalogQuery}
                     onChange={(e) => rag.setCatalogQuery(e.target.value)}
-                    placeholder="Search title, author, ISBN, or topic strand..."
+                    placeholder={t('teacherTools.catalogSearchPlaceholder')}
                     className="w-full rounded-xl border border-gray-200 bg-gray-50/80 py-2.5 pl-10 pr-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
-                    aria-label="Search catalog"
+                    aria-label={t('teacherTools.ariaSearch')}
                   />
                   {rag.catalogBusy && (
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-emerald-700">
-                      Updating…
+                      {t('history.updating')}
                     </span>
                   )}
                 </div>
@@ -209,14 +216,14 @@ export function WorksheetRagIdentitySection({
                   <div className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-950">
                     <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" aria-hidden />
                     <div className="min-w-0 flex-1">
-                      <p className="font-semibold">Could not load catalog</p>
+                      <p className="font-semibold">{t('quiz.rag.catalogLoadFailed')}</p>
                       <p className="mt-0.5 text-xs text-red-900/80">{rag.catalogError}</p>
                       <button
                         type="button"
                         onClick={rag.retryCatalog}
                         className="mt-2 rounded-full bg-red-600 px-3 py-1 text-xs font-semibold text-white hover:bg-red-700"
                       >
-                        Retry
+                        {t('teacherTools.retry')}
                       </button>
                     </div>
                   </div>
@@ -263,10 +270,10 @@ export function WorksheetRagIdentitySection({
                 <div className="rounded-2xl border border-gray-100 bg-slate-50/60 p-4">
                   <p className="flex items-center gap-2 text-sm font-semibold text-gray-900">
                     <BookMarked className="h-4 w-4 text-indigo-600" aria-hidden />
-                    Selected for retrieval ({selectedBooks.length})
+                    {t('quiz.rag.selectedForRetrieval', { count: selectedBooks.length })}
                   </p>
                   {selectedBooks.length === 0 ? (
-                    <p className="mt-3 text-sm text-gray-600">No materials selected yet.</p>
+                    <p className="mt-3 text-sm text-gray-600">{t('worksheet.rag.noMaterialsSelected')}</p>
                   ) : (
                     <ul className="mt-3 space-y-2">
                       {selectedBooks.map((b) =>
@@ -285,7 +292,7 @@ export function WorksheetRagIdentitySection({
                               type="button"
                               onClick={() => rag.removeBook(b.id)}
                               className="shrink-0 rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-700"
-                              aria-label={`Remove ${b.title}`}
+                              aria-label={`${t('teacherTools.remove')} ${b.title}`}
                             >
                               <X className="h-4 w-4" />
                             </button>
@@ -298,7 +305,7 @@ export function WorksheetRagIdentitySection({
               </div>
             ) : (
               <div className="rounded-2xl border border-dashed border-emerald-200 bg-emerald-50/70 p-4 text-sm text-emerald-900">
-                Catalog search is hidden in topic-only mode. Continue to Scope to define your focus.
+                {t('worksheet.rag.topicOnlyCatalogHidden')}
               </div>
             )}
           </div>
@@ -307,27 +314,27 @@ export function WorksheetRagIdentitySection({
 
       {activeStepId === 'scope' && (
         <>
-          <TeacherToolsPanelHeader {...STEP_META.scope} />
+          <TeacherToolsPanelHeader {...stepMeta.scope} />
           <div className="space-y-4 p-5">
             {!rag.generateWithoutSources && rag.selectedBookIds.length === 0 ? (
               <div className="flex gap-3 rounded-2xl border border-amber-200 bg-amber-50/80 px-4 py-4 text-sm text-amber-950">
                 <AlertCircle className="h-5 w-5 shrink-0 text-amber-600" aria-hidden />
                 <div>
-                  <p className="font-semibold">Select materials first</p>
-                  <p className="mt-1 text-amber-900/90">Go back to Sources to pick catalog titles.</p>
+                  <p className="font-semibold">{t('worksheet.rag.selectMaterialsFirst')}</p>
+                  <p className="mt-1 text-amber-900/90">{t('worksheet.rag.selectMaterialsFirstHint')}</p>
                 </div>
               </div>
             ) : null}
 
             {!rag.generateWithoutSources && rag.selectedBookIds.length > 0 ? (
               <div>
-                <label className="block text-sm font-medium text-gray-800">Search & select topic strands</label>
+                <label className="block text-sm font-medium text-gray-800">{t('teacherTools.topicStrandsHeading')}</label>
                 <div className="relative mt-2">
                   <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                   <input
                     value={rag.topicQuery}
                     onChange={(e) => rag.setTopicQuery(e.target.value)}
-                    placeholder="Type to filter (e.g. fraction, word problem...)"
+                    placeholder={t('teacherTools.topicFilterPlaceholder')}
                     className="w-full rounded-xl border border-gray-200 py-2.5 pl-10 pr-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
                   />
                 </div>
@@ -336,16 +343,16 @@ export function WorksheetRagIdentitySection({
                 ) : (
                   <div className="mt-3 max-h-44 overflow-y-auto rounded-xl border border-gray-200 bg-gray-50/50 p-2">
                     {rag.topicOptionsFiltered.length === 0 ? (
-                      <p className="px-2 py-6 text-center text-xs text-gray-600">No strands match your filter.</p>
+                      <p className="px-2 py-6 text-center text-xs text-gray-600">{t('worksheet.rag.noStrandsMatch')}</p>
                     ) : (
                       <div className="flex flex-wrap gap-2">
-                        {rag.topicOptionsFiltered.map((t) => {
-                          const active = rag.selectedTopics.includes(t)
+                        {rag.topicOptionsFiltered.map((topic) => {
+                          const active = rag.selectedTopics.includes(topic)
                           return (
                             <button
-                              key={t}
+                              key={topic}
                               type="button"
-                              onClick={() => rag.toggleTopic(t)}
+                              onClick={() => rag.toggleTopic(topic)}
                               className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
                                 active
                                   ? 'border-emerald-500 bg-emerald-600 text-white shadow-sm'
@@ -353,7 +360,7 @@ export function WorksheetRagIdentitySection({
                               }`}
                             >
                               {active ? <Check className="h-3 w-3" /> : <ChevronRight className="h-3 w-3 opacity-40" />}
-                              {t}
+                              {topic}
                             </button>
                           )
                         })}
@@ -365,18 +372,24 @@ export function WorksheetRagIdentitySection({
             ) : null}
 
             <label className="block text-sm font-medium text-gray-800">
-              Scope refinement {rag.generateWithoutSources ? <span className="text-red-500">*</span> : '(optional)'}
+              {rag.generateWithoutSources ? (
+                <>
+                  {t('teacherTools.scopeRefinement')} <span className="text-red-500">*</span>
+                </>
+              ) : (
+                t('teacherTools.scopeRefinementOptional')
+              )}
               <textarea
                 rows={3}
                 value={rag.scopeRefinement}
                 onChange={(e) => rag.setScopeRefinement(e.target.value)}
-                placeholder="Focus on word problems, exam-style reasoning, and common misconceptions"
+                placeholder={t('teacherTools.scopeRefinementPlaceholder')}
                 className="mt-1.5 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-100"
               />
             </label>
             <p className="text-sm text-gray-700">
-              <span className="font-semibold text-gray-900">Generation scope:</span>{' '}
-              <span className="text-gray-600">{generationScopeSummary(rag)}</span>
+              <span className="font-semibold text-gray-900">{t('teacherTools.generationScope')}</span>{' '}
+              <span className="text-gray-600">{generationScopeSummary(rag, t)}</span>
             </p>
           </div>
         </>

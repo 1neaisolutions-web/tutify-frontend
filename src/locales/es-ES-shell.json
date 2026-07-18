@@ -1,0 +1,37 @@
+{
+  "dashboard": {
+    "greetingMorning": "Buenos días, {{name}}",
+    "greetingAfternoon": "Buenas tardes, {{name}}",
+    "greetingEvening": "Buenas noches, {{name}}",
+    "defaultName": "profesor",
+    "workspaceReady": "Tu espacio de trabajo está listo.",
+    "activeContent": "{{count}} elementos activos en tu espacio",
+    "createFirstQuiz": "Crea tu primer cuestionario para empezar.",
+    "createFirstQuizCta": "Crear cuestionario",
+    "totalContent": "Contenido total",
+    "thisWeek": "Esta semana",
+    "draftBacklog": "Borradores pendientes",
+    "published": "Publicado",
+    "dayStreak": "Racha de días",
+    "upcomingDeadlines": "Próximos plazos",
+    "noDeadlines": "No hay plazos próximos",
+    "noActivity": "Sin actividad reciente",
+    "draftsToFinish": "Borradores por terminar",
+    "all": "Todos",
+    "noDrafts": "Sin borradores",
+    "coreWorkflows": "Flujos principales",
+    "dueToday": "Vence hoy",
+    "dueInDays": "Vence en {{count}} días",
+    "dueSoon": "Vence pronto: {{title}}",
+    "continueDraft": "Continuar borrador: {{title}}",
+    "recentActivity": "Actividad reciente",
+    "viewAll": "Ver todo",
+    "teacherToolsOverview": "Resumen de herramientas",
+    "tools": {
+      "quiz": "Cuestionario",
+      "assignment": "Tarea",
+      "worksheet": "Hoja de trabajo",
+      "exam": "Examen"
+    }
+  }
+}

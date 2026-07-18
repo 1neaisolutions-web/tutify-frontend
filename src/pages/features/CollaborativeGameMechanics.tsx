@@ -23,6 +23,7 @@ import {
   Award,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template'
@@ -34,6 +35,7 @@ interface LessonContent {
 }
 
 const CollaborativeGameMechanics = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -151,19 +153,13 @@ Social learning theory emphasizes that people learn from observing and interacti
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 5
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('collaborativeGameMechanics.module5')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    55 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('collaborativeGameMechanics.k5Min')}</span>
                 </div>
-                <h1 className="text-3xl font-bold">Collaborative Game Mechanics</h1>
-                <p className="mt-2 text-cyan-100">
-                  Design games that promote teamwork, collaboration, and peer learning
-                </p>
+                <h1 className="text-3xl font-bold">{t('collaborativeGameMechanics.collaborativeGameMechanics')}</h1>
+                <p className="mt-2 text-cyan-100">{t('collaborativeGameMechanics.designGamesThatPromoteTeamworkCollaborationAndPeerLearn')}</p>
               </div>
             </div>
             <div className="h-2 bg-white/20 rounded-full overflow-hidden">
@@ -176,7 +172,7 @@ Social learning theory emphasizes that people learn from observing and interacti
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('collaborativeGameMechanics.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isActive = idx === currentLesson
@@ -234,7 +230,7 @@ Social learning theory emphasizes that people learn from observing and interacti
                   </div>
                 </div>
                 <div className="bg-cyan-50 rounded-xl p-6 border border-cyan-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Points</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{t('collaborativeGameMechanics.keyPoints')}</h3>
                   <ul className="space-y-2">
                     {currentLessonData.content.keyPoints.map((point: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -283,9 +279,7 @@ Social learning theory emphasizes that people learn from observing and interacti
                   </ul>
                 </div>
                 <button className="w-full px-6 py-4 bg-cyan-600 text-white rounded-xl font-semibold hover:bg-cyan-700 transition flex items-center justify-center gap-2">
-                  <Download className="h-5 w-5" />
-                  Download Template
-                </button>
+                  <Download className="h-5 w-5" />{t('collaborativeGameMechanics.downloadTemplate')}</button>
               </div>
             )}
 
@@ -295,9 +289,7 @@ Social learning theory emphasizes that people learn from observing and interacti
                 disabled={currentLesson === 0}
                 className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
-                <ArrowLeft className="h-4 w-4" />
-                Previous
-              </button>
+                <ArrowLeft className="h-4 w-4" />{t('collaborativeGameMechanics.previous')}</button>
               <button
                 onClick={() => {
                   handleLessonComplete(currentLessonData.id)
@@ -309,18 +301,12 @@ Social learning theory emphasizes that people learn from observing and interacti
               >
                 {completedLessons.includes(currentLessonData.id) ? (
                   <>
-                    <CheckCircle2 className="h-4 w-4" />
-                    Marked Complete
-                  </>
+                    <CheckCircle2 className="h-4 w-4" />{t('collaborativeGameMechanics.markedComplete')}</>
                 ) : currentLesson === lessons.length - 1 ? (
                   <>
-                    <Trophy className="h-4 w-4" />
-                    Complete Module
-                  </>
+                    <Trophy className="h-4 w-4" />{t('collaborativeGameMechanics.completeModule')}</>
                 ) : (
-                  <>
-                    Complete & Next
-                    <ArrowRight className="h-4 w-4" />
+                  <>{t('collaborativeGameMechanics.completeNext')}<ArrowRight className="h-4 w-4" />
                   </>
                 )}
               </button>
@@ -330,7 +316,7 @@ Social learning theory emphasizes that people learn from observing and interacti
           {completedLessons.length === lessons.length && (
             <div className="mt-6 rounded-2xl border-2 border-green-300 bg-gradient-to-br from-green-50 to-emerald-50 p-8 text-center">
               <Trophy className="h-16 w-16 text-green-600 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Module Complete!</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('collaborativeGameMechanics.moduleComplete')}</h3>
               <button
                 onClick={() => navigate('/learning-hub/student-engagement-path')}
                 className="rounded-full bg-green-600 px-6 py-3 text-sm font-semibold text-white hover:bg-green-700"

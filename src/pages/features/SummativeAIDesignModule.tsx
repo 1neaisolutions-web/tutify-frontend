@@ -21,6 +21,7 @@ import {
   X,
 } from 'lucide-react'
 
+import { useTranslation } from 'react-i18next'
 interface LessonContent {
   id: string
   type: 'video' | 'reading' | 'interactive' | 'template'
@@ -39,6 +40,7 @@ interface AssessmentComponent {
 }
 
 const SummativeAIDesignModule = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentLesson, setCurrentLesson] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -287,19 +289,13 @@ Real-world applications:
               </button>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">
-                    Module 5 of 5
-                  </span>
+                  <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-semibold uppercase tracking-wide">{t('summativeAIDesignModule.module5Of5')}</span>
                   <span className="text-white/80">•</span>
                   <span className="text-white/80 text-sm flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    25 min
-                  </span>
+                    <Clock className="h-3 w-3" />{t('summativeAIDesignModule.k5Min')}</span>
                 </div>
-                <h1 className="text-3xl font-bold">AI-Enhanced Summative Assessment Design</h1>
-                <p className="mt-2 text-indigo-100">
-                  Design comprehensive summative assessments with AI assistance while maintaining rigor, validity, and fairness
-                </p>
+                <h1 className="text-3xl font-bold">{t('summativeAIDesignModule.aiEnhancedSummativeAssessmentDesign')}</h1>
+                <p className="mt-2 text-indigo-100">{t('summativeAIDesignModule.designComprehensiveSummativeAssessmentsWithAiAssistance')}</p>
               </div>
             </div>
             <div className="flex items-center gap-4 text-sm">
@@ -326,7 +322,7 @@ Real-world applications:
         {/* Lessons Sidebar */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm sticky top-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">Lessons</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-600 mb-4">{t('summativeAIDesignModule.lessons')}</h3>
             <div className="space-y-2">
               {lessons.map((lesson, idx) => {
                 const isCompleted = completedLessons.includes(lesson.id)
@@ -370,7 +366,7 @@ Real-world applications:
             </div>
             <div className="mt-6 pt-6 border-t border-gray-200">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-gray-600">Progress</span>
+                <span className="text-xs text-gray-600">{t('summativeAIDesignModule.progress')}</span>
                 <span className="text-xs font-semibold text-gray-900">{Math.round(moduleProgress)}%</span>
               </div>
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -393,7 +389,7 @@ Real-world applications:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Video className="h-5 w-5 text-indigo-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Video Lesson</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('summativeAIDesignModule.videoLesson')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                   </div>
@@ -417,7 +413,7 @@ Real-world applications:
                 </div>
 
                 <div className="bg-indigo-50 rounded-lg p-6 border border-indigo-200">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Key Points</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('summativeAIDesignModule.keyPoints')}</h3>
                   <ul className="space-y-2">
                     {currentLessonData.content.keyPoints?.map((point: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -435,14 +431,10 @@ Real-world applications:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('summativeAIDesignModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('summativeAIDesignModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -455,7 +447,7 @@ Real-world applications:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <BookOpen className="h-5 w-5 text-indigo-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Reading</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('summativeAIDesignModule.reading')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                   </div>
@@ -477,7 +469,7 @@ Real-world applications:
 
                 {currentLessonData.content.keyTakeaways && (
                   <div className="bg-indigo-50 rounded-lg p-6 border border-indigo-200">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-3">Key Takeaways</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('summativeAIDesignModule.keyTakeaways')}</h3>
                     <ul className="space-y-2">
                       {currentLessonData.content.keyTakeaways.map((takeaway: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -496,14 +488,10 @@ Real-world applications:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('summativeAIDesignModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('summativeAIDesignModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -516,7 +504,7 @@ Real-world applications:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Zap className="h-5 w-5 text-indigo-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Interactive Tool</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('summativeAIDesignModule.interactiveTool')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                     <p className="mt-2 text-gray-600">{currentLessonData.content.description}</p>
@@ -527,7 +515,7 @@ Real-world applications:
                 </div>
 
                 <div className="bg-indigo-50 rounded-lg p-6 border border-indigo-200 mb-6">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-3">Design Steps</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-3">{t('summativeAIDesignModule.designSteps')}</h3>
                   <ol className="space-y-2">
                     {currentLessonData.content.steps?.map((step: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
@@ -542,37 +530,31 @@ Real-world applications:
 
                 <div className="bg-white rounded-lg p-6 border border-gray-200 space-y-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Assessment Title *
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">{t('summativeAIDesignModule.assessmentTitle')}</label>
                     <input
                       type="text"
                       value={assessmentTitle}
                       onChange={(e) => setAssessmentTitle(e.target.value)}
-                      placeholder="e.g., Unit 3: Ecosystems Summative Assessment"
+                      placeholder={t('summativeAIDesignModule.eGUnit3EcosystemsSummativeAssessment')}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      Learning Objectives *
-                    </label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">{t('summativeAIDesignModule.learningObjectives')}</label>
                     <div className="flex gap-2 mb-2">
                       <input
                         type="text"
                         value={currentObjective}
                         onChange={(e) => setCurrentObjective(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleAddObjective()}
-                        placeholder="Enter a learning objective"
+                        placeholder={t('summativeAIDesignModule.enterALearningObjective')}
                         className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                       />
                       <button
                         onClick={handleAddObjective}
                         className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-                      >
-                        Add
-                      </button>
+                      >{t('summativeAIDesignModule.add')}</button>
                     </div>
                     <div className="flex flex-wrap gap-2 mt-2">
                       {learningObjectives.map((obj, idx) => (
@@ -593,16 +575,16 @@ Real-world applications:
                   </div>
 
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-900 mb-4">Assessment Components</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('summativeAIDesignModule.assessmentComponents')}</h3>
                     <div className="space-y-4">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm font-semibold text-gray-900 mb-2">Component Name *</label>
+                          <label className="block text-sm font-semibold text-gray-900 mb-2">{t('summativeAIDesignModule.componentName')}</label>
                           <input
                             type="text"
                             value={currentComponent.component}
                             onChange={(e) => setCurrentComponent({ ...currentComponent, component: e.target.value })}
-                            placeholder="e.g., Multiple Choice Section"
+                            placeholder={t('summativeAIDesignModule.eGMultipleChoiceSection')}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                           />
                         </div>
@@ -619,17 +601,17 @@ Real-world applications:
                         </div>
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-gray-900 mb-2">Description *</label>
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">{t('summativeAIDesignModule.description')}</label>
                         <textarea
                           value={currentComponent.description}
                           onChange={(e) => setCurrentComponent({ ...currentComponent, description: e.target.value })}
-                          placeholder="Describe this assessment component..."
+                          placeholder={t('summativeAIDesignModule.describeThisAssessmentComponent')}
                           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                           rows={3}
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-gray-900 mb-2">Number of Questions</label>
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">{t('summativeAIDesignModule.numberOfQuestions')}</label>
                         <input
                           type="number"
                           value={currentComponent.questions}
@@ -641,9 +623,7 @@ Real-world applications:
                       <button
                         onClick={handleAddComponent}
                         className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition flex items-center justify-center gap-2"
-                      >
-                        Add Component
-                      </button>
+                      >{t('summativeAIDesignModule.addComponent')}</button>
                     </div>
                   </div>
 
@@ -675,13 +655,13 @@ Real-world applications:
                       <div className="mt-4 bg-blue-50 rounded-lg p-4 border border-blue-200">
                         <div className="flex items-center gap-2 mb-2">
                           <Shield className="h-4 w-4 text-blue-600" />
-                          <span className="text-sm font-semibold text-gray-900">Validity Checklist</span>
+                          <span className="text-sm font-semibold text-gray-900">{t('summativeAIDesignModule.validityChecklist')}</span>
                         </div>
                         <ul className="space-y-1 text-xs text-gray-700">
-                          <li>✓ Assessment aligns to learning objectives</li>
-                          <li>✓ Components cover full range of learning</li>
-                          <li>✓ Weight distribution is appropriate</li>
-                          <li>✓ Questions match cognitive levels</li>
+                          <li>{t('summativeAIDesignModule.assessmentAlignsToLearningObjectives')}</li>
+                          <li>{t('summativeAIDesignModule.componentsCoverFullRangeOfLearning')}</li>
+                          <li>{t('summativeAIDesignModule.weightDistributionIsAppropriate')}</li>
+                          <li>{t('summativeAIDesignModule.questionsMatchCognitiveLevels')}</li>
                         </ul>
                       </div>
                       <button
@@ -690,9 +670,7 @@ Real-world applications:
                         }}
                         className="mt-4 w-full px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition flex items-center justify-center gap-2"
                       >
-                        <ClipboardCheck className="h-5 w-5" />
-                        Save Assessment Design
-                      </button>
+                        <ClipboardCheck className="h-5 w-5" />{t('summativeAIDesignModule.saveAssessmentDesign')}</button>
                     </div>
                   )}
                 </div>
@@ -704,14 +682,10 @@ Real-world applications:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('summativeAIDesignModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('summativeAIDesignModule.markAsComplete')}</>
                   )}
                 </button>
               </div>
@@ -724,7 +698,7 @@ Real-world applications:
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <FileText className="h-5 w-5 text-indigo-600" />
-                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Template</span>
+                      <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('summativeAIDesignModule.template')}</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900">{currentLessonData.title}</h2>
                     <p className="mt-2 text-gray-600">{currentLessonData.content.description}</p>
@@ -735,7 +709,7 @@ Real-world applications:
                 </div>
 
                 <div className="bg-white rounded-lg p-6 border border-gray-200">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-4">Template Sections</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('summativeAIDesignModule.templateSections')}</h3>
                   <div className="space-y-3">
                     {currentLessonData.content.sections?.map((section: string, idx: number) => (
                       <div key={idx} className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
@@ -751,18 +725,18 @@ Real-world applications:
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <button className="p-4 bg-indigo-50 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-indigo-600" />
-                    <span className="text-sm font-semibold text-gray-900">Elementary Template</span>
-                    <span className="text-xs text-gray-600">Grades K-5</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('summativeAIDesignModule.elementaryTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('summativeAIDesignModule.gradesK5')}</span>
                   </button>
                   <button className="p-4 bg-indigo-50 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-indigo-600" />
-                    <span className="text-sm font-semibold text-gray-900">Middle School Template</span>
-                    <span className="text-xs text-gray-600">Grades 6-8</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('summativeAIDesignModule.middleSchoolTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('summativeAIDesignModule.grades68')}</span>
                   </button>
                   <button className="p-4 bg-indigo-50 border-2 border-indigo-200 rounded-lg hover:bg-indigo-100 transition flex flex-col items-center gap-2">
                     <Download className="h-6 w-6 text-indigo-600" />
-                    <span className="text-sm font-semibold text-gray-900">High School Template</span>
-                    <span className="text-xs text-gray-600">Grades 9-12</span>
+                    <span className="text-sm font-semibold text-gray-900">{t('summativeAIDesignModule.highSchoolTemplate')}</span>
+                    <span className="text-xs text-gray-600">{t('summativeAIDesignModule.grades912')}</span>
                   </button>
                 </div>
 
@@ -773,14 +747,10 @@ Real-world applications:
                 >
                   {completedLessons.includes(currentLessonData.id) ? (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Lesson Completed
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('summativeAIDesignModule.lessonCompleted')}</>
                   ) : (
                     <>
-                      <CheckCircle2 className="h-5 w-5" />
-                      Mark as Complete
-                    </>
+                      <CheckCircle2 className="h-5 w-5" />{t('summativeAIDesignModule.markAsComplete')}</>
                   )}
                 </button>
               </div>

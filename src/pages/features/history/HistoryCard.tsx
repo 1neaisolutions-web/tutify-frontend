@@ -1,103 +1,14 @@
 import { useState } from 'react'
-import {
-  BookOpen,
-  Calendar,
-  CheckCircle2,
-  ClipboardList,
-  FileText,
-  GraduationCap,
-  Image,
-  MessageSquare,
-  MoreHorizontal,
-  Pin,
-  Sparkles,
-  TrendingUp,
-  Youtube,
-} from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import { Calendar, CheckCircle2, MoreHorizontal, Pin, TrendingUp } from 'lucide-react'
 
-import type { HistoryItem, HistorySourceType } from '../../../api/historyApi'
+import type { HistoryItem } from '../../../api/historyApi'
 import { HistoryCardMenu } from './HistoryCardMenu'
 import { StatusPill } from './StatusPill'
 import { formatRelativeDate } from './historyUtils'
+import { getSourceMeta, SOURCE_TAG_COLORS } from './historySourceMeta'
 
-export const SOURCE_META: Record<
-  HistorySourceType,
-  {
-    label: string
-    borderColor: string
-    iconBg: string
-    iconColor: string
-    Icon: React.FC<{ className?: string }>
-  }
-> = {
-  quiz: {
-    label: 'Quiz',
-    borderColor: 'border-l-blue-500',
-    iconBg: 'bg-blue-50',
-    iconColor: 'text-blue-600',
-    Icon: BookOpen,
-  },
-  assignment: {
-    label: 'Assignment',
-    borderColor: 'border-l-emerald-500',
-    iconBg: 'bg-emerald-50',
-    iconColor: 'text-emerald-600',
-    Icon: ClipboardList,
-  },
-  worksheet: {
-    label: 'Worksheet',
-    borderColor: 'border-l-violet-500',
-    iconBg: 'bg-violet-50',
-    iconColor: 'text-violet-600',
-    Icon: FileText,
-  },
-  exam: {
-    label: 'Exam',
-    borderColor: 'border-l-rose-500',
-    iconBg: 'bg-rose-50',
-    iconColor: 'text-rose-600',
-    Icon: GraduationCap,
-  },
-  chatbot_conversation: {
-    label: 'Chatbot',
-    borderColor: 'border-l-teal-500',
-    iconBg: 'bg-teal-50',
-    iconColor: 'text-teal-600',
-    Icon: MessageSquare,
-  },
-  pixgen_generation: {
-    label: 'PixGen',
-    borderColor: 'border-l-pink-500',
-    iconBg: 'bg-pink-50',
-    iconColor: 'text-pink-600',
-    Icon: Image,
-  },
-  youtube_quiz: {
-    label: 'YouTube Quiz',
-    borderColor: 'border-l-orange-500',
-    iconBg: 'bg-orange-50',
-    iconColor: 'text-orange-600',
-    Icon: Youtube,
-  },
-  template_execution: {
-    label: 'Template',
-    borderColor: 'border-l-indigo-500',
-    iconBg: 'bg-indigo-50',
-    iconColor: 'text-indigo-600',
-    Icon: Sparkles,
-  },
-}
-
-export const SOURCE_TAG_COLORS: Record<HistorySourceType, string> = {
-  quiz: 'border-blue-200 bg-blue-50 text-blue-700',
-  assignment: 'border-emerald-200 bg-emerald-50 text-emerald-700',
-  worksheet: 'border-violet-200 bg-violet-50 text-violet-700',
-  exam: 'border-rose-200 bg-rose-50 text-rose-700',
-  chatbot_conversation: 'border-teal-200 bg-teal-50 text-teal-700',
-  pixgen_generation: 'border-pink-200 bg-pink-50 text-pink-700',
-  youtube_quiz: 'border-orange-200 bg-orange-50 text-orange-700',
-  template_execution: 'border-indigo-200 bg-indigo-50 text-indigo-700',
-}
+export { getSourceMeta } from './historySourceMeta'
 
 export interface HistoryCardProps {
   item: HistoryItem
@@ -126,8 +37,10 @@ export function HistoryCard({
   onTogglePin,
   onOpenEdit,
 }: HistoryCardProps) {
+  const { t } = useTranslation()
   const [menuOpen, setMenuOpen] = useState(false)
-  const meta = SOURCE_META[item.sourceType]
+  const sourceMeta = getSourceMeta(t)
+  const meta = sourceMeta[item.sourceType]
 
   const ringActive = isActive ? 'ring-2 ring-primary-400 shadow-md' : 'hover:shadow-md hover:border-gray-200'
   const ringSel = isSelected ? 'ring-2 ring-primary-300 bg-primary-50/40' : ''
@@ -275,13 +188,13 @@ export function HistoryCard({
         {item.usageCount > 0 && (
           <span className="flex items-center gap-1">
             <TrendingUp className="h-3 w-3" />
-            {item.usageCount}× used
+            {t('historyPage.card.usedCount', { count: item.usageCount })}
           </span>
         )}
         {item.performanceHint === 'effective' && (
           <span className="flex items-center gap-1 font-medium text-emerald-600">
             <CheckCircle2 className="h-3 w-3" />
-            Effective
+            {t('historyPage.card.effective')}
           </span>
         )}
       </div>

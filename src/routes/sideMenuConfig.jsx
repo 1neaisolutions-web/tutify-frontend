@@ -34,6 +34,7 @@ import {
   TrendingUp,
   Palette,
   Timer,
+  Trophy,
   FlaskConical,
   PenLine,
 } from 'lucide-react';
@@ -162,6 +163,7 @@ const studentMenu = [
   { path: '/student/tasks', text: 'My Tasks', i18nKey: 'nav.student.tasks', icon: CheckSquare },
   { path: '/student/subjects', text: 'Study Rooms', i18nKey: 'nav.student.subjects', icon: FlaskConical },
   { path: '/student/study-time', text: 'Study Tracker', i18nKey: 'nav.student.studyTime', icon: Timer },
+  { path: '/student/gamification', text: 'Gamification', i18nKey: 'nav.student.gamification', icon: Trophy },
   { path: '/student/grade-calculator', text: 'Grade Calculator', i18nKey: 'nav.student.gradeCalc', icon: Calculator },
 
   // ── Teacher & Progress ───────────────────────────────────────────────
@@ -183,7 +185,7 @@ const studentMenu = [
 ];
 
 const parentMenu = [
-  { path: '/parent', text: 'Parent', icon: Users },
+  { path: '/parent', text: 'Parent', i18nKey: 'nav.parent', icon: Users },
 ];
 
 export const sideMenuRoutes = (role) => {
