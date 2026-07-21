@@ -7,6 +7,7 @@ import type {
   QuestionTypePrediction,
   WarmupMcq,
 } from './nightBeforePackTypes'
+import { getProgressSubject } from '../data/mayaChenDemoData'
 
 type SubjectBucket = 'math' | 'science' | 'english' | 'history' | 'general'
 
@@ -57,6 +58,9 @@ const BANKS: Record<
       { name: 'Slope', expression: 'm = (y₂ − y₁) / (x₂ − x₁)', note: 'Rise over run between two points' },
       { name: 'Area of a circle', expression: 'A = πr²', note: 'r is the radius' },
       { name: 'Pythagorean theorem', expression: 'a² + b² = c²', note: 'Right triangles only' },
+      { name: 'Logarithm definition', expression: 'logₐ(b) = c means aᶜ = b', note: 'The core relationship behind every log rule' },
+      { name: 'Log quotient/product/power rules', expression: 'log(mn)=log(m)+log(n); log(m/n)=log(m)−log(n); log(mᵏ)=k·log(m)', note: 'Most-missed rules on the midterm' },
+      { name: 'Change of base', expression: 'logₐ(b) = ln(b) / ln(a)', note: 'Use when bases don\u2019t match' },
     ],
     questionTypes: [
       { type: 'Multiple choice', weight: '~40%', tip: 'Watch for sign errors and domain restrictions.' },
@@ -93,6 +97,24 @@ const BANKS: Record<
         options: ['x + 3', 'x − 3', 'x² − 3', '9'],
         answerIndex: 0,
         explanation: 'Difference of squares: (x − 3)(x + 3) / (x − 3) = x + 3.',
+      },
+      {
+        text: 'Solve for x: log₂(x) = 5',
+        options: ['x = 10', 'x = 25', 'x = 32', 'x = 16'],
+        answerIndex: 2,
+        explanation: '2⁵ = 32, so x = 32.',
+      },
+      {
+        text: 'logₐ(b) − logₐ(c) =',
+        options: ['logₐ(b/c)', 'logₐ(bc)', 'logₐ(b)^c', 'c·logₐ(b)'],
+        answerIndex: 0,
+        explanation: 'Quotient rule: subtracting logs corresponds to dividing inside.',
+      },
+      {
+        text: 'Change of base: logₐ(b) =',
+        options: ['ln(b)/ln(a)', 'ln(a)/ln(b)', 'a/b', 'b/a'],
+        answerIndex: 0,
+        explanation: 'Divide the natural log of b by the natural log of a.',
       },
     ],
     summaryTemplates: [
@@ -312,34 +334,58 @@ function buildSummary(topics: string[], bucket: SubjectBucket, random: () => num
   })
 }
 
+/** Weak topics (especially Logarithms) from live progress data, prepended so they're never crowded out. */
+function weakTopicsFor(subject: string): string[] {
+  if (!subject.toLowerCase().includes('algebra')) return []
+  const progress = getProgressSubject('algebra-ii')
+  if (!progress) return []
+  return progress.topics
+    .filter((t) => t.level === 'weak')
+    .sort((a, b) => (a.score ?? 0) - (b.score ?? 0))
+    .map((t) => t.name)
+}
+
+function mergeWeakTopicsFirst(topics: string[], weakTopics: string[]): string[] {
+  if (weakTopics.length === 0) return topics
+  const rest = topics.filter((t) => !weakTopics.some((w) => w.toLowerCase() === t.toLowerCase()))
+  return [...weakTopics, ...rest]
+}
+
+/** Boosts bank items whose name/text references a weak topic to the front of the shuffled selection. */
+function weightedPick<T extends { name?: string; text?: string }>(
+  items: T[],
+  count: number,
+  random: () => number,
+  weakTopics: string[]
+): T[] {
+  const isWeakHit = (item: T) => {
+    const haystack = `${item.name || ''} ${item.text || ''}`.toLowerCase()
+    return weakTopics.some((w) => haystack.includes(w.toLowerCase().replace(/s$/, '')))
+  }
+  const boosted = items.filter(isWeakHit)
+  const rest = [...items.filter((item) => !isWeakHit(item))].sort(() => random() - 0.5)
+  return [...boosted, ...rest].slice(0, count)
+}
+
 function buildContent(subject: string, topics: string[], seedSalt = ''): PackContent {
   const bucket = resolveBucket(subject)
   const random = mulberry32(hashString(`${subject}|${topics.join(',')}|${seedSalt}`))
   const bank = BANKS[bucket]
+  const weakTopics = weakTopicsFor(subject)
+  const weightedTopics = mergeWeakTopicsFirst(topics, weakTopics)
 
-  const formulas = [...bank.formulas]
-    .sort(() => random() - 0.5)
-    .slice(0, 4)
-    .map((f, i) => ({ ...f, id: `f_${i + 1}` }))
+  const formulas = weightedPick(bank.formulas, 4, random, weakTopics).map((f, i) => ({ ...f, id: `f_${i + 1}` }))
 
   const predictedQuestionTypes = bank.questionTypes.map((q, i) => ({ ...q, id: `qt_${i + 1}` }))
 
-  const warmupMcqs = [...bank.mcqs]
-    .sort(() => random() - 0.5)
-    .slice(0, 5)
-    .map((q, i) => ({ ...q, id: `mcq_${i + 1}` }))
+  const warmupMcqs = weightedPick(bank.mcqs, 5, random, weakTopics).map((q, i) => ({ ...q, id: `mcq_${i + 1}` }))
 
   return {
-    topicSummary: buildSummary(topics, bucket, random),
+    topicSummary: buildSummary(weightedTopics, bucket, random),
     keyFormulas: formulas,
     predictedQuestionTypes,
     warmupMcqs,
   }
-}
-
-/** Demo subjects that force a failed generation on first attempt. */
-export function shouldFailGeneration(subject: string): boolean {
-  return subject === 'Simulate Error' || subject.toLowerCase().includes('simulate error')
 }
 
 export function generatePackContent(input: CreatePackInput, seedSalt = ''): PackContent {
@@ -376,7 +422,7 @@ export function createPackFromInput(
 export function regenerateFailedPack(pack: NightBeforePack): NightBeforePack {
   const content = generatePackContent(
     {
-      subject: pack.subject === 'Simulate Error' ? 'Science' : pack.subject,
+      subject: pack.subject,
       title: pack.title,
       examAt: pack.examAt,
       topics: pack.topics,
@@ -386,7 +432,6 @@ export function regenerateFailedPack(pack: NightBeforePack): NightBeforePack {
   )
   return {
     ...pack,
-    subject: pack.subject === 'Simulate Error' ? 'Science' : pack.subject,
     status: 'ready',
     readyAt: new Date().toISOString(),
     failureMessage: undefined,

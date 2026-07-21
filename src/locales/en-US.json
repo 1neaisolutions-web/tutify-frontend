@@ -73,9 +73,24 @@
       "general": "General",
       "notifications": "Notifications",
       "plan": "Plan & credits",
+      "privacy": "Your data",
       "integrations": "Integrations",
       "developer": "Developer",
       "export": "Export"
+    },
+    "privacy": {
+      "title": "What Tutify knows about you",
+      "subtitle": "A transparent view of student data used to personalize learning (FERPA-conscious framing).",
+      "items": {
+        "profile": "Profile & classes",
+        "profileHint": "Name, grade, enrolled subjects, and goals from onboarding.",
+        "activity": "Study activity",
+        "activityHint": "Quizzes, assignments, study time, and progress events stay in your account activity log.",
+        "ai": "AI assistance",
+        "aiHint": "Copilot, Doubt Solver, and tutors use your questions to generate help. Outputs are labeled AI-assisted.",
+        "local": "This device",
+        "localHint": "Some demo-session data (notes, tasks, drafts) may also be stored in this browser’s local storage."
+      }
     },
     "general": {
       "title": "General preferences",
@@ -12952,8 +12967,8 @@
       "scorePercent": "Score: {{score}} / {{total}} ({{percent}}%)",
       "itemsCount": "{{count}} items",
       "questionsMeta": "{{count}} questions • {{min}} min",
-      "blocksThisWeek": "{{count}} blocks this week • demo AI regeneration",
-      "imagesCount": "School-safe demo generation • {{count}} images",
+      "blocksThisWeek": "{{count}} blocks this week",
+      "imagesCount": "School-safe AI image generation • {{count}} images",
       "updated": "Updated: {{date}}",
       "completedAt": "Completed: {{date}}",
       "step": "Step {{n}}:",
@@ -12970,9 +12985,11 @@
       "studyRoomTitle": "{{subject}} Study Room",
       "reflectionHeading": "Reflection for exam {{id}}",
       "prepareHeading": "Prepare for exam {{id}}",
-      "subjectDemo": "{{subject}} • demo solution",
-      "demoPhase1": "Phase 1 demo",
-      "emDash": "—"
+      "subjectDemo": "{{subject}} • AI-guided solution",
+      "demoPhase1": "AI-assisted",
+      "emDash": "—",
+      "loading": "Loading…",
+      "selectPlaceholder": "Select…"
     },
     "stub": {
       "defaultName": "Student Module"
@@ -12982,7 +12999,7 @@
       "subtitle": "Ask anything. Switch modes for explain / summarise / practice.",
       "empty": {
         "title": "Try a starter prompt",
-        "subtitle": "This is a demo-ready AI flow with simulated streaming."
+        "subtitle": "Ask a question below, or try one of these to get started."
       },
       "prompts": {
         "newton": "Help me understand Newton's 3rd Law",
@@ -13042,7 +13059,7 @@
     },
     "assignments": {
       "title": "Assignments",
-      "subtitle": "Teacher-linked work with AI help (demo data).",
+      "subtitle": "Everything due across your classes, with AI help when you're stuck.",
       "status": {
         "notStarted": "Not started",
         "inProgress": "In progress",
@@ -13062,26 +13079,26 @@
       "myTasks": {
         "title": "My Tasks",
         "openTasks": "Open tasks",
-        "integrationNote": "Demo integration: personal tasks live alongside teacher assignments.",
+        "integrationNote": "Personal tasks live alongside your teacher assignments.",
         "empty": "No tasks yet."
       },
       "detail": {
         "instructions": "Instructions",
-        "instructionsDemo": "Demo assignment detail page. In Phase 2, this content will come from the backend.",
+        "instructionsDemo": "Full requirements and rubric for this assignment.",
         "aiHelp": {
           "title": "AI Help",
           "noOutput": "No AI output yet.",
-          "openHint": "Open to see a demo AI explanation (streaming).",
+          "openHint": "Open AI Help for a step-by-step explanation.",
           "failed": "Failed to load AI help. {{message}}"
         }
       },
       "submit": {
         "title": "Submit Assignment",
-        "subtitle": "Demo submission flow.",
+        "subtitle": "Submit your work for this assignment.",
         "label": "Your submission",
         "placeholder": "Paste your answer or notes here…",
-        "fileUploadPlaceholder": "File upload placeholder (Phase 2).",
-        "successAlert": "Submitted (demo)."
+        "fileUploadPlaceholder": "File upload coming soon — paste your work as text for now.",
+        "successAlert": "Submitted."
       },
       "feedback": {
         "title": "Assignment Feedback"
@@ -13089,9 +13106,9 @@
     },
     "tasks": {
       "title": "My Tasks",
-      "subtitle": "Personal productivity tasks (Phase 1 local demo).",
+      "subtitle": "Your personal to-do list, with AI suggestions from real gaps.",
       "suggestions": {
-        "title": "AI Suggestions (demo)",
+        "title": "AI Suggestions",
         "reviewQuiz": "Review weak quiz topics",
         "flashcards": "Create flashcards for photosynthesis",
         "dueTomorrow": "Tomorrow",
@@ -13102,11 +13119,11 @@
       "defaultTitle": "Task",
       "create": {
         "title": "Create Task",
-        "subtitle": "Saved locally for Phase 1 demo."
+        "subtitle": "Saved to your account on this device."
       },
       "edit": {
         "title": "Edit Task",
-        "subtitle": "Demo edit flow."
+        "subtitle": "Update the details of this task."
       },
       "fields": {
         "title": "Title",
@@ -13120,17 +13137,19 @@
     },
     "quiz": {
       "title": "Quizzes",
-      "subtitle": "Take a quiz with timer and AI hint (demo).",
+      "subtitle": "Take a quiz with a timer and AI hints.",
       "start": "Start →",
+      "liveBadge": "Live",
       "take": {
         "notFound": "Quiz not found.",
         "timer": "Timer: {{time}}",
         "aiHint": "AI Hint",
-        "submitQuiz": "Submit Quiz"
+        "submitQuiz": "Submit Quiz",
+        "liveNotice": "This quiz was generated by your teacher. Scores here are practice-only until grading is available."
       },
       "results": {
         "title": "Quiz Results",
-        "subtitle": "Demo scoring + AI review.",
+        "subtitle": "Instant scoring + AI review.",
         "autoSubmitted": "Auto-submitted when timer ended.",
         "empty": "No results found.",
         "review": {
@@ -13143,30 +13162,55 @@
     },
     "youtubeQuiz": {
       "title": "YouTube Quiz",
-      "subtitle": "Paste a YouTube URL → generate a quiz (demo).",
+      "subtitle": "Paste a YouTube URL and generate a content-grounded quiz.",
       "urlLabel": "YouTube URL",
       "urlPlaceholder": "https://www.youtube.com/watch?v=...",
       "generate": "Generate Quiz",
+      "generating": "Generating…",
+      "subjectLens": "Subject lens",
+      "difficulty": "Difficulty",
+      "learningFocus": "Learning focus",
+      "learningFocusPlaceholder": "e.g. Factoring quadratics",
+      "questionStyles": "Question styles",
+      "questionCount": "Question count",
+      "styles": {
+        "multipleChoice": "Multiple choice",
+        "quickCheck": "Quick check",
+        "higherOrder": "Higher order",
+        "discussionPrompt": "Discussion prompt"
+      },
+      "errors": {
+        "noStyles": "Pick at least one question style.",
+        "generateFailed": "Couldn't generate a quiz from that video."
+      },
       "take": {
         "notFound": "Quiz not found.",
-        "subtitle": "Answer the questions and submit."
+        "subtitle": "Answer the questions and submit.",
+        "shortAnswerPlaceholder": "Type a short answer…",
+        "reflectivePlaceholder": "Write your response…"
       },
       "results": {
         "title": "Quiz Results",
-        "subtitle": "Demo scoring summary.",
-        "empty": "No results found for this quiz."
+        "subtitle": "Scoring summary + reflective review.",
+        "empty": "No results found for this quiz.",
+        "scoreLabel": "Score",
+        "reflectiveLabel": "Reflective responses",
+        "completedLabel": "Completed",
+        "reflectiveReview": "Reflective review",
+        "noResponse": "No response given.",
+        "sampleAnswer": "Sample answer"
       }
     },
     "exam": {
       "title": "Exams",
-      "subtitle": "Prepare, take, and reflect (demo scaffolding).",
+      "subtitle": "Prepare, take, and reflect on every exam.",
       "prepare": "Prepare",
       "take": "Take",
       "reflect": "Reflect",
       "nightBefore": "Night Before Pack",
       "preparePage": {
         "title": "Exam Prepare",
-        "subtitle": "Checklist + countdown (demo).",
+        "subtitle": "Checklist + countdown to exam day.",
         "checklist": {
           "review": "Review weak topics",
           "practice": "Do 10 practice questions",
@@ -13177,14 +13221,14 @@
       },
       "takePage": {
         "title": "Exam Take",
-        "subtitle": "Exam {{id}} (demo placeholder).",
-        "placeholder": "Phase 1 demo: exam-taking UI is scaffolded. In Phase 2 this will include sections, timers, and answer review rules."
+        "subtitle": "Exam {{id}}",
+        "placeholder": "Loading your exam…"
       },
       "reflectPage": {
         "title": "Exam Reflect",
-        "subtitle": "Private notes saved to localStorage (demo).",
+        "subtitle": "Private notes, saved automatically.",
         "placeholder": "What went well? What will you improve next time?",
-        "successAlert": "Saved reflection (demo)."
+        "successAlert": "Reflection saved."
       }
     },
     "nightBefore": {
@@ -13246,7 +13290,6 @@
         "title": "Create my pack",
         "subtitle": "Schedule an exam and generate a revision pack.",
         "submit": "Generate pack",
-        "simulateError": "Simulate Error (demo)",
         "fields": {
           "subject": "Subject",
           "title": "Exam title",
@@ -13296,7 +13339,7 @@
     },
     "doubtSolver": {
       "title": "AI Doubt Solver",
-      "subtitle": "Step-by-step solution + practice (demo).",
+      "subtitle": "Step-by-step help + practice problems.",
       "fields": {
         "subject": "Subject",
         "question": "Your question / problem"
@@ -13317,7 +13360,7 @@
         "failed": "Failed to solve",
         "practice": {
           "title": "Practice",
-          "empty": "No practice problems for this demo input."
+          "empty": "No extra practice problems for this one — nice work."
         },
         "saveToNotes": "Save to Notes",
         "askTeacher": "Ask Teacher Instead"
@@ -13325,30 +13368,30 @@
     },
     "notes": {
       "title": "Notes",
-      "subtitle": "Create notes and attach AI summaries later (demo).",
+      "subtitle": "Capture explanations and AI answers, tagged by subject.",
       "newNote": "New note",
       "empty": "No notes yet. Create one to get started.",
       "untitled": "Untitled note",
       "editor": {
         "title": "New note",
-        "subtitle": "Saved locally for Phase 1 demo.",
+        "subtitle": "Saved automatically as you type.",
         "placeholderTitle": "Title",
         "placeholderContent": "Write your note…"
       },
       "detail": {
         "defaultTitle": "Note",
-        "subtitle": "Demo note detail",
+        "subtitle": "",
         "notFound": "Note not found."
       }
     },
     "studyRoom": {
       "title": "Study Rooms",
-      "subtitle": "A workspace per subject (scoped Phase 1 demo).",
+      "subtitle": "Everything for one subject — mastery, notes, and resources in one place.",
       "cardSubtitle": "Resources • notes • quick practice",
       "detail": {
-        "subtitle": "Scoped Phase 1: static resources + notes shortcut.",
+        "subtitle": "Your mastery, notes, and resources for this subject.",
         "resources": {
-          "title": "Resources (demo)",
+          "title": "Resources",
           "formulas": "Key formulas / definitions",
           "practice": "Practice set starter",
           "aiHint": "AI: ask questions in Copilot or Tutors"
@@ -13362,14 +13405,19 @@
     },
     "timetable": {
       "title": "Timetable",
-      "subtitle": "Weekly view (demo data).",
+      "subtitle": "Your weekly class schedule.",
       "nextClass": "Next class: {{name}} • {{day}} {{time}}",
-      "noUpcoming": "No upcoming class today (demo schedule).",
-      "columnTime": "Time"
+      "nextClassToday": "Next class",
+      "nextClassUpcoming": "Next class",
+      "noUpcoming": "No more classes scheduled.",
+      "columnTime": "Time",
+      "columnPeriod": "Period",
+      "period": "Period",
+      "room": "Room"
     },
     "progress": {
       "title": "My Progress",
-      "subtitle": "Summary across subjects (demo).",
+      "subtitle": "Your mastery across every subject, updated as you work.",
       "stats": {
         "quizAverage": "Quiz average",
         "assignments": "Assignments",
@@ -13378,26 +13426,34 @@
       "streakDays": "3 days",
       "viewDetails": "View details →",
       "subject": {
-        "subtitle": "Detail view (demo).",
-        "scoreHistory": "Score history (placeholder)",
-        "scoreHistoryPlaceholder": "Phase 2: charts + AI analysis card.",
-        "recommendations": "Recommendations (placeholder)",
+        "subtitle": "Topic-level mastery and history.",
+        "scoreHistory": "Score history",
+        "scoreHistoryPlaceholder": "",
+        "recommendations": "Recommendations",
         "recommendationsTip": "Tip: Use AI Copilot to generate targeted practice based on recent mistakes."
       }
     },
     "gradeCalculator": {
       "title": "Grade Calculator",
-      "subtitle": "What score do you need on the final to hit your target?",
+      "subtitle": "What score do you need to hit your target grade?",
       "fields": {
+        "class": "Class",
+        "categories": "Grade categories",
         "currentGrade": "Current grade (%)",
         "targetGrade": "Target grade (%)",
         "currentWeight": "Current weight (%)",
         "weightHint": "Final weight is 100 − currentWeight."
       },
+      "whatIfLabel": "What-if",
+      "whatIfSlider": "What if you score this on {{category}}?",
+      "projectedOverall": "Projected overall grade",
       "result": {
         "title": "Result",
         "needed": "Needed on final: {{pct}}%",
+        "neededOn": "Needed on {{category}}",
+        "final": "final",
         "formula": "Formula: target = w_current · current + w_final · final",
+        "formulaHint": "Formula: target grade = Σ(category weight × category score)",
         "status": {
           "secured": "Already secured",
           "possible": "Possible",
@@ -13407,31 +13463,39 @@
     },
     "studyTime": {
       "title": "Study Time Tracker",
-      "subtitle": "Timer + weekly summary (Phase 1 demo).",
+      "subtitle": "Timer + weekly summary by subject.",
       "elapsed": "Elapsed",
       "saveSession": "Save session",
       "minDurationHint": "Sessions under 10s are ignored (to avoid accidental saves).",
       "last7Days": "Last 7 days",
       "empty": "No sessions yet.",
-      "recentSessions": "Recent sessions"
+      "recentSessions": "Recent sessions",
+      "chartTitle": "Daily study minutes by subject",
+      "chartEmpty": "Log a session to see your chart."
     },
     "content": {
       "title": "Study Materials",
-      "subtitle": "Teacher resources + worksheet viewer (demo).",
+      "subtitle": "Teacher resources + worksheet viewer.",
       "subject": {
         "subtitle": "Select an item to view.",
         "empty": "No items."
       },
       "worksheet": {
-        "subtitle": "Read-only viewer + AI summary (demo).",
+        "subtitle": "Read-only viewer + AI summary.",
         "contentTitle": "Content",
-        "contentDemo": "Demo worksheet content.",
+        "contentDemo": "",
         "step1": "1) Solve problems A–D.",
         "step2": "2) Show your working.",
         "step3": "3) Submit by the due date.",
+        "notFound": "Worksheet not found.",
+        "addToNotes": "Add to Notes",
         "summary": {
           "title": "AI Summary",
           "empty": "Run summarise to see output.",
+          "emptyHint": "Run summarise to see output.",
+          "noneYet": "No summary generated yet.",
+          "summarise": "Summarise",
+          "summarising": "Summarising…",
           "failed": "Failed to summarise. {{message}}"
         }
       }
@@ -13459,15 +13523,26 @@
         "title": "Flashcard Set",
         "description": "Generate flashcards from a topic or notes."
       },
+      "usingFallback": "Showing a starter set — live template catalog is unavailable right now.",
+      "errors": {
+        "listFailed": "Couldn't load the live template catalog. Showing starter templates instead."
+      },
       "runner": {
-        "subtitle": "Fill inputs → generate a demo draft.",
+        "subtitle": "Fill in the inputs, then generate with AI.",
         "outputTitle": "Output",
         "outputEmpty": "Run a template to see output.",
-        "draftTitle": "Generated draft (demo)",
+        "emptyOutput": "Run a template to see output.",
+        "draftTitle": "Generated draft",
         "nextSteps": "Next steps:",
         "review": "Review",
         "customize": "Customize",
         "exportCopy": "Export / copy",
+        "generate": "Generate",
+        "generating": "Generating…",
+        "thinking": "Thinking…",
+        "fillRequired": "Fill in the required fields first.",
+        "generateFailed": "Couldn't generate this template. Please try again.",
+        "detailFailed": "Couldn't load full template details — showing a basic form.",
         "fields": {
           "topic": "Topic",
           "thesis": "Thesis statement",
@@ -13490,9 +13565,9 @@
         "name": "Math Mentor",
         "tagline": "Worked examples, step-by-step, no shortcuts."
       },
-      "scienceGuide": {
-        "name": "Science Guide",
-        "tagline": "Explain concepts clearly with diagrams and analogies."
+      "labPartner": {
+        "name": "Lab Partner",
+        "tagline": "Think out loud through experiments, data, and concepts."
       },
       "essayCoach": {
         "name": "Essay Coach",
@@ -13500,10 +13575,10 @@
       },
       "defaultName": "AI Tutor",
       "chat": {
-        "subtitle": "Domain style chat (demo).",
+        "subtitle": "Domain-specific tutoring style.",
         "intro": {
-          "mathMentor": "I'm your Math Mentor. I'll show worked steps and check your reasoning.",
-          "scienceGuide": "I'm your Science Guide. I'll explain concepts with intuition and examples.",
+          "mathMentor": "I'm your Math Mentor. I'll ask guiding questions and show worked steps so you build the reasoning yourself.",
+          "labPartner": "I'm your Lab Partner. Let's reason through this like scientists — concept first, then details.",
           "essayCoach": "I'm your Essay Coach. I'll help you structure arguments and improve clarity.",
           "default": "I'm your tutor. Ask your question and I'll help."
         }
@@ -13511,20 +13586,26 @@
     },
     "teachers": {
       "title": "Teachers",
-      "subtitle": "Messages + doubt tickets (demo).",
+      "subtitle": "Messages + doubt tickets.",
       "myTeachers": "My Teachers",
       "myDoubts": "My Doubts",
-      "doubtsPhase2Note": "Phase 2: submit a doubt ticket from Doubt Solver and track replies here.",
+      "doubtsPhase2Note": "Submit a doubt ticket from Doubt Solver and track replies here.",
+      "doubtsHint": "Submit a doubt ticket from Doubt Solver and track replies here.",
+      "room": "Room",
+      "messageCount": "{{count}} messages",
       "detail": {
         "defaultName": "Teacher",
-        "demoNote": "Demo messaging UI. Phase 2 will load real threads and allow attachments.",
+        "unknownTeacher": "Teacher",
+        "demoNote": "",
+        "thread": "Message thread",
+        "noMessages": "No messages yet — say hello!",
         "sendMessage": "Send a message",
         "placeholder": "Type your question…",
-        "successAlert": "Message sent (demo)."
+        "successAlert": "Message sent."
       },
       "doubts": {
         "title": "My Doubts",
-        "subtitle": "Tickets raised to teachers (demo).",
+        "subtitle": "Tickets raised to your teachers.",
         "status": {
           "open": "open",
           "answered": "answered"
@@ -13533,13 +13614,21 @@
       "doubtDetail": {
         "defaultTitle": "Doubt",
         "teacherReply": "Teacher reply",
-        "noReply": "No reply yet. In Phase 2, you'll receive notifications here."
+        "noReply": "No reply yet — you'll be notified here as soon as your teacher responds."
       }
     },
     "pixGen": {
       "title": "AI Image Studio (PixGen)",
       "placeholder": "Describe an educational visual… (e.g., 'labeled diagram of a plant cell')",
       "emptyCanvas": "Generate your first image.",
+      "generate": "Generate",
+      "generating": "Generating…",
+      "style": "Style",
+      "aspectRatio": "Aspect ratio",
+      "errors": {
+        "stillProcessing": "Still processing — check back in a moment.",
+        "generateFailed": "Couldn't generate that image. Please try again."
+      },
       "history": {
         "title": "History",
         "empty": "No images yet."

@@ -5,6 +5,8 @@ import { loadPacks } from './nightBeforePackStorage'
 import PackHeroCard from './components/PackHeroCard'
 import PackListSection from './components/PackListSection'
 import PackEmptyState from './components/PackEmptyState'
+import PageHeader from '../_shared/PageHeader'
+import FadeIn from '../_shared/FadeIn'
 
 const HubSkeleton = () => (
   <div className="space-y-4 animate-pulse">
@@ -56,20 +58,21 @@ const NightBeforePackHub = () => {
   }, [packs])
 
   return (
-    <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
-      <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.nightBefore.title')}</h1>
-          <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.nightBefore.subtitle')}</p>
-        </div>
-        <button
-          type="button"
-          onClick={() => navigate('/student/night-before/create')}
-          className="px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700 shrink-0"
-        >
-          {t('studentPanel.nightBefore.createCta')}
-        </button>
-      </div>
+    <div className="w-full bg-white dark:bg-gray-950">
+      <PageHeader
+        eyebrow="Night Before Pack"
+        title={t('studentPanel.nightBefore.title')}
+        subtitle={t('studentPanel.nightBefore.subtitle')}
+        right={
+          <button
+            type="button"
+            onClick={() => navigate('/student/night-before/create')}
+            className="px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700 shrink-0 transition-colors font-medium"
+          >
+            {t('studentPanel.nightBefore.createCta')}
+          </button>
+        }
+      />
 
       <div className="px-6 py-6 max-w-5xl space-y-6">
         {storageWarning ? (
@@ -83,7 +86,7 @@ const NightBeforePackHub = () => {
         ) : packs.length === 0 ? (
           <PackEmptyState />
         ) : (
-          <>
+          <FadeIn>
             {hero ? <PackHeroCard pack={hero} /> : null}
             <PackListSection
               title={t('studentPanel.nightBefore.sections.upcoming')}
@@ -95,7 +98,7 @@ const NightBeforePackHub = () => {
               packs={past}
               emptyLabel={t('studentPanel.nightBefore.list.noPast')}
             />
-          </>
+          </FadeIn>
         )}
       </div>
     </div>

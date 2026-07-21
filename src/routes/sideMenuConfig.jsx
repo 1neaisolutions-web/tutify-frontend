@@ -167,9 +167,6 @@ const studentMenu = [
       { path: '/student/doubt-solver', text: 'Doubt Solver', i18nKey: 'nav.student.doubtSolver', icon: Lightbulb, childIcon: Lightbulb },
     ],
   },
-  { path: '/student/pixgen', text: 'AI Image Studio', i18nKey: 'nav.student.pixgen', icon: Palette },
-  { path: '/student/youtube-quiz', text: 'YouTube Quiz', i18nKey: 'nav.student.ytQuiz', icon: Youtube },
-  { path: '/student/templates', text: 'Templates', i18nKey: 'nav.student.templates', icon: FileText },
 
   // ── Academics ───────────────────────────────────────────────────────
   { path: '/student/assignments', text: 'Assignments', i18nKey: 'nav.student.assignments', icon: ClipboardList },
@@ -186,15 +183,21 @@ const studentMenu = [
   { path: '/student/study-time', text: 'Study Tracker', i18nKey: 'nav.student.studyTime', icon: Timer },
   { path: '/student/grade-calculator', text: 'Grade Calculator', i18nKey: 'nav.student.gradeCalc', icon: Calculator },
 
+  // ── More AI tools (secondary/demoted — less core to the Maya Chen workflow) ──
+  { path: '/student/pixgen', text: 'AI Image Studio', i18nKey: 'nav.student.pixgen', icon: Palette },
+  { path: '/student/youtube-quiz', text: 'YouTube Quiz', i18nKey: 'nav.student.ytQuiz', icon: Youtube },
+  { path: '/student/templates', text: 'Templates', i18nKey: 'nav.student.templates', icon: FileText },
+
   // ── Teacher & Progress ───────────────────────────────────────────────
+  // My Doubts hidden from primary nav; reached via Doubt Solver escalation + Teachers.
   {
     path: '/student/teachers',
     text: 'Teachers',
     i18nKey: 'nav.student.teachers',
     icon: MessageSquare,
     child: [
-      { path: '/student/teachers', text: 'My Teachers', i18nKey: 'nav.student.myTeachers', icon: GraduationCap, childIcon: GraduationCap },
-      { path: '/student/doubts', text: 'My Doubts', i18nKey: 'nav.student.doubts', icon: MessageSquare, childIcon: MessageSquare },
+      { path: '/student/teachers', text: 'My Teachers', i18nKey: 'nav.student.teachers', icon: MessageSquare, childIcon: MessageSquare },
+      { path: '/student/doubts', text: 'Escalated doubts', i18nKey: 'nav.student.doubts', icon: Lightbulb, childIcon: Lightbulb },
     ],
   },
   { path: '/student/progress', text: 'My Progress', i18nKey: 'nav.student.progress', icon: TrendingUp },

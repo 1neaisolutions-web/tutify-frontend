@@ -1,9 +1,22 @@
 import Chart from 'react-apexcharts';
 
-export const LineBarChat = () => {
+const DEFAULT_CATEGORIES = ['June', 'July', 'August', 'September', 'October', 'November'];
+const DEFAULT_SERIES = [{ name: 'series-1', data: [1, 2, 2.5, 2.5, 3, 4] }];
+
+/**
+ * Reusable area/line chart. Falls back to demo data when no props are passed
+ * so existing call sites keep working unchanged.
+ */
+export const LineBarChat = ({
+  categories = DEFAULT_CATEGORIES,
+  series = DEFAULT_SERIES,
+  height = '350px',
+  type = 'area',
+  colors,
+  yFormatter,
+}) => {
   const optionSeries = {
     options: {
-      // CHART OPTIONS
       chart: {
         id: 'basic-bar',
         toolbar: {
@@ -15,6 +28,7 @@ export const LineBarChat = () => {
           },
         },
       },
+      colors,
       fill: {
         type: 'gradient',
         gradient: {
@@ -26,61 +40,23 @@ export const LineBarChat = () => {
         },
       },
       xaxis: {
-        categories: [
-          'June',
-          'July',
-          'August',
-          'September',
-          'October',
-          'November',
-        ],
-        // labels: {
-        //   show: true,
-        //   align: 'center',
-        //   style: {
-        //     fontSize: '12px',
-        //     fontFamily: "'Inter', 'sans-serif'",
-        //   },
-        //   formatter: function (val) {
-        //     return val;
-        //   },
-        // },
+        categories,
       },
       yaxis: {
-        // show: false,
         tickAmount: 3,
         labels: {
-          formatter: function (value) {
-            return '$' + value + 'm';
-          },
+          formatter: yFormatter || ((value) => `${value}`),
         },
       },
       tooltip: {
-        enabled: false,
+        enabled: true,
       },
     },
-    series: [
-      {
-        name: 'series-1',
-        data: [1, 2, 2.5, 2.5, 3, 4],
-        stroke: {
-          width: 1,
-          curve: 'smooth',
-        },
-      },
-    ],
+    series,
   };
   return (
-    <>
-      <div id='chart'>
-        <Chart
-          options={optionSeries.options}
-          series={optionSeries.series}
-          type='area'
-          width='100%'
-          height='350px'
-        />
-      </div>
-    </>
+    <div id="chart">
+      <Chart options={optionSeries.options} series={optionSeries.series} type={type} width="100%" height={height} />
+    </div>
   );
 };

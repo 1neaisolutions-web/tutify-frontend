@@ -2,10 +2,11 @@ import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import GenerationProgress from './components/GenerationProgress'
-import { createPackFromInput, shouldFailGeneration } from './nightBeforePackMockEngine'
+import { createPackFromInput } from './nightBeforePackMockEngine'
 import { upsertPack } from './nightBeforePackStorage'
+import { emitStudentEvent } from '../utils/studentEventLog'
 
-const SUBJECTS = ['Math', 'Science', 'English', 'History', 'Simulate Error']
+const SUBJECTS = ['Algebra II', 'Biology', 'English II', 'World History']
 
 const defaultExamLocal = () => {
   const d = new Date()
@@ -18,7 +19,7 @@ const defaultExamLocal = () => {
 const PackCreate = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const [subject, setSubject] = useState('Science')
+  const [subject, setSubject] = useState('Algebra II')
   const [title, setTitle] = useState('')
   const [examLocal, setExamLocal] = useState(defaultExamLocal)
   const [topicsRaw, setTopicsRaw] = useState('')
@@ -60,26 +61,28 @@ const PackCreate = () => {
 
   const handleGenerationComplete = useCallback(() => {
     if (!pendingInput) return
-    // After a forced-fail retry, GenerationProgress disarms fail and succeeds here.
-    const input = shouldFailGeneration(pendingInput.subject)
-      ? { ...pendingInput, subject: 'Science' }
-      : pendingInput
-    const pack = createPackFromInput(input, { source: 'self-created' })
+    const pack = createPackFromInput(pendingInput, { source: 'self-created' })
     const saved = upsertPack(pack)
     if (!saved.ok) setStorageWarning(true)
+    emitStudentEvent({
+      module: 'night_before',
+      action: 'generated',
+      subject: pack.subject,
+      topic: pendingInput.topics?.[0],
+      artifactRef: pack.id,
+    })
     navigate(`/student/night-before/${pack.id}`)
   }, [pendingInput, navigate])
 
   if (phase === 'generating' && pendingInput) {
     return (
-      <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
+      <div className="w-full bg-white dark:bg-gray-950">
         <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
           <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.nightBefore.create.title')}</h1>
           <p className="text-sm text-gray-600 dark:text-gray-300">{pendingInput.title}</p>
         </div>
         <div className="px-6 py-6 max-w-xl">
           <GenerationProgress
-            forceFail={shouldFailGeneration(pendingInput.subject)}
             onCancel={() => {
               setPhase('form')
               setPendingInput(null)
@@ -92,7 +95,7 @@ const PackCreate = () => {
   }
 
   return (
-    <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
+    <div className="w-full bg-white dark:bg-gray-950">
       <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between gap-4">
         <div>
           <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.nightBefore.create.title')}</h1>
@@ -123,7 +126,7 @@ const PackCreate = () => {
           >
             {SUBJECTS.map((s) => (
               <option key={s} value={s}>
-                {s === 'Simulate Error' ? t('studentPanel.nightBefore.create.simulateError') : s}
+                {s}
               </option>
             ))}
           </select>

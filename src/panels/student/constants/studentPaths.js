@@ -30,6 +30,7 @@ export const STUDENT_PATHS = {
   NOTES: '/student/notes',
   NOTE_NEW: '/student/notes/new',
   NOTE: (id) => `/student/notes/${id}`,
+  NOTE_EDIT: (id) => `/student/notes/${id}/edit`,
   SUBJECTS: '/student/subjects',
   SUBJECT_ROOM: (id) => `/student/subjects/${id}/room`,
   STUDY_TIME: '/student/study-time',

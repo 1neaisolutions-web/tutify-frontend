@@ -1,6 +1,14 @@
 export type PackStatus = 'scheduled' | 'generating' | 'ready' | 'failed' | 'completed'
 export type PackSource = 'teacher-linked' | 'self-created'
-export type PackSubject = 'Math' | 'Science' | 'English' | 'History' | 'Simulate Error'
+export type PackSubject =
+  | 'Algebra II'
+  | 'Biology'
+  | 'English II'
+  | 'World History'
+  | 'Math'
+  | 'Science'
+  | 'English'
+  | 'History'
 
 export interface FormulaItem {
   id: string

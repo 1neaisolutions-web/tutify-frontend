@@ -50,13 +50,15 @@ import {
   type Theme,
 } from '../redux/features/preferences/preferencesSlice'
 import { useTranslation } from 'react-i18next'
+import { getStudentEvents } from '../panels/student/utils/studentEventLog'
 
-type Tab = 'general' | 'notifications' | 'plan' | 'integrations' | 'developer' | 'export'
+type Tab = 'general' | 'notifications' | 'plan' | 'integrations' | 'developer' | 'export' | 'privacy'
 
 const TAB_KEYS: { key: Tab; labelKey: string }[] = [
   { key: 'general', labelKey: 'settings.tabs.general' },
   { key: 'notifications', labelKey: 'settings.tabs.notifications' },
   { key: 'plan', labelKey: 'settings.tabs.plan' },
+  { key: 'privacy', labelKey: 'settings.tabs.privacy' },
   { key: 'integrations', labelKey: 'settings.tabs.integrations' },
   { key: 'developer', labelKey: 'settings.tabs.developer' },
   { key: 'export', labelKey: 'settings.tabs.export' },
@@ -286,6 +288,8 @@ function PlanCreditsTab() {
 const Settings = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const dispatch = useDispatch()
+  const userRole = useSelector((s: any) => s.auth?.user?.role as string | undefined)
+  const isStudent = String(userRole || '').toLowerCase() === 'student'
   const theme = useSelector((s: any) => (s.preferences?.theme ?? 'system') as Theme)
   const language = useSelector((s: any) => (s.preferences?.language ?? 'en-US') as string)
   const timezone = useSelector((s: any) => (s.preferences?.timezone ?? 'UTC') as string)
@@ -313,6 +317,22 @@ const Settings = () => {
   const handleTabChange = (tab: Tab) => {
     setActiveTab(tab)
     setSearchParams(tab === 'general' ? {} : { tab })
+  }
+
+  const studentEventsByModule = useMemo(() => {
+    if (!isStudent) return []
+    const events = getStudentEvents()
+    const counts = new Map<string, number>()
+    events.forEach((e) => counts.set(e.module, (counts.get(e.module) || 0) + 1))
+    return [...counts.entries()].sort((a, b) => b[1] - a[1])
+  }, [isStudent, activeTab])
+
+  const clearStudentLocalData = () => {
+    if (!window.confirm('Clear all locally saved Tutify data (notes, tasks, progress, chat history) on this device? This cannot be undone.')) return
+    Object.keys(localStorage)
+      .filter((k) => k.startsWith('tutify_student_'))
+      .forEach((k) => localStorage.removeItem(k))
+    window.location.reload()
   }
 
   const effectiveTheme: Theme = THEME_LOCKED ? LOCKED_THEME : theme
@@ -548,6 +568,63 @@ const Settings = () => {
                     {t('settings.notifications.manageDefaults')}
                   </button>
                 </div>
+              </div>
+            )}
+
+            {activeTab === 'privacy' && (
+              <div className="card">
+                <h2 className="text-lg font-semibold text-gray-900 mb-2">{t('settings.privacy.title')}</h2>
+                <p className="text-sm text-gray-600 mb-4">{t('settings.privacy.subtitle')}</p>
+                <ul className="space-y-3 text-sm text-gray-700">
+                  <li className="rounded-lg bg-gray-50 px-4 py-3">
+                    <p className="font-medium text-gray-900">{t('settings.privacy.items.profile')}</p>
+                    <p className="text-xs text-gray-500 mt-1">{t('settings.privacy.items.profileHint')}</p>
+                  </li>
+                  <li className="rounded-lg bg-gray-50 px-4 py-3">
+                    <p className="font-medium text-gray-900">{t('settings.privacy.items.activity')}</p>
+                    <p className="text-xs text-gray-500 mt-1">{t('settings.privacy.items.activityHint')}</p>
+                  </li>
+                  <li className="rounded-lg bg-gray-50 px-4 py-3">
+                    <p className="font-medium text-gray-900">{t('settings.privacy.items.ai')}</p>
+                    <p className="text-xs text-gray-500 mt-1">{t('settings.privacy.items.aiHint')}</p>
+                  </li>
+                  <li className="rounded-lg bg-gray-50 px-4 py-3">
+                    <p className="font-medium text-gray-900">{t('settings.privacy.items.local')}</p>
+                    <p className="text-xs text-gray-500 mt-1">{t('settings.privacy.items.localHint')}</p>
+                  </li>
+                </ul>
+
+                {isStudent ? (
+                  <div className="mt-6 rounded-lg border border-sky-200 bg-sky-50/60 px-4 py-4">
+                    <h3 className="text-sm font-semibold text-gray-900">Your data</h3>
+                    <p className="mt-1 text-xs text-gray-600">
+                      What Tutify's AI has learned from your activity, stored only on this device. Every module writes
+                      here when it logs a study session, quiz attempt, or AI conversation — this is the same event
+                      stream your Progress and Study Plan pages read from.
+                    </p>
+
+                    {studentEventsByModule.length === 0 ? (
+                      <p className="mt-3 text-xs text-gray-500">No activity recorded yet on this device.</p>
+                    ) : (
+                      <ul className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        {studentEventsByModule.map(([module, count]) => (
+                          <li key={module} className="rounded-md bg-white border border-sky-100 px-3 py-2">
+                            <p className="text-xs text-gray-500 capitalize">{module.replace(/_/g, ' ')}</p>
+                            <p className="text-sm font-semibold text-gray-900">{count}</p>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={clearStudentLocalData}
+                      className="mt-4 text-xs font-semibold text-red-600 hover:text-red-500"
+                    >
+                      Clear my local data
+                    </button>
+                  </div>
+                ) : null}
               </div>
             )}
 

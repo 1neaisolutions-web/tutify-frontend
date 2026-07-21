@@ -11,7 +11,7 @@ const ChatThread = ({ messages, isGenerating, streamingText }) => {
   }, [messages.length, isGenerating, streamingText]);
 
   return (
-    <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3" aria-live="polite">
+    <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-6 py-4 space-y-3" aria-live="polite">
       {messages.map((m) => (
         <MessageBubble key={m.id} role={m.role} text={m.text} />
       ))}

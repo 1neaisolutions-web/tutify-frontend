@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getPackById, updatePackProgress, upsertPack } from './nightBeforePackStorage'
 import { regenerateFailedPack } from './nightBeforePackMockEngine'
+import { emitStudentEvent } from '../utils/studentEventLog'
 import TopicSummarySection from './components/TopicSummarySection'
 import FormulasSection from './components/FormulasSection'
 import QuestionTypesSection from './components/QuestionTypesSection'
@@ -91,6 +92,13 @@ const PackDetail = () => {
     })
     if (updated.data) setPack(updated.data)
     if (!updated.ok) setStorageWarning(true)
+    emitStudentEvent({
+      module: 'night_before',
+      action: 'completed',
+      subject: pack.subject,
+      outcome: { score, correct: score === questions.length },
+      artifactRef: pack.id,
+    })
   }
 
   const askCopilot = () => {
@@ -115,7 +123,7 @@ const PackDetail = () => {
 
   if (notFound) {
     return (
-      <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950 px-6 py-6 max-w-xl">
+      <div className="w-full bg-white dark:bg-gray-950 px-6 py-6 max-w-xl">
         <div className="rounded-xl border border-gray-200 dark:border-gray-800 p-6 space-y-3">
           <h1 className="font-semibold text-gray-900 dark:text-gray-100">{t('studentPanel.nightBefore.notFound.title')}</h1>
           <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.nightBefore.notFound.subtitle')}</p>
@@ -133,7 +141,7 @@ const PackDetail = () => {
 
   if (!pack) {
     return (
-      <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950 px-6 py-6">
+      <div className="w-full bg-white dark:bg-gray-950 px-6 py-6">
         <div className="animate-pulse space-y-3 max-w-3xl">
           <div className="h-8 w-1/2 rounded bg-gray-100 dark:bg-gray-900" />
           <div className="h-40 rounded-xl bg-gray-100 dark:bg-gray-900" />
@@ -155,7 +163,7 @@ const PackDetail = () => {
 
   if (retrying) {
     return (
-      <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
+      <div className="w-full bg-white dark:bg-gray-950">
         <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
           <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{pack.title}</h1>
         </div>
@@ -167,7 +175,7 @@ const PackDetail = () => {
   }
 
   return (
-    <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
+    <div className="w-full bg-white dark:bg-gray-950">
       <div className="sticky top-0 z-10 bg-white/95 dark:bg-gray-950/95 backdrop-blur border-b border-gray-200 dark:border-gray-800 px-6 py-4">
         <div className="flex items-start justify-between gap-4 max-w-3xl">
           <div>

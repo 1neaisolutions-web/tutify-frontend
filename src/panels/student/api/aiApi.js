@@ -1,4 +1,5 @@
 import { AI_RESPONSES, DEFAULT_RESPONSE } from '../data/aiResponses';
+import { matchDoubtTopic } from '../data/doubtSolverContent';
 import { streamText } from '../utils/aiStreamSimulator';
 
 export const sendCopilotMessage = async (message, mode, onChunk, onDone) => {
@@ -13,14 +14,16 @@ export const sendCopilotMessage = async (message, mode, onChunk, onDone) => {
 
 export const solveProblem = async (problem, subject) => {
   await new Promise((r) => setTimeout(r, 1200));
-  const msg = String(problem || '').toLowerCase();
-  const key = Object.keys(AI_RESPONSES).find((k) => msg.includes(k));
+  const match = matchDoubtTopic(problem, subject);
   return {
     data: {
-      subject: subject || 'General',
-      steps: AI_RESPONSES[key]?.steps || ['Identify what you know', 'Pick a method', 'Solve step by step', 'Verify the result'],
-      answer: AI_RESPONSES[key]?.answer || 'See steps above',
-      practiceProblems: AI_RESPONSES[key]?.practiceProblems || [],
+      subject: match.subject || subject || 'General',
+      subjectId: match.subjectId || null,
+      topic: match.topic || 'General',
+      confidence: match.confidence ?? 0.6,
+      steps: match.steps,
+      answer: match.answer,
+      practiceProblems: match.practiceProblems || [],
     },
   };
 };

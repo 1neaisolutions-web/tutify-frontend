@@ -409,14 +409,32 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     setExpandedMenus((prev) => ({ ...prev, ...expanded }))
   }, [location.pathname])
 
-  // Pages like chat UIs manage their own internal scroll (WhatsApp/ChatGPT style).
-  // For everything else, the main content pane should be scrollable.
-  // Only General Teaching Assistant currently manages its own internal scroll.
-  // Specialized chatbot pages still rely on the dashboard content pane scrolling.
-  const isChatPage = location.pathname === '/chatbots/general-teaching-assistant'
+  // Shell is viewport-locked (no document scroll).
+  // - Normal pages: only the main content pane scrolls.
+  // - Self-scroll pages (chat/copilot): page manages its own internal scroll; pane stays overflow-hidden.
+  const pathname = location.pathname
+  // Chat-style pages fill the pane and scroll internally (thread), not the outer content pane.
+  const isSelfScrollPage =
+    pathname === '/student/dashboard' ||
+    /^\/student\/tutors\/[^/]+$/.test(pathname) ||
+    pathname === '/chatbots/general-teaching-assistant'
+
+  // Lock document scroll so only shell regions scroll (sidebar nav / content pane).
+  useEffect(() => {
+    const html = document.documentElement
+    const body = document.body
+    const prevHtml = html.style.overflow
+    const prevBody = body.style.overflow
+    html.style.overflow = 'hidden'
+    body.style.overflow = 'hidden'
+    return () => {
+      html.style.overflow = prevHtml
+      body.style.overflow = prevBody
+    }
+  }, [])
 
   return (
-    <div className="h-screen overflow-hidden bg-gray-50">
+    <div className="h-[100dvh] max-h-[100dvh] overflow-hidden bg-gray-50">
       {/* Mobile menu button */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-2">
@@ -434,16 +452,16 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       {/* Sidebar */}
       <aside
         className={`
-          fixed top-0 left-0 z-40 h-screen transition-transform duration-300 ease-in-out
+          fixed top-0 left-0 z-40 h-[100dvh] max-h-[100dvh] transition-transform duration-300 ease-in-out
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
           lg:translate-x-0
           ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
           w-64 bg-white border-r border-gray-200
         `}
       >
-        <div className="h-full flex flex-col">
+        <div className="h-full min-h-0 flex flex-col overflow-hidden">
           {/* Logo */}
-          <div className="h-16 px-6 flex items-center justify-between border-b border-gray-200">
+          <div className="h-16 shrink-0 px-6 flex items-center justify-between border-b border-gray-200">
             <div className="flex items-center space-x-2">
               <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center">
                 <GraduationCap className="w-5 h-5 text-white" />
@@ -461,7 +479,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+          <nav className="flex-1 min-h-0 px-4 py-6 space-y-1 overflow-y-auto overscroll-contain">
             {menuItems.map((item) => {
               const Icon = item.icon
               const active = isActive(item.path)
@@ -1166,8 +1184,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           </div>
         </div>
 
-        <main className="pt-20 lg:pt-24 px-6 lg:px-8 flex-1 min-h-0 overflow-hidden flex flex-col">
-          <div className={`flex-1 min-h-0 ${isChatPage ? 'overflow-hidden' : 'overflow-auto'}`}>
+        <main className="pt-16 lg:pt-16 px-4 sm:px-6 lg:px-8 flex-1 min-h-0 overflow-hidden flex flex-col">
+          <div
+            className={`flex-1 min-h-0 ${
+              isSelfScrollPage ? 'overflow-hidden flex flex-col' : 'overflow-y-auto overflow-x-hidden'
+            }`}
+          >
             {location.pathname.startsWith('/teacher-tools') ||
             location.pathname.startsWith('/dashboard') ||
             location.pathname.startsWith('/analytics') ||

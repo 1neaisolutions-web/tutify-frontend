@@ -32,6 +32,120 @@ import { baseURL } from '../redux/constant';
 import { Lock, User, Mail, Phone, AtSign, AlertCircle, CheckCircle2, BookOpen } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Student profile fields, backed by the same localStorage keys the student
+ * onboarding/dashboard flow reads. A proper stateful component (not an inline
+ * IIFE) so keystrokes actually re-render the controlled inputs.
+ */
+const StudentProfileTab = ({ t, toast }) => {
+  const PROFILE_KEY = 'tutify_student_profile';
+  const CLASSES_KEY = 'tutify_student_classes';
+  const GOALS_KEY = 'tutify_student_goals';
+
+  const readInitial = () => {
+    let profile = { name: '', gradeLevel: '', timezone: '' };
+    let classes = { classes: '' };
+    let goals = { goals: '' };
+    try {
+      profile = JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null') || profile;
+      classes = JSON.parse(localStorage.getItem(CLASSES_KEY) || 'null') || classes;
+      goals = JSON.parse(localStorage.getItem(GOALS_KEY) || 'null') || goals;
+    } catch (e) {
+      void e;
+    }
+    return { profile, classes, goals };
+  };
+
+  const [state, setState] = useState(readInitial);
+
+  const save = () => {
+    try {
+      localStorage.setItem(PROFILE_KEY, JSON.stringify(state.profile));
+      localStorage.setItem(CLASSES_KEY, JSON.stringify(state.classes));
+      localStorage.setItem(GOALS_KEY, JSON.stringify(state.goals));
+      toast(t('profile.toast.studentProfileSaved'), 'success');
+    } catch (err) {
+      console.error(err);
+      toast(t('profile.toast.studentProfileSaveFailed'), 'error');
+    }
+  };
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <CustomInput
+          label={t('profile.studentProfile.name')}
+          name="student_name"
+          value={state.profile.name || ''}
+          onChange={(e) => setState((p) => ({ ...p, profile: { ...p.profile, name: e.target.value } }))}
+          placeholder={t('profile.studentProfile.namePlaceholder')}
+          icon={<User className="w-4 h-4" />}
+        />
+      </div>
+      <div>
+        <GradeSelect
+          value={gradeValueForSelect(state.profile.gradeLevel)}
+          onChange={(v) => setState((p) => ({ ...p, profile: { ...p.profile, gradeLevel: v } }))}
+          label={t('profile.studentProfile.gradeLevel')}
+        />
+      </div>
+      <div className="md:col-span-2">
+        <CustomInput
+          label={t('profile.studentProfile.timezone')}
+          name="student_timezone"
+          value={state.profile.timezone || ''}
+          onChange={(e) => setState((p) => ({ ...p, profile: { ...p.profile, timezone: e.target.value } }))}
+          placeholder={t('profile.studentProfile.timezonePlaceholder')}
+        />
+      </div>
+      <div className="md:col-span-2">
+        <CustomInput
+          label={t('profile.studentProfile.classes')}
+          name="student_classes"
+          value={state.classes.classes || ''}
+          onChange={(e) => setState((p) => ({ ...p, classes: { classes: e.target.value } }))}
+          placeholder={t('profile.studentProfile.classesPlaceholder')}
+        />
+      </div>
+      <div className="md:col-span-2">
+        <CustomInput
+          label={t('profile.studentProfile.goals')}
+          name="student_goals"
+          value={state.goals.goals || ''}
+          onChange={(e) => setState((p) => ({ ...p, goals: { goals: e.target.value } }))}
+          placeholder={t('profile.studentProfile.goalsPlaceholder')}
+        />
+      </div>
+
+      <div className="md:col-span-2 flex items-center justify-end gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3">
+        <CustomButton
+          type="button"
+          onClick={() => {
+            try {
+              localStorage.removeItem('tutify_student_onboarding_completed');
+              toast(t('profile.toast.onboardingReset'), 'success');
+            } catch (e) {
+              void e;
+            }
+          }}
+          variant="outlined"
+          className="!h-10 !min-w-[170px] !rounded-lg !border-gray-300 !text-gray-700 hover:!bg-gray-50"
+        >
+          {t('profile.studentProfile.resetOnboarding')}
+        </CustomButton>
+
+        <CustomButton
+          type="button"
+          onClick={save}
+          className="!h-10 !min-w-[150px] !rounded-lg !bg-primary !text-white hover:!bg-primary-dark"
+        >
+          {t('profile.studentProfile.save')}
+        </CustomButton>
+      </div>
+    </div>
+  );
+};
+
 const Profile = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -1277,120 +1391,7 @@ const Profile = () => {
                   {t('profile.studentProfile.subtitle')}
                 </p>
 
-                {(() => {
-                  const PROFILE_KEY = 'tutify_student_profile';
-                  const CLASSES_KEY = 'tutify_student_classes';
-                  const GOALS_KEY = 'tutify_student_goals';
-
-                  let profile = { name: '', gradeLevel: '', timezone: '' };
-                  let classes = { classes: '' };
-                  let goals = { goals: '' };
-
-                  try {
-                    profile = JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null') || profile;
-                    classes = JSON.parse(localStorage.getItem(CLASSES_KEY) || 'null') || classes;
-                    goals = JSON.parse(localStorage.getItem(GOALS_KEY) || 'null') || goals;
-                  } catch (e) {
-                    void e;
-                  }
-
-                  const save = () => {
-                    try {
-                      localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
-                      localStorage.setItem(CLASSES_KEY, JSON.stringify(classes));
-                      localStorage.setItem(GOALS_KEY, JSON.stringify(goals));
-                      toast(t('profile.toast.studentProfileSaved'), 'success');
-                    } catch (err) {
-                      console.error(err);
-                      toast(t('profile.toast.studentProfileSaveFailed'), 'error');
-                    }
-                  };
-
-                  return (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <CustomInput
-                          label={t('profile.studentProfile.name')}
-                          name="student_name"
-                          value={profile.name || ''}
-                          onChange={(e) => {
-                            profile = { ...profile, name: e.target.value };
-                          }}
-                          placeholder={t('profile.studentProfile.namePlaceholder')}
-                          icon={<User className="w-4 h-4" />}
-                        />
-                      </div>
-                      <div>
-                        <GradeSelect
-                          value={gradeValueForSelect(profile.gradeLevel)}
-                          onChange={(v) => {
-                            profile = { ...profile, gradeLevel: v };
-                          }}
-                          label={t('profile.studentProfile.gradeLevel')}
-                        />
-                      </div>
-                      <div className="md:col-span-2">
-                        <CustomInput
-                          label={t('profile.studentProfile.timezone')}
-                          name="student_timezone"
-                          value={profile.timezone || ''}
-                          onChange={(e) => {
-                            profile = { ...profile, timezone: e.target.value };
-                          }}
-                          placeholder={t('profile.studentProfile.timezonePlaceholder')}
-                        />
-                      </div>
-                      <div className="md:col-span-2">
-                        <CustomInput
-                          label={t('profile.studentProfile.classes')}
-                          name="student_classes"
-                          value={classes.classes || ''}
-                          onChange={(e) => {
-                            classes = { classes: e.target.value };
-                          }}
-                          placeholder={t('profile.studentProfile.classesPlaceholder')}
-                        />
-                      </div>
-                      <div className="md:col-span-2">
-                        <CustomInput
-                          label={t('profile.studentProfile.goals')}
-                          name="student_goals"
-                          value={goals.goals || ''}
-                          onChange={(e) => {
-                            goals = { goals: e.target.value };
-                          }}
-                          placeholder={t('profile.studentProfile.goalsPlaceholder')}
-                        />
-                      </div>
-
-                      <div className="md:col-span-2 flex items-center justify-end gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3">
-                        <CustomButton
-                          type="button"
-                          onClick={() => {
-                            try {
-                              localStorage.removeItem('tutify_student_onboarding_completed');
-                              toast(t('profile.toast.onboardingReset'), 'success');
-                            } catch (e) {
-                              void e;
-                            }
-                          }}
-                          variant="outlined"
-                          className="!h-10 !min-w-[170px] !rounded-lg !border-gray-300 !text-gray-700 hover:!bg-gray-50"
-                        >
-                          {t('profile.studentProfile.resetOnboarding')}
-                        </CustomButton>
-
-                        <CustomButton
-                          type="button"
-                          onClick={save}
-                          className="!h-10 !min-w-[150px] !rounded-lg !bg-primary !text-white hover:!bg-primary-dark"
-                        >
-                          {t('profile.studentProfile.save')}
-                        </CustomButton>
-                      </div>
-                    </div>
-                  );
-                })()}
+                <StudentProfileTab t={t} toast={toast} />
               </div>
             </div>
           )}

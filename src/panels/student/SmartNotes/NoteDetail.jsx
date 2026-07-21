@@ -2,7 +2,11 @@ import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-const STORAGE_KEY = 'tutify_student_notes_v1';
+import { readJson, writeJson, STUDENT_STORAGE_KEYS } from '../utils/studentStorage';
+import { subjectColor } from '../_shared/subjectColors';
+import PageHeader from '../_shared/PageHeader';
+import SectionCard from '../_shared/SectionCard';
+import FadeIn from '../_shared/FadeIn';
 
 const NoteDetail = () => {
   const { t } = useTranslation();
@@ -10,59 +14,67 @@ const NoteDetail = () => {
   const navigate = useNavigate();
 
   const note = useMemo(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      const parsed = raw ? JSON.parse(raw) : [];
-      const list = Array.isArray(parsed) ? parsed : [];
-      return list.find((n) => String(n.id) === String(id)) || null;
-    } catch {
-      return null;
-    }
+    const list = readJson(STUDENT_STORAGE_KEYS.NOTES, []);
+    return (Array.isArray(list) ? list : []).find((n) => String(n.id) === String(id)) || null;
   }, [id]);
 
+  const color = subjectColor(note?.subjectId);
+
   const remove = () => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      const parsed = raw ? JSON.parse(raw) : [];
-      const list = Array.isArray(parsed) ? parsed : [];
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(list.filter((n) => String(n.id) !== String(id))));
-    } catch {
-      // ignore
-    }
+    const list = readJson(STUDENT_STORAGE_KEYS.NOTES, []);
+    const arr = Array.isArray(list) ? list : [];
+    writeJson(STUDENT_STORAGE_KEYS.NOTES, arr.filter((n) => String(n.id) !== String(id)));
     navigate('/student/notes');
   };
 
   return (
-    <div className="min-h-[calc(100vh-65px)] w-full bg-white dark:bg-gray-950">
-      <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{note?.title || 'Note'}</h1>
-          <p className="text-sm text-gray-600 dark:text-gray-300">{t('studentPanel.notes.detail.subtitle')}</p>
-        </div>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={() => navigate('/student/notes')}
-            className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900"
-          >{t('studentPanel.common.back')}</button>
-          <button type="button" onClick={remove} className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700">
-            Delete
-          </button>
-        </div>
-      </div>
+    <div className="w-full bg-white dark:bg-gray-950">
+      <PageHeader
+        eyebrow="Notes"
+        title={note?.title || 'Note'}
+        subtitle={t('studentPanel.notes.detail.subtitle')}
+        right={
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => navigate('/student/notes')}
+              className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900"
+            >
+              {t('studentPanel.common.back')}
+            </button>
+            {note ? (
+              <button
+                type="button"
+                onClick={() => navigate(`/student/notes/${note.id}/edit`)}
+                className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-800 text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900"
+              >
+                {t('studentPanel.common.edit')}
+              </button>
+            ) : null}
+            <button type="button" onClick={remove} className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors">
+              Delete
+            </button>
+          </div>
+        }
+      >
+        {note?.subject ? (
+          <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${color.chip}`}>{note.subject}</span>
+        ) : null}
+      </PageHeader>
 
       <div className="px-6 py-6 max-w-3xl">
-        <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4">
-          {note ? (
-            <p className="text-sm text-gray-800 dark:text-gray-100 whitespace-pre-wrap">{note.content || '—'}</p>
-          ) : (
-            <p className="text-sm text-gray-700 dark:text-gray-200">{t('studentPanel.notes.detail.notFound')}</p>
-          )}
-        </div>
+        <FadeIn>
+          <SectionCard accent={Boolean(note?.subjectId)} className="p-4">
+            {note ? (
+              <p className="text-sm text-gray-800 dark:text-gray-100 whitespace-pre-wrap">{note.content || '—'}</p>
+            ) : (
+              <p className="text-sm text-gray-700 dark:text-gray-200">{t('studentPanel.notes.detail.notFound')}</p>
+            )}
+          </SectionCard>
+        </FadeIn>
       </div>
     </div>
   );
 };
 
 export default NoteDetail;
-

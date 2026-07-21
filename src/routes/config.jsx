@@ -1354,6 +1354,7 @@ export const studentRoutes = [
     child: [
       { path: '/student/notes/new', element: withDashboardLayout(<NoteEditor />) },
       { path: '/student/notes/:id', element: withDashboardLayout(<NoteDetail />) },
+      { path: '/student/notes/:id/edit', element: withDashboardLayout(<NoteEditor />) },
     ],
   },
   {
